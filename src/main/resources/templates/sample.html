@@ -4,34 +4,39 @@
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"
+      lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+<!--<![endif]-->
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
 
     <!-- Use the .htaccess and remove these lines to avoid edge case issues.
          More info: h5bp.com/b/378 -->
     <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> --> <!-- Not yet implemented -->
 
     <title>[page-title] &lt; [service-name] &lt; EMBL-EBI</title>
-    <meta name="description" content="EMBL-EBI"><!-- Describe what this page is about -->
-    <meta name="keywords" content="bioinformatics, europe, institute"><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
-    <meta name="author" content="EMBL-EBI"><!-- Your [project-name] here -->
+    <meta name="description" content="EMBL-EBI" /><!-- Describe what this page is about -->
+    <meta name="keywords" content="bioinformatics, europe, institute" /><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
+    <meta name="author" content="EMBL-EBI" /><!-- Your [project-name] here -->
 
     <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
 
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
 
     <!-- CSS: implied media=all -->
     <!-- CSS concatenated and minified via ant build script-->
-    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/boilerplate-style.css">
-    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-global.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-visual.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/984-24-col-fluid.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/boilerplate-style.css" />
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-global.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-visual.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/984-24-col-fluid.css" type="text/css" media="screen" />
 
     <!-- you can replace this with [projectname]-colours.css. See http://frontier.ebi.ac.uk/web/style/colour for details of how to do this -->
     <!-- also inform ES so we can host your colour palette file -->
-    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/embl-petrol-colours.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/embl-petrol-colours.css" type="text/css" media="screen" />
 
     <!-- for production the above can be replaced with -->
     <!--
@@ -39,9 +44,9 @@
     -->
 
     <!-- Biosamples stylesheets -->
-    <link rel="stylesheet" href="../static/stylesheets/font-awesome.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="../static/stylesheets/biosamples_common_10.css" type="text/css" media="screen">
-    <link rel="stylesheet" href="../static/stylesheets/biosamples_detail_10.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="../static/stylesheets/font-awesome.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../static/stylesheets/biosamples_common_10.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../static/stylesheets/biosamples_detail_10.css" type="text/css" media="screen" />
 
     <style type="text/css">
         /* You have the option of setting a maximum width for your page, and making sure everything is centered */
@@ -77,7 +82,7 @@
     <header>
         <div id="global-masthead" class="masthead grid_24">
             <!--This has to be one line and no newline characters-->
-            <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png" alt="EMBL European Bioinformatics Institute"></a>
+            <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png" alt="EMBL European Bioinformatics Institute" /></a>
 
             <nav>
                 <ul id="global-nav">
@@ -98,7 +103,7 @@
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
             <div class="grid_12 alpha" id="local-title">
-                <h1><a href="index.html" title="Back to BioSamples homepage"><img src="../static/images/BioSamples_logo.png" alt="BioSamples logo">BioSamples</a></h1>
+                <h1><a href="index.html" title="Back to BioSamples homepage"><img src="../static/images/BioSamples_logo.png" alt="BioSamples logo" />BioSamples</a></h1>
             </div>
 
             <!-- /local-title -->
@@ -113,14 +118,14 @@
 
                         <div class="left">
                             <label>
-                                <input type="text" name="first" id="local-searchbox">
+                                <input type="text" name="first" id="local-searchbox" />
                             </label>
                             <!-- Include some example searchterms - keep them short and few! -->
                             <span class="examples">Examples: <a href="[search-url-1]">[search-text-1]</a>, <a href="[search-url-1]">[search-text-2]</a>, <a href="[search-url-1]">[search-text-3]</a></span>
                         </div>
 
                         <div class="right">
-                            <input type="submit" name="submit" value="Search" class="submit">
+                            <input type="submit" name="submit" value="Search" class="submit" />
                             <!-- If your search is more complex than just a keyword search, you can link to an Advanced Search,
                                  with whatever features you want available -->
                             <span class="adv"><a href="../search" id="adv-search" title="Advanced">Advanced</a></span>
@@ -142,8 +147,9 @@
                     <li><a href="/biosamples/browse.html" title="Groups">Sample Groups</a></li>
                     <li><a href="/biosamples/help/submit.html" title="Submit">Submit</a></li>
                     <li><a href="/biosamples/help/index.html" title="Help">Help</a></li>
-                    <li class="last"><a href="/biosamples/about.html">About
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     BioSamples</a></li><li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li></ul>                </ul>
+                    <li class="last"><a href="/biosamples/about.html">About BioSamples</a></li>
+                    <li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li>
+                </ul>
             </nav>
 
             <!-- /local-nav -->
@@ -155,7 +161,7 @@
 
         <nav id="breadcrumb">
             <p>
-                <a href="/biosamples/">BioSamples</a> &gt; <a href="/biosamples/browse_samples.html">Samples</a> &gt; SAMEA676028
+                <a href="/biosamples/">BioSamples</a> &gt; <a href="/biosamples/browse_samples.html">Samples</a> &gt; <span th:text="${sample.accession}"></span>
             </p>
         </nav>
 
@@ -176,12 +182,12 @@
                     </tr>
                     <tr>
                         <td class="col_title"><b>Organism : </b></td>
-                        <td><a href="http://www.ncbi.nlm.nih.gov/taxonomy/?term=9031" target="ext">Gallus gallus</a><br><br></td>
+                        <td><a href="http://www.ncbi.nlm.nih.gov/taxonomy/?term=9031" target="ext">Gallus gallus</a></td>
                     </tr>
                     <tr>
                         <td class="col_title"><b>Sample Name : </b></td>
                         <td>
-                            <table border="0" cellpadding="0" cellspacing="0" id="table_inside_attr">
+                            <table border="0" cellpadding="0" cellspacing="0">
                                 <tbody>
                                 <tr>
                                     <td width="900">source GSM754269 1</td>
@@ -194,7 +200,7 @@
                     <tr>
                         <td class="col_title"><b>Sample Description : </b></td>
                         <td>
-                            <table border="0" cellpadding="0" cellspacing="0" id="table_inside_attr">
+                            <table border="0" cellpadding="0" cellspacing="0">
                                 <tbody>
                                 <tr>
                                     <td width="900">Gene expression after 4hr in 2ug/ml BSP-II-treated DT40 cell</td>
@@ -207,7 +213,7 @@
                     <tr>
                         <td class="col_title"><b>strain</b></td>
                         <td>
-                            <table border="0" cellpadding="0" cellspacing="0" id="table_inside_attr">
+                            <table border="0" cellpadding="0" cellspacing="0">
                                 <tbody>
                                 <tr>
                                     <td width="900">DT40</td><td>&nbsp;</td>
@@ -219,7 +225,7 @@
                     <tr>
                         <td class="col_title"><b>Sample_source_name</b></td>
                         <td>
-                            <table border="0" cellpadding="0" cellspacing="0" id="table_inside_attr">
+                            <table border="0" cellpadding="0" cellspacing="0">
                                 <tbody>
                                 <tr>
                                     <td width="900">DT40 cell, 4hr, 2ug/ml, replicate 1</td>
