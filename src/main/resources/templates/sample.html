@@ -38,6 +38,11 @@
     <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/mini/ebi-fluid-embl.css">
     -->
 
+    <!-- Biosamples stylesheets -->
+    <link rel="stylesheet" href="../static/stylesheets/font-awesome.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="../static/stylesheets/biosamples_common_10.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="../static/stylesheets/biosamples_detail_10.css" type="text/css" media="screen">
+
     <style type="text/css">
         /* You have the option of setting a maximum width for your page, and making sure everything is centered */
         /* body { max-width: 1600px; margin: 0 auto; } */
@@ -93,7 +98,7 @@
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
             <div class="grid_12 alpha" id="local-title">
-                <h1><a href="[service-url]" title="Back to [service-name] homepage">[service-name]</a></h1>
+                <h1><a href="index.html" title="Back to BioSamples homepage"><img src="../static/images/BioSamples_logo.png" alt="BioSamples logo">BioSamples</a></h1>
             </div>
 
             <!-- /local-title -->
@@ -132,18 +137,13 @@
 
             <nav>
                 <ul class="grid_24" id="local-nav">
-                    <li class="first"><a href="#">Home</a></li>
-                    <li class="active"><a href="#">Documentation</a></li>
-                    <li><a href="#">Help</a></li>
-                    <li class="last"><a href="#">About [service-name]</a></li>
-                    <!-- If you need to include functional (as opposed to purely navigational) links in your local menu,
-                         add them here, and give them a class of "functional". Remember: you'll need a class of "last" for
-                         whichever one will show up last...
-                         For example: -->
-                    <li class="functional last"><a href="#" class="icon icon-functional" data-icon="l">Login</a></li>
-                    <li class="functional"><a href="#" class="icon icon-generic" data-icon="\">Feedback</a></li>
-                    <li class="functional"><a href="#" class="icon icon-functional" data-icon="r">Share</a></li>
-                </ul>
+                    <li class="first"><a href="/biosamples/" title="Biosamples">Home</a></li>
+                    <li class="active"><a href="/biosamples/browse_samples.html" title="Samples">Samples</a></li>
+                    <li><a href="/biosamples/browse.html" title="Groups">Sample Groups</a></li>
+                    <li><a href="/biosamples/help/submit.html" title="Submit">Submit</a></li>
+                    <li><a href="/biosamples/help/index.html" title="Help">Help</a></li>
+                    <li class="last"><a href="/biosamples/about.html">About
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     BioSamples</a></li><li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li></ul>                </ul>
             </nav>
 
             <!-- /local-nav -->
@@ -153,33 +153,91 @@
 
     <div id="content" role="main" class="grid_24 clearfix">
 
-        <!-- If you require a breadcrumb trail, its root should be your service.
-              You don't need a breadcrumb trail on the homepage of your service... -->
         <nav id="breadcrumb">
             <p>
-                <a href="[service-url]">[service-name]</a> &gt;
-                                                           [page-title]
+                <a href="/biosamples/">BioSamples</a> &gt; <a href="/biosamples/browse_samples.html">Samples</a> &gt; SAMEA676028
             </p>
         </nav>
 
-        <!-- Example layout containers -->
+        <!-- Biosamples specific content goes here -->
+        <div id="bs_content">
+            <div class="detail_table">
+                <h4>Sample Accession SAMEA676028</h4>
 
-        <section>
-            <h2>[page-title]</h2>
-            <p>Your content</p>
-        </section>
-
-        <section>
-            <h3>Level 3 heading</h3>
-            <p>More content in a full-width container.</p>
-
-            <h4>Level 4 heading</h4>
-            <p>More content in a full-width container.</p>
-        </section>
-        <!-- End example layout containers -->
-
+                <table id="bs_results_tablesamplegroupdetail">
+                    <tbody>
+                    <tr>
+                        <td class="col_title"><b>Submission Release Date:</b></td>
+                        <td>2011-07-05</td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>Submission Update Date:</b></td>
+                        <td>2014-02-03</td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>Organism : </b></td>
+                        <td><a href="http://www.ncbi.nlm.nih.gov/taxonomy/?term=9031" target="ext">Gallus gallus</a><br><br></td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>Sample Name : </b></td>
+                        <td>
+                            <table border="0" cellpadding="0" cellspacing="0" id="table_inside_attr">
+                                <tbody>
+                                <tr>
+                                    <td width="900">source GSM754269 1</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>Sample Description : </b></td>
+                        <td>
+                            <table border="0" cellpadding="0" cellspacing="0" id="table_inside_attr">
+                                <tbody>
+                                <tr>
+                                    <td width="900">Gene expression after 4hr in 2ug/ml BSP-II-treated DT40 cell</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>strain</b></td>
+                        <td>
+                            <table border="0" cellpadding="0" cellspacing="0" id="table_inside_attr">
+                                <tbody>
+                                <tr>
+                                    <td width="900">DT40</td><td>&nbsp;</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>Sample_source_name</b></td>
+                        <td>
+                            <table border="0" cellpadding="0" cellspacing="0" id="table_inside_attr">
+                                <tbody>
+                                <tr>
+                                    <td width="900">DT40 cell, 4hr, 2ug/ml, replicate 1</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>Groups :</b></td>
+                        <td><a href="../group/SAMEG39304"><id>SAMEG39304</id></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-
 
     <footer>
         <!-- Optional local footer (insert citation / project-specific copyright / etc here -->

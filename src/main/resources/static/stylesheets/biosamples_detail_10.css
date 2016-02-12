@@ -1,0 +1,423 @@
+/*
+ * Copyright 2009-2011 European Molecular Biology Laboratory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+
+/*
+ * Copyright 2009-2011 European Molecular Biology Laboratory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+
+
+
+
+
+.bs_results_tablesamplegroupdetail{
+width: 100%;
+margin: 2;
+border: 0 none;
+}
+
+
+.bs_results_tablesamplegroupdetail td{
+	padding: 0 9px;
+	border: none;
+}
+
+
+#bs_commonattributes_table, #bs_samples_table {
+width: 100%;
+table-layout: fixed;
+align: left;
+background-color: white;
+/*margin: 9px auto;*/
+margin: 0;
+border: 0 none;
+padding: 0;
+}
+
+
+#bs_samples_table td, #bs_commonattributes_table td {
+/* white-space: nowrap;*/
+/* vertical-align: middle; */
+/*font-size: 11px;*/
+/*padding: 3px 5px;*/
+/*border-bottom: 1px solid #BDD7D7;*/
+/*vertical-align: top;*/
+padding: 0px 0px;
+/* border:1px none; */
+}
+
+#attr_table th, #src_name_table th, #links_table th, #bs_samples_table th, #bs_commonattributes_table th{
+white-space: nowrap;
+vertical-align: middle;
+padding: 8px 5px 5px 5px;
+border-bottom: 2px solid #BDD7D7;
+vertical-align: top;
+text-align: left;
+}
+
+#attr_common_table{
+margin: 0px;
+}
+
+#attr_common_table th{
+font-weight: normal;
+background-color: #eef5f5;
+border: 1px solid #ffffff;
+text-align: left;
+white-space: nowrap;
+vertical-align: middle;
+}
+
+
+#attr_table td, #src_name_table td, #links_table td{
+spacing: 0px 0px;
+height: 38px;
+padding: 6px 7px;
+border-bottom: 1px solid #BDD7D7;
+vertical-align: top;
+}
+
+
+#attr_common_table td{
+spacing: 0px 0px;
+height: 18px;
+}
+
+#src_name_table {
+table-layout: fixed;
+align: left;
+background-color: white;
+margin: 9px auto;
+border: 0 none;
+border-spacing: 0px;
+}
+
+
+#links_table {
+table-layout: fixed;
+align: left;
+background-color: white;
+margin: 9px auto;
+border: 0 none;
+border-spacing: 0px;
+}
+
+
+
+.begin_scroll{
+	border-left: 1px solid #f7f7f7;
+}
+
+.end_scroll{
+	border-right: 1px solid #f7f7f7;
+}
+
+#attr_table, #attr_common_table {
+width: 100%;
+align: left;
+border-spacing: 0px;
+border: 0px;
+}
+
+
+
+#align-middle{
+text-align: center;
+}
+
+
+
+.attr_table_shadow_container {
+position: relative;
+width: 100%;
+overflow: hidden;
+}
+
+.attr_table_scroll, .attr_table_sample_group_scroll {
+width: 100%;
+overflow-x: scroll;
+overflow-y: hidden;
+/* overflow: scroll; */
+}
+
+
+
+
+
+.cell_height{
+/* height: 30px; */
+vertical-align: middle;
+/*padding: 7px 7px;*/
+/*line-height: 30px;*/
+}
+
+
+
+#bs_results_tbl table {
+    table-layout: fixed;
+}
+
+#bs_results_table {
+    width: 100%;
+    border-spacing: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+
+
+.col_title{
+	width: 100px;
+	white-space: nowrap;
+	text-align: right;
+}
+
+/* #bs_table_databases{
+margin: 2;
+border: 0 none;
+width: auto;
+table-layout: auto;
+} */
+
+
+/*table of sampleGroups */
+
+#table_browse_samples{
+	border: 0px none;
+}
+
+/*table of sampleGroups */
+
+/*Sample detail */
+
+#bs_results_tablesamplegroupdetail{
+/* table-layout: fixed; */
+width: 100%;
+margin: 2;
+border: 0 none;
+border-spacing: 0;	
+}
+
+
+#bs_results_tablesamplegroupdetail td{
+	border: 0 none;
+}
+/*Sample detail */
+
+
+/* SAMPLES QUERY BOX */
+
+#bs_query_box {
+border-radius: 5px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+background-color: #eef5f5;
+padding: 2px;
+margin: 0 0px 9px;
+}
+
+#table-bs-query {
+border-collapse: collapse;
+width: 99%;
+border: 0;
+background-color: #eef5f5;
+padding: 0px 2px;
+}
+
+#bs_keywords_fset {
+margin: 0;
+padding: 0px;
+border: 0 none;
+valign: top;
+background-color: #eef5f5;
+}
+
+
+/* SAMPLES QUERY BOX */
+
+
+
+
+/* SAMPLES LIST */
+
+#bs_browse table {
+/* table-layout: fixed; */
+width: 100%;
+padding: 0;
+margin: 0;
+border: 0 none;
+}
+
+#bs_browse .col_pager {
+font-size: 100%;
+padding: 3px 5px;
+border-bottom: 2px solid #FFF;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+-moz-border-radius-topleft: 5px;
+-moz-border-radius-topright: 5px;
+-webkit-border-top-left-radius: 10px;
+-webkit-border-top-right-radius: 10px;
+}
+#bs_browse th {
+white-space: nowrap;
+font-weight: normal;
+border-bottom: 2px solid #666;
+}
+
+/* #bs_browse th, #bs_browse td {
+padding: 3px 5px;
+}
+ */
+
+
+#table-bs-query td {
+ vertical-align: middle;
+/* font-size: 93%; */
+}
+
+
+/* #attr_table td {
+padding: 3px 5px;
+} */
+
+
+#bs_browse .col_pager div {
+color: #A67325;
+}
+
+#bs_browse .col_pager span {
+background-color: #68798D;
+color: #FFF;
+}
+#bs_browse .col_pager span {
+padding: 2px 3px;
+margin: 0 2px;
+border-radius: 3px;
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+}
+
+#bs_browse .col_pager a:link, #table_samplegroups .col_pager a:visited {
+}
+#bs_browse .col_pager a {
+padding: 2px 3px 0 3px;
+margin: 0 2px;
+color: #A67325;
+}
+
+#bs_browse .bs-pager, #table_samplegroups .bs-page-size {
+width: 33%;
+}
+#bs_browse .bs-pager {
+float: left;
+text-align: left;
+}
+
+
+#bs_browse .bs-page-size {
+float: right;
+text-align: right;
+}
+
+#bs_browse .bs-stats {
+position: relative;
+text-align: center;
+pointer-events: none;
+margin: 0;
+}
+/* SAMPLES LIST */
+
+
+/* table udes inside the samplegroup attributes (for people, datbases, datasources, organizations) */
+
+#table_inside_attr {
+border-collapse: collapse;
+padding: 0px;
+width: 99%;
+margin: 0 0px;
+border: 0 none;
+border-spacing: 0;
+}
+
+#table_inside_attr td {
+padding: 0 9px 5px 0px;
+border: none;
+/* white-space: nowrap; */
+}
+
+#table_inside_attr th {
+padding: 0 9px 5px 0px;
+border: none;
+border-bottom: 1px solid #BDD7D7;
+font-weight: normal;
+font-size: normal;
+background-color: transparent;
+color: black;
+text-align: left;
+}
+
+#td_nowrap{
+white-space: nowrap;
+}
+
+
+/* table udes inside the samplegroup attributes (for people, datbases, datasources, organizations) */
+
+
+
+td#left_fixed, td#middle_scrollable, td#right_fixed{
+	vertical-align: top;
+/* 	border-bottom: 1px solid #BDD7D7; */
+}
+
+
+/*second scrollbar on top*/
+#wrapper_top_scroll{height: 12px; border: none 0px;width:100%;
+overflow-x: scroll; overflow-y:hidden;}
+
+#div_top_scroll {width:100%; height: 12px; }
+
+#wrapper_top_scroll_sides{height: 12px; border: none 0px;}
+#div_top_scroll_sides{height: 12px; }
+
+/*on MAC OSX Lion and always show the scrollbars on Webkit browsers (Chrome / Safari) */
+::-webkit-scrollbar {
+	-webkit-appearance: none;
+	width: 7px;
+}
+::-webkit-scrollbar-thumb {
+	border-radius: 4px;
+	background-color: rgba(0,0,0,.5);
+	-webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+/*second scrollbar on top*/
