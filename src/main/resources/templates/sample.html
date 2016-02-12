@@ -168,72 +168,28 @@
         <!-- Biosamples specific content goes here -->
         <div id="bs_content">
             <div class="detail_table">
-                <h4>Sample Accession SAMEA676028</h4>
+                <h4 th:text="${sample.accession}">SAMEAxxxxx</h4>
 
                 <table id="bs_results_tablesamplegroupdetail">
                     <tbody>
                     <tr>
-                        <td class="col_title"><b>Submission Release Date:</b></td>
-                        <td>2011-07-05</td>
-                    </tr>
-                    <tr>
-                        <td class="col_title"><b>Submission Update Date:</b></td>
-                        <td>2014-02-03</td>
-                    </tr>
-                    <tr>
                         <td class="col_title"><b>Organism : </b></td>
-                        <td><a href="http://www.ncbi.nlm.nih.gov/taxonomy/?term=9031" target="ext">Gallus gallus</a></td>
+                        <!--<td><a th:href="${sample.organism_link}" th:text="${sample.characteristics.Organism_crt}" target="ext"></a></td>-->
+                        <td><span th:text="${sample.characteristics.Organism_crt}"></span></td>
                     </tr>
-                    <tr>
-                        <td class="col_title"><b>Sample Name : </b></td>
+                    <tr th:each="characteristic: ${sample.characteristics}">
+                        <td class="col_title"><b th:text="${characteristic.key}"></b> : </td>
                         <td>
-                            <table border="0" cellpadding="0" cellspacing="0">
-                                <tbody>
-                                <tr>
-                                    <td width="900">source GSM754269 1</td>
-                                    <td>&nbsp;</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <p th:each="value: ${characteristic.value}"><span th:text="${value}"></span></p>
                         </td>
                     </tr>
                     <tr>
-                        <td class="col_title"><b>Sample Description : </b></td>
-                        <td>
-                            <table border="0" cellpadding="0" cellspacing="0">
-                                <tbody>
-                                <tr>
-                                    <td width="900">Gene expression after 4hr in 2ug/ml BSP-II-treated DT40 cell</td>
-                                    <td>&nbsp;</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
+                        <td class="col_title"><b>Release Date:</b></td>
+                        <td th:text="${sample.submissionUpdateDate}"></td>
                     </tr>
                     <tr>
-                        <td class="col_title"><b>strain</b></td>
-                        <td>
-                            <table border="0" cellpadding="0" cellspacing="0">
-                                <tbody>
-                                <tr>
-                                    <td width="900">DT40</td><td>&nbsp;</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="col_title"><b>Sample_source_name</b></td>
-                        <td>
-                            <table border="0" cellpadding="0" cellspacing="0">
-                                <tbody>
-                                <tr>
-                                    <td width="900">DT40 cell, 4hr, 2ug/ml, replicate 1</td>
-                                    <td>&nbsp;</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
+                        <td class="col_title"><b>Last Updated:</b></td>
+                        <td th:text="${sample.sampleReleaseDate}"></td>
                     </tr>
                     <tr>
                         <td class="col_title"><b>Groups :</b></td>
