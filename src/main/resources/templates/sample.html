@@ -44,9 +44,9 @@
     -->
 
     <!-- Biosamples stylesheets -->
-    <link rel="stylesheet" href="../static/stylesheets/font-awesome.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="../static/stylesheets/biosamples_common_10.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="../static/stylesheets/biosamples_detail_10.css" type="text/css" media="screen" />
+    <link rel="stylesheet" th:href="@{../stylesheets/font-awesome.css}" href="../static/stylesheets/font-awesome.css" type="text/css" media="screen" />
+    <link rel="stylesheet" th:href="@{../stylesheets/biosamples_common_10.css}" href="../static/stylesheets/biosamples_common_10.css" type="text/css" media="screen" />
+    <link rel="stylesheet" th:href="@{../stylesheets/biosamples_detail_10.css}" href="../static/stylesheets/biosamples_detail_10.css" type="text/css" media="screen" />
 
     <style type="text/css">
         /* You have the option of setting a maximum width for your page, and making sure everything is centered */
@@ -103,7 +103,7 @@
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
             <div class="grid_12 alpha" id="local-title">
-                <h1><a href="index.html" title="Back to BioSamples homepage"><img src="../static/images/BioSamples_logo.png" alt="BioSamples logo" />BioSamples</a></h1>
+                <h1><a href="index.html" title="Back to BioSamples homepage"><img th:src="@{../images/BioSamples_logo.png}" src="../static/images/BioSamples_logo.png" alt="BioSamples logo" />BioSamples</a></h1>
             </div>
 
             <!-- /local-title -->
@@ -175,20 +175,32 @@
                     <tr>
                         <td class="col_title"><b>Organism : </b></td>
                         <!--<td><a th:href="${sample.organism_link}" th:text="${sample.characteristics.Organism_crt}" target="ext"></a></td>-->
-                        <td><span th:text="${sample.characteristics.Organism_crt}"></span></td>
+                        <td>
+                            <div th:if="${#lists.size(sample.characteristics.Organism_crt)} == 1">
+                                <div th:each="organism: ${sample.characteristics.Organism_crt}">
+                                    <span th:text="${organism}">Organism</span>
+                                </div>
+                            </div>
+                            <div th:unless="${#lists.size(sample.characteristics.Organism_crt)} == 1">
+                                <div th:each="organism,i: ${sample.characteristics.Organism_crt}">
+                                    <span th:if="${#lists.size(sample.chararactics.Organism_crt)}-1 == i" th:text="${organism}">Organism</span>
+                                    <span th:unless="${#lists.size(sample.chararactics.Organism_crt)}-1 == i" th:text="${organism} + ', '">Organism</span>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     <tr th:each="characteristic: ${sample.characteristics}">
-                        <td class="col_title"><b th:text="${characteristic.key}"></b> : </td>
+                        <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(#strings.replace(characteristic.key,'_crt',''),'_',' '))}"></b> : </td>
                         <td>
-                            <p th:each="value: ${characteristic.value}"><span th:text="${value}"></span></p>
+                            <div th:each="value: ${characteristic.value}"><span th:text="${value}"></span><br/></div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="col_title"><b>Release Date:</b></td>
+                        <td class="col_title"><b>Release Date :</b></td>
                         <td th:text="${sample.submissionUpdateDate}"></td>
                     </tr>
                     <tr>
-                        <td class="col_title"><b>Last Updated:</b></td>
+                        <td class="col_title"><b>Last Updated :</b></td>
                         <td th:text="${sample.sampleReleaseDate}"></td>
                     </tr>
                     <tr>

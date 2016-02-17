@@ -17,7 +17,7 @@ import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
  * @date 12/02/16
  */
 @Controller
-@RequestMapping("/content/samples")
+@RequestMapping("/samples")
 public class SampleController {
     @Autowired private SampleRepository sampleRepository;
 
