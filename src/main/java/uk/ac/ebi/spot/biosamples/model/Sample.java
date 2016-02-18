@@ -1,7 +1,9 @@
 package uk.ac.ebi.spot.biosamples.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
 import java.util.Collection;
@@ -32,6 +34,8 @@ public class Sample {
     @Field("update_date") Collection<String> updateDates;
 
     @Field("*_crt") Map<String, List<String>> characteristics;
+
+    @Field("xmlApi") @JsonIgnore String xml;
 
     public String getSubmissionAccession() {
         return submissionAccession;
@@ -119,5 +123,13 @@ public class Sample {
 
     public void setCharacteristics(Map<String, List<String>> characteristics) {
         this.characteristics = characteristics;
+    }
+
+    public String getXml() {
+        return xml;
+    }
+
+    public void setXml(String xml) {
+        this.xml = xml;
     }
 }
