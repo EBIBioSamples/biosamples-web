@@ -183,8 +183,8 @@
                             </div>
                             <div th:unless="${#lists.size(sample.characteristics.Organism_crt)} == 1">
                                 <div th:each="organism,i: ${sample.characteristics.Organism_crt}">
-                                    <span th:if="${#lists.size(sample.chararactics.Organism_crt)}-1 == i" th:text="${organism}">Organism</span>
-                                    <span th:unless="${#lists.size(sample.chararactics.Organism_crt)}-1 == i" th:text="${organism} + ', '">Organism</span>
+                                    <span th:if="${#lists.size(sample.characteristics.Organism_crt)}-1 == i" th:text="${organism}">Organism</span>
+                                    <span th:unless="${#lists.size(sample.characteristics.Organism_crt)}-1 == i" th:text="${organism} + ', '">Organism</span>
                                 </div>
                             </div>
                         </td>
@@ -201,7 +201,7 @@
                     </tr>
                     <tr>
                         <td class="col_title"><b>Last Updated :</b></td>
-                        <td th:text="${sample.sampleReleaseDate}"></td>
+                        <td th:text="${sample.releaseDate}"></td>
                     </tr>
                     <tr>
                         <td class="col_title"><b>Groups :</b></td>

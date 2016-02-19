@@ -3,10 +3,11 @@ package uk.ac.ebi.spot.biosamples.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.data.solr.core.mapping.SolrDocument;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,24 +19,27 @@ import java.util.Map;
  */
 @SolrDocument
 public class Sample {
-    //    @Id @Field("id") String id;
+    // duplicated fields to disambiguate - no need to return
+    @Id @Field("sample_acc") @JsonIgnore String sampleAccession;
+    @Field("submission_description") @JsonIgnore String submissionDescription;
 
-    @Field("submission_acc") String submissionAccession;
-    @Field("submission_description") String submissionDescription;
-    @Field("submission_title") String submissionTitle;
-    @Field("submission_update_date") String submissionUpdateDate;
-
-    @Id @Field("sample_acc") String sampleAccession;
-    @Field("sample_update_date") String sampleUpdateDate;
-
+    // core fields
     @Field String accession;
     @Field String description;
-    @Field("sample_release_date") String sampleReleaseDate;
-    @Field("update_date") Collection<String> updateDates;
 
+    @Field("sample_update_date") @DateTimeFormat Date updateDate;
+    @Field("sample_release_date") @DateTimeFormat Date releaseDate;
+
+    // collection of all characteristics as key/list of value pairs
     @Field("*_crt") Map<String, List<String>> characteristics;
 
-    @Field("xmlApi") @JsonIgnore String xml;
+    // XML payload for this sample - don't return in REST API
+    @Field("xmlAPI") @JsonIgnore String xml;
+
+    // submission metadata
+    @Field("submission_acc") String submissionAccession;
+    @Field("submission_title") String submissionTitle;
+    @Field("submission_update_date") @DateTimeFormat Date submissionUpdateDate;
 
     public String getSubmissionAccession() {
         return submissionAccession;
@@ -61,11 +65,11 @@ public class Sample {
         this.submissionTitle = submissionTitle;
     }
 
-    public String getSubmissionUpdateDate() {
+    public Date getSubmissionUpdateDate() {
         return submissionUpdateDate;
     }
 
-    public void setSubmissionUpdateDate(String submissionUpdateDate) {
+    public void setSubmissionUpdateDate(Date submissionUpdateDate) {
         this.submissionUpdateDate = submissionUpdateDate;
     }
 
@@ -75,14 +79,6 @@ public class Sample {
 
     public void setSampleAccession(String sampleAccession) {
         this.sampleAccession = sampleAccession;
-    }
-
-    public String getSampleUpdateDate() {
-        return sampleUpdateDate;
-    }
-
-    public void setSampleUpdateDate(String sampleUpdateDate) {
-        this.sampleUpdateDate = sampleUpdateDate;
     }
 
     public String getAccession() {
@@ -101,20 +97,20 @@ public class Sample {
         this.description = description;
     }
 
-    public String getSampleReleaseDate() {
-        return sampleReleaseDate;
+    public Date getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setSampleReleaseDate(String sampleReleaseDate) {
-        this.sampleReleaseDate = sampleReleaseDate;
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
-    public Collection<String> getUpdateDates() {
-        return updateDates;
+    public Date getUpdateDate() {
+        return updateDate;
     }
 
-    public void setUpdateDates(Collection<String> updateDates) {
-        this.updateDates = updateDates;
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     public Map<String, List<String>> getCharacteristics() {

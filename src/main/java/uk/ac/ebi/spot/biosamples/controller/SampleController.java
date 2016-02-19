@@ -33,14 +33,14 @@ public class SampleController {
         return "sample";
     }
 
-    @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public String sampleXmlRedirect(@PathVariable String accession) {
-        return sampleXml(accession);
-    }
-
     @RequestMapping(value = "sample/{accession}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET)
     public @ResponseBody Sample sampleJson(@PathVariable String accession) {
         return sampleRepository.findOne(accession);
+    }
+
+    @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String sampleXmlRedirect(@PathVariable String accession) {
+        return sampleXml(accession);
     }
 
     @RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
