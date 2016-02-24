@@ -1,4 +1,4 @@
-= Biosamples Web
+# Biosamples Web
 
 This is the updated version of the Biosamples Web user interface (http://www.ebi.ac.uk/biosamples).  
 The older version is in the Biosd-ui repository (https://github.com/EBIBioSamples/biosd_ui).
