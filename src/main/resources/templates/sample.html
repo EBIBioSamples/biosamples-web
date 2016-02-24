@@ -17,7 +17,7 @@
          More info: h5bp.com/b/378 -->
     <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> --> <!-- Not yet implemented -->
 
-    <title>[page-title] &lt; [service-name] &lt; EMBL-EBI</title>
+    <title th:text="${sample.accession} + ' &lt; BioSamples &lt; EMBL-EBI'">SAMEAxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
     <meta name="description" content="EMBL-EBI" /><!-- Describe what this page is about -->
     <meta name="keywords" content="bioinformatics, europe, institute" /><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
     <meta name="author" content="EMBL-EBI" /><!-- Your [project-name] here -->
@@ -176,12 +176,13 @@
                         <td class="col_title"><b>Organism : </b></td>
                         <!--<td><a th:href="${sample.organism_link}" th:text="${sample.characteristics.Organism_crt}" target="ext"></a></td>-->
                         <td>
-                            <div th:if="${#lists.size(sample.characteristics.Organism_crt)} == 1">
-                                <div th:each="organism: ${sample.characteristics.Organism_crt}">
+                            <div th:if="${#lists.size(sample.characteristics.Organism_crt)} == 2">
+                                <div th:each="organism,i: ${sample.characteristics.Organism_crt}" th:if="${i % 2}">
                                     <span th:text="${organism}">Organism</span>
                                 </div>
                             </div>
-                            <div th:unless="${#lists.size(sample.characteristics.Organism_crt)} == 1">
+                            <div th:unless="${#lists.size(sample.characteristics.Organism_crt)} == 2">
+                                <span th:text="'Not 2 sample characteristics - actually ' + ${#lists.size(sample.characteristics.Organism_crt)}"></span>
                                 <div th:each="organism,i: ${sample.characteristics.Organism_crt}">
                                     <span th:if="${#lists.size(sample.characteristics.Organism_crt)}-1 == i" th:text="${organism}">Organism</span>
                                     <span th:unless="${#lists.size(sample.characteristics.Organism_crt)}-1 == i" th:text="${organism} + ', '">Organism</span>
@@ -189,7 +190,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr th:each="characteristic: ${sample.characteristics}">
+                    <tr th:each="characteristic: ${sample.characteristics}" th:unless="characteristic.key == 'Organism_crt'">
                         <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(#strings.replace(characteristic.key,'_crt',''),'_',' '))}"></b> : </td>
                         <td>
                             <div th:each="value: ${characteristic.value}"><span th:text="${value}"></span><br/></div>
