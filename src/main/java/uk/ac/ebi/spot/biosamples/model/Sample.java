@@ -7,7 +7,9 @@ import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +33,8 @@ public class Sample {
     @Field("sample_release_date") @DateTimeFormat Date releaseDate;
 
     // collection of all characteristics as key/list of value pairs
-    @Field("*_crt") Map<String, List<String>> characteristics;
+    @Field("*_crt") Map<String, String> characteristics;
+    @Field("*_crt_json") Map<String, String> characteristicMappings;
 
     // XML payload for this sample - don't return in REST API
     @Field("xmlAPI") @JsonIgnore String xml;
@@ -113,12 +116,28 @@ public class Sample {
         this.updateDate = updateDate;
     }
 
-    public Map<String, List<String>> getCharacteristics() {
-        return characteristics;
+    public Map<String, String> getCharacteristics() {
+        Map<String, String> result = new HashMap<>(characteristics.size());
+        for (String key : characteristics.keySet()) {
+            result.put(key.replace("_crt", ""), characteristics.get(key));
+        }
+        return Collections.unmodifiableMap(result);
     }
 
-    public void setCharacteristics(Map<String, List<String>> characteristics) {
+    public void setCharacteristics(Map<String, String> characteristics) {
         this.characteristics = characteristics;
+    }
+
+    public Map<String, String> getCharacteristicMappings() {
+        Map<String, String> result = new HashMap<>(characteristicMappings.size());
+        for (String key : characteristicMappings.keySet()) {
+            result.put(key.replace("_crt_json", ""), characteristicMappings.get(key));
+        }
+        return Collections.unmodifiableMap(result);
+    }
+
+    public void setCharacteristicMappings(Map<String, String> characteristicMappings) {
+        this.characteristicMappings = characteristicMappings;
     }
 
     public String getXml() {

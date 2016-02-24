@@ -117,6 +117,11 @@ a:active {
 background-color: white;
 }
 
+.characteristic-mapping-payload {
+    visibility: hidden;
+    height: 0;
+}
+
 #iconelink{
 border-bottom-style: none;
 }

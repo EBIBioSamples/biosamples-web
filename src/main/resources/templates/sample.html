@@ -174,26 +174,20 @@
                     <tbody>
                     <tr>
                         <td class="col_title"><b>Organism : </b></td>
-                        <!--<td><a th:href="${sample.organism_link}" th:text="${sample.characteristics.Organism_crt}" target="ext"></a></td>-->
                         <td>
-                            <div th:if="${#lists.size(sample.characteristics.Organism_crt)} == 2">
-                                <div th:each="organism,i: ${sample.characteristics.Organism_crt}" th:if="${i % 2}">
-                                    <span th:text="${organism}">Organism</span>
-                                </div>
-                            </div>
-                            <div th:unless="${#lists.size(sample.characteristics.Organism_crt)} == 2">
-                                <span th:text="'Not 2 sample characteristics - actually ' + ${#lists.size(sample.characteristics.Organism_crt)}"></span>
-                                <div th:each="organism,i: ${sample.characteristics.Organism_crt}">
-                                    <span th:if="${#lists.size(sample.characteristics.Organism_crt)}-1 == i" th:text="${organism}">Organism</span>
-                                    <span th:unless="${#lists.size(sample.characteristics.Organism_crt)}-1 == i" th:text="${organism} + ', '">Organism</span>
-                                </div>
+                            <div class="characteristic-mapping" th:each="organism: ${sample.characteristics.organism}">
+                                <div class="characteristic-mapping-payload" th:text="${sample.characteristicMappings.organism}">{"foo":"bar"}</div>
+                                <a href="#" th:text="${organism}">Homo Sapiens</a>
                             </div>
                         </td>
                     </tr>
-                    <tr th:each="characteristic: ${sample.characteristics}" th:unless="characteristic.key == 'Organism_crt'">
-                        <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(#strings.replace(characteristic.key,'_crt',''),'_',' '))}"></b> : </td>
-                        <td>
-                            <div th:each="value: ${characteristic.value}"><span th:text="${value}"></span><br/></div>
+                    <tr th:each="characteristic: ${sample.characteristics}" th:unless="characteristic.key == 'organism'">
+                        <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' '))}"></b> : </td>
+                        <td th:if="${#maps.containsKey(sample.characteristicMappings,characteristic.key)}">
+                            <div class="characteristic-mapping" th:each="value: ${sample.characteristics.get(characteristic.key)}">
+                                <div class="characteristic-mapping-payload" th:text="${sample.characteristicMappings.get(characteristic.key)}">{"foo":"bar"}</div>
+                                <a href="#" th:text="${value}">Some characteristic value</a>
+                            </div>
                         </td>
                     </tr>
                     <tr>
@@ -272,6 +266,8 @@
                      <script>window.jQuery || document.write('<script src="../js/libs/jquery-1.6.2.min.js"><\/script>')</script>
                      -->
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
 
                      <!-- Your custom JavaScript file scan go here... change names accordingly -->
                      <!--
@@ -280,6 +276,10 @@
                      -->
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
+
+<!-- Biosamples scripts -->
+<script th:src="@{../scripts/biosamples_sample_links.js}" src="../static/scripts/biosamples_sample_links.js"></script>
+
                      <!-- end scripts-->
 
                      <!-- Google Analytics details... -->
