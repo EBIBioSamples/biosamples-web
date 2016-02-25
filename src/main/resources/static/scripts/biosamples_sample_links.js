@@ -1,6 +1,8 @@
 /**
  * Created by tburdett on 24/02/16.
  */
+var olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
+
 $(document).ready(function(){
     initializeLinks();
 });
@@ -21,12 +23,18 @@ function initializeLinks() {
             }
             var json = jQuery.parseJSON(jsonStr);
             if (json.ontology_terms) {
+                console.log("Found ontology term for '" + json.text + "': " + json.ontology_terms);
                 if (json.ontology_terms[0]) {
-                    mapping.children("a").attr("href", json.ontology_terms[0]);
+                    var link = olsSearchLink + encodeURIComponent(json.ontology_terms[0]);
+                    mapping.html("<a href=\"" + link + "\" target='_blank'>" + json.text + "</a>");
                 }
                 else {
-                    console.log("Need to remove this link"); // todo
+                    console.log("Something went wrong - ontology_terms collection present but no first element?");
                 }
+            }
+            else {
+                console.log("No ontology term for '" + json.text + "'");
+                mapping.text(json.text);
             }
         });
     });

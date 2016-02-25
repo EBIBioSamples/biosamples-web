@@ -13,46 +13,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import uk.ac.ebi.spot.biosamples.model.Sample;
-import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
+import uk.ac.ebi.spot.biosamples.model.Group;
+import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 
 /**
  * Javadocs go here!
  *
  * @author Tony Burdett
- * @date 12/02/16
+ * @date 25/02/16
  */
 @Controller
-public class SampleController {
-    @Autowired private SampleRepository sampleRepository;
+public class GroupController {
+    @Autowired private GroupRepository groupRepository;
 
-    @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
-    public String sample(Model model, @PathVariable String accession) {
-        Sample sample = sampleRepository.findOne(accession);
-        model.addAttribute("sample", sample);
-        return "sample";
+    @RequestMapping(value = "group/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
+    public String group(Model model, @PathVariable String accession) {
+        Group group = groupRepository.findOne(accession);
+        model.addAttribute("group", group);
+        return "group";
     }
 
-    @RequestMapping(value = "sample/{accession}",
+    @RequestMapping(value = "group/{accession}",
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
                     method = RequestMethod.GET)
-    public @ResponseBody Sample sampleJson(@PathVariable String accession) {
-        return sampleRepository.findOne(accession);
+    public @ResponseBody Group groupJson(@PathVariable String accession) {
+        return groupRepository.findOne(accession);
     }
 
-    @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String sampleXmlRedirect(@PathVariable String accession) {
-        return sampleXml(accession);
+    @RequestMapping(value = "group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String groupXmlRedirect(@PathVariable String accession) {
+        return groupXml(accession);
     }
 
-    @RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String sampleXml(@PathVariable String accession) {
-        Sample sample = sampleRepository.findOne(accession);
-        if (sample.getXml().isEmpty()) {
-            throw new NullPointerException("No XML present for " + sample.getAccession());
+    @RequestMapping(value = "xml/group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String groupXml(@PathVariable String accession) {
+        Group group = groupRepository.findOne(accession);
+        if (group.getXml().isEmpty()) {
+            throw new NullPointerException("No XML present for " + group.getAccession());
         }
         else {
-            return sample.getXml();
+            return group.getXml();
         }
     }
 
@@ -64,4 +64,5 @@ public class SampleController {
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>("There is no XML available for this accession", headers, HttpStatus.NOT_ACCEPTABLE);
     }
+
 }

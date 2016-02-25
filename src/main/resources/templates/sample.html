@@ -168,28 +168,48 @@
         <!-- Biosamples specific content goes here -->
         <div id="bs_content">
             <div class="detail_table">
-                <h4 th:text="${sample.accession}">SAMEAxxxxx</h4>
+                <h4 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h4>
 
                 <table id="bs_results_tablesamplegroupdetail">
                     <tbody>
+                    <!-- Common sample attributes -->
+                    <tr th:if="${#arrays.length(sample.characteristics.sample_name) > 0}">
+                        <td class="col_title"><b>Sample Name : </b></td>
+                        <td>
+                            <div th:each="name: ${sample.characteristics.sample_name}">
+                                <span th:text="${name}"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#arrays.length(sample.characteristics.sample_title) > 0}">
+                        <td class="col_title"><b>Sample Title : </b></td>
+                        <td>
+                            <div th:each="title: ${sample.characteristics.sample_title}">
+                                <span th:text="${title}"></span>
+                            </div>
+                        </td>
+                    </tr>
                     <tr>
                         <td class="col_title"><b>Organism : </b></td>
                         <td>
                             <div class="characteristic-mapping" th:each="organism: ${sample.characteristics.organism}">
                                 <div class="characteristic-mapping-payload" th:text="${sample.characteristicMappings.organism}">{"foo":"bar"}</div>
-                                <a href="#" th:text="${organism}">Homo Sapiens</a>
                             </div>
                         </td>
                     </tr>
-                    <tr th:each="characteristic: ${sample.characteristics}" th:unless="characteristic.key == 'organism'">
-                        <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' '))}"></b> : </td>
+
+                    <!-- start all characteristics -->
+                    <tr th:each="characteristic: ${sample.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'sample_name'  or characteristic.key == 'sample_title'}">
+                        <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' '))}"> : </b></td>
                         <td th:if="${#maps.containsKey(sample.characteristicMappings,characteristic.key)}">
                             <div class="characteristic-mapping" th:each="value: ${sample.characteristics.get(characteristic.key)}">
                                 <div class="characteristic-mapping-payload" th:text="${sample.characteristicMappings.get(characteristic.key)}">{"foo":"bar"}</div>
-                                <a href="#" th:text="${value}">Some characteristic value</a>
                             </div>
                         </td>
                     </tr>
+                    <!-- end all characteristics -->
+
+                    <!-- update times metadata -->
                     <tr>
                         <td class="col_title"><b>Release Date :</b></td>
                         <td th:text="${sample.submissionUpdateDate}"></td>
@@ -200,7 +220,9 @@
                     </tr>
                     <tr>
                         <td class="col_title"><b>Groups :</b></td>
-                        <td><a href="../group/SAMEG39304"><id>SAMEG39304</id></a></td>
+                        <td>
+                            <!--<a href="../group/SAMEG39304"><id>SAMEG39304</id></a>-->
+                        </td>
                     </tr>
                     </tbody>
                 </table>

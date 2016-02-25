@@ -6,13 +6,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
@@ -21,8 +17,8 @@ import java.util.TreeMap;
  * @author Tony Burdett
  * @date 10/02/16
  */
-@SolrDocument(solrCoreName = "samples")
-public class Sample {
+@SolrDocument(solrCoreName = "groups")
+public class Group {
     // duplicated fields to disambiguate - no need to return
     @Id @Field("sample_acc") @JsonIgnore String sampleAccession;
     @Field("submission_description") @JsonIgnore String submissionDescription;
