@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -20,19 +21,19 @@ import java.util.TreeMap;
 @SolrDocument(solrCoreName = "groups")
 public class Group {
     // duplicated fields to disambiguate - no need to return
-    @Id @Field("sample_acc") @JsonIgnore String sampleAccession;
+    @Id @Field("group_acc") @JsonIgnore String groupAccession;
     @Field("submission_description") @JsonIgnore String submissionDescription;
 
     // core fields
     @Field String accession;
     @Field String description;
 
-    @Field("sample_update_date") @DateTimeFormat Date updateDate;
-    @Field("sample_release_date") @DateTimeFormat Date releaseDate;
+    @Field("group_update_date") @DateTimeFormat Date updateDate;
+    @Field("group_release_date") @DateTimeFormat Date releaseDate;
 
     // collection of all characteristics as key/list of value pairs
-    @Field("*_crt") Map<String, String> characteristics;
-    @Field("*_crt_json") Map<String, String> characteristicMappings;
+    @Field("*_crt") Map<String, List<String>> characteristics;
+    @Field("*_crt_json") Map<String, List<String>> characteristicMappings;
 
     // XML payload for this sample - don't return in REST API
     @Field("xmlAPI") @JsonIgnore String xml;
@@ -42,12 +43,12 @@ public class Group {
     @Field("submission_title") String submissionTitle;
     @Field("submission_update_date") @DateTimeFormat Date submissionUpdateDate;
 
-    public String getSubmissionAccession() {
-        return submissionAccession;
+    public String getGroupAccession() {
+        return groupAccession;
     }
 
-    public void setSubmissionAccession(String submissionAccession) {
-        this.submissionAccession = submissionAccession;
+    public void setGroupAccession(String groupAccession) {
+        this.groupAccession = groupAccession;
     }
 
     public String getSubmissionDescription() {
@@ -56,30 +57,6 @@ public class Group {
 
     public void setSubmissionDescription(String submissionDescription) {
         this.submissionDescription = submissionDescription;
-    }
-
-    public String getSubmissionTitle() {
-        return submissionTitle;
-    }
-
-    public void setSubmissionTitle(String submissionTitle) {
-        this.submissionTitle = submissionTitle;
-    }
-
-    public Date getSubmissionUpdateDate() {
-        return submissionUpdateDate;
-    }
-
-    public void setSubmissionUpdateDate(Date submissionUpdateDate) {
-        this.submissionUpdateDate = submissionUpdateDate;
-    }
-
-    public String getSampleAccession() {
-        return sampleAccession;
-    }
-
-    public void setSampleAccession(String sampleAccession) {
-        this.sampleAccession = sampleAccession;
     }
 
     public String getAccession() {
@@ -98,14 +75,6 @@ public class Group {
         this.description = description;
     }
 
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
     public Date getUpdateDate() {
         return updateDate;
     }
@@ -114,27 +83,47 @@ public class Group {
         this.updateDate = updateDate;
     }
 
-    public Map<String, String> getCharacteristics() {
-        TreeMap<String, String> result = new TreeMap<>();
-        for (String key : characteristics.keySet()) {
-            result.put(key.replace("_crt", ""), characteristics.get(key));
-        }
-        return Collections.unmodifiableMap(result);
+    public Date getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setCharacteristics(Map<String, String> characteristics) {
+    public void setReleaseDate(Date releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public Map<String, List<String>> getCharacteristics() {
+        // create a sorted, unmodifiable clone of this map (sorted by natural key order)
+        TreeMap<String, List<String>> result = new TreeMap<>();
+        if (characteristics != null) {
+            for (String key : characteristics.keySet()) {
+                result.put(key.replace("_crt", ""), characteristics.get(key));
+            }
+            return Collections.unmodifiableMap(result);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void setCharacteristics(Map<String, List<String>> characteristics) {
         this.characteristics = characteristics;
     }
 
-    public Map<String, String> getCharacteristicMappings() {
-        TreeMap<String, String> result = new TreeMap<>();
-        for (String key : characteristicMappings.keySet()) {
-            result.put(key.replace("_crt_json", ""), characteristicMappings.get(key));
+    public Map<String, List<String>> getCharacteristicMappings() {
+        // create a sorted, unmodifiable clone of this map (sorted by natural key order)
+        TreeMap<String, List<String>> result = new TreeMap<>();
+        if (characteristicMappings != null) {
+            for (String key : characteristicMappings.keySet()) {
+                result.put(key.replace("_crt_json", ""), characteristicMappings.get(key));
+            }
+            return Collections.unmodifiableMap(result);
         }
-        return Collections.unmodifiableMap(result);
+        else {
+            return null;
+        }
     }
 
-    public void setCharacteristicMappings(Map<String, String> characteristicMappings) {
+    public void setCharacteristicMappings(Map<String, List<String>> characteristicMappings) {
         this.characteristicMappings = characteristicMappings;
     }
 
@@ -144,5 +133,29 @@ public class Group {
 
     public void setXml(String xml) {
         this.xml = xml;
+    }
+
+    public String getSubmissionAccession() {
+        return submissionAccession;
+    }
+
+    public void setSubmissionAccession(String submissionAccession) {
+        this.submissionAccession = submissionAccession;
+    }
+
+    public String getSubmissionTitle() {
+        return submissionTitle;
+    }
+
+    public void setSubmissionTitle(String submissionTitle) {
+        this.submissionTitle = submissionTitle;
+    }
+
+    public Date getSubmissionUpdateDate() {
+        return submissionUpdateDate;
+    }
+
+    public void setSubmissionUpdateDate(Date submissionUpdateDate) {
+        this.submissionUpdateDate = submissionUpdateDate;
     }
 }
