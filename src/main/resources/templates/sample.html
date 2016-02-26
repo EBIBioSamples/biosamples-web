@@ -181,7 +181,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr th:if="${#arrays.length(sample.characteristics.sample_title) > 0}">
+                    <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_title') and #arrays.length(sample.characteristics.sample_title) > 0}">
                         <td class="col_title"><b>Sample Title : </b></td>
                         <td>
                             <div th:each="title: ${sample.characteristics.sample_title}">
@@ -189,21 +189,30 @@
                             </div>
                         </td>
                     </tr>
+                    <!-- something weird happening below -->
+                    <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_description') and #arrays.length(sample.characteristics.sample_description) > 0}">
+                        <td class="col_title"><b>Sample Description : </b></td>
+                        <td>
+                            <div th:each="description: ${sample.characteristics.sample_description}">
+                                <span th:text="${description}"></span>
+                            </div>
+                        </td>
+                    </tr>
                     <tr>
                         <td class="col_title"><b>Organism : </b></td>
                         <td>
-                            <div class="characteristic-mapping" th:each="organism: ${sample.characteristics.organism}">
-                                <div class="characteristic-mapping-payload" th:text="${sample.characteristicMappings.organism}">{"foo":"bar"}</div>
+                            <div class="characteristic-mapping" th:each="organism: ${sample.characteristicMappings.get('organism')}">
+                                <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
                             </div>
                         </td>
                     </tr>
 
                     <!-- start all characteristics -->
-                    <tr th:each="characteristic: ${sample.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'sample_name'  or characteristic.key == 'sample_title'}">
-                        <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' '))}"> : </b></td>
+                    <tr th:each="characteristic: ${sample.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'sample_name'  or characteristic.key == 'sample_title' or characteristic.key == 'sample_description'}">
+                        <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
                         <td th:if="${#maps.containsKey(sample.characteristicMappings,characteristic.key)}">
-                            <div class="characteristic-mapping" th:each="value: ${sample.characteristics.get(characteristic.key)}">
-                                <div class="characteristic-mapping-payload" th:text="${sample.characteristicMappings.get(characteristic.key)}">{"foo":"bar"}</div>
+                            <div class="characteristic-mapping" th:each="value: ${sample.characteristicMappings.get(characteristic.key)}">
+                                <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
                             </div>
                         </td>
                     </tr>
