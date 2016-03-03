@@ -1,0 +1,9 @@
+<div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="itemsPerPageMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{textFiller}} {{itemsPerPage}}
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu" aria-labelledby="itemsPerPageMenu">
+        <li v-for="choice in choices">
+            <a href="#" v-on:click.prevent="updateItemsPerPage(choice)">{{choice}}</a>
+        </li>                         
+    </ul>
+</div> 

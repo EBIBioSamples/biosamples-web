@@ -1,0 +1,9 @@
+<div v-for="element in elements">
+	<component is="biosample"
+			   v-bind:accession="element.summaryObj.accession"
+			   v-bind:title="element.summaryObj.accession"
+			   v-bind:description="element.summaryObj.description"
+			   v-bind:date="element.summaryObj.update_date[0]"
+			   v-bind:labels="element.summaryLabelObj">
+	</component>
+</div>

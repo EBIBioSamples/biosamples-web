@@ -1,0 +1,37 @@
+<!-- <div id="pagination" v-show="needPagination()"> -->
+<div id="pagination">
+    <ul class="pagination pagination-sm">
+        <li v-on:click="goPrevious()"
+            v-show="needNavigation()"
+            v-bind:class=" { 'disabled': isFirstPage(currentPage) }">
+            <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li>
+            <span id="inputPageContainer"
+                v-bind:class=" {'editMode': editMode }"
+            >
+                <input  id="inputPage"  placeholder="Jump to page..." type="text" 
+                            v-show="editMode"
+                            v-model="currentPage"
+                            v-on:blur="exitEditMode"
+                            v-on:keyup.enter="exitEditMode">
+                <span v-show="editMode">/{{totalPages}}</span>
+                <a href="#" v-show="!editMode"
+                            v-on:click="enterEditMode">
+                    {{currentPage}}/{{totalPages}}
+
+                </a>
+            </span>
+        </li>
+
+        <li v-on:click="goNext()"
+            v-show="needNavigation()"
+            v-bind:class="{'disabled': isLastPage(currentPage)}">
+            <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</div>

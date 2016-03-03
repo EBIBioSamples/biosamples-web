@@ -1,0 +1,24 @@
+<div id="pagination" v-show="needPagination()" class="col-md-6">
+    <ul class="pagination pagination-sm">
+        <li v-on="click: goPrevious()"
+            v-show="needNavigation()"
+            v-class="disabled: isFirstPage(currentPage)">
+            <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li v-repeat="elem: createPaginationWith(currentPage)"
+            v-class="disabled: isDots(elem),
+                     active: isCurrentPage(elem)"
+            v-on="click: jumpTo(elem)">        
+            <a href="#">{{elem}}</a>
+        </li>
+        <li v-on="click: goNext()"
+            v-show="needNavigation()"
+            v-class="disabled: isLastPage(currentPage)">
+            <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</div>
