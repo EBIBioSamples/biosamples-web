@@ -9,6 +9,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.ac.ebi.spot.biosamples.model.SearchRequest;
 
@@ -23,6 +24,7 @@ public class SearchApiController {
     private final String baseSolrUrl = "http://beans.ebi.ac.uk:8983/solr/prototype/select?";
 
 
+    @CrossOrigin
     @RequestMapping(value = "search/query")
     public void find(
             SearchRequest searchRequest,
