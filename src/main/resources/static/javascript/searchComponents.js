@@ -13466,7 +13466,7 @@ module.exports = '<!-- <div id="pagination" v-show="needPagination()"> -->\n<div
 })();
 
 },{"./product.template.html":38,"underscore":2}],38:[function(require,module,exports){
-module.exports = '<div class="panel panel-default">\n	<div class="panel-heading v-align-children">		\n		<span class="h3"><a v-html="title" v-link="{ path: itemPage }"></a></span>\n		<span class="label label-success" v-html="type"></span>\n		<span class="label label-info" v-html="accession"></span>\n		<div class="badge-container">\n			<span v-for="label in simpleLabels">\n				<component is="badge" :key="$key" :value="label" :color="labelColors[$index % labelColors.length]"> </component>\n			</span>\n			<span v-for="pair in labelPairs">\n				<!-- <component is="badge" :key="pair[0]" :value="pair[1]" :color="labelColors[$index]"> </component> -->\n			</span>	\n		</div>\n	</div>\n	<div class="panel-body" v-html="description | excerpt"></div>\n	<div class="panel-footer">\n		<span class="small">Released on: <span v-text="date"></span></span>\n		<span style="float: right">Accession: <span class="label label-info" v-html="accession"></span></span>\n	</div>\n</div>';
+module.exports = '<div class="panel panel-default">\n	<div class="panel-heading v-align-children">		\n		<!--<span class="h3"><a v-html="title" v-link="{ path: itemPage }"></a></span>-->\n        <span class="h3"><a v-html="title" href="{{itemPage}}"></a></span>\n		<span class="label label-success" v-html="type"></span>\n		<span class="label label-info" v-html="accession"></span>\n		<div class="badge-container">\n			<span v-for="label in simpleLabels">\n				<component is="badge" :key="$key" :value="label" :color="labelColors[$index % labelColors.length]"> </component>\n			</span>\n			<span v-for="pair in labelPairs">\n				<!-- <component is="badge" :key="pair[0]" :value="pair[1]" :color="labelColors[$index]"> </component> -->\n			</span>	\n		</div>\n	</div>\n	<div class="panel-body" v-html="description | excerpt"></div>\n	<div class="panel-footer">\n		<span class="small">Released on: <span v-text="date"></span></span>\n		<span style="float: right">Accession: <span class="label label-info" v-html="accession"></span></span>\n	</div>\n</div>\n';
 },{}],39:[function(require,module,exports){
 'use strict';
 
@@ -13489,7 +13489,7 @@ module.exports = '<div class="panel panel-default">\n	<div class="panel-heading 
 })();
 
 },{"../product/Product.js":37,"./products.list.template.html":40}],40:[function(require,module,exports){
-module.exports = '<div v-for="element in elements">\n	<component is="biosample"\n			   v-bind:accession="element.summaryObj.accession"\n			   v-bind:title="element.summaryObj.name"\n			   v-bind:description="element.summaryObj.description"\n			   v-bind:date="element.summaryObj.update_date[0]"\n			   v-bind:labels="element.summaryLabelObj">\n	</component>\n</div>\n';
+module.exports = '<div v-for="element in elements">\n	<component is="biosample"\n			   v-bind:accession="element.summaryObj.accession"\n			   v-bind:title="element.summaryObj.accession"\n			   v-bind:description="element.summaryObj.description"\n			   v-bind:date="element.summaryObj.update_date[0]"\n			   v-bind:labels="element.summaryLabelObj">\n	</component>\n</div>\n';
 },{}],41:[function(require,module,exports){
 "use strict";
 
@@ -13515,7 +13515,7 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 (function (global) {
 	"use strict";
 
-	global.apiUrl = "http://localhost:8080/api/";
+	global.apiUrl = "http://localhost:8080/search/";
 
 	// Required
 	var _ = require("underscore");
@@ -13533,7 +13533,6 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 	Vue.filter('excerpt', require('./filters/excerptFilter.js'));
 	Vue.component('badge', require('./components/badge/Badge.js'));
 
-	//
 	function readFacets(facets) {
 		var obj = _.create({});
 		obj.keys = [];

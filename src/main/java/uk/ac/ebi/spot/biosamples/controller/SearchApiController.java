@@ -10,20 +10,18 @@ import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import uk.ac.ebi.spot.biosamples.model.SearchRequest;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Created by lucacherubin on 01/03/2016.
  */
 @Controller
-@RequestMapping("api")
+@RequestMapping("search")
 public class SearchApiController {
 
-    private final String baseSolrUrl = "http://beans.ebi.ac.uk:8983/solr/master/select?";
+    private final String baseSolrUrl = "http://beans.ebi.ac.uk:8983/solr/prototype/select?";
 
 
     @RequestMapping(value = "/query")
