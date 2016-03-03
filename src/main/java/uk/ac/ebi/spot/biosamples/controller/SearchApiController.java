@@ -18,13 +18,12 @@ import javax.servlet.http.HttpServletResponse;
  * Created by lucacherubin on 01/03/2016.
  */
 @Controller
-@RequestMapping("search")
 public class SearchApiController {
 
     private final String baseSolrUrl = "http://beans.ebi.ac.uk:8983/solr/prototype/select?";
 
 
-    @RequestMapping(value = "/query")
+    @RequestMapping(value = "search/query")
     public void find(
             SearchRequest searchRequest,
             HttpServletResponse response) throws Exception {
