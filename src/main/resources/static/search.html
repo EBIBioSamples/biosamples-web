@@ -34,7 +34,7 @@
   <!-- also inform ES so we can host your colour palette file -->
 
   <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/embl-petrol-colours.css" type="text/css" media="screen">
-  <link rel="stylesheet" href="./css/main_samelf.css">
+  <link rel="stylesheet" href="main_samelf.css">
 
   <!-- for production the above can be replaced with -->
   <!--
@@ -165,34 +165,6 @@
     </section> 
     
     <section class="container" v-cloak>
-      <!--<div class="row">
-        <form>
-            <fieldset>
-                <div class="col-md-10">
-                    <div class="form-group">
-                        <input type="text" 
-                               class="form-control"
-                               placeholder="Start your search"
-                               v-model="searchTerm"
-                               @keyup="querySamples | debounce 300">
-                    </div>          
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <button type='submit' 
-                                id="search" 
-                                class="btn btn-primary"
-                                style="width: 100%"
-                                @click="querySamples">
-
-                            Search
-                        </button>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
-    </div>
-    -->
     <div v-show="queryTerm && resultsNumber <= 0">
         <div class="row">
             <h3>
