@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "laravel-elixir-browserify": "^0.8.1",
+    "laravel-elixir-vueify": "^1.0.2",
+    "underscore": "^1.8.3",
+    "vue": "1.0.x",
+    "vue-resource": ">0.1.15",
+    "vue-router": "latest"
+  },
+  "dependencies": {
+    "bootstrap-sass": "^3.0.0",
+    "flexboxgrid": "^6.3.0",
+    "laravel-elixir": "^5.0.0"
+  }
+}

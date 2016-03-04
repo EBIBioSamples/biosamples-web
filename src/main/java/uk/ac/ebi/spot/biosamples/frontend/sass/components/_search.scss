@@ -1,0 +1,13 @@
+.flx-container {
+	display: flex;
+	flex-wrap: nowrap;
+}
+
+.flx-row {
+	flex-direction: row;
+}
+
+.flx-column {
+	flex-direction: column;
+}
+
