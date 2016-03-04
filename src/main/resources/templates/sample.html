@@ -173,7 +173,7 @@
                 <table id="bs_results_tablesamplegroupdetail">
                     <tbody>
                     <!-- Common sample attributes -->
-                    <tr th:if="${#arrays.length(sample.characteristics.sample_name) > 0}">
+                    <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_name') and #arrays.length(sample.characteristics.sample_name) > 0}">
                         <td class="col_title"><b>Sample Name : </b></td>
                         <td>
                             <div th:each="name: ${sample.characteristics.sample_name}">
@@ -189,7 +189,6 @@
                             </div>
                         </td>
                     </tr>
-                    <!-- something weird happening below -->
                     <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_description') and #arrays.length(sample.characteristics.sample_description) > 0}">
                         <td class="col_title"><b>Sample Description : </b></td>
                         <td>
@@ -198,7 +197,9 @@
                             </div>
                         </td>
                     </tr>
-                    <tr>
+
+                    <!-- Dedicated organism attribute -->
+                    <tr th:if="${#maps.containsKey(sample.characteristics, 'organism') and #arrays.length(sample.characteristics.organism) > 0}">
                         <td class="col_title"><b>Organism : </b></td>
                         <td>
                             <div class="characteristic-mapping" th:each="organism: ${sample.characteristicMappings.get('organism')}">
@@ -221,11 +222,11 @@
                     <!-- update times metadata -->
                     <tr>
                         <td class="col_title"><b>Release Date :</b></td>
-                        <td th:text="${sample.submissionUpdateDate}"></td>
+                        <td th:text="${sample.releaseDate}"></td>
                     </tr>
                     <tr>
                         <td class="col_title"><b>Last Updated :</b></td>
-                        <td th:text="${sample.releaseDate}"></td>
+                        <td th:text="${sample.submissionUpdateDate}"></td>
                     </tr>
                     <tr>
                         <td class="col_title"><b>Groups :</b></td>
@@ -237,6 +238,7 @@
                 </table>
             </div>
         </div>
+        <!-- End Biosamples specific content -->
     </div>
 
     <footer>
