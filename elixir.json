@@ -2,7 +2,7 @@
     "elixir_comment": "The official guide to Laravel Elixir could be found @ https://laravel.com/docs/master/elixir",
     "elixir_config_comment": "All the available configurations and descriptions are @ https://github.com/laravel/elixir/blob/master/Config.js",
 
-	"assetsPath": "src/main/java/uk/ac/ebi/spot/biosamples/frontend/",
+	"assetsPath": "src/main/frontend/",
     
     "publicPath": "src/main/resources/static/",
 
