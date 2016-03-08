@@ -54,7 +54,7 @@
 			filterTerm: '',
 			useFuzzy: false,
 			pageNumber: 0,
-			samplesToRetrieve: 10, //Need to be linked to the number of items
+			samplesToRetrieve: 10, 
 			resultsNumber: '',
 			queryResults: {},
 			biosamples: [],

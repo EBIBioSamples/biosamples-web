@@ -104,7 +104,12 @@
 			 * @return {String}
 			 */
 			itemPage: function() {
-				return '/sample/' + this.accession;
+                switch(this.type) {
+                    case 'Sample':
+                        return '/sample/' + this.accession;
+                    case 'Group':
+                        return '/group/' + this.accession;
+                }
 			},
 
 			/**

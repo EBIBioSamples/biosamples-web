@@ -15,9 +15,7 @@
     },
     
     "browserSync": {
-        "port": 8080,
-    	"proxy": "localhost:8080",
-    	"open": false,
-    	"files": "src/main/resources/static/**/*"
+        "proxy": "localhost:8080",
+    	"open": false
     }
 }
