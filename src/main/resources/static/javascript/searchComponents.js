@@ -13229,33 +13229,80 @@ module.exports = Vue;
 },{"underscore":2}],30:[function(require,module,exports){
 "use strict";
 
-module.exports = {
-	// template: '<img v-attr="src=https://img.shields.io/badge/{{key}}-{{value}}-{{color}}.svg" v-attr="alt="{{key}}-{{value}}">',
-	template: "<img :src='url' />",
+(function () {
+	"use strict";
+	/**
+  * A vue component for the shields badge as (here)[https://img.shields.io/]
+  * @class Badge
+  * @extends {VueComponent}
+  */
 
-	props: {
-		key: {},
-		value: {},
-		color: {},
-		style: {
-			type: String,
-			default: "flat",
-			validator: function validator(value) {}
+	module.exports = {
+
+		/**
+   * Define the html template for the component
+   * @property template
+   * @type {Template}
+   */
+		template: "<img :src='url' />",
+
+		props: {
+			/**
+    * The left part of the badge 
+    * @property key
+    * @type {String}
+    */
+			key: '',
+
+			/**
+    * The right part of the badge
+    * @property value
+    * @type {Object}
+    */
+			value: {},
+
+			/**
+    * The color of the badge
+    * @property color 
+    * @type {String}
+    */
+			color: {},
+
+			/**
+    * The style of the badge
+    * @property style
+    * @type {String} 
+    * @default flat
+    */
+			style: {
+				type: String,
+				default: "flat"
+			}
+		},
+		computed: {
+			/**
+    * Return the dynamic url for the badge
+    * @property url
+    * @type {Computed Property}
+    */
+			url: function url() {
+				var url = "https://img.shields.io/badge/" + this.key + "-" + this.value + "-" + this.color + ".svg?style=" + this.style;
+				return url;
+			}
 		}
-	},
-	computed: {
-		url: function url() {
-			var url = "https://img.shields.io/badge/" + this.key + "-" + this.value + "-" + this.color + ".svg?style=" + this.style;
-			return url;
-		}
-	}
-};
+	};
+})();
 
 //https://img.shields.io/badge/<SUBJECT>-<STATUS>-<COLOR>.svg
 
 },{}],31:[function(require,module,exports){
 'use strict';
 
+/**
+ * Container for facet list
+ * @class FacetList
+ * @extends {VueComponent}
+ */
 (function () {
 	"use strict";
 
@@ -13263,32 +13310,78 @@ module.exports = {
 		template: require('./facetlist.template.html'),
 
 		props: {
+			/**
+    * The title of the facet section
+    * @property title
+    * @type {String}
+    */
 			title: {
 				type: String,
 				required: true
 			},
-			keys: {},
+			/**
+    * The list of availables facet keys
+    * @property keys
+    * @type {Array} 
+    */
+			keys: [],
+
+			/**
+    * The list of values associated with the facet keys
+    * @property values
+    * @type {Array}
+    */
 			values: {},
+
+			/**
+    * An ID that identify the facet component
+    * @property facetID
+    * @type {String}
+    * @default ''
+    *
+   */
 			facetId: ''
 
 		},
 
 		data: function data() {
+			/**
+    * Contains the selected facet key
+    * @property selected
+    * @type {String}
+    */
 			return {
 				selected: ''
 			};
 		},
 
 		methods: {
+			/**
+    * Return true if there's at least one facet
+    * @method hasFacets
+    * @return {Boolean}
+    */
 			hasFacets: function hasFacets() {
 				return typeof this.keys !== 'undefined' && this.keys.length > 0;
 			},
 
+			/**
+    * Set/toggle the selected facet and emit the a custom event
+    * @method facetSelected
+    * @param key {String} the facet key selected by user
+    * @event facet-selected
+    */
 			facetSelected: function facetSelected(key) {
 				this.selected != key ? this.selected = key : this.selected = '';
 				this.$dispatch('facet-selected', this.facetId, this.selected);
 			},
 
+			/**
+    * Return true if the facet is currently selected
+    * @method
+    * @param {String} facet
+    * @return {Boolean}
+    */
 			isSelected: function isSelected(facet) {
 				return this.selected === facet;
 			}
@@ -13304,30 +13397,58 @@ module.exports = '<div v-if="hasFacets()" class="panel panel-default facet-panel
 var _ = require('underscore');
 
 module.exports = {
-	template: require('./dropdown.template.html'),
+	// template: require('./dropdown.template.html'),
 
 	props: {
+		/**
+   * The available items in the dropdown
+   * @proerty choices
+   * @type {Array}
+   * @default [10,25,50,100,250,500,1000]
+   */
 		choices: {
 			type: Array,
 			default: function _default() {
 				return [10, 25, 50, 100, 250, 500, 1000];
 			}
 		},
+		/**
+   * The text to prepend to the selected value
+   * @property textFiller
+   * @type {String}
+   * @default "Items per page: "
+   */
 		textFiller: {
 			type: String,
 			default: "Items per page: "
 		},
+
+		/**
+   * The selected number of items per page
+   * @property itemsPerPage
+   * @type {Number}
+   * @default 10
+   */
 		itemsPerPage: {
 			type: Number,
 			default: 10
 		}
 	},
 
+	/**
+  * When the component is ready, call `updateItemsPerPage` using the first value
+  * @method ready
+  */
 	ready: function ready() {
 		this.updateItemsPerPage(this.choices[0]);
 	},
 
 	methods: {
+		/**
+   * Fire a `dd-item-chosen` custom event with the number new value selected from the dropdown
+   * @method updateItemsPerPage
+   * @param {Object} newValue
+   */
 		updateItemsPerPage: function updateItemsPerPage(newValue) {
 			if (_.indexOf(this.choices, newValue) >= 0) {
 				console.log(newValue);
@@ -13344,18 +13465,22 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/lucacherubin/Projects/FromGit/BioSamples/biosamples-web/src/main/java/uk/ac/ebi/spot/biosamples/frontend/js/components/itemsDropdown/ItemsDropdown.vue"
+  var id = "/Users/lucacherubin/Projects/FromGit/BioSamples/biosamples-web/src/main/frontend/js/components/itemsDropdown/ItemsDropdown.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./dropdown.template.html":34,"underscore":2,"vue":28,"vue-hot-reload-api":3}],34:[function(require,module,exports){
-module.exports = '<div class="dropdown">\n    <button class="btn btn-default dropdown-toggle" type="button" id="itemsPerPageMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{textFiller}} {{itemsPerPage}}\n    <span class="caret"></span></button>\n    <ul class="dropdown-menu" aria-labelledby="itemsPerPageMenu">\n        <li v-for="choice in choices">\n            <a href="#" v-on:click.prevent="updateItemsPerPage(choice)">{{choice}}</a>\n        </li>                         \n    </ul>\n</div> \n';
-},{}],35:[function(require,module,exports){
+},{"underscore":2,"vue":28,"vue-hot-reload-api":3}],34:[function(require,module,exports){
 'use strict';
 
+/**
+ * Component to handle the page change
+ * @class Pagination
+ * @extends {VueComponents}
+ * @require underscore
+ */
 (function () {
 	"use strict";
 
@@ -13364,16 +13489,50 @@ module.exports = '<div class="dropdown">\n    <button class="btn btn-default dro
 	module.exports = {
 		template: require('./alternative.pagination.template.html'),
 
-		props: ['totalResults', 'displayedResults'],
+		props: {
+			/**
+    * The total number of results
+    * @property totalResults
+    * @type {Number}
+    */
+			totalResults: {
+				type: Number
+			},
+
+			/**
+    * The number of items per page
+    * @property displayedResults
+    * @type {Number}
+    */
+			displayedResults: {
+				type: Number
+			}
+		},
 
 		data: function data() {
 			return {
+				/**
+     * The actual page
+     * @property currentPage
+     * @type {Number}
+     */
 				currentPage: 1,
+
+				/**
+     * True if we are in editing mode and user can type the current page
+     * @property editMode
+     * @type {Boolean}
+     */
 				editMode: false
 			};
 		},
 
 		computed: {
+			/**
+    * Count the total number of available pages five as totalResults/displayedResults
+    * @property totalPages
+    * @type {Function}
+    */
 			totalPages: function totalPages() {
 				this.currentPage = 1;
 				return Math.ceil(this.totalResults / this.displayedResults);
@@ -13386,6 +13545,12 @@ module.exports = '<div class="dropdown">\n    <button class="btn btn-default dro
 		},
 
 		methods: {
+			/**
+    * Dispatchs the custom event `page-changed` and create the 
+    * pagination given the currentPage
+    * @deprecated
+    * @method createPaginationWith
+    */
 			createPaginationWith: function createPaginationWith(currentPage) {
 				this.$dispatch('page-changed', currentPage);
 				var finalPaginationArray = [];
@@ -13404,6 +13569,10 @@ module.exports = '<div class="dropdown">\n    <button class="btn btn-default dro
 				}
 			},
 
+			/**
+    * Move to the next {displayedResults} results
+    * @method goNext
+    */
 			goNext: function goNext() {
 				if (!this.isLastPage(this.currentPage)) {
 					this.currentPage++;
@@ -13412,6 +13581,10 @@ module.exports = '<div class="dropdown">\n    <button class="btn btn-default dro
 				}
 			},
 
+			/**
+    * Move to the previous {displayedResults} results
+    * @method goPrevious
+    */
 			goPrevious: function goPrevious() {
 				if (!this.isFirstPage(this.currentPage)) {
 					this.currentPage--;
@@ -13420,6 +13593,11 @@ module.exports = '<div class="dropdown">\n    <button class="btn btn-default dro
 				}
 			},
 
+			/**
+    * Jump to the `page` containing {displayedResults} results
+    * @method jumpTo
+    * @param page {Number} the page to jump to
+    */
 			jumpTo: function jumpTo(page) {
 				if (page <= this.totalPages) {
 					this.currentPage = page;
@@ -13430,35 +13608,74 @@ module.exports = '<div class="dropdown">\n    <button class="btn btn-default dro
 				this.createPaginationWith(this.currentPage);
 			},
 
+			/**
+    * Set editmode to `true`
+    * @method enterEditMode
+    */
 			enterEditMode: function enterEditMode() {
 				this.editMode = true;
 			},
 
+			/**
+    * Set editmode to `false`
+    * @method exitEditMode
+    */
 			exitEditMode: function exitEditMode() {
 				this.editMode = false;
 				this.jumpTo(this.currentPage);
 			},
 
+			/**
+    * Return `true` if passed element is '...'
+    * @method isDots
+    * @param elem {Object} the element to check
+    * @return {Boolean}
+    */
 			isDots: function isDots(elem) {
-				return elem == '...';
+				return elem === '...';
 			},
 
+			/**
+    * Return `true` if the passed element correspond to the {currentPage}
+    * @method isCurrentPage
+    * @param elem {Object} the element to check
+    * @return {Boolean}
+    */
 			isCurrentPage: function isCurrentPage(elem) {
 				return elem == this.currentPage;
 			},
 
+			/**
+    * @method isLastPage
+    * @param page {Object} the element to check
+    * @return {Boolean} is `true` if the passed element is the last page
+    * 
+    */
 			isLastPage: function isLastPage(page) {
 				return page >= this.totalPages;
 			},
 
+			/**
+    * @method isFirstPage
+    * @param page {Object} the element to check
+    * @return {Boolean} is `true` if the passed element correspond to the first page
+    */
 			isFirstPage: function isFirstPage(page) {
 				return page <= 1;
 			},
 
+			/**
+    * @method needNavigation
+    * @return {Boolean} Always return `true`
+    */
 			needNavigation: function needNavigation() {
 				return true;
 			},
 
+			/**
+    * @method needPagination
+    * @return {Boolean} `true` if the number of total pages is greater than 1
+    */
 			needPagination: function needPagination() {
 				console.log('Here');
 				return this.totalPages > 1;
@@ -13473,9 +13690,9 @@ module.exports = '<div class="dropdown">\n    <button class="btn btn-default dro
 	};
 })();
 
-},{"./alternative.pagination.template.html":36,"underscore":2}],36:[function(require,module,exports){
+},{"./alternative.pagination.template.html":35,"underscore":2}],35:[function(require,module,exports){
 module.exports = '<!-- <div id="pagination" v-show="needPagination()"> -->\n<div id="pagination">\n    <ul class="pagination pagination-sm">\n        <li v-on:click="goPrevious()"\n            v-show="needNavigation()"\n            v-bind:class=" { \'disabled\': isFirstPage(currentPage) }">\n            <a href="#" aria-label="Previous">\n                <span aria-hidden="true">&laquo;</span>\n            </a>\n        </li>\n        <li>\n            <span id="inputPageContainer"\n                v-bind:class=" {\'editMode\': editMode }"\n            >\n                <input  id="inputPage"  placeholder="Jump to page..." type="text" \n                            v-show="editMode"\n                            v-model="currentPage"\n                            v-on:blur="exitEditMode"\n                            v-on:keyup.enter="exitEditMode">\n                <span v-show="editMode">/{{totalPages}}</span>\n                <a href="#" v-show="!editMode"\n                            v-on:click="enterEditMode">\n                    {{currentPage}}/{{totalPages}}\n\n                </a>\n            </span>\n        </li>\n\n        <li v-on:click="goNext()"\n            v-show="needNavigation()"\n            v-bind:class="{\'disabled\': isLastPage(currentPage)}">\n            <a href="#" aria-label="Next">\n                <span aria-hidden="true">&raquo;</span>\n            </a>\n        </li>\n    </ul>\n</div>';
-},{}],37:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 'use strict';
 
 (function () {
@@ -13564,9 +13781,9 @@ module.exports = '<!-- <div id="pagination" v-show="needPagination()"> -->\n<div
 	};
 })();
 
-},{"./product.template.html":38,"underscore":2}],38:[function(require,module,exports){
+},{"./product.template.html":37,"underscore":2}],37:[function(require,module,exports){
 module.exports = '<div class="panel panel-default">\n	<div class="panel-heading v-align-children">		\n		<!--<span class="h3"><a v-html="title" v-link="{ path: itemPage }"></a></span>-->\n        <span class="h3"><a v-html="title" href="{{itemPage}}"></a></span>\n		<span class="label label-success" v-html="type"></span>\n		<span class="label label-info" v-html="accession"></span>\n		<div class="badge-container">\n			<span v-for="label in simpleLabels">\n				<component is="badge" :key="$key" :value="label" :color="labelColors[$index % labelColors.length]"> </component>\n			</span>\n			<span v-for="pair in labelPairs">\n				<!-- <component is="badge" :key="pair[0]" :value="pair[1]" :color="labelColors[$index]"> </component> -->\n			</span>	\n		</div>\n	</div>\n	<div class="panel-body" v-html="description | excerpt"></div>\n	<div class="panel-footer">\n		<span class="small">Released on: <span v-text="date"></span></span>\n		<span style="float: right">Accession: <span class="label label-info" v-html="accession"></span></span>\n	</div>\n</div>\n';
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 (function () {
@@ -13587,30 +13804,53 @@ module.exports = '<div class="panel panel-default">\n	<div class="panel-heading 
 	};
 })();
 
-},{"../product/Product.js":37,"./products.list.template.html":40}],40:[function(require,module,exports){
+},{"../product/Product.js":36,"./products.list.template.html":39}],39:[function(require,module,exports){
 module.exports = '<div v-for="element in elements">\n	<component is="biosample"\n			   v-bind:accession="element.summaryObj.accession"\n			   v-bind:title="element.summaryObj.accession"\n			   v-bind:description="element.summaryObj.description"\n			   v-bind:date="element.summaryObj.update_date[0]"\n			   v-bind:labels="element.summaryLabelObj">\n	</component>\n</div>\n';
-},{}],41:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 
+/**
+ *  
+ * @class Excerpt Filter
+ * @extends {Vue filter}
+ */
 (function () {
 	"use strict";
 
+	/**
+  * @method excerpt
+  * @param  {String} value     the value you want to excerpt
+  * @param  {Number} maxLength the maximum number of characters 
+  * @return {String}           The excerped String
+  */
+
 	module.exports = function (value, maxLength) {
 		if (typeof value !== "undefined" && value !== null) {
+
 			if (typeof maxLength === "undefined" || maxLength === null) {
 				maxLength = 300;
 			}
-			if (value.length > maxLength) {
-				return value.slice(0, maxLength) + "...";
+
+			if (typeof value === "string") {
+				if (value.length > maxLength) {
+					return value.slice(0, maxLength) + "...";
+				}
 			}
 		}
 		return value;
 	};
 })();
 
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 "use strict";
 
+/**
+ * The `SearchComponent` class is the main class for the search interface containing all
+ * the javascript logic to interact with the interface
+ * @class SearchComponent
+ * @requires underscore, vue, vue-resource, Biosamples
+ * @uses Window
+ */
 (function (global) {
 	"use strict";
 
@@ -13632,6 +13872,12 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 	Vue.filter('excerpt', require('./filters/excerptFilter.js'));
 	Vue.component('badge', require('./components/badge/Badge.js'));
 
+	/**
+  * Read Solr facets and return them as a key-value pair object
+  * @method readFacets
+  * @param  facets {SolR Facets} Facets returned by Solr
+  * @return {Object} A key-value object representing the facets names and the count
+  */
 	function readFacets(facets) {
 		var obj = _.create({});
 		obj.keys = [];
@@ -13668,7 +13914,6 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 				organisms: {},
 				organs: {}
 			},
-			// tableColumns: ['Accession','Description','Type'],
 			queryParams: {
 				queryTerm: '',
 				filterFields: [],
@@ -13678,27 +13923,37 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 			}
 		},
 
+		/**
+   * Vue subcomponents used withing the search interface
+   * @property {Object} components
+   * @type {Object}
+   */
 		components: {
-			// 'biosamplesTable': require('../../components/productsTable/ProductsTable.js'),
 			'biosamplesList': require('./components/productsList/ProductsList.js'),
 			'pagination': require('./components/pagination/Pagination.js'),
 			'itemsDropdown': require('./components/itemsDropdown/ItemsDropdown.vue'),
 			'facet': require('./components/facetList/FacetList.js')
 		},
-
+		/**
+   * What happens when the Vue instance is ready
+   * @method ready
+   */
 		ready: function ready() {
-			// this.querySamples();
 			this.registerEventHandlers();
 		},
 
 		methods: {
+			/**
+    * Make the request for the SolR documents
+    * @method querySamples
+    * @param  e {Event} the click event
+    */
 			querySamples: function querySamples(e) {
 				if (e !== undefined) {
 					e.preventDefault();
 				}
 
 				var queryParams = this.getQueryParameters();
-				// var server = 'http://localhost:8080/api/query';
 				var server = apiUrl + "query";
 
 				this.$http.get(server, queryParams).then(function (results) {
@@ -13730,6 +13985,13 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 				});
 			},
 
+			/**
+    * Highlights the searched term within the returned SolR documents
+    * @method associateHighlights
+    * @param  docs {SolR Documents} Documents returned by solr
+    * @param  {Object} highlights [description]
+    * @return {SolR Documents} Highlighted solr documents
+    */
 			associateHighlights: function associateHighlights(docs, highlights) {
 				if (typeof highlights !== 'undefined' && Object.keys(highlights).length > 0) {
 					for (var i = 0; i < docs.length; i++) {
@@ -13746,6 +14008,11 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 				return docs;
 			},
 
+			/**
+    * Prepare an object containing all the params for the SolR request
+    * @method getQueryParameters
+    * @return {Object} parameters necessary for the SolR documents request
+    */
 			getQueryParameters: function getQueryParameters() {
 				return {
 					'searchTerm': this.searchTerm,
@@ -13758,6 +14025,10 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 				};
 			},
 
+			/**
+    * Register event handlers for Vue custom events
+    * @method registerEventHandlers
+    */
 			registerEventHandlers: function registerEventHandlers() {
 				this.$on('page-changed', function (newPage) {
 					this.pageNumber = newPage;
@@ -13786,6 +14057,6 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 	});
 })(window);
 
-},{"./components/Biosample.js":29,"./components/badge/Badge.js":30,"./components/facetList/FacetList.js":31,"./components/itemsDropdown/ItemsDropdown.vue":33,"./components/pagination/Pagination.js":35,"./components/productsList/ProductsList.js":39,"./filters/excerptFilter.js":41,"underscore":2,"vue":28,"vue-resource":17}]},{},[42]);
+},{"./components/Biosample.js":29,"./components/badge/Badge.js":30,"./components/facetList/FacetList.js":31,"./components/itemsDropdown/ItemsDropdown.vue":33,"./components/pagination/Pagination.js":34,"./components/productsList/ProductsList.js":38,"./filters/excerptFilter.js":40,"underscore":2,"vue":28,"vue-resource":17}]},{},[41]);
 
 //# sourceMappingURL=searchComponents.js.map

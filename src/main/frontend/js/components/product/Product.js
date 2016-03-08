@@ -1,8 +1,19 @@
+/**
+ * @class Product
+ * @extend {VueComponents}
+ */
+
 (function(){
 	"use strict";
 
 	var _ = require('underscore');
 
+    /**
+     * Remove the `_crt` suffix from the characteristics
+     * @method removeCrtExtension
+     * @private
+     * @param obj {Object} the key-value pairs of fields
+     */
 	function removeCrtExtension(obj) {
 		var finObj = _.create({});
 		var keys = _.keys(obj);
@@ -19,25 +30,63 @@
 		template: require('./product.template.html'),
 
 		props: {
+			/**
+			 * The accession/id of the product
+			 * @property accession 
+			 * @type {String}
+			 */
 			accession: {
 				type: String,
 				required: true
 			},
+
+			/**
+			 * The product title
+			 * @property title
+			 * @type {String}
+			 * @default ''
+			 */
 			title: {
 				default: ''
 			},
+
+			/**
+			 * The product description
+			 * @property description
+			 * @type {String}
+			 * @default 'No description provided'
+			 */
 			description: {
 				type: String,
 				default: 'No description provided'
 			},
+			/**
+			 * The product type, `Sample` or `Group`
+			 * @property type
+			 * @type {String}
+			 * @default 'Sample'
+			 */
 			type: {
 				type: String,
 				default: 'Sample'
 			},
+			/**
+			 * The product date
+			 * @property date
+			 * @type {String}
+			 * @default ''
+			 */
 			date: {
 				type: String,
 				default: ''
 			},
+
+			/**
+			 * Labels associated with the product
+			 * @property labels
+			 * @type {Object}
+			 * @default {}
+			 */
 			labels: {
 				type: Object,
 				default: function() {
@@ -48,10 +97,21 @@
 		},
 
 		computed: {
+			/**
+			 * The sample single page url
+			 * @property itemPage
+			 * @type {Function}
+			 * @return {String}
+			 */
 			itemPage: function() {
 				return '/sample/' + this.accession;
 			},
 
+			/**
+			 * @property simpleLabels
+			 * @type {Function}
+			 * @return object {Object} containing the product labels without `_crt` suffix
+			 */
 			simpleLabels: function() {
 				// var finObj = _.create({});
 				// var keys = _.keys(this.labels);
@@ -66,6 +126,11 @@
 
 			},
 
+			/**
+			 * @property labelColors
+			 * @type {Function}
+			 * @return {Array} available colors to use with labels
+			 */
 			labelColors: function() {
 				return ['orange','blue'];
 			}
@@ -74,6 +139,12 @@
 		},
 
 		methods: {
+            /**
+             * Provide a way to cycle through valid colors
+             * @method labelColor
+             * @param n {Number}
+             * @return {String} a valid color string
+             */
 			labelColors: function(n) {
 				console.log(this.accession);
 				console.log(n);
