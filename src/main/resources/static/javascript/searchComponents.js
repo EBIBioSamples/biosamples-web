@@ -13173,18 +13173,29 @@ module.exports = Vue;
 
 	module.exports = function (solrDocument) {
 
+		/**
+   * List of keys in the solrDocument we don't want to present
+   * @property unwantedProperties
+   * @type {Array}
+   */
 		var unwantedProperties = ['_version_', 'format_version'];
+
+		/**
+   * List of keys in the SolR Document we want to use to summarize the document
+   * @param summaryFields
+   */
 		var summaryFields = ['accession', 'name', 'description', 'update_date', 'content_type'];
 		var summaryLabels = ['organism_crt', 'organ_crt'];
-		// var labels = {
-		// 	all: [],
-		// 	baseSummary: ['accession','name','description','update_date','content_type'],
-		// 	additionalSummary: ['organism_crt','organ_crt']
-		// };
 
 		var completeObj, filteredObj;
 
-		// Filter properties from an object
+		/**
+   * Filter properties form an object
+   * @method removeUnwantedProperties
+   * @param obj {Object} the object to filter
+   * @param propToRemove {Array} list of properties to remove from the object
+   * @return {Object} a new object with just the filtered fields
+   */
 		function removeUnwantedProperties(obj, propToRemove) {
 			var tempObj = {};
 
@@ -13197,6 +13208,13 @@ module.exports = Vue;
 			return tempObj;
 		}
 
+		/**
+   * Return an object with just the specific properties
+   * @method getWantedProperties
+   * @param obj {Object} the object to process
+   * @param propToMaintain {Array} the properties to maintain 
+   * @return {Object} 
+   */
 		function getWantedProperties(obj, propToMaintain) {
 			var tempObj = {};
 
@@ -13695,11 +13713,22 @@ module.exports = '<!-- <div id="pagination" v-show="needPagination()"> -->\n<div
 },{}],36:[function(require,module,exports){
 'use strict';
 
+/**
+ * @class Product
+ * @extend {VueComponents}
+ */
+
 (function () {
 	"use strict";
 
 	var _ = require('underscore');
 
+	/**
+  * Remove the `_crt` suffix from the characteristics
+  * @method removeCrtExtension
+  * @private
+  * @param obj {Object} the key-value pairs of fields
+  */
 	function removeCrtExtension(obj) {
 		var finObj = _.create({});
 		var keys = _.keys(obj);
@@ -13716,25 +13745,63 @@ module.exports = '<!-- <div id="pagination" v-show="needPagination()"> -->\n<div
 		template: require('./product.template.html'),
 
 		props: {
+			/**
+    * The accession/id of the product
+    * @property accession 
+    * @type {String}
+    */
 			accession: {
 				type: String,
 				required: true
 			},
+
+			/**
+    * The product title
+    * @property title
+    * @type {String}
+    * @default ''
+    */
 			title: {
 				default: ''
 			},
+
+			/**
+    * The product description
+    * @property description
+    * @type {String}
+    * @default 'No description provided'
+    */
 			description: {
 				type: String,
 				default: 'No description provided'
 			},
+			/**
+    * The product type, `Sample` or `Group`
+    * @property type
+    * @type {String}
+    * @default 'Sample'
+    */
 			type: {
 				type: String,
 				default: 'Sample'
 			},
+			/**
+    * The product date
+    * @property date
+    * @type {String}
+    * @default ''
+    */
 			date: {
 				type: String,
 				default: ''
 			},
+
+			/**
+    * Labels associated with the product
+    * @property labels
+    * @type {Object}
+    * @default {}
+    */
 			labels: {
 				type: Object,
 				default: function _default() {
@@ -13745,10 +13812,21 @@ module.exports = '<!-- <div id="pagination" v-show="needPagination()"> -->\n<div
 		},
 
 		computed: {
+			/**
+    * The sample single page url
+    * @property itemPage
+    * @type {Function}
+    * @return {String}
+    */
 			itemPage: function itemPage() {
 				return '/sample/' + this.accession;
 			},
 
+			/**
+    * @property simpleLabels
+    * @type {Function}
+    * @return object {Object} containing the product labels without `_crt` suffix
+    */
 			simpleLabels: function simpleLabels() {
 				// var finObj = _.create({});
 				// var keys = _.keys(this.labels);
@@ -13762,6 +13840,11 @@ module.exports = '<!-- <div id="pagination" v-show="needPagination()"> -->\n<div
 				return removeCrtExtension(this.labels);
 			},
 
+			/**
+    * @property labelColors
+    * @type {Function}
+    * @return {Array} available colors to use with labels
+    */
 			labelColors: function labelColors() {
 				return ['orange', 'blue'];
 			}
@@ -13769,6 +13852,12 @@ module.exports = '<!-- <div id="pagination" v-show="needPagination()"> -->\n<div
 		},
 
 		methods: {
+			/**
+    * Provide a way to cycle through valid colors
+    * @method labelColor
+    * @param n {Number}
+    * @return {String} a valid color string
+    */
 			labelColors: function labelColors(n) {
 				console.log(this.accession);
 				console.log(n);
@@ -13800,6 +13889,11 @@ module.exports = '<div class="panel panel-default">\n	<div class="panel-heading 
 			'biosample': require('../product/Product.js')
 		},
 
+		/**
+   * elements to be presented into the lsit
+   * @property elements
+   * @type {Array}
+   */
 		props: ['elements']
 	};
 })();
