@@ -23,9 +23,8 @@ public class SearchApiController {
 
     private final String baseSolrUrl = "http://beans.ebi.ac.uk:8983/solr/prototype/select?";
 
-
     @CrossOrigin
-    @RequestMapping(value = "search/query")
+    @RequestMapping(value = "search_api/query")
     public void find(
             SearchRequest searchRequest,
             HttpServletResponse response) throws Exception {
