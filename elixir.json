@@ -17,5 +17,6 @@
     "browserSync": {
         "proxy": "localhost:8080",
     	"open": false
+
     }
 }
