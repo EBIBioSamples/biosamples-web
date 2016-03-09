@@ -5,17 +5,19 @@
  * @requires underscore, vue, vue-resource, Biosamples
  * @uses Window
  */
-(function(global){
+(function(window){
     "use strict";
 
-    global.apiUrl = "http://localhost:8080/search_api/";
+    window.apiUrl = "http://localhost:8080/search_api/";
 
     // Required
-    var _           = require("underscore");
-    var _mixins     = require('./utilities/underscore_mixins.js');
+    var _           = require("lodash");
+    var _mixins     = require('./utilities/_mixins.js');
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Biosample   = require('./components/Biosample.js');
+    var historyTimer;
+
 
     // Vue Configuration
     Vue.config.debug = true;
@@ -55,7 +57,7 @@
             filterTerm: '',
             useFuzzy: false,
             pageNumber: 0,
-            samplesToRetrieve: 10, 
+            samplesToRetrieve: 10,
             resultsNumber: '',
             queryResults: {},
             biosamples: [],
@@ -80,10 +82,10 @@
         computed: {
             queryTermPresent: function() {
                 return !_.isEmpty(this.queryTerm);
-            },            
+            },
             queryHasResults: function() {
                 return this.resultsNumber > 0;
-            } 
+            }
         },
 
         /**
@@ -126,6 +128,7 @@
                     e.preventDefault();
                 }
 
+                var historyTimer;
                 var queryParams = this.getQueryParameters();
                 var server = apiUrl + "query";
 
@@ -153,12 +156,13 @@
 
                         this.queryResults = validDocs;
                         this.biosamples = validDocs;
-                        console.log(this.facets.types);
+
+                        this.pushHistoryState(queryParams);
 
                     })
-                .catch(function(data,status,response){
-                    console.log(status);
-                });
+                    .catch(function(data,status,response){
+                        console.log(status);
+                    });
             },
 
             /**
@@ -201,6 +205,16 @@
                 };
             },
 
+            populateDataWithUrlParameter: function(urlParams) {
+                this.searchTerm = urlParams.searchTerm;
+                this.samplesToRetrieve = _.toInteger(urlParams.rows);
+                this.pageNumber= _.toInteger(urlParams.start);
+                this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
+                this.filterQuery.organFilter = urlParams.organFilter;
+                this.filterQuery.typeFilter = urlParams.typeFilter;
+                this.filterQuery.organismFilter = urlParams.organismFilter;
+            },
+
             /**
              * Register event handlers for Vue custom events
              * @method registerEventHandlers
@@ -229,25 +243,24 @@
                 });
             },
             readLocationSearchAndQuerySamples: function() {
-               var urlParam = _.fromQueryString(location.search);
-               if (! _.isEmpty(urlParam) ) {
-                   for (var key in urlParam) {
-                       if (urlParam.hasOwnProperty(key)) {
-                           if (urlParam[key] !== "") {
-                               this[key] = urlParam[key];
-                           }
+                var historyState = History.getState();
+                var urlParam = historyState.data;
+                if (! _.isEmpty(urlParam) ) {
+                    this.populateDataWithUrlParameter(urlParam);
 
-                       }
-                   }
-                   this.querySamples();
-               } else {
-                   console.log("No parameters")
-               }
+                    this.querySamples();
+                } else {
+                    console.log("No parameters")
+                }
             },
-            updateLocationSearch: function(requestParameters) {
-                location.search = _.toQueryString(requestParameters);
+            pushHistoryState: function(queryParams) {
+
+                clearTimeout(historyTimer);
+                historyTimer = setTimeout(function() {
+                    History.pushState(queryParams, 'test', _.toQueryString(queryParams));
+                }, 1000);
             }
-                
+
         }
 
     });

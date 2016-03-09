@@ -1,6 +1,7 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -13,9 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SearchController {
 
     @RequestMapping("/search")
-    public String search() {
+    public String search(Model model, String searchTerm) {
+        model.addAttribute("searchTerm",searchTerm);
         return "search";
     }
+
+//    @RequestMapping("/test")
+//    public String test(Model model) {
+//        String[] tempValues = {"Hello","World","This","Is","Me"};
+//        model.addAttribute("temp",tempValues);
+//        return "searchComponents :: test";
+//    }
 
 
 }

@@ -1,4 +1,5 @@
 var elixir = require('laravel-elixir');
+var srcStaticPath = elixir.config.publicPath;
 
 require('laravel-elixir-vueify');
 

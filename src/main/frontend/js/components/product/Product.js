@@ -6,7 +6,7 @@
 (function(){
     "use strict";
 
-    var _ = require('underscore');
+    var _ = require('lodash');
 
     /**
      * Remove the `_crt` suffix from the characteristics

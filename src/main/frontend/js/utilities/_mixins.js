@@ -1,5 +1,5 @@
 (function(){
-    var _ = require( 'underscore'); 
+    var _ = require( 'lodash'); 
     _.mixin( {
         'toQueryString': function ( parameters ) {
             var queryString = _.reduce(parameters, function ( components, value, key ) {
