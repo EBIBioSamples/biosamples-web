@@ -7,6 +7,10 @@ var draining = false;
 var currentQueue;
 var queueIndex = -1;
 
+function tellStuff(){
+  console.log("Say stuff in tellStuff");
+}
+
 function cleanUpNextTick() {
     draining = false;
     if (currentQueue.length) {
@@ -13948,6 +13952,7 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
     * @method querySamples
     * @param  e {Event} the click event
     */
+
 			querySamples: function querySamples(e) {
 				if (e !== undefined) {
 					e.preventDefault();
@@ -13955,6 +13960,9 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
 				var queryParams = this.getQueryParameters();
 				var server = apiUrl + "query";
+
+      var rezTest = this.$http.get(server, queryParams);
+      console.log("rezTest : ");console.log(rezTest);
 
 				this.$http.get(server, queryParams).then(function (results) {
 					var resultsInfo = results.data.response;
@@ -13979,10 +13987,220 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
 					this.queryResults = validDocs;
 					this.biosamples = validDocs;
-					console.log(this.facets.types);
+					//console.log(this.facets.types);
+          //console.log("query : ");console.log(query);
+          console.log("results : ");console.log(results);
+          console.log("this.queryTerm : ");console.log(this.queryTerm);
+          console.log("this.queryResults : ");console.log(this.queryResults);
+          console.log("this.queryResults[0].summaryObj : ");console.log(this.queryResults[0].summaryObj);
+
+          var tooltip = d3.select("body")
+            .append("div")
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden")
+            .text(" This text should not appear ");
+
+          if (typeof results.data.response.docs[0] !== undefined){
+            var divVizSpot = document.getElementById("vizSpot");
+            if (divVizSpot === null){
+              var widthD3 = $(".container").width();
+
+              var heightD3 = widthD3/2;
+              heightD3+=120;
+              var svg = d3.select(".container").insert("svg",":first-child")
+                    .attr("width", "100%")
+                    .attr("height", heightD3)
+                    .attr("id","vizSpot")
+                    .style("stroke", "black")
+                    .style("stroke-width", .3)
+                    .style("border","solid")
+                    .style("border-color","#5D8C83")
+                    .style("border-radius","10px")
+                    .append("g");
+                    //.attr("transform", "translate(" + widthD3 / 2 + "," + widthD3 / 2 + ")");
+
+
+              var circleData = [];
+
+              function getRandomColor() {
+                  var letters = '0123456789ABCDEF'.split('');
+                  var color = '#';
+                  for (var i = 0; i < 6; i++ ) {
+                      color += letters[Math.floor(Math.random() * 16)];
+                  }
+                  return color;
+              }
+
+              for (var i=0;i< results.data.response.docs.length;i++){
+                //Circle Data Set
+                circleData .push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
+                  "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
+              }
+              //Add circles to the svgContainer
+              var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
+                .on("mouseover", function(d){//tooltip.text("Text over a circle");  return tooltip.style("visibility", "visible");
+                  console.log("Mouse is over ");console.log(d);})
+                //.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX)+"px");})
+                //.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+                .on("mousedown",function(d){console.log("You just clicked on a circle.");console.log("d : ");console.log(d)
+                //.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+                  ;
+              
+              if ( document.getElementById("InfoViz").style.visibility == "hidden" ){
+                document.getElementById("InfoViz").style.visibility="visible";
+              } else {
+                if ( d.accession ==  document.getElementById("InfoViz").className ){
+                  document.getElementById("InfoViz").style.visibility="hidden";
+                } else {
+                  document.getElementById("InfoViz").style.visibility="visible";
+                }
+              }
+              document.getElementById("InfoViz").className=d.accession;
+              //document.getElementById("InfoViz").innerHTML='<p>'+d.responseDoc.Organism_crt+'<br/>'+d.responseDoc.content_type+'<br/>'+d.responseDoc.description+'</p>';
+              document.getElementById("InfoViz").innerHTML='<p>';
+              for (var prop in d.responseDoc) {
+                // skip loop if the property is from prototype
+                if(!d.responseDoc.hasOwnProperty(prop)) continue;
+                // your code
+                document.getElementById("InfoViz").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
+              }
+              document.getElementById("InfoViz").innerHTML+='</p>';
+
+            });
+            //Add the circle attributes
+            var circleAttributes = circles.attr("cx", function (d) { return d.cx; })
+              .attr("cy", function (d) { return d.cy; }).attr("r", function (d) { return d.radius; })
+              .attr("accession",function(d){return d.accession})
+              .attr("responseDoc",function(d){return d.responseDoc})
+              .attr("id", function (d) { return d.id; })
+              .style("fill", function (d) { return d.color; });
+
+              //Add the SVG Text Element to the svgContainer
+              var text = svg.selectAll("text").data(circleData)
+              .enter().append("text");
+
+              //Add the text attributes
+              var textLabels = text.attr("x", function(d) { return d.cx + d.radius; }).attr("y", function(d) { return d.cy; })
+                               .text( function (d) { return "[" + d.accession+"]"; })
+                               .attr("font-family", "sans-serif").attr("font-size", "10px")
+                               .attr("border","solid").attr("border-radius","10px")
+                               .style("border","solid").style("border-radius","10px")
+                               .style("box-shadow","gray")
+                               .style("background-color","green")
+                               .attr("class","text-d3")
+                               .attr("fill", "#4D504F");
+
+              console.log("circleData[0] : ");console.log(circleData[0]);
+              d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
+            } else {
+              document.getElementById("InfoViz").style.visibility="hidden";              
+              console.log("The else number 1");
+              console.log("this.queryResults : ");console.log(this.queryResults);
+              console.log("results.data.response.docs : ");console.log(results.data.response.docs);              
+
+              d3.select("svg").selectAll("*").remove();
+
+              var widthD3 = $(".container").width();
+
+              var svg = d3.select("svg").insert("g",":first-child");
+
+              console.log("svg : ");console.log(svg);
+
+              /*.select("svg")
+                    .attr("width", widthD3)
+                    .attr("height", widthD3/3)
+                    .attr("id","vizSpot")
+                    .style("stroke", "black")
+                    .style("stroke-width", .3)
+                    .style("border","solid")
+                    .style("border-color","#5D8C83")
+                    .style("border-radius","10px")
+                    .append("g");
+              */
+
+            var circleData = [];
+
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF'.split('');
+                var color = '#';
+                for (var i = 0; i < 6; i++ ) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            for (var i=0;i< results.data.response.docs.length;i++){
+              //Circle Data Set
+                circleData .push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
+                  "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
+            }
+            console.log("circleData : ");console.log(circleData);
+
+            //Add circles to the svgContainer
+            var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
+              .on("mouseover", function(d){//tooltip.text("Text over a circle");  return tooltip.style("visibility", "visible");
+                console.log("Mouse is over ");console.log(d);})
+              //.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX)+"px");})
+              //.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+              .on("mousedown",function(d){console.log("You just clicked on a circle.");console.log("d : ");console.log(d);
+              console.log("d.responseDoc : ");console.log(d.responseDoc);
+
+              if ( document.getElementById("InfoViz").style.visibility == "hidden" ){
+                document.getElementById("InfoViz").style.visibility="visible";
+              } else {
+                if ( d.accession ==  document.getElementById("InfoViz").className ){
+                  document.getElementById("InfoViz").style.visibility="hidden";
+                } else {
+                  document.getElementById("InfoViz").style.visibility="visible";
+                }
+              }
+              document.getElementById("InfoViz").className=d.accession;
+              //document.getElementById("InfoViz").innerHTML='<p>'+d.responseDoc.Organism_crt+'<br/>'+d.responseDoc.content_type+'<br/>'+d.responseDoc.description+'</p>';
+              document.getElementById("InfoViz").innerHTML='<p>';
+              for (var prop in d.responseDoc) {
+                // skip loop if the property is from prototype
+                if(!d.responseDoc.hasOwnProperty(prop)) continue;
+                // your code
+                document.getElementById("InfoViz").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
+              }
+              document.getElementById("InfoViz").innerHTML+='</p>';              
+            });
+
+            //Add the circle attributes
+            var circleAttributes = circles.attr("cx", function (d) { return d.cx; })
+              .attr("cy", function (d) { return d.cy; }).attr("r", function (d) { return d.radius; })
+              .attr("accession",function(d){return d.accession})
+              .attr("responseDoc",function(d){return d.responseDoc})
+              .attr("id", function (d) { return d.id; })
+              .style("fill", function (d) { return d.color; });
+
+            //Add the SVG Text Element to the svgContainer
+            var text = svg.selectAll("text").data(circleData)
+              .enter().append("text");
+
+              //Add the text attributes
+              var textLabels = text.attr("x", function(d) { return d.cx + d.radius; }).attr("y", function(d) { return d.cy; })
+                               .text( function (d) { return "[" + d.accession+"]"; })
+                               .attr("font-family", "sans-serif").attr("font-size", "10px")
+                               .attr("border","solid").attr("border-radius","10px")
+                               .style("border","solid").style("border-radius","10px")
+                               .style("box-shadow","gray")
+                               .style("background-color","green")
+                               .attr("class","text-d3")
+                               .attr("fill", "#4D504F");
+
+            console.log("circleData[0] : ");console.log(circleData[0]);
+            d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
+
+            }
+          }
+
 				}).catch(function (data, status, response) {
-					console.log(status);
+					console.log("status : ");console.log(status);
 				});
+        
+
 			},
 
 			/**

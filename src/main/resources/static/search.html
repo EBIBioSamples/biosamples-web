@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-global.css" type="text/css" media="screen">
   <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/ebi-visual.css" type="text/css" media="screen">
   <link rel="stylesheet" href="//www.ebi.ac.uk/web_guidelines/css/compliance/develop/984-24-col-fluid.css" type="text/css" media="screen">
+
   
   <!-- you can replace this with [projectname]-colours.css. See http://frontier.ebi.ac.uk/web/style/colour for details of how to do this -->
   <!-- also inform ES so we can host your colour palette file -->
@@ -44,6 +45,31 @@
   <style type="text/css">
     /* You have the option of setting a maximum width for your page, and making sure everything is centered */
     /* body { max-width: 1600px; margin: 0 auto; } */
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.text-d3{
+  border:solid;  
+  border-radius:10px;
+  background-color:green;
+  font-family:arial;
+  font-size:10px;
+}
+
   </style>
   
   <!-- end CSS-->
@@ -58,6 +84,7 @@
   
   <!-- custom build (lacks most of the "advanced" HTML5 support -->
   <script src="//www.ebi.ac.uk/web_guidelines/js/libs/modernizr.custom.49274.js"></script>    
+  <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
@@ -157,14 +184,13 @@
         Search
       </p>
     </nav>
-      
+
     <!-- Example layout containers -->
-     
     <section>
        <h2>BioSample Database Search interface</h2>
     </section> 
-    
     <section class="container" v-cloak>
+<div id="InfoViz" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; top:100px; height:110px; left:10%; right:10%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll  " >Info about the clicked element. This should not be visible.</div>      
     <div v-show="queryTerm && resultsNumber <= 0">
         <div class="row">
             <h3>
@@ -331,5 +357,54 @@
     <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
   <![endif]-->
   
+  <!--
+  <script>
+  var diameter = 960;
+  var tree = d3.layout.tree()
+      .size([360, diameter / 2 - 120])
+      .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+
+  var diagonal = d3.svg.diagonal.radial()
+      .projection(function(d) { return [d.y, d.x / 180 * Math.PI]; });
+
+  var svg = d3.select("section").insert("svg")
+      .attr("width", diameter)
+      .attr("height", diameter - 150)
+    .append("g")
+      .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+  d3.json("flare.json", function(error, root) {
+    if (error) throw error;
+
+    var nodes = tree.nodes(root),
+        links = tree.links(nodes);
+
+    var link = svg.selectAll(".link")
+        .data(links)
+      .enter().append("path")
+        .attr("class", "link")
+        .attr("d", diagonal);
+
+    var node = svg.selectAll(".node")
+        .data(nodes)
+      .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+
+    node.append("circle")
+        .attr("r", 4.5);
+
+    node.append("text")
+        .attr("dy", ".31em")
+        .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+        .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+        .text(function(d) { return d.name; });
+  });
+
+  d3.select(self.frameElement).style("height", diameter - 150 + "px");
+
+  </script>
+  -->
+
 </body>
 </html>
