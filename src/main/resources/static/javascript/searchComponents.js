@@ -14043,9 +14043,11 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                   console.log("Mouse is over ");console.log(d);})
                 //.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX)+"px");})
                 //.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
-                .on("mousedown",function(d){console.log("You just clicked on a circle.");console.log("d : ");console.log(d)
-                //.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-                  ;
+                .on("mousedown",function(d){console.log("You just clicked on a circle.");console.log("d : ");console.log(d);
+                d3.selectAll("circle").style("stroke-width",0);
+                d3.select(this).style("stroke-width", 2);
+                //.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")";
+                
               
               if ( document.getElementById("InfoViz").style.visibility == "hidden" ){
                 document.getElementById("InfoViz").style.visibility="visible";
@@ -14138,14 +14140,17 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
             console.log("circleData : ");console.log(circleData);
 
             //Add circles to the svgContainer
-            var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
-              .on("mouseover", function(d){//tooltip.text("Text over a circle");  return tooltip.style("visibility", "visible");
-                console.log("Mouse is over ");console.log(d);})
-              //.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX)+"px");})
-              //.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
-              .on("mousedown",function(d){console.log("You just clicked on a circle.");console.log("d : ");console.log(d);
-              console.log("d.responseDoc : ");console.log(d.responseDoc);
-
+              //Add circles to the svgContainer
+              var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
+                .on("mouseover", function(d){//tooltip.text("Text over a circle");  return tooltip.style("visibility", "visible");
+                  console.log("Mouse is over ");console.log(d);})
+                //.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX)+"px");})
+                //.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+                .on("mousedown",function(d){console.log("You just clicked on a circle.");console.log("d : ");console.log(d);
+                d3.selectAll("circle").style("stroke-width",0);
+                d3.select(this).style("stroke-width", 2);
+                //.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")";
+                  
               if ( document.getElementById("InfoViz").style.visibility == "hidden" ){
                 document.getElementById("InfoViz").style.visibility="visible";
               } else {
