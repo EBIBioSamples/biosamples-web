@@ -14031,8 +14031,9 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                 // Image fake data
 
                 if ( results.data.response.docs[i].accession == "SAMEA1652705"){
-                  //results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg";
-                  results.data.response.docs[i].urlImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
+                  results.data.response.docs[i].urlSimpleImg="www.w3schools.com/images/w3schools_green.jpg";
+                  results.data.response.docs[i].urlArrayImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
+                  results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg,https://www.dragon1.com/images/examples.jpg";
                 }
 
               }
@@ -14059,51 +14060,22 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
               }
               document.getElementById("InfoViz").className=d.accession;
 
+              // Fill in the InfoViz according to data returned
               document.getElementById("InfoViz").innerHTML='<p>';
+              var URLs = [];
               for (var prop in d.responseDoc) {
                 // skip loop if the property is from prototype
                 if(!d.responseDoc.hasOwnProperty(prop)) continue;
                 document.getElementById("InfoViz").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
-                var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
-                // Loop through the img file formats, and if found, get the url, then add its display in InfoViz
-                for (var i =0; i < arrayImgTypes.length;i++){
-                  if (typeof d.responseDoc[prop] == "string" ){
-                    var indexExtensionImg = d.responseDoc[prop].indexOf( arrayImgTypes[i] );
-                    if ( indexExtensionImg >= 0  ){ 
-                      var indexWWW = d.responseDoc[prop].indexOf( "www" );
-                      var indexHttp = d.responseDoc[prop].indexOf( "http" );
-                      var url;
-                      if ( indexHttp >= 0 ){
-                        url = d.responseDoc[prop].substr(indexHttp, indexExtensionImg+arrayImgTypes[i].length );
-                      } else if ( indexWWW >= 0 ){
-                        url = "http://"+d.responseDoc[prop].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
-                      }
-                      //console.log("url : "+url);
-                      document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-                      document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" >";
-                    }
-                  } else if (Array.isArray(d.responseDoc[prop])){
-                    for (var j=0; j < d.responseDoc[prop].length;j++){                      
-                      var indexExtensionImg = d.responseDoc[prop][j].indexOf( arrayImgTypes[i] );                      
-                      if ( indexExtensionImg >= 0  ){ 
-                        var indexWWW = d.responseDoc[prop][j].indexOf( "www" );
-                        var indexHttp = d.responseDoc[prop][j].indexOf( "http" );
-                        var url;
-                        if ( indexHttp >= 0 ){
-                          url = d.responseDoc[prop][j].substr(indexHttp, indexExtensionImg+arrayImgTypes[i].length );
-                        } else if ( indexWWW >= 0 ){
-                          url = "http://"+d.responseDoc[prop][j].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
-                        }
-                        console.log("url : "+url);
-                        document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-                        document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>";
-                      }
-                    }
+                URLs = getURLsFromObject(d.responseDoc,prop);
+                if (URLs.length>0){
+                  for (var k=0;k<URLs.length;k++){
+                    document.getElementById("InfoViz").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
+                    document.getElementById("InfoViz").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
                   }
                 }
               }
-              document.getElementById("InfoViz").innerHTML+='</p>';              
-
+              document.getElementById("InfoViz").innerHTML+='</p>';
 
             });
             //Add the circle attributes
@@ -14152,12 +14124,10 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                 circleData.push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
                   "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
                 // Image fake data
-
                 if ( results.data.response.docs[i].accession == "SAMEA1652705"){
-                  //results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg";
-                  results.data.response.docs[i].urlImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
-                }
-
+                  results.data.response.docs[i].urlSimpleImg="www.w3schools.com/images/w3schools_green.jpg";
+                  results.data.response.docs[i].urlArrayImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
+                  results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg,https://www.dragon1.com/images/examples.jpg";                }
             }
             console.log("circleData : ");console.log(circleData);
 
@@ -14184,50 +14154,22 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
               }
               document.getElementById("InfoViz").className=d.accession;
 
+              // Recover URLSs from object returned by the query
               document.getElementById("InfoViz").innerHTML='<p>';
+              var URLs = [];
               for (var prop in d.responseDoc) {
                 // skip loop if the property is from prototype
                 if(!d.responseDoc.hasOwnProperty(prop)) continue;
                 document.getElementById("InfoViz").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
-                var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
-                // Loop through the img file formats, and if found, get the url, then add its display in InfoViz
-                for (var i =0; i < arrayImgTypes.length;i++){
-                  if (typeof d.responseDoc[prop] == "string" ){
-                    var indexExtensionImg = d.responseDoc[prop].indexOf( arrayImgTypes[i] );
-                    if ( indexExtensionImg >= 0  ){ 
-                      var indexWWW = d.responseDoc[prop].indexOf( "www" );
-                      var indexHttp = d.responseDoc[prop].indexOf( "http" );
-                      var url;
-                      if ( indexHttp >= 0 ){
-                        url = d.responseDoc[prop].substr(indexHttp, indexExtensionImg+arrayImgTypes[i].length );
-                      } else if ( indexWWW >= 0 ){
-                        url = "http://"+d.responseDoc[prop].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
-                      }
-                      //console.log("url : "+url);
-                      document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-                      document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" style=\"height:200px;\" ><br/>";
-                    }
-                  } else if (Array.isArray(d.responseDoc[prop])){
-                    for (var j=0; j < d.responseDoc[prop].length;j++){                      
-                      var indexExtensionImg = d.responseDoc[prop][j].indexOf( arrayImgTypes[i] );
-                      if ( indexExtensionImg >= 0  ){ 
-                        var indexWWW = d.responseDoc[prop][j].indexOf( "www" );
-                        var indexHttp = d.responseDoc[prop][j].indexOf( "http" );
-                        var url;
-                        if ( indexHttp >= 0 ){
-                          url = d.responseDoc[prop][j].substr(indexHttp, indexExtensionImg+arrayImgTypes[i].length );
-                        } else if ( indexWWW >= 0 ){
-                          url = "http://"+d.responseDoc[prop][j].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
-                        }
-                        console.log("url : "+url);
-                        document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-                        document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" style=\"height:200px;\" >";
-                      }
-                    }
+                URLs = getURLsFromObject(d.responseDoc,prop);
+                if (URLs.length>0){
+                  for (var k=0;k<URLs.length;k++){
+                    document.getElementById("InfoViz").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
+                    document.getElementById("InfoViz").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
                   }
                 }
               }
-              document.getElementById("InfoViz").innerHTML+='</p>';              
+              document.getElementById("InfoViz").innerHTML+='</p>';
 
             });
 
