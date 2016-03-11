@@ -16,7 +16,6 @@
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Biosample   = require('./components/Biosample.js');
-    var historyTimer;
 
 
     // Vue Configuration
@@ -71,13 +70,8 @@
                 organisms: {},
                 organs: {},
             },
-            queryParams: {
-                queryTerm: '',
-                filterFields: [],
-                useFuzzy: false,
-                pageNumber: 0,
-                samplesToRetrieve: 10,
-            }
+            previousQueryParams: {},
+            currentQueryParams: {}
         },
         computed: {
             queryTermPresent: function() {
@@ -116,8 +110,9 @@
                 }
 
                 this.useFuzzy = true;
-                querySamples();
+                this.querySamples();
             },
+            
             /**
              * Make the request for the SolR documents
              * @method querySamples
@@ -128,12 +123,17 @@
                     e.preventDefault();
                 }
 
-                var historyTimer;
+                if (_.isEmpty(this.searchTerm)) {
+                    return;
+                }
+
                 var queryParams = this.getQueryParameters();
                 var server = apiUrl + "query";
 
                 this.$http.get(server,queryParams)
                     .then(function(results){
+
+
                         var resultsInfo = results.data.response;
                         var highLights  = results.data.highlighting;
                         var types       = results.data.facet_counts.facet_fields.content_type;
@@ -157,7 +157,7 @@
                         this.queryResults = validDocs;
                         this.biosamples = validDocs;
 
-                        this.pushHistoryState(queryParams);
+                        this.currentQueryParams = queryParams;
 
                     })
                     .catch(function(data,status,response){
@@ -242,6 +242,12 @@
                     this.querySamples();
                 });
             },
+
+            /**
+             * Read the location url using history API and, if not empty, lunch a query
+             * for the parameters in the url
+             * @method readLocationSearchAndQuerySamples
+             */
             readLocationSearchAndQuerySamples: function() {
                 var historyState = History.getState();
                 var urlParam = historyState.data;
@@ -253,12 +259,20 @@
                     console.log("No parameters")
                 }
             },
-            pushHistoryState: function(queryParams) {
 
-                clearTimeout(historyTimer);
-                historyTimer = setTimeout(function() {
-                    History.pushState(queryParams, 'test', _.toQueryString(queryParams));
-                }, 1000);
+            /**
+             * Save or update the history state if a query has been made
+             * @method saveHistoryState
+             */
+            saveHistoryState: function() {
+                if ( !_.isEmpty( this.currentQueryParams ) ) {
+                    if ( _.isEqual( this.currentQueryParams, this.previousQueryParams ) ) {
+                        History.replaceState(this.currentQueryParams, 'test', _.toQueryString(this.currentQueryParams));
+                    } else {
+                        this.previousQueryParams = this.currentQueryParams;
+                        History.pushState(this.currentQueryParams, 'test', _.toQueryString(this.currentQueryParams));
+                    }
+                }
             }
 
         }

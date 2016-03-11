@@ -180,7 +180,7 @@
                     </h3>
                 </div>
             </div>
-            <div v-else="">
+            <div v-else="" v-on:mouseenter="saveHistoryState">
                 <div class="row">
                     <div class="col-md-4"></div>
                     <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
