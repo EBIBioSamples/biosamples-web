@@ -1,5 +1,5 @@
 function getRandomColor() {
-  console.log("getRandomColor");
+  //console.log("getRandomColor");
   var letters = '0123456789ABCDEF'.split('');
   var color = '#';
   for (var i = 0; i < 6; i++ ) {
@@ -12,9 +12,8 @@ function getRandomColor() {
 function getURLsFromObject(objectToRead,prop){
 	var arrayUrls = [];
 
-	console.log("getURLsFromObject, objectToRead : ");
-	console.log(objectToRead);
-
+	//console.log("getURLsFromObject, objectToRead : ");
+	//console.log(objectToRead);
 	var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
 	// Loop through the img file formats, and if found, get the url, then add its display in InfoViz
 	for (var i =0; i < arrayImgTypes.length;i++){
@@ -24,7 +23,7 @@ function getURLsFromObject(objectToRead,prop){
 	    strCutSymbols.push(objectToRead[prop].split(","));
 	    strCutSymbols.push(objectToRead[prop].split(";"));
 	    strCutSymbols.push(objectToRead[prop].split(" "));
-	    console.log("strCutSymbols : ");console.log(strCutSymbols);
+	    //console.log("strCutSymbols : ");console.log(strCutSymbols);
 	    var strIsSeveralUrls=false;
 	    for (var k=0;k<strCutSymbols.length;k++){
 	      if (strCutSymbols[k].length>1){
@@ -87,9 +86,6 @@ function getURLsFromObject(objectToRead,prop){
 	      }
 	    }
 	  }
-	}
-	if (arrayUrls.length>0){
-		console.log("arrayUrls : ");console.log(arrayUrls);
 	}
 	return arrayUrls;
 }

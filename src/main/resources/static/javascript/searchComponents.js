@@ -14001,6 +14001,15 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
             .style("visibility", "hidden")
             .text(" This text should not appear ");
 
+          var drag = d3.behavior.drag()
+              .on("drag", function(d,i) {
+                  d.x += d3.event.dx
+                  d.y += d3.event.dy
+                  d3.select(this).attr("transform", function(d,i){
+                      return "translate(" + [ d.x,d.y ] + ")"
+                  })
+              });
+
           if (typeof results.data.response.docs[0] !== undefined){
             var divVizSpot = document.getElementById("vizSpot");
             if (divVizSpot === null){
@@ -14020,7 +14029,6 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                     .append("g");
                     //.attr("transform", "translate(" + widthD3 / 2 + "," + widthD3 / 2 + ")");
 
-
               var circleData = [];
 
 
@@ -14029,7 +14037,6 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                 circleData.push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
                   "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
                 // Image fake data
-
                 if ( results.data.response.docs[i].accession == "SAMEA1652705"){
                   results.data.response.docs[i].urlSimpleImg="www.w3schools.com/images/w3schools_green.jpg";
                   results.data.response.docs[i].urlArrayImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
@@ -14039,6 +14046,8 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
               }
               //Add circles to the svgContainer
               var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
+              .on('drag', function() { circle.attr('cx', d3.event.x)
+                                      .attr('cy', d3.event.y); })
                 .on("mouseover", function(d){//tooltip.text("Text over a circle");  return tooltip.style("visibility", "visible");
                   console.log("Mouse is over ");console.log(d);})
                 //.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX)+"px");})
@@ -14048,14 +14057,16 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                 d3.select(this).style("stroke-width", 2);
                 //.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")";
                 
-              
               if ( document.getElementById("InfoViz").style.visibility == "hidden" ){
                 document.getElementById("InfoViz").style.visibility="visible";
+                d3.select("svg").attr("width","70%");
               } else {
                 if ( d.accession ==  document.getElementById("InfoViz").className ){
                   document.getElementById("InfoViz").style.visibility="hidden";
+                  d3.select("svg").attr("width","100%");
                 } else {
                   document.getElementById("InfoViz").style.visibility="visible";
+                  d3.select("svg").attr("width","70%");
                 }
               }
               document.getElementById("InfoViz").className=d.accession;
