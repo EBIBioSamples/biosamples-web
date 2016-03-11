@@ -14023,25 +14023,17 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
               var circleData = [];
 
-              function getRandomColor() {
-                  var letters = '0123456789ABCDEF'.split('');
-                  var color = '#';
-                  for (var i = 0; i < 6; i++ ) {
-                      color += letters[Math.floor(Math.random() * 16)];
-                  }
-                  return color;
-              }
 
               for (var i=0;i< results.data.response.docs.length;i++){
                 //Circle Data Set
                 circleData.push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
                   "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
                 // Image fake data
-                /*
+
                 if ( results.data.response.docs[i].accession == "SAMEA1652705"){
-                  results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg";
+                  //results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg";
+                  results.data.response.docs[i].urlImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
                 }
-                */
 
               }
               //Add circles to the svgContainer
@@ -14086,9 +14078,26 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                       } else if ( indexWWW >= 0 ){
                         url = "http://"+d.responseDoc[prop].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
                       }
-                      console.log("url : "+url);
+                      //console.log("url : "+url);
                       document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-                      document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"width:104px;height:142px;\" >";
+                      document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" >";
+                    }
+                  } else if (Array.isArray(d.responseDoc[prop])){
+                    for (var j=0; j < d.responseDoc[prop].length;j++){                      
+                      var indexExtensionImg = d.responseDoc[prop][j].indexOf( arrayImgTypes[i] );                      
+                      if ( indexExtensionImg >= 0  ){ 
+                        var indexWWW = d.responseDoc[prop][j].indexOf( "www" );
+                        var indexHttp = d.responseDoc[prop][j].indexOf( "http" );
+                        var url;
+                        if ( indexHttp >= 0 ){
+                          url = d.responseDoc[prop][j].substr(indexHttp, indexExtensionImg+arrayImgTypes[i].length );
+                        } else if ( indexWWW >= 0 ){
+                          url = "http://"+d.responseDoc[prop][j].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
+                        }
+                        console.log("url : "+url);
+                        document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
+                        document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>";
+                      }
                     }
                   }
                 }
@@ -14136,39 +14145,18 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
               console.log("svg : ");console.log(svg);
 
-              /*.select("svg")
-                    .attr("width", widthD3)
-                    .attr("height", widthD3/3)
-                    .attr("id","vizSpot")
-                    .style("stroke", "black")
-                    .style("stroke-width", .3)
-                    .style("border","solid")
-                    .style("border-color","#5D8C83")
-                    .style("border-radius","10px")
-                    .append("g");
-              */
-
             var circleData = [];
-
-            function getRandomColor() {
-                var letters = '0123456789ABCDEF'.split('');
-                var color = '#';
-                for (var i = 0; i < 6; i++ ) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            }
 
             for (var i=0;i< results.data.response.docs.length;i++){
               //Circle Data Set
                 circleData.push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
                   "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
                 // Image fake data
-                /*
+
                 if ( results.data.response.docs[i].accession == "SAMEA1652705"){
-                  results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg";
+                  //results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg";
+                  results.data.response.docs[i].urlImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
                 }
-                */
 
             }
             console.log("circleData : ");console.log(circleData);
@@ -14195,7 +14183,7 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                 }
               }
               document.getElementById("InfoViz").className=d.accession;
-              //document.getElementById("InfoViz").innerHTML='<p>'+d.responseDoc.Organism_crt+'<br/>'+d.responseDoc.content_type+'<br/>'+d.responseDoc.description+'</p>';
+
               document.getElementById("InfoViz").innerHTML='<p>';
               for (var prop in d.responseDoc) {
                 // skip loop if the property is from prototype
@@ -14215,9 +14203,26 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                       } else if ( indexWWW >= 0 ){
                         url = "http://"+d.responseDoc[prop].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
                       }
-                      console.log("url : "+url);
+                      //console.log("url : "+url);
                       document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-                      document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"width:104px;height:142px;\" >";
+                      document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" style=\"height:200px;\" ><br/>";
+                    }
+                  } else if (Array.isArray(d.responseDoc[prop])){
+                    for (var j=0; j < d.responseDoc[prop].length;j++){                      
+                      var indexExtensionImg = d.responseDoc[prop][j].indexOf( arrayImgTypes[i] );
+                      if ( indexExtensionImg >= 0  ){ 
+                        var indexWWW = d.responseDoc[prop][j].indexOf( "www" );
+                        var indexHttp = d.responseDoc[prop][j].indexOf( "http" );
+                        var url;
+                        if ( indexHttp >= 0 ){
+                          url = d.responseDoc[prop][j].substr(indexHttp, indexExtensionImg+arrayImgTypes[i].length );
+                        } else if ( indexWWW >= 0 ){
+                          url = "http://"+d.responseDoc[prop][j].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
+                        }
+                        console.log("url : "+url);
+                        document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
+                        document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" style=\"height:200px;\" >";
+                      }
                     }
                   }
                 }
