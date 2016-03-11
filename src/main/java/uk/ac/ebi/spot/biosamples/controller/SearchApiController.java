@@ -8,12 +8,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.ac.ebi.spot.biosamples.model.SearchRequest;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by lucacherubin on 01/03/2016.
@@ -21,7 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class SearchApiController {
 
-    private final String baseSolrUrl = "http://beans.ebi.ac.uk:8983/solr/prototype/select?";
+    @NotNull
+    @Value("${solr.searchapi.server}")
+    private String baseSolrUrl;
 
     @CrossOrigin
     @RequestMapping(value = "search_api/query")
