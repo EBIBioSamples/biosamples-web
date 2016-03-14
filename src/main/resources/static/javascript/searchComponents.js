@@ -13965,6 +13965,7 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
       console.log("rezTest : ");console.log(rezTest);
 
 				this.$http.get(server, queryParams).then(function (results) {
+          console.log("Inside a http.get");
 					var resultsInfo = results.data.response;
 					var highLights = results.data.highlighting;
 					var types = results.data.facet_counts.facet_fields.content_type;
@@ -13992,7 +13993,45 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
           console.log("results : ");console.log(results);
           console.log("this.queryTerm : ");console.log(this.queryTerm);
           console.log("this.queryResults : ");console.log(this.queryResults);
-          console.log("this.queryResults[0].summaryObj : ");console.log(this.queryResults[0].summaryObj);
+          //console.log("this.queryResults[0].summaryObj : ");console.log(this.queryResults[0].summaryObj);
+
+          var widthD3 = $(".container").width();
+
+          var heightD3 = widthD3/2;
+          heightD3+=120;
+
+          console.log("document.getElementById(\"vizSpot\") : ");
+          console.log(document.getElementById("vizSpot"));
+          var svg;
+
+          if ( document.getElementById("vizSpot") === null ){
+            svg = d3.select(".container").insert("svg",":first-child")
+                  .attr("width", "100%")
+                  .attr("height", heightD3)
+                  .attr("id","vizSpot")
+                  .style("stroke", "black")
+                  .style("stroke-width", .3)
+                  .style("border","solid")
+                  .style("border-color","#5D8C83")
+                  .style("border-radius","10px")
+                  .append("g");
+                  //.attr("transform", "translate(" + widthD3 / 2 + "," + widthD3 / 2 + ")");
+            console.log("vizspot null and svg : ");console.log(svg);
+          } else {
+            d3.select("svg").remove();
+            document.getElementById("InfoViz").style.visibility="hidden";
+            
+            svg = d3.select(".container").insert("svg",":first-child")
+                  .attr("width", "100%")
+                  .attr("height", heightD3)
+                  .attr("id","vizSpot")
+                  .style("stroke", "black")
+                  .style("stroke-width", .3)
+                  .style("border","solid")
+                  .style("border-color","#5D8C83")
+                  .style("border-radius","10px");
+            console.log("vizspot not null and svg : ");console.log(svg);
+          }
 
           var tooltip = d3.select("body")
             .append("div")
@@ -14010,28 +14049,23 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                   })
               });
 
-          if (typeof results.data.response.docs[0] !== undefined){
-            var divVizSpot = document.getElementById("vizSpot");
-            if (divVizSpot === null){
-              var widthD3 = $(".container").width();
+          //document.getElementById("InfoViz").style.visibility="hidden";              
+          d3.select("svg").attr("width","100%");
+          //d3.select("svg").attr("visibility","hidden");
+          
 
-              var heightD3 = widthD3/2;
-              heightD3+=120;
-              var svg = d3.select(".container").insert("svg",":first-child")
-                    .attr("width", "100%")
-                    .attr("height", heightD3)
-                    .attr("id","vizSpot")
-                    .style("stroke", "black")
-                    .style("stroke-width", .3)
-                    .style("border","solid")
-                    .style("border-color","#5D8C83")
-                    .style("border-radius","10px")
-                    .append("g");
-                    //.attr("transform", "translate(" + widthD3 / 2 + "," + widthD3 / 2 + ")");
+          var divVizSpot = document.getElementById("vizSpot");
+
+          //if (typeof results.data.response.docs[0] !== undefined){
+          if (this.queryResults.length>0){
+            console.log("this.queryResults.length>0");
+            d3.select("svg").attr("visibility","visible");
+
+            //if (divVizSpot === null){
 
               var circleData = [];
 
-
+              console.log("results.data.response.docs.length : "+results.data.response.docs.length);
               for (var i=0;i< results.data.response.docs.length;i++){
                 //Circle Data Set
                 circleData.push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
@@ -14114,107 +14148,19 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
               console.log("circleData[0] : ");console.log(circleData[0]);
               d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
+
             } else {
-              document.getElementById("InfoViz").style.visibility="hidden";              
-              console.log("The else number 1");
-              console.log("this.queryResults : ");console.log(this.queryResults);
-              console.log("results.data.response.docs : ");console.log(results.data.response.docs);              
-
+              console.log("this.queryResults.length==0");
+              d3.select("svg").attr("visibility","hidden");
               d3.select("svg").selectAll("*").remove();
-
-              var widthD3 = $(".container").width();
-
-              var svg = d3.select("svg").insert("g",":first-child");
-
-              console.log("svg : ");console.log(svg);
-
-            var circleData = [];
-
-            for (var i=0;i< results.data.response.docs.length;i++){
-              //Circle Data Set
-                circleData.push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
-                  "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
-                // Image fake data
-                if ( results.data.response.docs[i].accession == "SAMEA1652705"){
-                  results.data.response.docs[i].urlSimpleImg="www.w3schools.com/images/w3schools_green.jpg";
-                  results.data.response.docs[i].urlArrayImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
-                  results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg,https://www.dragon1.com/images/examples.jpg";                }
+              document.getElementById("InfoViz").style.visibility="hidden";
+              //d3.select(".container").selectAll("*").remove();
             }
-            console.log("circleData : ");console.log(circleData);
-
-            //Add circles to the svgContainer
-              //Add circles to the svgContainer
-              var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
-                .on("mouseover", function(d){//tooltip.text("Text over a circle");  return tooltip.style("visibility", "visible");
-                  console.log("Mouse is over ");console.log(d);})
-                //.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX)+"px");})
-                //.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
-                .on("mousedown",function(d){console.log("You just clicked on a circle.");console.log("d : ");console.log(d);
-                d3.selectAll("circle").style("stroke-width",0);
-                d3.select(this).style("stroke-width", 2);
-                //.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")";
-
-              if ( document.getElementById("InfoViz").style.visibility == "hidden" ){
-                document.getElementById("InfoViz").style.visibility="visible";
-              } else {
-                if ( d.accession ==  document.getElementById("InfoViz").className ){
-                  document.getElementById("InfoViz").style.visibility="hidden";
-                } else {
-                  document.getElementById("InfoViz").style.visibility="visible";
-                }
-              }
-              document.getElementById("InfoViz").className=d.accession;
-
-              // Recover URLSs from object returned by the query
-              document.getElementById("InfoViz").innerHTML='<p>';
-              var URLs = [];
-              for (var prop in d.responseDoc) {
-                // skip loop if the property is from prototype
-                if(!d.responseDoc.hasOwnProperty(prop)) continue;
-                document.getElementById("InfoViz").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
-                URLs = getURLsFromObject(d.responseDoc,prop);
-                if (URLs.length>0){
-                  for (var k=0;k<URLs.length;k++){
-                    document.getElementById("InfoViz").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
-                    document.getElementById("InfoViz").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
-                  }
-                }
-              }
-              document.getElementById("InfoViz").innerHTML+='</p>';
-
-            });
-
-            //Add the circle attributes
-            var circleAttributes = circles.attr("cx", function (d) { return d.cx; })
-              .attr("cy", function (d) { return d.cy; }).attr("r", function (d) { return d.radius; })
-              .attr("accession",function(d){return d.accession})
-              .attr("responseDoc",function(d){return d.responseDoc})
-              .attr("id", function (d) { return d.id; })
-              .style("fill", function (d) { return d.color; });
-
-            //Add the SVG Text Element to the svgContainer
-            var text = svg.selectAll("text").data(circleData)
-              .enter().append("text");
-
-              //Add the text attributes
-              var textLabels = text.attr("x", function(d) { return d.cx + d.radius; }).attr("y", function(d) { return d.cy; })
-                               .text( function (d) { return "[" + d.accession+"]"; })
-                               .attr("font-family", "sans-serif").attr("font-size", "10px")
-                               .attr("border","solid").attr("border-radius","10px")
-                               .style("border","solid").style("border-radius","10px")
-                               .style("box-shadow","gray")
-                               .style("background-color","green")
-                               .attr("class","text-d3")
-                               .attr("fill", "#4D504F");
-
-            console.log("circleData[0] : ");console.log(circleData[0]);
-            d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
-
-            }
-          }
 
 				}).catch(function (data, status, response) {
-					console.log("status : ");console.log(status);
+					console.log("data : ");console.log(data);
+          console.log("status : ");console.log(status);
+          console.log("response : ");console.log(response);
 				});
         
 
