@@ -15,7 +15,7 @@ function getURLsFromObject(objectToRead,prop){
 	//console.log("getURLsFromObject, objectToRead : ");
 	//console.log(objectToRead);
 	var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
-	// Loop through the img file formats, and if found, get the url, then add its display in InfoViz
+	// Loop through the img file formats, and if found, get the url, then add its display in infoVizRelations
 	for (var i =0; i < arrayImgTypes.length;i++){
 	  if (typeof objectToRead[prop] == "string" ){
 	    // Loop through different kind of common separators, and turn the string into an array. Then you can use the code previously used to work with an array
@@ -40,8 +40,8 @@ function getURLsFromObject(objectToRead,prop){
 	              url = "http://"+strCutSymbols[k][l].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
 	            }
 	            //console.log("url : "+url);
-	            //document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-	            //document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" >";                      
+	            //document.getElementById("infoVizRelations").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
+	            //document.getElementById("infoVizRelations").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" >";                      
 	            arrayUrls.push(url);
 	          }
 	        }
@@ -61,8 +61,8 @@ function getURLsFromObject(objectToRead,prop){
 	          url = "http://"+objectToRead[prop].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
 	        }
 	        //console.log("url : "+url);
-	        //document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-	        //document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" >";                      
+	        //document.getElementById("infoVizRelations").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
+	        //document.getElementById("infoVizRelations").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" >";                      
 	        arrayUrls.push(url);
 	      }
 	    } 
@@ -80,12 +80,46 @@ function getURLsFromObject(objectToRead,prop){
 	          url = "http://"+objectToRead[prop][j].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
 	        }
 	        //console.log("url : "+url);
-	        //document.getElementById("InfoViz").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-	        //document.getElementById("InfoViz").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>";
+	        //document.getElementById("infoVizRelations").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
+	        //document.getElementById("infoVizRelations").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>";
 	        arrayUrls.push(url);
 	      }
 	    }
 	  }
 	}
 	return arrayUrls;
+}
+
+
+// TODO: reading attributes Same_As_crt, Derived_From_crt, Child_Of_crt, fill in in nodeData: nodes and links
+function loadDataFromGET(results, nodeData,circleData){
+	for (var i=0;i< results.data.response.docs.length;i++){
+		//Circle Data Set
+		// Group
+		if (results.data.response.docs[i].content_type=="group"){
+		  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", "accession":results.data.response.docs[i].accession,
+		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt,
+		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
+		  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", "accession":results.data.response.docs[i].accession,
+		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
+		    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+		  });
+		} else {
+		  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", "accession":results.data.response.docs[i].accession,
+		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
+		  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", "accession":results.data.response.docs[i].accession,
+		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
+		    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],		    
+		  });
+		}
+	}
+
+	// Temporary code, in the future we will not keep circleData
+	return [nodeData,circleData];
+}
+
+function getSamplesFromGroup(apiUrl,group){
+
 }

@@ -47,7 +47,9 @@
     /* body { max-width: 1600px; margin: 0 auto; } */
 
 .node circle {
-  fill: #000;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
 }
 
 .node {
@@ -55,7 +57,8 @@
 }
 
 .link {
-  stroke: #aaa;
+  fill: none;
+  stroke: #ccc;
   stroke-width: 1.5px;
 }
 
@@ -67,26 +70,11 @@
   font-size:10px;
 }
 
-.bar {
-  fill: steelblue;
-}
-.bar:hover {
-  fill: brown;
-}
-.axis {
-  font: 10px sans-serif;
-}
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-.x.axis path {
-  display: none;
-}
-  </style>  
+  </style>
+  
   <!-- end CSS-->
+
+
   <!-- All JavaScript at the bottom, except for Modernizr / Respond.
        Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
        For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
@@ -153,11 +141,11 @@
           <div class="left">
             <label>
             <input type="text" 
-		   name="first" 
-     		   id="local-searchbox"
+                   name="first"
+                   id="local-searchbox"
                    placeholder="Start your search"
                    v-model="searchTerm"
-                   @keyup="querySamples | debounce 300">
+                   v-on:keyup="querySamples | debounce 300">
             </label>
 
           </div>
@@ -199,25 +187,24 @@
 
     <!-- Example layout containers -->
     <section>
-       <h2>BioSample Database Search interface</h2>
+       <h2>BioSample Database Search iNTERFACE</h2>
     </section> 
-    <section class="container" v-cloak>
-<div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; top:100px; height:586px; 
-left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible">
-<div id="infoVizRelations1"></div>
-<div id="infoVizRelations2"></div>
-<div id="textData"></div>
-</div>      
+
+    <section class="container" v-show="queryTermPresent" v-cloak>
+      <div v-if="!queryHasResults">
+<div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; top:100px; height:588px; 
+left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible  " >Info about the clicked element. This should not be visible.</div>
     <div v-show="queryTerm && resultsNumber <= 0">
+
         <div class="row">
             <h3>
                 No results have been found for <i>{{queryTerm}}</i>
                 
-                <span class="small"><a href="#" @click="queryParams.useFuzzy = true" @click="querySamples()">Try for similar terms?</a></span>
+                <span class="small"><a href="#" v-on:click="queryParams.useFuzzy = true" v-on:click="querySamples()">Try for similar terms?</a></span>
             </h3>
         </div>
     </div>
-    <div v-show="queryTerm && resultsNumber > 0">
+    <div v-else>
         <div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
@@ -238,13 +225,13 @@ left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll;
                                        v-on:change="querySamples"> 
                             </form>
                             <component is="facet" title="Content Type" 
-                                    :keys="facets.types.keys" 
-                                    :values="facets.types.vals"
+                                    v-bind:keys="facets.types.keys" 
+                                    b-vind:values="facets.types.vals"
                                     facet-id="typeFilter">
                             </component>
                             <component is="facet" title="Organ" 
-                                    :keys="facets.organs.keys" 
-                                    :values="facets.organs.vals"
+                                    v-bind:keys="facets.organs.keys" 
+                                    v-bind:values="facets.organs.vals"
                                     facet-id="organFilter">
                             </component>
                             <!--<component is="facet" title="Organism" 

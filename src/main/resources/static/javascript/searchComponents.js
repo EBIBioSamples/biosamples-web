@@ -13960,12 +13960,16 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
 				var queryParams = this.getQueryParameters();
 				var server = apiUrl + "query";
+        console.log("queryParams : ");console.log(queryParams);
+        console.log("apiUrl : ");console.log(apiUrl);
+        console.log("server : ");console.log(server);
 
-      var rezTest = this.$http.get(server, queryParams);
-      console.log("rezTest : ");console.log(rezTest);
+        var rezTest = this.$http.get(server, queryParams);
+        console.log("rezTest : ");console.log(rezTest);
 
 				this.$http.get(server, queryParams).then(function (results) {
           console.log("Inside a http.get");
+          console.log("results : ");console.log(results);
 					var resultsInfo = results.data.response;
 					var highLights = results.data.highlighting;
 					var types = results.data.facet_counts.facet_fields.content_type;
@@ -13990,171 +13994,207 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 					this.biosamples = validDocs;
 					//console.log(this.facets.types);
           //console.log("query : ");console.log(query);
-          console.log("results : ");console.log(results);
+          
           console.log("this.queryTerm : ");console.log(this.queryTerm);
           console.log("this.queryResults : ");console.log(this.queryResults);
-          //console.log("this.queryResults[0].summaryObj : ");console.log(this.queryResults[0].summaryObj);
 
           var widthD3 = $(".container").width();
 
           var heightD3 = widthD3/2;
           heightD3+=120;
 
-          console.log("document.getElementById(\"vizSpot\") : ");
-          console.log(document.getElementById("vizSpot"));
+          var barChart = d3.select("#infoVizRelations")
+            .insert("svg",":first-child")
+            .attr("width", "100%")
+            .attr("height", heightD3)
+            .style("stroke", "black")
+            .style("stroke-width", .3)
+            .style("border","solid")
+            .style("border-color","#5D8C83")
+            .style("border-radius","10px")
+            ;
+
+
+          console.log("document.getElementById(\"vizSpotRelations\") : ");
+          console.log(document.getElementById("vizSpotRelations"));
           var svg;
 
-          if ( document.getElementById("vizSpot") === null ){
+          if ( document.getElementById("vizSpotRelations") === null ){
             svg = d3.select(".container").insert("svg",":first-child")
                   .attr("width", "100%")
                   .attr("height", heightD3)
-                  .attr("id","vizSpot")
-                  .style("stroke", "black")
-                  .style("stroke-width", .3)
-                  .style("border","solid")
-                  .style("border-color","#5D8C83")
-                  .style("border-radius","10px")
-                  .append("g");
-                  //.attr("transform", "translate(" + widthD3 / 2 + "," + widthD3 / 2 + ")");
-            console.log("vizspot null and svg : ");console.log(svg);
-          } else {
-            d3.select("svg").remove();
-            document.getElementById("InfoViz").style.visibility="hidden";
-            
-            svg = d3.select(".container").insert("svg",":first-child")
-                  .attr("width", "100%")
-                  .attr("height", heightD3)
-                  .attr("id","vizSpot")
+                  .attr("id","vizSpotRelations")
                   .style("stroke", "black")
                   .style("stroke-width", .3)
                   .style("border","solid")
                   .style("border-color","#5D8C83")
                   .style("border-radius","10px");
-            console.log("vizspot not null and svg : ");console.log(svg);
+                  //.append("g");
+                  //.attr("transform", "translate(" + widthD3 / 2 + "," + widthD3 / 2 + ")");
+            console.log("vizSpotRelations null and svg : ");console.log(svg);
+          } else {
+            d3.select("#vizSpotRelations").remove();
+            document.getElementById("infoVizRelations").style.visibility="hidden";            
+            svg = d3.select(".container").insert("svg",":first-child")
+              .attr("width", "100%")
+              .attr("height", heightD3)
+              .attr("id","vizSpotRelations")
+              .style("stroke", "black")
+              .style("stroke-width", .3)
+              .style("border","solid")
+              .style("border-color","#5D8C83")
+              .style("border-radius","10px");
           }
 
+          var width=document.getElementById("vizSpotRelations").getBoundingClientRect().width;
+          var height=document.getElementById("vizSpotRelations").getBoundingClientRect().height;
           var tooltip = d3.select("body")
             .append("div")
             .style("position", "absolute")
             .style("z-index", "10")
             .style("visibility", "hidden")
             .text(" This text should not appear ");
+          document.getElementById("infoVizRelations").style.height=(height-4)+"px";
+
+          var circleData = [];
+          var nodeData ={ "stuff":[], "nodes":[],"links":[]  };          
+          // Example of links :   "links":[{"source":2,"target":1,"weight":1},{"source":0,"target":2,"weight":3}]
+          // Trying to have the force working
+          var force = d3.layout.force()
+            .gravity(.05)
+            .distance(100)
+            .charge(-100)
+            .size([width, height]);
+
+          console.log("force : ");console.log(force);
+
+          d3.select("#vizSpotRelations").attr("width","100%");
+
+          var divvizSpotRelations = document.getElementById("vizSpotRelations");
+          if (this.queryResults.length>0){
+            console.log("this.queryResults.length>0");
+            d3.select("#vizSpotRelations").attr("visibility","visible");
+
+              var resLoad = loadDataFromGET(results, nodeData,circleData);
+              nodeData=resLoad[0]; circleData=resLoad[1];
+
+              /*
+            var node = svg.selectAll(".node")
+                .data(nodeData)
+              .enter().append("g")
+                .attr("class", "node")
+                .call(force.drag);
+              */
+          console.log("nodeData : ");console.log(nodeData);
+          console.log("nodeData.nodes : ");console.log(nodeData.nodes);
+          console.log("nodeData.links : ");console.log(nodeData.links);
+
+          var link = svg.selectAll(".link")
+            .data(nodeData.links)
+            .enter().append("line")
+            .attr("class", "link")
+            .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+
+
 
           var drag = d3.behavior.drag()
               .on("drag", function(d,i) {
-                  d.x += d3.event.dx
-                  d.y += d3.event.dy
+                  //d.cx += d3.event.dx;
+                  //d.cy += d3.event.dy;
                   d3.select(this).attr("transform", function(d,i){
-                      return "translate(" + [ d.x,d.y ] + ")"
+                      return "translate(" + [ d3.event.x - d.cx,d3.event.y -d.cy] + ")"
                   })
               });
 
-          //document.getElementById("InfoViz").style.visibility="hidden";              
-          d3.select("svg").attr("width","100%");
-          //d3.select("svg").attr("visibility","hidden");
-          
+            force
+              .nodes(nodeData.nodes)
+              .links(nodeData.links)
+              .start();
 
-          var divVizSpot = document.getElementById("vizSpot");
+              console.log("force attributes defined");
 
-          //if (typeof results.data.response.docs[0] !== undefined){
-          if (this.queryResults.length>0){
-            console.log("this.queryResults.length>0");
-            d3.select("svg").attr("visibility","visible");
-
-            //if (divVizSpot === null){
-
-              var circleData = [];
-
-              console.log("results.data.response.docs.length : "+results.data.response.docs.length);
-              for (var i=0;i< results.data.response.docs.length;i++){
-                //Circle Data Set
-                circleData.push({ "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "accession":results.data.response.docs[i].accession,
-                  "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
-                // Image fake data
-                if ( results.data.response.docs[i].accession == "SAMEA1652705"){
-                  results.data.response.docs[i].urlSimpleImg="www.w3schools.com/images/w3schools_green.jpg";
-                  results.data.response.docs[i].urlArrayImg=["www.w3schools.com/images/w3schools_green.jpg","https://www.dragon1.com/images/examples.jpg"];
-                  results.data.response.docs[i].urlImg="www.w3schools.com/images/w3schools_green.jpg,https://www.dragon1.com/images/examples.jpg";
-                }
-
-              }
               //Add circles to the svgContainer
-              var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
-              .on('drag', function() { circle.attr('cx', d3.event.x)
-                                      .attr('cy', d3.event.y); })
-                .on("mouseover", function(d){//tooltip.text("Text over a circle");  return tooltip.style("visibility", "visible");
-                  console.log("Mouse is over ");console.log(d);})
-                //.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX)+"px");})
-                //.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
-                .on("mousedown",function(d){console.log("You just clicked on a circle.");console.log("d : ");console.log(d);
-                d3.selectAll("circle").style("stroke-width",0);
-                d3.select(this).style("stroke-width", 2);
-                //.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")";
-                
-              if ( document.getElementById("InfoViz").style.visibility == "hidden" ){
-                document.getElementById("InfoViz").style.visibility="visible";
-                d3.select("svg").attr("width","70%");
-              } else {
-                if ( d.accession ==  document.getElementById("InfoViz").className ){
-                  document.getElementById("InfoViz").style.visibility="hidden";
-                  d3.select("svg").attr("width","100%");
-                } else {
-                  document.getElementById("InfoViz").style.visibility="visible";
-                  d3.select("svg").attr("width","70%");
-                }
-              }
-              document.getElementById("InfoViz").className=d.accession;
-
-              // Fill in the InfoViz according to data returned
-              document.getElementById("InfoViz").innerHTML='<p>';
-              var URLs = [];
-              for (var prop in d.responseDoc) {
-                // skip loop if the property is from prototype
-                if(!d.responseDoc.hasOwnProperty(prop)) continue;
-                document.getElementById("InfoViz").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
-                URLs = getURLsFromObject(d.responseDoc,prop);
-                if (URLs.length>0){
-                  for (var k=0;k<URLs.length;k++){
-                    document.getElementById("InfoViz").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
-                    document.getElementById("InfoViz").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
+              //var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
+              var node = svg.selectAll("node").data(nodeData.stuff).enter().append("g")
+                .attr("class","node").call(force.drag);
+                //var circles = svg.selectAll("node").data(nodeData).enter()
+                node.append("circle")
+                //.call(drag)
+                .on("mousedown",function(d){
+                  d3.selectAll("circle").style("stroke-width",0);
+                  d3.select(this).style("stroke-width", 2);
+                  if ( document.getElementById("infoVizRelations").style.visibility == "hidden" ){
+                    document.getElementById("infoVizRelations").style.visibility="visible";
+                    console.log("d3.select(\"#vizSpot\")");console.log(d3.select("#vizSpotRelations"));
+                    console.log("d3.select(\"svg\")");console.log(d3.select("svg"));
+                    d3.select("#vizSpotRelations").attr("width","70%");
+                  } else {
+                    if ( d.accession ==  document.getElementById("infoVizRelations").className ){
+                      document.getElementById("infoVizRelations").style.visibility="hidden";
+                      d3.select("#vizSpotRelations").attr("width","100%");
+                    } else {
+                      document.getElementById("infoVizRelations").style.visibility="visible";
+                      d3.select("#vizSpotRelations").attr("width","70%");
+                    }
                   }
-                }
-              }
-              document.getElementById("InfoViz").innerHTML+='</p>';
+                  document.getElementById("infoVizRelations").className=d.accession;
+                  // Fill in the infoVizRelations according to data returned
+                  document.getElementById("infoVizRelations").innerHTML='<p>';
+                  var URLs = [];
+                  for (var prop in d.responseDoc) {
+                    // skip loop if the property is from prototype
+                    if(!d.responseDoc.hasOwnProperty(prop)) continue;
+                    document.getElementById("infoVizRelations").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
+                    URLs = getURLsFromObject(d.responseDoc,prop);
+                    if (URLs.length>0){
+                      for (var k=0;k<URLs.length;k++){
+                        document.getElementById("infoVizRelations").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
+                        document.getElementById("infoVizRelations").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
+                      }
+                    }
+                  }
+                  document.getElementById("infoVizRelations").innerHTML+='</p>';
+                  })
+                  // Added attributes
+                  .attr("cx", function (d) { return d.cx; }) .attr("cy", function (d) { return d.cy; })
+                  .attr("r", function (d) { return d.radius; })
+                  .attr("accession",function(d){return d.accession})
+                  .attr("responseDoc",function(d){return d.responseDoc})
+                  .attr("id", function (d) { return d.id; })
+                  .attr("type", function (d) { return d.type; })
+                  .style("fill", function (d) { return d.color; })
+              ;
 
-            });
-            //Add the circle attributes
-            var circleAttributes = circles.attr("cx", function (d) { return d.cx; })
-              .attr("cy", function (d) { return d.cy; }).attr("r", function (d) { return d.radius; })
-              .attr("accession",function(d){return d.accession})
-              .attr("responseDoc",function(d){return d.responseDoc})
-              .attr("id", function (d) { return d.id; })
-              .style("fill", function (d) { return d.color; });
+              node.append("text")
+               .attr("x", function(d) { return d.cx + d.radius; }).attr("y", function(d) { return d.cy; })
+               .text( function (d) { return "[" + d.accession+"]"; })
+               .attr("font-family", "sans-serif").attr("font-size", "10px")
+               .attr("border","solid").attr("border-radius","10px")
+               .style("border","solid").style("border-radius","10px")
+               .style("box-shadow","gray")
+               .style("background-color","green")
+               .attr("class","text-d3")
+               .attr("fill", "#4D504F");
+              //console.log("circleData[0] : ");console.log(circleData[0]);
 
-              //Add the SVG Text Element to the svgContainer
-              var text = svg.selectAll("text").data(circleData)
-              .enter().append("text");
+              // Force rules:
+                force.on("tick", function() {
+                  link.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; })
+                  ;
+                  //node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                });
 
-              //Add the text attributes
-              var textLabels = text.attr("x", function(d) { return d.cx + d.radius; }).attr("y", function(d) { return d.cy; })
-                               .text( function (d) { return "[" + d.accession+"]"; })
-                               .attr("font-family", "sans-serif").attr("font-size", "10px")
-                               .attr("border","solid").attr("border-radius","10px")
-                               .style("border","solid").style("border-radius","10px")
-                               .style("box-shadow","gray")
-                               .style("background-color","green")
-                               .attr("class","text-d3")
-                               .attr("fill", "#4D504F");
 
-              console.log("circleData[0] : ");console.log(circleData[0]);
               d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
 
             } else {
               console.log("this.queryResults.length==0");
-              d3.select("svg").attr("visibility","hidden");
-              d3.select("svg").selectAll("*").remove();
-              document.getElementById("InfoViz").style.visibility="hidden";
-              //d3.select(".container").selectAll("*").remove();
+              d3.select("#vizSpotRelations").attr("visibility","hidden");
+              d3.select("#vizSpotRelations").selectAll("*").remove();
+              document.getElementById("infoVizRelations").style.visibility="hidden";
             }
 
 				}).catch(function (data, status, response) {
