@@ -142,12 +142,12 @@
 
             <nav>
                 <ul class="grid_24" id="local-nav">
-                    <li class="first"><a href="/biosamples/" title="Biosamples">Home</a></li>
-                    <li class="active"><a href="/biosamples/browse_samples.html" title="Samples">Samples</a></li>
-                    <li><a href="/biosamples/browse.html" title="Groups">Sample Groups</a></li>
-                    <li><a href="/biosamples/help/submit.html" title="Submit">Submit</a></li>
-                    <li><a href="/biosamples/help/index.html" title="Help">Help</a></li>
-                    <li class="last"><a href="/biosamples/about.html">About BioSamples</a></li>
+                    <li class="first active"><a href="." title="Biosamples">Home</a></li>
+                    <li><a href="browse_samples.html" title="Samples">Samples</a></li>
+                    <li><a href="browse.html" title="Groups">Sample Groups</a></li>
+                    <li><a href="help/submit.html" title="Submit">Submit</a></li>
+                    <li><a href="help/index.html" title="Help">Help</a></li>
+                    <li class="last"><a href="about.html">About BioSamples</a></li>
                     <li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li>
                 </ul>
             </nav>
@@ -158,12 +158,6 @@
     </header>
 
     <div id="content" role="main" class="grid_24 clearfix">
-
-        <nav id="breadcrumb">
-            <p>
-                <a href="/biosamples/">BioSamples</a> &gt; <a href="/biosamples/browse_samples.html">Samples</a> &gt; <span th:text="${sample.accession}"></span>
-            </p>
-        </nav>
 
         <!-- Biosamples specific content goes here -->
     <div id="bs_content">
@@ -316,7 +310,7 @@
         <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
 
         <!-- Biosamples scripts -->
-        <script th:src="@{../scripts/biosamples_sample_links.js}" src="../static/scripts/biosamples_sample_links.js"></script>
+
 
         <!-- end scripts-->
 
