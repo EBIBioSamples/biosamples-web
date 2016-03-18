@@ -1,18 +1,19 @@
 package uk.ac.ebi.spot.biosamples.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
+import uk.ac.ebi.spot.biosamples.model.mapping.CharacteristicMappingsDeserializer;
+import uk.ac.ebi.spot.biosamples.model.mapping.CharacteristicMappingsSerializer;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
@@ -36,7 +37,10 @@ public class Sample {
 
     // collection of all characteristics as key/list of value pairs
     @Field("*_crt") Map<String, List<String>> characteristics;
-    @Field("*_crt_json") Map<String, List<String>> characteristicMappings;
+    @JsonSerialize(using = CharacteristicMappingsSerializer.class)
+    @JsonDeserialize(using = CharacteristicMappingsDeserializer.class)
+    @Field("*_crt_json")
+    Map<String, List<String>> characteristicMappings;
 
     // XML payload for this sample - don't return in REST API
     @Field("xmlAPI") @JsonIgnore String xml;
