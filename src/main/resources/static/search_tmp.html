@@ -47,9 +47,7 @@
     /* body { max-width: 1600px; margin: 0 auto; } */
 
 .node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
+  fill: #000;
 }
 
 .node {
@@ -57,8 +55,7 @@
 }
 
 .link {
-  fill: none;
-  stroke: #ccc;
+  stroke: #aaa;
   stroke-width: 1.5px;
 }
 
@@ -70,11 +67,26 @@
   font-size:10px;
 }
 
-  </style>
-  
+.bar {
+  fill: steelblue;
+}
+.bar:hover {
+  fill: brown;
+}
+.axis {
+  font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.x.axis path {
+  display: none;
+}
+  </style>  
   <!-- end CSS-->
-
-
   <!-- All JavaScript at the bottom, except for Modernizr / Respond.
        Modernizr enables HTML5 elements & feature detects; Respond is a polyfill for min/max-width CSS3 Media Queries
        For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
@@ -189,13 +201,20 @@
     <section>
        <h2>BioSample Database Search iNTERFACE</h2>
     </section> 
-
-    <section class="container" v-show="queryTermPresent" v-cloak>
-      <div v-if="!queryHasResults">
-<div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; top:100px; height:588px; 
-left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible  " >Info about the clicked element. This should not be visible.</div>
+<<<<<<< HEAD:src/main/resources/static/search.html
+    <section class="container" v-cloak>
+<div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; top:100px; height:586px; 
+left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible">
+<div id="infoVizRelations1"></div>
+<div id="infoVizRelations2"></div>
+<div id="textData"></div>
+</div>      
     <div v-show="queryTerm && resultsNumber <= 0">
-
+=======
+    
+    <section class="container" v-show="queryTermPresent" v-cloak>
+    <div v-if="!queryHasResults">
+>>>>>>> master:src/main/resources/static/search_tmp.html
         <div class="row">
             <h3>
                 No results have been found for <i>{{queryTerm}}</i>

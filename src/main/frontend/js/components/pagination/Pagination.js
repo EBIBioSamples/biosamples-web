@@ -7,7 +7,7 @@
 (function(){
 	"use strict";
 
-	var _ =  require('underscore');
+	var _ =  require('lodash');
 
 	module.exports = {
 		template: require('./alternative.pagination.template.html'),

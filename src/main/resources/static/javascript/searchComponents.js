@@ -13958,7 +13958,7 @@ module.exports = '<div v-for="element in elements">\n <component is="biosample"\
           e.preventDefault();
         }
 
-        var queryParams = this.getQueryParameters();
+        var queryParams = this.gegit tQueryParameters();
         var server = apiUrl + "query";
         console.log("queryParams : ");console.log(queryParams);
         console.log("apiUrl : ");console.log(apiUrl);
