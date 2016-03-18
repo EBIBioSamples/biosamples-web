@@ -49,6 +49,41 @@
     <style type="text/css">
         /* You have the option of setting a maximum width for your page, and making sure everything is centered */
         /* body { max-width: 1600px; margin: 0 auto; } */
+.node circle {
+  fill: #000;
+}
+.node {
+  font: 10px sans-serif;
+}
+.link {
+  stroke: #aaa;
+  stroke-width: 1.5px;
+}
+.text-d3{
+  border:solid;  
+  border-radius:10px;
+  background-color:green;
+  font-family:arial;
+  font-size:10px;
+}
+.bar {
+  fill: steelblue;
+}
+.bar:hover {
+  fill: brown;
+}
+.axis {
+  font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.x.axis path {
+  display: none;
+}        
     </style>
 
     <!-- end CSS-->
@@ -169,7 +204,12 @@
         <section>
             <h2>BioSample Database Search Interface</h2>
         </section>
-
+<div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; top:100px; height:586px; 
+left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible">
+<div id="infoVizRelations1"></div>
+<div id="infoVizRelations2"></div>
+<div id="textData"></div>
+</div>      
         <section class="container" v-show="queryTermPresent" v-cloak>
             <div v-if="!queryHasResults">
                 <div class="row">
@@ -316,6 +356,9 @@
 <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
 <script src="/javascript/searchComponents.js"></script>
+<script src="/javascript/toolsFunctions.js"></script>
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
 
 <!-- end scripts-->
 
