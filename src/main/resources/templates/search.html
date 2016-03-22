@@ -51,13 +51,21 @@
         /* body { max-width: 1600px; margin: 0 auto; } */
 .node circle {
   fill: #000;
+  opacity:0.8;
 }
+
+.node text {
+stroke:#333;
+cursos:pointer;
+}
+
 .node {
   font: 10px sans-serif;
 }
 .link {
   stroke: #aaa;
   stroke-width: 1.5px;
+  opacity:.6;
 }
 .text-d3{
   border:solid;  
@@ -66,11 +74,14 @@
   font-family:arial;
   font-size:10px;
 }
+.text-d3:hover{
+    fill:black;
+}
 .bar {
   fill: steelblue;
 }
 .bar:hover {
-  fill: brown;
+  fill: green;
 }
 .axis {
   font: 10px sans-serif;

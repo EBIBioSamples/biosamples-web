@@ -95,29 +95,91 @@ function getURLsFromObject(objectToRead,prop){
 function loadDataFromGET(results, nodeData,circleData){
 	for (var i=0;i< results.data.response.docs.length;i++){
 		//Circle Data Set
-		// Group
+		// group
 		if (results.data.response.docs[i].content_type=="group"){
-		  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", "accession":results.data.response.docs[i].accession,
-		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt,
-		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
-		  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", "accession":results.data.response.docs[i].accession,
-		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
-		    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
-		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
-		  });
-		} else {
-		  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", "accession":results.data.response.docs[i].accession,
-		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
-		  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", "accession":results.data.response.docs[i].accession,
-		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
-		    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
-		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],		    
-		  });
+			if (typeof results.data.response.docs[i].grp_sample_accessions !== 'undefined'){
+			  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", 
+			  	"accession":results.data.response.docs[i].accession,
+			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt,
+			    "id": results.data.response.docs[i].id,
+			    //"sample_grp_accessions":results.data.response.docs[i].sample_grp_accessions,
+			    "grp_sample_accessions":results.data.response.docs[i].grp_sample_accessions,
+			    "responseDoc":results.data.response.docs[i]});
+			  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", 
+			  	"accession":results.data.response.docs[i].accession,
+			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
+			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			    //"sample_grp_accessions":results.data.response.docs[i].sample_grp_accessions,
+			    "grp_sample_accessions":results.data.response.docs[i].grp_sample_accessions,
+			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			  });
+			} else {
+			  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", 
+			  	"accession":results.data.response.docs[i].accession,
+			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt,
+			    "id": results.data.response.docs[i].id,
+			    //"sample_grp_accessions":results.data.response.docs[i].sample_grp_accessions,
+			    "grp_sample_accessions":[],
+			    "responseDoc":results.data.response.docs[i]});
+			  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", 
+			  	"accession":results.data.response.docs[i].accession,
+			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
+			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			    //"sample_grp_accessions":results.data.response.docs[i].sample_grp_accessions,
+			    "grp_sample_accessions":[],
+			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			  });
+			}
+		} //sample
+		else {
+			if (typeof results.data.response.docs[i].sample_grp_accessions !== 'undefined'){
+			  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", 
+			  	"accession":results.data.response.docs[i].accession,
+			    "id": results.data.response.docs[i].id,
+			    "sample_grp_accessions":results.data.response.docs[i].sample_grp_accessions,
+			    //"grp_sample_accessions":results.data.response.docs[i].grp_sample_accessions,
+			    "responseDoc":results.data.response.docs[i]});
+			  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", 
+			  	"accession":results.data.response.docs[i].accession,
+			    //"Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
+			    "sample_grp_accessions":results.data.response.docs[i].sample_grp_accessions,
+			    //"grp_sample_accessions":results.data.response.docs[i].grp_sample_accessions,
+			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],		    
+			  });
+			} else {
+			  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", 
+			  	"accession":results.data.response.docs[i].accession,
+			    "id": results.data.response.docs[i].id,
+			    "sample_grp_accessions":[],
+			    //"grp_sample_accessions":results.data.response.docs[i].grp_sample_accessions,
+			    "responseDoc":results.data.response.docs[i]});
+			  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", 
+			  	"accession":results.data.response.docs[i].accession,
+			    //"Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
+			    "sample_grp_accessions":[],
+			    //"grp_sample_accessions":results.data.response.docs[i].grp_sample_accessions,
+			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],		    
+			  });
+			}
 		}
 	}
 
 	// Temporary code, in the future we will not keep circleData
 	return [nodeData,circleData];
+}
+
+
+function loadLinks(results){
+	console.log("In loadLinks in src/main/frontend/js/toolsFunctions.js");
+	return [];
+}
+
+function loadBarCharts(){
+	var arrayDataGlobal = [];
+
+	return arrayDataGlobal;
 }
 
 function getSamplesFromGroup(apiUrl,group){

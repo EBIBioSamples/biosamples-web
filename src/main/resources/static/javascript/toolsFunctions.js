@@ -120,6 +120,12 @@ function loadDataFromGET(results, nodeData,circleData){
 	return [nodeData,circleData];
 }
 
+function loadLinks(results){
+	console.log("In loadLinks in src/main/resources/static/javascript/toolsFunctions.js");
+	return [];
+}
+
+
 function getSamplesFromGroup(apiUrl,group){
 
 }

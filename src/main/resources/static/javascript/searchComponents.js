@@ -29050,7 +29050,8 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
     var Biosample = require('./components/Biosample.js');
 
     // Vue Configuration
-    Vue.config.debug = true;
+    Vue.config.debug = false;
+    Vue.config.silent = true;
 
     // Plugins
     Vue.use(VueResource);
@@ -29204,24 +29205,27 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                     heightD3 += 120;
 
                     var margin = { top: 10, right: 10, bottom: 10, left: 10 };
-                    //var height = heightD3/3;
                     var width = document.getElementById("infoVizRelations").getBoundingClientRect().width - 5;
                     var height = document.getElementById("infoVizRelations").getBoundingClientRect().height / 3;
 
                     var barChart1 = d3.select("#infoVizRelations1").insert("svg", ":first-child").attr("width", width).attr("height", height)
                     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                     .attr("id", "resultsViz1").attr("class", "bar").style("stroke", "black").style("stroke-width", .3).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
-                    var barChart2 = d3.select("#infoVizRelations2").insert("svg", ":first-child").attr("width", width).attr("height", height)
+                    var barChart2 = d3.select("#infoVizRelations2").insert("svg", ":first-child")
+                    //.attr("width", width)
+                    .attr("width", margin.left + margin.right + (5 + 10) * (results.data.facet_counts.facet_fields.organ_crt.length / 2)).attr("height", height)
                     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                     .attr("id", "resultsViz2").attr("class", "bar").style("stroke", "black").style("stroke-width", .3).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
 
                     //var x = d3.scale.ordinal().rangeRoundBands([0, document.getElementById("infoVizRelations1").getBoundingClientRect().width], .1);
-                    var y = d3.scale.linear().range([0, height]);
-
+                    //var y = d3.scale.linear().range([0, height]);
                     var dataBar1 = [];
                     var dataBar2 = [];
-                    //var widthRectangle1 = (width - 5)/( Math.floor(results.data.facet_counts.facet_fields.content_type.length/2) ) - margin.left - margin.right;
-                    var widthRectangle1 = 10;
+                    var dataBars = [];
+                    //var dataBars = loadBarCharts();
+
+                    var widthRectangle1 = (width - 5) / Math.floor(results.data.facet_counts.facet_fields.content_type.length / 2) - margin.left - margin.right;
+                    // TODO: change the svg for this bar chart area to be bigger than the html div
                     //var widthRectangle2 = (width - 5)/( Math.floor(results.data.facet_counts.facet_fields.organ_crt.length/2) ) -margin.right ;
                     var widthRectangle2 = 10;
 
@@ -29272,12 +29276,11 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                     for (var i = 0; i < dataBar1.length; i++) {
                         var xHere = i * (widthRectangle1 + 5) + margin.left;
                         var yHere = height - margin.bottom;
-                        console.log("d3.select(\".axis1\") : ");console.log(d3.select(".axis1"));
-                        d3.select("#resultsViz1").append("text").attr("x", function () {
+                        d3.select("#resultsViz1").append("text").attr("class", "text-d3").attr("x", function () {
                             return xHere + widthRectangle1 / 2;
                         }).attr("y", function () {
                             return 0;
-                        }).attr("dy", ".71em").attr("opacity", "1").attr("style", "writing-mode: tb; glyph-orientation-vertical: 90").text(function () {
+                        }).attr("dy", ".71em").attr("opacity", "1").attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90").text(function () {
                             return dataBar1[i].content + ' : ' + dataBar1[i].occurence;
                         })
                         //.attr("transform", "translate(-"+  +","+ height/2 +") rotate(-90)");
@@ -29307,7 +29310,7 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                             return xHere + widthRectangle2 / 2;
                         }).attr("y", function () {
                             return 0;
-                        }).attr("dy", ".71em").attr("opacity", "1").attr("style", "writing-mode: tb; glyph-orientation-vertical: 90").text(function () {
+                        }).attr("dy", ".71em").attr("opacity", "1").attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90").text(function () {
                             return dataBar2[i].content + ' : ' + dataBar2[i].occurence;
                         })
                         //.attr("transform", "translate(-"+  +","+ height/2 +") rotate(-90)");
@@ -29332,7 +29335,9 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                     // Nodes relationships here
                     var svg;
                     if (document.getElementById("vizSpotRelations") === null) {
-                        svg = d3.select(".container").insert("svg", ":first-child").attr("width", "100%").attr("height", heightD3).attr("id", "vizSpotRelations").style("stroke", "black").style("stroke-width", .3).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
+                        svg = d3.select(".container").insert("svg", ":first-child")
+                        // set x and Width of div #content
+                        .attr("width", "100%").attr("height", heightD3).attr("id", "vizSpotRelations").style("stroke", "black").style("stroke-width", .3).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
                         //.append("g");
                         //.attr("transform", "translate(" + widthD3 / 2 + "," + widthD3 / 2 + ")");
                         //console.log("vizSpotRelations null and svg : ");console.log(svg);
@@ -29347,61 +29352,44 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                     var tooltip = d3.select("body").append("div").style("position", "absolute").style("z-index", "10").style("visibility", "hidden").text(" This text should not appear ");
                     document.getElementById("infoVizRelations").style.height = height - 4 + "px";
 
-                    var circleData = [];
+                    var groupsReturned = {};
+                    var nameToNodeIndex = {};
                     var nodeData = { "stuff": [], "nodes": [], "links": [] };
                     // Example of links :   "links":[{"source":2,"target":1,"weight":1},{"source":0,"target":2,"weight":3}]
                     // Trying to have the force working
+
                     var force = d3.layout.force().gravity(.05).distance(100).charge(-100).size([width, height]);
 
-                    // TODO: adapt the data to work with the force
-                    //console.log("force : ");console.log(force);
-                    d3.select("#vizSpotRelations").attr("width", "100%");
+                    /*
+                    var force = d3.layout.force()
+                      .gravity(.05)
+                      .distance(70)
+                      .charge(-100)
+                      .size([width, height]);
+                    */
+                    /*
+                    var force = d3.layout.force()
+                      .charge(-120)
+                      .linkDistance(50)
+                      .size([width, height]);
+                    */
 
                     var divvizSpotRelations = document.getElementById("vizSpotRelations");
                     if (this.queryResults.length > 0) {
                         console.log("this.queryResults.length>0");
                         d3.select("#vizSpotRelations").attr("visibility", "visible");
 
-                        var resLoad = loadDataFromGET(results, nodeData, circleData);
-                        nodeData = resLoad[0];circleData = resLoad[1];
-
-                        /*
-                        var node = svg.selectAll(".node")
-                          .data(nodeData)
-                        .enter().append("g")
-                          .attr("class", "node")
-                          .call(force.drag);
-                        */
-                        //TODO: match the data in order to work with the force
-                        /*
-                        console.log("nodeData : ");console.log(nodeData);
-                        console.log("nodeData.nodes : ");console.log(nodeData.nodes);
-                        console.log("nodeData.links : ");console.log(nodeData.links);
-                        */
-
-                        var link = svg.selectAll(".link").data(nodeData.links).enter().append("line").attr("class", "link").style("stroke-width", function (d) {
-                            return Math.sqrt(d.weight);
-                        });
-
-                        var drag = d3.behavior.drag().on("drag", function (d, i) {
-                            //d.cx += d3.event.dx;
-                            //d.cy += d3.event.dy;
-                            d3.select(this).attr("transform", function (d, i) {
-                                return "translate(" + [d3.event.x - d.cx, d3.event.y - d.cy] + ")";
-                            });
-                        });
-
-                        force.nodes(nodeData.nodes).links(nodeData.links).start();
-
-                        console.log("force attributes defined");
+                        var resLoad = loadDataFromGET(results, nodeData, groupsReturned, nameToNodeIndex);
+                        nodeData = resLoad[0];groupsReturned = resLoad[1];nameToNodeIndex = resLoad[2];
+                        console.log("after resLoad : nameToNodeIndex : ");console.log(nameToNodeIndex);
 
                         //Add circles to the svgContainer
-                        //var circles = svg.selectAll("circle").data(circleData).enter().append("circle")
-                        var node = svg.selectAll("node").data(nodeData.stuff).enter().append("g").attr("class", "node").call(force.drag);
-                        //var circles = svg.selectAll("node").data(nodeData).enter()
+                        var node = svg.selectAll("node").data(nodeData.nodes).enter().append("g").attr("class", "node").call(force.drag);
+
                         node.append("circle")
                         //.call(drag)
                         .on("mousedown", function (d) {
+                            console.log("on mousedown d : ");console.log(d);
                             d3.selectAll("circle").style("stroke-width", 0);
                             d3.select(this).style("stroke-width", 2);
                             if (document.getElementById("infoVizRelations").style.visibility == "hidden") {
@@ -29437,32 +29425,70 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                             document.getElementById("textData").innerHTML += '</p>';
                         })
                         // Added attributes
-                        .attr("cx", function (d) {
-                            return d.cx;
-                        }).attr("cy", function (d) {
-                            return d.cy;
-                        }).attr("r", function (d) {
+                        //.attr("cx", function (d) { return d.cx; }) .attr("cy", function (d) { return d.cy; })
+                        .attr("r", function (d) {
                             return d.radius;
                         }).attr("accession", function (d) {
                             return d.accession;
+                        }).attr("sample_grp_accessions", function (d) {
+                            return d.sample_grp_accessions;
+                        }).attr("grp_sample_accessions", function (d) {
+                            return d.grp_sample_accessions;
                         }).attr("responseDoc", function (d) {
                             return d.responseDoc;
-                        }).attr("id", function (d) {
-                            return d.id;
-                        }).attr("type", function (d) {
+                        })
+                        //.attr("id", function (d) { return d.id; })
+                        .attr("type", function (d) {
                             return d.type;
                         }).style("fill", function (d) {
                             return d.color;
                         });
 
-                        node.append("text").attr("x", function (d) {
-                            return d.cx + d.radius;
-                        }).attr("y", function (d) {
-                            return d.cy;
-                        }).text(function (d) {
+                        node.attr("accession", function (d) {
+                            return d.accession;
+                        }).attr("sample_grp_accessions", function (d) {
+                            return d.sample_grp_accessions;
+                        }).attr("grp_sample_accessions", function (d) {
+                            return d.grp_sample_accessions;
+                        }).attr("responseDoc", function (d) {
+                            return d.responseDoc;
+                        })
+                        //.attr("id", function (d) { return d.id; })
+                        .attr("type", function (d) {
+                            return d.type;
+                        }).style("fill", function (d) {
+                            return d.color;
+                        });
+
+                        node.append("text")
+                        //.attr("x", function(d) { return d.cx + d.radius; }).attr("y", function(d) { return d.cy; })
+                        .attr("dx", 12).attr("dy", ".35em")
+                        //.text( function (d) { return "[" + d.accession+"]"+"["+d.sample_grp_accessions+"]"; })
+                        .text(function (d) {
                             return "[" + d.accession + "]";
-                        }).attr("font-family", "sans-serif").attr("font-size", "10px").attr("border", "solid").attr("border-radius", "10px").style("border", "solid").style("border-radius", "10px").style("box-shadow", "gray").style("background-color", "green").attr("class", "text-d3").attr("fill", "#4D504F");
-                        //console.log("circleData[0] : ");console.log(circleData[0]);
+                        }).attr("font-family", "sans-serif").attr("font-size", "10px").attr("border", "solid").attr("border-radius", "10px").style("border", "solid").style("border-radius", "10px").style("box-shadow", "gray").style("background-color", "green")
+                        //.attr("class","text-d3")
+                        .attr("fill", "#4D504F").on("mousedown", function (d) {
+                            d3.selectAll("text").style("font-weight", "normal");
+                            d3.select(this).style("font-weight", "bold");
+                        });
+
+                        var link = svg.selectAll(".link").data(nodeData.links).enter().append("line").attr("class", "link").style("stroke-width", function (d) {
+                            return Math.sqrt(d.weight);
+                        });
+
+                        /*
+                        var drag = d3.behavior.drag()
+                          .on("drag", function(d,i) {
+                              d.cx += d3.event.dx;
+                              d.cy += d3.event.dy;
+                              d3.select(this).attr("transform", function(d,i){
+                                  return "translate(" + [ d3.event.x - d.cx,d3.event.y -d.cy] + ")"
+                              })
+                          });
+                        */
+
+                        force.nodes(nodeData.nodes).links(nodeData.links).start();
 
                         // Force rules:
                         force.on("tick", function () {
@@ -29475,7 +29501,9 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                             }).attr("y2", function (d) {
                                 return d.target.y;
                             });
-                            //node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                            node.attr("transform", function (d) {
+                                return "translate(" + d.x + "," + d.y + ")";
+                            });
                         });
 
                         d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
