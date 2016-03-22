@@ -123,22 +123,16 @@
                 if (e !== undefined) {
                     e.preventDefault();
                 }
-
                 if (_.isEmpty(this.searchTerm)) {
                     return;
                 }
-
                 var queryParams = this.getQueryParameters();
                 var server = apiUrl + "query";
 
                 this.$http.get(server,queryParams)
                     .then(function(results){
 
-                        this.currentQueryParams = queryParams;
-
-            console.log("Inside a http.get");
-            console.log("results : ");console.log(results);
-
+                this.currentQueryParams = queryParams;  
             document.getElementById("infoVizRelations").innerHTML=
               '<h3>Group information</h3>  <div id=\"infoVizRelations1\" height='+document.getElementById("infoVizRelations").getBoundingClientRect().height/3+' ></div><div id=\"infoVizRelations2\" height='+document.getElementById("infoVizRelations").getBoundingClientRect().height/3+'></div> <h3>Clicked element information</h3> <div id=\"textData\">  </div>'
 
@@ -149,26 +143,21 @@
             var organs = results.data.facet_counts.facet_fields.organ_crt;
             var docs = resultsInfo.docs;
             var hlDocs = this.associateHighlights(docs, highLights);
-
             this.queryTerm = this.searchTerm;
             this.resultsNumber = resultsInfo.numFound;
             this.facets.types = readFacets(types);
             this.facets.organisms = readFacets(organisms);
             this.facets.organs = readFacets(organs);
-
             var validDocs = [];
-
             for (var i = 0, n = hlDocs.length; i < n; i++) {
               validDocs.push(new Biosample(hlDocs[i]));
             }
-
             this.queryResults = validDocs;
             this.biosamples = validDocs;
-            //console.log(this.facets.types);
-            //console.log("query : ");console.log(query);
-            
-            console.log("this.queryTerm : ");console.log(this.queryTerm);
-            console.log("this.queryResults : ");console.log(this.queryResults);
+
+            //console.log("this.queryTerm : ");console.log(this.queryTerm);
+            //console.log("this.queryResults : ");console.log(this.queryResults);           
+            var fill = d3.scale.category20();
 
             var widthD3 = $(".container").width();
 
@@ -187,7 +176,7 @@
               .attr("id","resultsViz1")
               .attr("class","bar")
               .style("stroke", "black")
-              .style("stroke-width", .3)
+              .style("stroke-width", 1)
               .style("border","solid")
               .style("border-color","#5D8C83")
               .style("border-radius","10px")
@@ -201,7 +190,7 @@
               .attr("id","resultsViz2")
               .attr("class","bar")
               .style("stroke", "black")
-              .style("stroke-width", .3)
+              .style("stroke-width", 1)
               .style("border","solid")
               .style("border-color","#5D8C83")
               .style("border-radius","10px")
@@ -357,14 +346,15 @@
 
           // Nodes relationships here
           var svg;
-          if ( document.getElementById("vizSpotRelations") === null ){
+          if ( document.getElementById("vizSpotRelations") === null ){            
             svg = d3.select(".container").insert("svg",":first-child")
                   // set x and Width of div #content
-                  .attr("width", "100%")
+                  //.attr("width", "100%")
+                  .attr("width", "70%")
                   .attr("height", heightD3)
                   .attr("id","vizSpotRelations")
                   .style("stroke", "black")
-                  .style("stroke-width", .3)
+                  .style("stroke-width", 1)
                   .style("border","solid")
                   .style("border-color","#5D8C83")
                   .style("border-radius","10px");
@@ -375,15 +365,18 @@
             d3.select("#vizSpotRelations").remove();
             document.getElementById("infoVizRelations").style.visibility="hidden";            
             svg = d3.select(".container").insert("svg",":first-child")
-              .attr("width", "100%")
+              //.attr("width", "100%")
+              .attr("width", "70%")
               .attr("height", heightD3)
               .attr("id","vizSpotRelations")
               .style("stroke", "black")
-              .style("stroke-width", .3)
+              .style("stroke-width", 1)
               .style("border","solid")
               .style("border-color","#5D8C83")
               .style("border-radius","10px");
           }
+
+          document.getElementById("infoVizRelations").style.visibility="visible";
 
           var width=document.getElementById("vizSpotRelations").getBoundingClientRect().width;
           var height=document.getElementById("vizSpotRelations").getBoundingClientRect().height;
@@ -401,34 +394,28 @@
           // Example of links :   "links":[{"source":2,"target":1,"weight":1},{"source":0,"target":2,"weight":3}]
           // Trying to have the force working
 
-var force = d3.layout.force()
-    .gravity(.05)
-    .distance(100)
-    .charge(-100)
-    .size([width, height]);
-
-          /*
           var force = d3.layout.force()
             .gravity(.05)
-            .distance(70)
-            .charge(-100)
+            .distance(100)
+            .charge(-300)
             .size([width, height]);
-          */
-          /*
-          var force = d3.layout.force()
-            .charge(-120)
-            .linkDistance(50)
-            .size([width, height]);
-          */
-          
+
           var divvizSpotRelations = document.getElementById("vizSpotRelations");
           if (this.queryResults.length>0){
             console.log("this.queryResults.length>0");
             d3.select("#vizSpotRelations").attr("visibility","visible");
 
+
           var resLoad = loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           console.log("after resLoad : nameToNodeIndex : ");console.log(nameToNodeIndex);
+
+
+          var link = svg.selectAll(".link")
+            .data(nodeData.links)
+            .enter().append("line")
+            .attr("class", "link")
+            .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
           //Add circles to the svgContainer
           var node = svg.selectAll("node")
@@ -440,22 +427,8 @@ var force = d3.layout.force()
           //.call(drag)
           .on("mousedown",function(d){
             console.log("on mousedown d : ");console.log(d);
-            d3.selectAll("circle").style("stroke-width",0);
-            d3.select(this).style("stroke-width", 2);
-            if ( document.getElementById("infoVizRelations").style.visibility == "hidden"){
-              document.getElementById("infoVizRelations").style.visibility="visible";
-              console.log("d3.select(\"#vizSpot\")");console.log(d3.select("#vizSpotRelations"));
-              console.log("d3.select(\"svg\")");console.log(d3.select("svg"));
-              d3.select("#vizSpotRelations").attr("width","70%");
-            } else {
-              if ( d.accession ==  document.getElementById("infoVizRelations").className ){
-                document.getElementById("infoVizRelations").style.visibility="hidden";
-                d3.select("#vizSpotRelations").attr("width","100%");
-              } else {
-                document.getElementById("infoVizRelations").style.visibility="visible";
-                d3.select("#vizSpotRelations").attr("width","70%");
-              }
-            }
+            d3.selectAll("circle").style("stroke-width",1);
+            d3.select(this).style("stroke-width", 3);
             document.getElementById("infoVizRelations").className=d.accession;
             // Fill in the infoVizRelations according to data returned
             document.getElementById("textData").innerHTML='<p>';
@@ -483,7 +456,8 @@ var force = d3.layout.force()
             .attr("responseDoc",function(d){return d.responseDoc})
             //.attr("id", function (d) { return d.id; })
             .attr("type", function (d) { return d.type; })
-            .style("fill", function (d) { return d.color; })
+            //.style("fill", function (d) { return d.color; })
+            .style("fill", function(d) { return fill(d.group); })
           ;
 
           node
@@ -493,7 +467,8 @@ var force = d3.layout.force()
             .attr("responseDoc",function(d){return d.responseDoc})
             //.attr("id", function (d) { return d.id; })
             .attr("type", function (d) { return d.type; })
-            .style("fill", function (d) { return d.color; })
+            //.style("fill", function (d) { return d.color; })
+            .style("fill", function(d) { return fill(d.group); })
           ;
 
           node.append("text")
@@ -515,23 +490,6 @@ var force = d3.layout.force()
            })
            ;
 
-          var link = svg.selectAll(".link")
-            .data(nodeData.links)
-            .enter().append("line")
-            .attr("class", "link")
-            .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
-
-            /*
-          var drag = d3.behavior.drag()
-              .on("drag", function(d,i) {
-                  d.cx += d3.event.dx;
-                  d.cy += d3.event.dy;
-                  d3.select(this).attr("transform", function(d,i){
-                      return "translate(" + [ d3.event.x - d.cx,d3.event.y -d.cy] + ")"
-                  })
-              });
-            */
-
             force
               .nodes(nodeData.nodes)
               .links(nodeData.links)
@@ -546,7 +504,6 @@ var force = d3.layout.force()
               ;
               node.attr( "transform", function(d) {  return "translate(" + d.x + "," + d.y + ")"; });
             });
-
 
               d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
 
