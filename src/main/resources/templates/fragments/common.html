@@ -11,20 +11,21 @@
       xmlns="http://www.w3.org/1999/xhtml">
 <!--<![endif]-->
 <head>
-    <meta charset="utf-8" />
+    <div>
+        <meta charset="utf-8" />
 
-    <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-         More info: h5bp.com/b/378 -->
-    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> --> <!-- Not yet implemented -->
+        <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+             More info: h5bp.com/b/378 -->
+        <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> --> <!-- Not yet implemented -->
+        <meta name="description" content="EMBL-EBI" /><!-- Describe what this page is about -->
+        <meta name="keywords" content="bioinformatics, europe, institute" /><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
+        <meta name="author" content="EMBL-EBI" /><!-- Your [project-name] here -->
 
-    <title>BioSamples &lt; EMBL-EBI</title>
-    <meta name="description" content="EMBL-EBI" /><!-- Describe what this page is about -->
-    <meta name="keywords" content="bioinformatics, europe, institute" /><!-- A few keywords that relate to the content of THIS PAGE (not the whol project) -->
-    <meta name="author" content="EMBL-EBI" /><!-- Your [project-name] here -->
+        <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-    <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
 
+    </div>
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
 
     <!-- CSS: implied media=all -->
@@ -44,9 +45,9 @@
     -->
 
     <!-- Biosamples stylesheets -->
-    <link rel="stylesheet" href="stylesheets/font-awesome.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="stylesheets/biosamples_common_10.css" type="text/css" media="screen" />
-    <link rel="stylesheet" href="stylesheets/biosamples_detail_10.css" type="text/css" media="screen" />
+    <link rel="stylesheet" th:href="@{../stylesheets/font-awesome.css}" href="../static/stylesheets/font-awesome.css" type="text/css" media="screen" />
+    <link rel="stylesheet" th:href="@{../stylesheets/biosamples_common_10.css}" href="../static/stylesheets/biosamples_common_10.css" type="text/css" media="screen" />
+    <link rel="stylesheet" th:href="@{../stylesheets/biosamples_detail_10.css}" href="../static/stylesheets/biosamples_detail_10.css" type="text/css" media="screen" />
 
     <style type="text/css">
         /* You have the option of setting a maximum width for your page, and making sure everything is centered */
@@ -69,7 +70,7 @@
 </head>
 
 <body class="level2"><!-- add any of your classes or IDs -->
-<div id="skip-to">
+<div id="skip-to" th:fragment="skip-to">
     <ul>
         <li><a href="#content">Skip to main content</a></li>
         <li><a href="#local-nav">Skip to local navigation</a></li>
@@ -79,7 +80,7 @@
 </div>
 
 <div id="wrapper" class="container_24">
-    <header>
+    <header th:fragment="header">
         <div id="global-masthead" class="masthead grid_24">
             <!--This has to be one line and no newline characters-->
             <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png" alt="EMBL European Bioinformatics Institute" /></a>
@@ -103,7 +104,7 @@
             <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
 
             <div class="grid_12 alpha" id="local-title">
-                <h1><a href="index.html" title="Back to BioSamples homepage"><img src="images/BioSamples_logo.png" alt="BioSamples logo" />BioSamples</a></h1>
+                <h1><a href="index.html" title="Back to BioSamples homepage"><img th:src="@{../images/BioSamples_logo.png}" src="../static/images/BioSamples_logo.png" alt="BioSamples logo" />BioSamples</a></h1>
             </div>
 
             <!-- /local-title -->
@@ -121,7 +122,7 @@
                                 <input type="text" name="first" id="local-searchbox" />
                             </label>
                             <!-- Include some example searchterms - keep them short and few! -->
-                            <span class="examples">Examples: <a href="../search?query=Leukemia">Leukemia</a>, <a href="../search?query=SAMEA2494986">SAMEA2494986</a>, <a href="../search?query=EBiSC">EBiSC</a></span>
+                            <span class="examples">Examples: <a href="[search-url-1]">[search-text-1]</a>, <a href="[search-url-1]">[search-text-2]</a>, <a href="[search-url-1]">[search-text-3]</a></span>
                         </div>
 
                         <div class="right">
@@ -140,14 +141,14 @@
 
             <!-- local-nav -->
 
-            <nav>
+            <nav th:fragment="navigation">
                 <ul class="grid_24" id="local-nav">
-                    <li class="first active"><a href="." title="Biosamples">Home</a></li>
-                    <li><a href="browse_samples.html" title="Samples">Samples</a></li>
-                    <li><a href="browse.html" title="Groups">Sample Groups</a></li>
-                    <li><a href="help/submit.html" title="Submit">Submit</a></li>
-                    <li><a href="help/index.html" title="Help">Help</a></li>
-                    <li class="last"><a href="about.html">About BioSamples</a></li>
+                    <li class="first"><a href="/biosamples/" title="Biosamples">Home</a></li>
+                    <li><a href="/biosamples/browse_samples.html" title="Samples">Samples</a></li>
+                    <li class="active"><a href="/biosamples/browse.html" title="Groups">Sample Groups</a></li>
+                    <li><a href="/biosamples/help/submit.html" title="Submit">Submit</a></li>
+                    <li><a href="/biosamples/help/index.html" title="Help">Help</a></li>
+                    <li class="last"><a href="/biosamples/about.html">About BioSamples</a></li>
                     <li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li>
                 </ul>
             </nav>
@@ -157,92 +158,8 @@
         </div>
     </header>
 
-    <div id="content" role="main" class="grid_24 clearfix">
 
-        <!-- Biosamples specific content goes here -->
-    <div id="bs_content">
-        <section>
-            <h2>BioSamples - database of sample descriptions</h2>
-            <p class="intro justify">
-                The BioSamples database aggregates sample information for reference
-                samples (e.g. Coriell Cell lines) and samples for which data exist
-                in one of the EBI&#39;s assay databases such as <a
-                    href="//www.ebi.ac.uk/arrayexpress">ArrayExpress</a>, the <a
-                    href="//www.ebi.ac.uk/ena">European Nucleotide Archive</a> or <a
-                    href="//www.ebi.ac.uk/pride">PRIDE</a>.
-                It provides links to assays for specific samples, and accepts direct submissions of samples information.
-            </p>
-        </section>
-
-    <div class="grid_8 alpha">
-        <h3 class="icon icon-generic" data-icon="L">Info</h3>
-        <ul>
-            <li><a href="/biosamples/help/index.html">Help pages</a> about
-                how to search BioSamples, how to submit data, and FAQ.</li>
-            <li><a href="/biosamples/help/api.html">Programmatic access</a>
-                to query and download data using web services.</li>
-            <li><a href="/biosamples/help/news.html">Latest news</a> about
-                BioSamples database.</li>
-            <li>The BioSamples database now offers access to <a
-                    href="http://www.ebi.ac.uk/rdf/services/biosamples/">RDF</a>, and a
-                supporting <a
-                        href="http://www.ebi.ac.uk/rdf/services/biosamples/sparql">SPARQL
-                    endpoint</a> as part of the <a href="http://www.ebi.ac.uk/rdf">EBI's
-                    RDF platform</a>.
-            </li>
-            <li>Contact us by emailing <a
-                    href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a></li>
-        </ul>
-    </div>
-    <div class="grid_8">
-        <h3 class="icon icon-generic" data-icon="L">External links</h3>
-        <ul>
-            <li><a href="//www.ebi.ac.uk/efo/">Experimental Factor
-                Ontology</a></li>
-            <li><a href="//www.hipsci.org">Human Induced Pluripotent
-                Stem Cells Initiative (HipSci)</a></li>
-            <li><a href="//www.1000genomes.org/">1000 Genomes</a></li>
-            <li><a href="//www.genome.gov/26524238">Encyclopedia of DNA
-                Elements (ENCODE)</a></li>
-            <li><a
-                    href="//cancer.sanger.ac.uk/cancergenome/projects/cosmic/">Catalogue
-                Of Somatic Mutations In Cancer (COSMIC)</a></li>
-        </ul>
-    </div>
-    <div class="grid_8 omega">
-        <section>
-            <h3 class="icon icon-generic" data-icon="g">Data Content</h3>
-            <!-- <h5>Updated today at 06:00</h5> -->
-
-            <ul>
-                <li><span id="totalSamples"></span> Samples</li>
-                <li><span id="totalGroups"></span> Groups</li>
-                <!-- <li>XXXX Samples</li>
-                <li>YYYYY groups</li>
-                <li>XXXX Samples</li>
-                <li>YYYYY groups</li>
-                <li>XXXX Samples</li>
-                <li>YYYYY groups</li>
-                <li>XXXX Samples</li>
-                <li>YYYYY groups</li>
-                <li>XXXX Samples</li>
-                <li>YYYYY groups</li>
-                <li>XXXX Samples</li>
-                <li>YYYYY groups</li> -->
-            </ul>
-
-            &nbsp;&nbsp;<a href="//www.ebi.ac.uk/biosamples/search?query=hipsci" id="iconelink"><img src="images/dblinks/hipsci_small_logo.png" alt="Hipsci" border="0" title="Hipsci" /></a><br/>
-				<span class="${interface.application.metadata.class}"><a
-                        href="metadata?class=${interface.application.body.class}"
-                        target="ext">Metadata</a></span>
-        </section>
-    </div>
-    </div>
-
-        <!-- End Biosamples specific content -->
-    </div>
-
-    <footer>
+    <footer th:fragment="footer">
         <!-- Optional local footer (insert citation / project-specific copyright / etc here -->
         <!--
         <div id="local-footer" class="grid_24 clearfix">
@@ -289,49 +206,51 @@
         </div>
 
     </footer>
-
-        <!-- JavaScript at the bottom for fast page loading -->
-
-        <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-        <!--
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="../js/libs/jquery-1.6.2.min.js"><\/script>')</script>
-        -->
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</div> <!--! end of #wrapper -->
 
 
-        <!-- Your custom JavaScript file scan go here... change names accordingly -->
-        <!--
-        <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/plugins.js"></script>
-        <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/script.js"></script>
-        -->
-        <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
-        <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
+<!-- JavaScript at the bottom for fast page loading -->
 
-        <!-- Biosamples scripts -->
+<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+-->
 
-
-        <!-- end scripts-->
-
-        <!-- Google Analytics details... -->
-        <!-- Change UA-XXXXX-X to be your site's ID -->
-        <!--
-        <script>
-          window._gaq = [['_setAccount','UAXXXXXXXX1'],['_trackPageview'],['_trackPageLoadTime']];
-          Modernizr.load({
-            load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
-          });
-        </script>
-        -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 
 
-        <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
-             chromium.org/developers/how-tos/chrome-frame-getting-started -->
-        <!--[if lt IE 7 ]>
-        <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-        <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
-        <![endif]-->
+<!-- Your custom JavaScript file scan go here... change names accordingly -->
+<!--
+<script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/plugins.js"></script>
+<script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/script.js"></script>
+-->
+<script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
+<script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
+
+<!-- Biosamples scripts -->
+<script th:src="@{../scripts/biosamples_sample_links.js}" src="../static/scripts/biosamples_sample_links.js"></script>
+
+<!-- end scripts-->
+
+<!-- Google Analytics details... -->
+<!-- Change UA-XXXXX-X to be your site's ID -->
+<!--
+<script>
+  window._gaq = [['_setAccount','UAXXXXXXXX1'],['_trackPageview'],['_trackPageLoadTime']];
+  Modernizr.load({
+    load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+  });
+</script>
+-->
+
+
+<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+     chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->
 
 </body>
 </html>

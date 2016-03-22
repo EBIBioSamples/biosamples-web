@@ -1,0 +1,53 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!-->
+<html class="no-js"
+      lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+<!--<![endif]-->
+<head>
+    <title layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> BioSamples > EMBL-EBI</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+
+<body class="level2" layout:fragment="body"><!-- add any of your classes or IDs -->
+
+<div id="skip-to">
+    <ul>
+        <li><a href="#content">Skip to main content</a></li>
+        <li><a href="#local-nav">Skip to local navigation</a></li>
+        <li><a href="#global-nav">Skip to EBI global navigation menu</a></li>
+        <li><a href="#global-nav-expanded">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>
+    </ul>
+</div>
+
+<div id="wrapper" class="container_24">
+    <header th:replace="fragments/header :: header"></header>
+
+    <div id="content" role="main" class="grid_24 clearfix">
+
+        <!-- Biosamples specific content goes here -->
+        <div layout:fragment="content">
+            Hello world
+        </div>
+
+
+    <footer th:replace="fragments/footer :: footer">
+
+
+    </footer>
+</div> <!--! end of #wrapper -->
+
+
+<th:block th:replace="fragments/footer_scripts :: scripts">
+
+</th:block>
+
+</body>
+</html>
