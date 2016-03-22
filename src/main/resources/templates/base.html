@@ -11,7 +11,7 @@
       xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
 <!--<![endif]-->
 <head>
-    <title layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> BioSamples &lt; EMBL-EBI</title>
+    <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
     <object th:include="fragments/head :: head" th:remove="tag"></object>
 </head>
 
@@ -37,17 +37,14 @@
             Hello world
         </div>
 
-
-    <footer th:replace="fragments/footer :: footer">
-
-
-    </footer>
+    </div>
+    <footer th:replace="fragments/footer :: footer"></footer>
 </div> <!--! end of #wrapper -->
 
 
-<th:block th:replace="fragments/footer_scripts :: scripts">
+<th:block th:include="fragments/footer_scripts :: scripts" th:remove="tag"></th:block>
 
-</th:block>
+<th:block layout:fragment="custom-footer-scripts" th:remove="tag"></th:block>
 
 </body>
 </html>
