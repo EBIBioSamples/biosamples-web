@@ -1,7 +1,9 @@
 <!doctype html>
-<html layout:decorator="base" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html layout:decorator="base" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>Search</title>
+    <!--<link rel="stylesheet" href="stylesheets/main_samelf.css">-->
+    <link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>
 </head>
 <body>
 
@@ -20,85 +22,99 @@
 
 <div layout:fragment="content">
 
-    <div id="bs_content">
-        <section>
-            <h2>BioSamples - database of sample descriptions</h2>
-            <p class="intro justify">
-                The BioSamples database aggregates sample information for reference
-                samples (e.g. Coriell Cell lines) and samples for which data exist
-                in one of the EBI&#39;s assay databases such as <a
-                    href="//www.ebi.ac.uk/arrayexpress">ArrayExpress</a>, the <a
-                    href="//www.ebi.ac.uk/ena">European Nucleotide Archive</a> or <a
-                    href="//www.ebi.ac.uk/pride">PRIDE</a>.
-                It provides links to assays for specific samples, and accepts direct submissions of samples information.
-            </p>
-        </section>
 
-        <div class="grid_8 alpha">
-            <h3 class="icon icon-generic" data-icon="L">Info</h3>
-            <ul>
-                <li><a href="/biosamples/help/index.html">Help pages</a> about
-                    how to search BioSamples, how to submit data, and FAQ.</li>
-                <li><a href="/biosamples/help/api.html">Programmatic access</a>
-                    to query and download data using web services.</li>
-                <li><a href="/biosamples/help/news.html">Latest news</a> about
-                    BioSamples database.</li>
-                <li>The BioSamples database now offers access to <a
-                        href="http://www.ebi.ac.uk/rdf/services/biosamples/">RDF</a>, and a
-                    supporting <a
-                            href="http://www.ebi.ac.uk/rdf/services/biosamples/sparql">SPARQL
-                        endpoint</a> as part of the <a href="http://www.ebi.ac.uk/rdf">EBI's
-                        RDF platform</a>.
-                </li>
-                <li>Contact us by emailing <a
-                        href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a></li>
-            </ul>
-        </div>
-        <div class="grid_8">
-            <h3 class="icon icon-generic" data-icon="L">External links</h3>
-            <ul>
-                <li><a href="//www.ebi.ac.uk/efo/">Experimental Factor
-                    Ontology</a></li>
-                <li><a href="//www.hipsci.org">Human Induced Pluripotent
-                    Stem Cells Initiative (HipSci)</a></li>
-                <li><a href="//www.1000genomes.org/">1000 Genomes</a></li>
-                <li><a href="//www.genome.gov/26524238">Encyclopedia of DNA
-                    Elements (ENCODE)</a></li>
-                <li><a
-                        href="//cancer.sanger.ac.uk/cancergenome/projects/cosmic/">Catalogue
-                    Of Somatic Mutations In Cancer (COSMIC)</a></li>
-            </ul>
-        </div>
-        <div class="grid_8 omega">
-            <section>
-                <h3 class="icon icon-generic" data-icon="g">Data Content</h3>
-                <!-- <h5>Updated today at 06:00</h5> -->
+    <nav id="breadcrumb">
+        <p>
+            <a href="#">BioSamples</a> &gt;
+            Search
+        </p>
+    </nav>
 
-                <ul>
-                    <li><span id="totalSamples"></span> Samples</li>
-                    <li><span id="totalGroups"></span> Groups</li>
-                    <!-- <li>XXXX Samples</li>
-                    <li>YYYYY groups</li>
-                    <li>XXXX Samples</li>
-                    <li>YYYYY groups</li>
-                    <li>XXXX Samples</li>
-                    <li>YYYYY groups</li>
-                    <li>XXXX Samples</li>
-                    <li>YYYYY groups</li>
-                    <li>XXXX Samples</li>
-                    <li>YYYYY groups</li>
-                    <li>XXXX Samples</li>
-                    <li>YYYYY groups</li> -->
-                </ul>
+    <!-- Example layout containers -->
 
-                &nbsp;&nbsp;<a href="//www.ebi.ac.uk/biosamples/search?query=hipsci" id="iconelink"><img src="images/dblinks/hipsci_small_logo.png" alt="Hipsci" border="0" title="Hipsci" /></a><br/>
-				<span class="${interface.application.metadata.class}"><a
-                        href="metadata?class=${interface.application.body.class}"
-                        target="ext">Metadata</a></span>
-            </section>
+    <section>
+        <h2>BioSample Database Search Interface</h2>
+    </section>
+
+    <section class="container" v-show="queryTermPresent" v-cloak>
+        <div v-if="!queryHasResults">
+            <div class="row">
+                <h3>
+                    No results have been found for <i>{{queryTerm}}</i>
+
+                    <span class="small"><a href="#" v-on:click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
+                </h3>
+            </div>
         </div>
-    </div>
+        <div v-else="" v-on:mouseenter="saveHistoryState">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3>Refine search results</h3>
+                            </div>
+                            <div class="panel-body">
+                                <form>
+                                    <label for="fuzzy-search">Search for similar terms</label>
+                                    <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
+                                           v-model="useFuzzy"
+                                           v-on:change="querySamples" />
+                                </form>
+                                <component is="facet" title="Content Type"
+                                           v-bind:keys="facets.types.keys"
+                                           v-bind:values="facets.types.vals"
+                                           facet-id="typeFilter">
+                                </component>
+                                <component is="facet" title="Organ"
+                                           v-bind:keys="facets.organs.keys"
+                                           v-bind:values="facets.organs.vals"
+                                           facet-id="organFilter">
+                                </component>
+                                <!--<component is="facet" title="Organism"
+                                        :keys="facets.organisms.keys"
+                                        :values="facets.organisms.vals"
+                                        facet-id="organismFilter">
+                                </component> -->
+                            </div>
+                            <div class="panel-footer">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <component is="pagination"
+                                                   v-bind:total-results="resultsNumber"
+                                                   v-bind:displayed-results="samplesToRetrieve"
+                                                   style="float:right">
+                                        </component>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <component is="items-dropdown">
+                                        </component>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <component is="biosamples-list"
+                               v-bind:elements="biosamples">
+                    </component>
+                </div>
+            </div>
+        </div>
+    </section>
 
 </div>
+
+<div layout:fragment="custom-footer-scripts">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
+    <script src="/javascript/searchComponents.js"></script>
+</div>
+
 </body>
 </html>
