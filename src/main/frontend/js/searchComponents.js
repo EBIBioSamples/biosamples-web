@@ -353,7 +353,8 @@
                   .attr("width", "70%")
                   .attr("height", heightD3)
                   .attr("id","vizSpotRelations")
-                  .style("stroke", "black")
+                  //.style("stroke", "black")
+                  .style("stroke","green")
                   .style("stroke-width", 1)
                   .style("border","solid")
                   .style("border-color","#5D8C83")
@@ -390,14 +391,15 @@
 
           var groupsReturned={};
           var nameToNodeIndex={};
-          var nodeData ={ "stuff":[], "nodes":[],"links":[]  };
+          var nodeData ={ "stuff":[], "nodes":[],"links":[],"group":[],"color":[] };
           // Example of links :   "links":[{"source":2,"target":1,"weight":1},{"source":0,"target":2,"weight":3}]
           // Trying to have the force working
 
           var force = d3.layout.force()
             .gravity(.05)
-            .distance(100)
+            .distance(80)
             .charge(-300)
+            .friction(0.5)
             .size([width, height]);
 
           var divvizSpotRelations = document.getElementById("vizSpotRelations");
@@ -409,7 +411,6 @@
           var resLoad = loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           console.log("after resLoad : nameToNodeIndex : ");console.log(nameToNodeIndex);
-
 
           var link = svg.selectAll(".link")
             .data(nodeData.links)
@@ -428,7 +429,7 @@
           .on("mousedown",function(d){
             console.log("on mousedown d : ");console.log(d);
             d3.selectAll("circle").style("stroke-width",1);
-            d3.select(this).style("stroke-width", 3);
+            d3.select(this).style("stroke-width", 5);
             document.getElementById("infoVizRelations").className=d.accession;
             // Fill in the infoVizRelations according to data returned
             document.getElementById("textData").innerHTML='<p>';
@@ -456,8 +457,8 @@
             .attr("responseDoc",function(d){return d.responseDoc})
             //.attr("id", function (d) { return d.id; })
             .attr("type", function (d) { return d.type; })
-            //.style("fill", function (d) { return d.color; })
-            .style("fill", function(d) { return fill(d.group); })
+            .style("fill", function (d) {  return d.color; })
+            //.style("fill", function(d) { return fill(d.group); })
           ;
 
           node
@@ -468,7 +469,19 @@
             //.attr("id", function (d) { return d.id; })
             .attr("type", function (d) { return d.type; })
             //.style("fill", function (d) { return d.color; })
-            .style("fill", function(d) { return fill(d.group); })
+            .style("fill", function(d) { 
+              if (typeof d.group !==  'undefined'){
+                if (typeof d.group.color !==  'undefined'){
+                  return fill(d.group.color); 
+                } else {
+                  console.log("in the else 1");
+                  return getRandomColor();
+                }
+              } else {
+                console.log("in the else 2");
+                return getRandomColor();
+              }
+            })
           ;
 
           node.append("text")
@@ -485,15 +498,21 @@
            //.attr("class","text-d3")
            .attr("fill", "#4D504F")
            .on("mousedown", function(d){
-              d3.selectAll("text").style("font-weight","normal");
-              d3.select(this).style("font-weight","bold");
+              //d3.selectAll("text").style("font-weight","normal");
+              //d3.select(this).style("font-weight","bold");
            })
            ;
 
-            force
-              .nodes(nodeData.nodes)
-              .links(nodeData.links)
-              .start();
+          console.log("node step 4 : ");
+          console.log(node);           
+
+          var hull = svg.append("path")
+              .attr("class", "hull");
+
+          force
+            .nodes(nodeData.nodes)
+            .links(nodeData.links)              
+            .start();
 
             // Force rules:
             force.on("tick", function() {
@@ -505,7 +524,7 @@
               node.attr( "transform", function(d) {  return "translate(" + d.x + "," + d.y + ")"; });
             });
 
-              d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
+            d3.select(self.frameElement).style("height", widthD3 - 150 + "px");
 
             } else {
               console.log("this.queryResults.length==0");

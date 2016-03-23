@@ -29327,7 +29327,9 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                         svg = d3.select(".container").insert("svg", ":first-child")
                         // set x and Width of div #content
                         //.attr("width", "100%")
-                        .attr("width", "70%").attr("height", heightD3).attr("id", "vizSpotRelations").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
+                        .attr("width", "70%").attr("height", heightD3).attr("id", "vizSpotRelations")
+                        //.style("stroke", "black")
+                        .style("stroke", "green").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
                         //.append("g");
                         //.attr("transform", "translate(" + widthD3 / 2 + "," + widthD3 / 2 + ")");
                         //console.log("vizSpotRelations null and svg : ");console.log(svg);
@@ -29348,11 +29350,11 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
                     var groupsReturned = {};
                     var nameToNodeIndex = {};
-                    var nodeData = { "stuff": [], "nodes": [], "links": [] };
+                    var nodeData = { "stuff": [], "nodes": [], "links": [], "group": [], "color": [] };
                     // Example of links :   "links":[{"source":2,"target":1,"weight":1},{"source":0,"target":2,"weight":3}]
                     // Trying to have the force working
 
-                    var force = d3.layout.force().gravity(.05).distance(100).charge(-300).size([width, height]);
+                    var force = d3.layout.force().gravity(.05).distance(80).charge(-300).friction(0.5).size([width, height]);
 
                     var divvizSpotRelations = document.getElementById("vizSpotRelations");
                     if (this.queryResults.length > 0) {
@@ -29375,7 +29377,7 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                         .on("mousedown", function (d) {
                             console.log("on mousedown d : ");console.log(d);
                             d3.selectAll("circle").style("stroke-width", 1);
-                            d3.select(this).style("stroke-width", 3);
+                            d3.select(this).style("stroke-width", 5);
                             document.getElementById("infoVizRelations").className = d.accession;
                             // Fill in the infoVizRelations according to data returned
                             document.getElementById("textData").innerHTML = '<p>';
@@ -29410,11 +29412,11 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                         //.attr("id", function (d) { return d.id; })
                         .attr("type", function (d) {
                             return d.type;
+                        }).style("fill", function (d) {
+                            return d.color;
                         })
-                        //.style("fill", function (d) { return d.color; })
-                        .style("fill", function (d) {
-                            return fill(d.group);
-                        });
+                        //.style("fill", function(d) { return fill(d.group); })
+                        ;
 
                         node.attr("accession", function (d) {
                             return d.accession;
@@ -29431,7 +29433,17 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                         })
                         //.style("fill", function (d) { return d.color; })
                         .style("fill", function (d) {
-                            return fill(d.group);
+                            if (typeof d.group !== 'undefined') {
+                                if (typeof d.group.color !== 'undefined') {
+                                    return fill(d.group.color);
+                                } else {
+                                    console.log("in the else 1");
+                                    return getRandomColor();
+                                }
+                            } else {
+                                console.log("in the else 2");
+                                return getRandomColor();
+                            }
                         });
 
                         node.append("text")
@@ -29443,9 +29455,14 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                         }).attr("font-family", "sans-serif").attr("font-size", "10px").attr("border", "solid").attr("border-radius", "10px").style("border", "solid").style("border-radius", "10px").style("box-shadow", "gray").style("background-color", "green")
                         //.attr("class","text-d3")
                         .attr("fill", "#4D504F").on("mousedown", function (d) {
-                            d3.selectAll("text").style("font-weight", "normal");
-                            d3.select(this).style("font-weight", "bold");
+                            //d3.selectAll("text").style("font-weight","normal");
+                            //d3.select(this).style("font-weight","bold");
                         });
+
+                        console.log("node step 4 : ");
+                        console.log(node);
+
+                        var hull = svg.append("path").attr("class", "hull");
 
                         force.nodes(nodeData.nodes).links(nodeData.links).start();
 
