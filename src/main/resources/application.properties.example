@@ -1,0 +1,5 @@
+solr.server                         http://HOSTNAME:PORT/solr/
+solr.searchapi.server               http://HOSTNAME:PORT/solr/#/merged
+spring.data.rest.base-path          /api
+spring.data.rest.default-page-size  50
+spring.thymeleaf.mode               LEGACYHTML5
