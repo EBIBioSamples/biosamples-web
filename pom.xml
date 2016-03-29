@@ -123,40 +123,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>nl.geodienstencentrum.maven</groupId>
-				<artifactId>sass-maven-plugin</artifactId>
-				<version>2.16</version>
-				<executions>
-					<execution>
-						<id>generate-css</id>
-						<goals>
-							<goal>update-stylesheets</goal>
-						</goals>
-						<!-- <phase>generate-resources</phase> -->
-						<phase></phase>
-						<configuration>
-							<!-- <sassSourceDirectory>${basedir}/src/main/frontend/sass</sassSourceDirectory> -->
-							<!-- <destination>${basedir}/src/main/resources/static/stylesheets</destination> -->
-
-							<resources>
-								<resource>
-									<source>
-										<directory>${basedir}/src</directory>
-										<includes>
-											<include>main/frontend/sass/*.scss</include>
-										</includes>
-									</source>
-									<relativeOutputDirectory>/src/main/resources/static/stylesheets</relativeOutputDirectory>
-									<destination>${basedir}</destination>
-								</resource>
-							</resources>
-
-<!-- 							<skip>true</skip> -->
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<!-- make sure clean cleans temporary and generated files too -->
 				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
