@@ -141,16 +141,16 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<!-- make sure clean cleans temporary and generated files too -->
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.0.0</version>
 				<configuration>
 					<filesets>
 						<fileset>
 							<directory>./</directory>
 							<includes>
-								<include>node/**/*</include>
-								<include>node_modules/**/*</include>
-								<include>bower_components/**/*</include>
+								<include>node</include>
+								<include>node_modules</include>
+								<include>bower_components</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
