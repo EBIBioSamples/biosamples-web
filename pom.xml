@@ -132,12 +132,12 @@
 						<goals>
 							<goal>update-stylesheets</goal>
 						</goals>
-<!-- 						<phase>generate-resources</phase> -->
+						<!-- <phase>generate-resources</phase> -->
 						<phase></phase>
 						<configuration>
-<!-- 							<sassSourceDirectory>${basedir}/src/main/frontend/sass</sassSourceDirectory> -->
-<!-- 							<destination>${basedir}/src/main/resources/static/stylesheets</destination> -->
-							
+							<!-- <sassSourceDirectory>${basedir}/src/main/frontend/sass</sassSourceDirectory> -->
+							<!-- <destination>${basedir}/src/main/resources/static/stylesheets</destination> -->
+
 							<resources>
 								<resource>
 									<source>
@@ -151,6 +151,7 @@
 								</resource>
 							</resources>
 
+<!-- 							<skip>true</skip> -->
 						</configuration>
 					</execution>
 				</executions>
@@ -161,17 +162,27 @@
 				<configuration>
 					<filesets>
 						<fileset>
-							<directory>./</directory>
+							<directory>.</directory>
 							<includes>
-								<include>node</include>
-								<include>node_modules</include>
-								<include>bower_components</include>
-								<include>src/main/resources/static/stylesheets/flexboxgrid.css</include>
-								<include>src/main/resources/static/stylesheets/main_samelf.css</include>
-								<include>src/main/resources/static/javascript/searchComponents.js</include>
-								<include>src/main/resources/static/javascript/searchComponents.js.map</include>
+								<include>**/node/</include>
+								<include>**/node_modules/</include>
+								<include>**/bower_components/</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
+						</fileset>
+						<fileset>
+							<directory>src/main/resources/static/stylesheets/</directory>
+							<includes>
+								<include>flexboxgrid.css</include>
+								<include>main_samelf.css</include>
+							</includes>
+						</fileset>
+						<fileset>
+							<directory>src/main/resources/static/javascript/</directory>
+							<includes>
+								<include>searchComponents.js</include>
+								<include>searchComponents.js.map</include>
+							</includes>
 						</fileset>
 					</filesets>
 				</configuration>
