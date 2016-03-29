@@ -130,12 +130,27 @@
 					<execution>
 						<id>generate-css</id>
 						<goals>
-							<goal>help</goal>
 							<goal>update-stylesheets</goal>
 						</goals>
+<!-- 						<phase>generate-resources</phase> -->
+						<phase></phase>
 						<configuration>
-							<sassSourceDirectory>${basedir}/src/main/frontend/sass</sassSourceDirectory>
-							<destination>${basedir}/src/main/resources/static/stylesheets</destination>
+<!-- 							<sassSourceDirectory>${basedir}/src/main/frontend/sass</sassSourceDirectory> -->
+<!-- 							<destination>${basedir}/src/main/resources/static/stylesheets</destination> -->
+							
+							<resources>
+								<resource>
+									<source>
+										<directory>${basedir}/src</directory>
+										<includes>
+											<include>main/frontend/sass/*.scss</include>
+										</includes>
+									</source>
+									<relativeOutputDirectory>/src/main/resources/static/stylesheets</relativeOutputDirectory>
+									<destination>${basedir}</destination>
+								</resource>
+							</resources>
+
 						</configuration>
 					</execution>
 				</executions>
@@ -151,6 +166,10 @@
 								<include>node</include>
 								<include>node_modules</include>
 								<include>bower_components</include>
+								<include>src/main/resources/static/stylesheets/flexboxgrid.css</include>
+								<include>src/main/resources/static/stylesheets/main_samelf.css</include>
+								<include>src/main/resources/static/javascript/searchComponents.js</include>
+								<include>src/main/resources/static/javascript/searchComponents.js.map</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
