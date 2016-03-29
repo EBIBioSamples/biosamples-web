@@ -8,7 +8,8 @@
     "underscore": "^1.8.3",
     "vue": "1.0.x",
     "vue-resource": ">0.1.15",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "bower": "^1.7.7"
   },
   "dependencies": {
     "bootstrap-sass": "^3.0.0",
