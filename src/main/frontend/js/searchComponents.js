@@ -8,7 +8,7 @@
 (function(window){
     "use strict";
 
-    window.apiUrl = "http://localhost:8080/search_api/";
+    window.apiUrl = "search_api/";
 
     // Required
     var _           = require("lodash");
