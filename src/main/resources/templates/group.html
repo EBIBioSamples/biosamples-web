@@ -176,7 +176,7 @@
                     <tr th:if="${#maps.containsKey(group.characteristics, 'group_name') and #arrays.length(group.characteristics.group_name) > 0}">
                         <td class="col_title"><b>Group Name : </b></td>
                         <td>
-                            <div th:each="name: ${group.characteristics.group_name}">
+                            <div th:each="name: ${group.characteristicsText.group_name}">
                                 <span th:text="${name}"></span>
                             </div>
                         </td>
@@ -208,7 +208,7 @@
                     <tr th:if="${#maps.containsKey(group.characteristics, 'organism') and #arrays.length(group.characteristics.organism) > 0}" >
                         <td class="col_title"><b>Organism : </b></td>
                         <td>
-                            <div class="characteristic-mapping" th:each="organism: ${group.characteristicMappings.get('organism')}">
+                            <div class="characteristic-mapping" th:each="organism: ${group.characteristics.get('organism')}">
                                 <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
                             </div>
                         </td>
@@ -217,8 +217,8 @@
                     <!-- start all characteristics -->
                     <tr th:each="characteristic: ${group.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'group_name'  or characteristic.key == 'group_title' or characteristic.key == 'group_description'}">
                         <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
-                        <td th:if="${#maps.containsKey(group.characteristicMappings,characteristic.key)}">
-                            <div class="characteristic-mapping" th:each="value: ${group.characteristicMappings.get(characteristic.key)}">
+                        <td th:if="${#maps.containsKey(group.characteristics,characteristic.key)}">
+                            <div class="characteristic-mapping" th:each="value: ${group.characteristics.get(characteristic.key)}">
                                 <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
                             </div>
                         </td>
