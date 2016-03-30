@@ -29160,6 +29160,8 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
         var queryParams = this.getQueryParameters();
         var server = apiUrl + "query";
 
+        console.log("e : ");console.log(e);
+
         this.$http.get(server, queryParams).then(function (results) {
 
           this.currentQueryParams = queryParams;
@@ -29183,6 +29185,21 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
           }
           this.queryResults = validDocs;
           this.biosamples = validDocs;
+
+          console.log("====================");
+          console.log("this : ");console.log(this);
+
+          console.log("results : ");console.log(results);
+          console.log("resultsInfo : ");console.log(resultsInfo);
+          console.log("types : ");console.log(types);
+          console.log("organisms : ");console.log(organisms);
+          console.log("docs : ");console.log(docs);
+          console.log("hlDocs : ");console.log(hlDocs);
+          console.log("this.queryTerm : ");console.log(this.queryTerm);
+          console.log("this.facets.types : ");console.log(this.facets.types);
+          console.log("this.facets.organisms : ");console.log(this.facets.organisms);
+          console.log("this.facets.organs : ");console.log(this.facets.organs);
+          console.log("this.facets : ");console.log(this.facets);
 
           //console.log("this.queryTerm : ");console.log(this.queryTerm);
           //console.log("this.queryResults : ");console.log(this.queryResults);          
@@ -29409,20 +29426,17 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
             var resLoad = loadDataFromGET(results, nodeData, groupsReturned, nameToNodeIndex);
             nodeData = resLoad[0];groupsReturned = resLoad[1];nameToNodeIndex = resLoad[2];
-            console.log("after resLoad : nameToNodeIndex : ");console.log(nameToNodeIndex);
+            //console.log("after resLoad : nameToNodeIndex : ");console.log(nameToNodeIndex);
 
-            // Start draw ?
             draw(svg, nodeData);
-            // End of draw function ?
           } else {
-              console.log("this.queryResults.length==0");
-              d3.select("#vizSpotRelations").attr("visibility", "hidden");
-              d3.select("#vizSpotRelations").selectAll("*").remove();
-              document.getElementById("infoVizRelations").style.visibility = "hidden";
-            }
+            console.log("this.queryResults.length==0");
+            d3.select("#vizSpotRelations").attr("visibility", "hidden");
+            d3.select("#vizSpotRelations").selectAll("*").remove();
+            document.getElementById("infoVizRelations").style.visibility = "hidden";
+          }
 
           function draw(svg, nodeData) {
-            console.log("draw svg : ");console.log(svg);
 
             var width = document.getElementById("vizSpotRelations").getBoundingClientRect().width;
             var height = document.getElementById("vizSpotRelations").getBoundingClientRect().height;
@@ -29438,8 +29452,6 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
 
             node.append("circle").on("mousedown", function (d) {
               //console.log("on mousedown circle d : ");console.log(d);
-              //console.log("svg : ");console.log(svg);
-              //console.log("this : ");console.log(this);
               d3.selectAll("circle").style("stroke-width", 1);
               d3.select(this).style("stroke-width", 5);
               document.getElementById("infoVizRelations").className = d.accession;
@@ -29506,11 +29518,9 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
                 if (typeof d.group.color !== 'undefined') {
                   return fill(d.group.color);
                 } else {
-                  console.log("in the else 1");
                   return getRandomColor();
                 }
               } else {
-                console.log("in the else 2");
                 return getRandomColor();
               }
             }).on("mousedown", function (d) {
@@ -29565,8 +29575,6 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
               var elements = svg.selectAll('g');
               for (var i = 0; i < elements[0].length; i++) {
                 if (elements[0][i].classList.length > 1) {
-                  console.log("elements[0][" + i + "] : ");console.log(elements[0][i]);
-                  console.log("elements[0][i].classList");console.log(elements[0][i].classList);
                   isDragging = true;
                   accessionDragged = elements[0][i].accession;
                 }
@@ -29575,6 +29583,7 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
               node.attr("transform", function (d) {
                 return "translate(" + d.x + "," + d.y + ")";
               });
+              //text.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
             });
 
             d3.select(self.frameElement).style("height", width - 150 + "px");
@@ -29627,6 +29636,8 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
       },
 
       populateDataWithUrlParameter: function populateDataWithUrlParameter(urlParams) {
+        //console.log("in populateDataWithUrlParameter");
+        //console.log("urlParams : ");console.log(urlParams);
         this.searchTerm = urlParams.searchTerm;
         this.samplesToRetrieve = _.toInteger(urlParams.rows);
         this.pageNumber = _.toInteger(urlParams.start);

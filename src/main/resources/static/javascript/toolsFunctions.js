@@ -1,19 +1,18 @@
 function getRandomColor() {
-  //console.log("getRandomColor");
   var letters = '0123456789ABCDEF'.split('');
   var color = '#';
   for (var i = 0; i < 6; i++ ) {
-      color += letters[Math.floor(Math.random() * 16)];
+      color += letters[ 1 + Math.floor(Math.random() * 15)];
   }
   return color;
 }
 
+function loadBars(width,height,margin,results,dataBar1,dataBar2,dataBars){
+
+}
 
 function getURLsFromObject(objectToRead,prop){
 	var arrayUrls = [];
-
-	//console.log("getURLsFromObject, objectToRead : ");
-	//console.log(objectToRead);
 	var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
 	// Loop through the img file formats, and if found, get the url, then add its display in infoVizRelations
 	for (var i =0; i < arrayImgTypes.length;i++){
@@ -23,7 +22,6 @@ function getURLsFromObject(objectToRead,prop){
 	    strCutSymbols.push(objectToRead[prop].split(","));
 	    strCutSymbols.push(objectToRead[prop].split(";"));
 	    strCutSymbols.push(objectToRead[prop].split(" "));
-	    //console.log("strCutSymbols : ");console.log(strCutSymbols);
 	    var strIsSeveralUrls=false;
 	    for (var k=0;k<strCutSymbols.length;k++){
 	      if (strCutSymbols[k].length>1){
@@ -39,9 +37,6 @@ function getURLsFromObject(objectToRead,prop){
 	            } else if ( indexWWW >= 0 ){
 	              url = "http://"+strCutSymbols[k][l].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
 	            }
-	            //console.log("url : "+url);
-	            //document.getElementById("infoVizRelations").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-	            //document.getElementById("infoVizRelations").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" >";                      
 	            arrayUrls.push(url);
 	          }
 	        }
@@ -60,9 +55,6 @@ function getURLsFromObject(objectToRead,prop){
 	        } else if ( indexWWW >= 0 ){
 	          url = "http://"+objectToRead[prop].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
 	        }
-	        //console.log("url : "+url);
-	        //document.getElementById("infoVizRelations").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-	        //document.getElementById("infoVizRelations").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" >";                      
 	        arrayUrls.push(url);
 	      }
 	    } 
@@ -79,9 +71,6 @@ function getURLsFromObject(objectToRead,prop){
 	        } else if ( indexWWW >= 0 ){
 	          url = "http://"+objectToRead[prop][j].substr(indexWWW, indexExtensionImg+arrayImgTypes[i].length );
 	        }
-	        //console.log("url : "+url);
-	        //document.getElementById("infoVizRelations").innerHTML+="<a href=\""+url+"\">link text</a>+<br/>";
-	        //document.getElementById("infoVizRelations").innerHTML+="<img src=\""+url+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>";
 	        arrayUrls.push(url);
 	      }
 	    }
@@ -90,42 +79,131 @@ function getURLsFromObject(objectToRead,prop){
 	return arrayUrls;
 }
 
+function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 
-// TODO: reading attributes Same_As_crt, Derived_From_crt, Child_Of_crt, fill in in nodeData: nodes and links
-function loadDataFromGET(results, nodeData,circleData){
+	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
+	nodeData.group = [];
+	nodeData.color=[];
+
 	for (var i=0;i< results.data.response.docs.length;i++){
 		//Circle Data Set
-		// Group
+		// group
 		if (results.data.response.docs[i].content_type=="group"){
-		  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", "accession":results.data.response.docs[i].accession,
-		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt,
-		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
-		  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : "black", "type":"group", "accession":results.data.response.docs[i].accession,
-		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
-		    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
-		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
-		  });
-		} else {
-		  circleData.push({ /*"x":i*60 + 30,*/ "cx": i*60 + 30/*,"y":i*30 + 125*/, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", "accession":results.data.response.docs[i].accession,
-		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i]});
-		  nodeData.stuff.push({ "x": i*60 + 30, "y": i*30 + 125, "cx": i*60 + 30, "cy": i*30 + 125, "radius": 10, "color" : getRandomColor(), "type":"sample", "accession":results.data.response.docs[i].accession,
-		    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
-		    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
-		    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],		    
-		  });
+			if (typeof results.data.response.docs[i].grp_sample_accessions !== 'undefined'){
+			  nodeData.nodes.push({ 	
+			  	"radius": 10, 
+			  	"color" : getRandomColor(), 
+			  	"type":"group", 
+			  	"name":results.data.response.docs[i].accession,
+			  	"accession":results.data.response.docs[i].accession,
+			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
+			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			    "grp_sample_accessions":results.data.response.docs[i].grp_sample_accessions,
+			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			  });
+			  groupsReturned[results.data.response.docs[i].Group_Name_crt]=results.data.response.docs[i].grp_sample_accessions;
+			} else {
+			  nodeData.nodes.push({
+			  	"radius": 10, 
+			  	"color" : getRandomColor(), 
+			  	"type":"group", 
+			  	"name":results.data.response.docs[i].accession,
+			  	"accession":results.data.response.docs[i].accession,
+			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
+			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			    "grp_sample_accessions":[],
+			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			  });
+			  groupsReturned[results.data.response.docs[i].Group_Name_crt]=[];
+			}
+			nameToNodeIndex[ results.data.response.docs[i].accession[0] ] = nodeData.nodes.length-1;
+		} //sample
+		else {
+			if (typeof results.data.response.docs[i].sample_grp_accessions !== 'undefined'){
+			  nodeData.nodes.push({ 	
+			  	"radius": 5, 
+			  	"color" : getRandomColor(), 
+			  	"type":"sample", 
+			  	"name":results.data.response.docs[i].accession,
+			  	"accession":results.data.response.docs[i].accession,
+			    "sample_grp_accessions":results.data.response.docs[i].sample_grp_accessions,
+			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			  });
+
+			  if ( typeof groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]] === 'undefined' ){
+			  	groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]]=[];
+			  }
+			  groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]].push(results.data.response.docs[i].accession[0]);
+			} else {
+			  nodeData.nodes.push({ 
+			  	"radius": 5,
+			  	"color" : getRandomColor(), 
+			  	"type":"sample", 
+			  	"accession":results.data.response.docs[i].accession,
+			  	"name":results.data.response.docs[i].accession,
+			    "sample_grp_accessions":[],
+			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			  });
+			}
+
 		}
+		nameToNodeIndex[results.data.response.docs[i].accession[0]]=nodeData.nodes.length-1;
 	}
 
-	// Temporary code, in the future we will not keep circleData
-	return [nodeData,circleData];
+	var accessionToIndex={};
+	// Step 1: save from group to sample in nodes
+	for (var i=0; i < nodeData.nodes.length;i++){
+		//nodeData.nodes.push({"name":nodeData.stuff[i].accession[0]});
+		accessionToIndex[nodeData.nodes[i].accession[0]] = i;
+		nodeData.group[i]='';
+		nodeData.color[i]='';
+	}
+	// Step 2: for every element in the group to sample, create a link (do it just once)
+	var indexCalculation=0;
+	for (var group in groupsReturned){
+		// TODO: GET request to get the information in global about the samples within the group
+		colorGroup = getRandomColor();
+		indexCalculation++;
+		nodeData.nodes.push({
+			"radius": 10,
+			//"color" : getRandomColor(), 
+			"type":"groupViz",
+			"name":group,
+			"accession":group,
+			"sample_grp_accessions":undefined,
+		    "Derived_From_crt": undefined,"Same_As_crt": undefined,"Child_Of_crt": undefined,
+		    "id": undefined,"responseDoc":undefined,
+		    "color":colorGroup
+		});
+		nodeData.group.push(group);
+		nodeData.color.push(colorGroup);
+		nameToNodeIndex[group]=nodeData.nodes.length-1;
+
+		for (var i=0; i < groupsReturned[group].length;i++){
+			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
+
+			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
+				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
+				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
+
+				nodeData.links.push({
+					"source": nameToNodeIndex[ groupsReturned[group][i] ],
+					"target": nameToNodeIndex[ group ],
+					"weight": Math.sqrt(groupsReturned[group].length)
+				})
+			}
+		}
+	}
+	return [nodeData,groupsReturned,nameToNodeIndex];
 }
 
 function loadLinks(results){
-	console.log("In loadLinks in src/main/resources/static/javascript/toolsFunctions.js");
 	return [];
 }
-
 
 function getSamplesFromGroup(apiUrl,group){
 
 }
+
