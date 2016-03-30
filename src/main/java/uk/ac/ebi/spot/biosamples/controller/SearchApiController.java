@@ -8,6 +8,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,6 +25,8 @@ import javax.validation.constraints.NotNull;
 @Controller
 public class SearchApiController {
 
+	private Logger log = LoggerFactory.getLogger(this.getClass());
+	
     @NotNull
     @Value("${solr.searchapi.server}")
     private String baseSolrUrl;
@@ -76,6 +80,8 @@ public class SearchApiController {
 
 
         String finalQuery = baseSolrUrl + query.toString();
+        
+        log.info("finalQuery = "+finalQuery);
 
         this.forwardSolrResponse(response, finalQuery);
 
