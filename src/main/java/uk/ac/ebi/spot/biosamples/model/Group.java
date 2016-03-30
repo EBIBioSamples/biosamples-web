@@ -1,10 +1,12 @@
 package uk.ac.ebi.spot.biosamples.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
+import uk.ac.ebi.spot.biosamples.model.mapping.CharacteristicMappingsSerializer;
 
 import java.util.Collections;
 import java.util.Date;
@@ -32,8 +34,12 @@ public class Group {
     @Field("group_release_date") @DateTimeFormat Date releaseDate;
 
     // collection of all characteristics as key/list of value pairs
-    @Field("*_crt") Map<String, List<String>> characteristics;
-    @Field("*_crt_json") Map<String, List<String>> characteristicMappings;
+    @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
+
+    // TODO - if this becomes a read/write API, we will also need a JsonDeserializer
+    @JsonSerialize(using = CharacteristicMappingsSerializer.class)
+    @Field("*_crt_json")
+    Map<String, List<String>> characteristics;
 
     // XML payload for this sample - don't return in REST API
     @Field("xmlAPI") @JsonIgnore String xml;
@@ -91,12 +97,30 @@ public class Group {
         this.releaseDate = releaseDate;
     }
 
+    public Map<String, List<String>> getCharacteristicsText() {
+        // create a sorted, unmodifiable clone of this map (sorted by natural key order)
+        TreeMap<String, List<String>> result = new TreeMap<>();
+        if (characteristicsText != null) {
+            for (String key : characteristicsText.keySet()) {
+                result.put(key.replace("_crt", ""), characteristicsText.get(key));
+            }
+            return Collections.unmodifiableMap(result);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void setCharacteristicsText(Map<String, List<String>> characteristicsText) {
+        this.characteristicsText = characteristicsText;
+    }
+
     public Map<String, List<String>> getCharacteristics() {
         // create a sorted, unmodifiable clone of this map (sorted by natural key order)
         TreeMap<String, List<String>> result = new TreeMap<>();
         if (characteristics != null) {
             for (String key : characteristics.keySet()) {
-                result.put(key.replace("_crt", ""), characteristics.get(key));
+                result.put(key.replace("_crt_json", ""), characteristics.get(key));
             }
             return Collections.unmodifiableMap(result);
         }
@@ -107,24 +131,6 @@ public class Group {
 
     public void setCharacteristics(Map<String, List<String>> characteristics) {
         this.characteristics = characteristics;
-    }
-
-    public Map<String, List<String>> getCharacteristicMappings() {
-        // create a sorted, unmodifiable clone of this map (sorted by natural key order)
-        TreeMap<String, List<String>> result = new TreeMap<>();
-        if (characteristicMappings != null) {
-            for (String key : characteristicMappings.keySet()) {
-                result.put(key.replace("_crt_json", ""), characteristicMappings.get(key));
-            }
-            return Collections.unmodifiableMap(result);
-        }
-        else {
-            return null;
-        }
-    }
-
-    public void setCharacteristicMappings(Map<String, List<String>> characteristicMappings) {
-        this.characteristicMappings = characteristicMappings;
     }
 
     public String getXml() {
