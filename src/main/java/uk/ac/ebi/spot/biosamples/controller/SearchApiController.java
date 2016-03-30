@@ -81,7 +81,7 @@ public class SearchApiController {
 
         String finalQuery = baseSolrUrl + query.toString();
         
-        log.info("finalQuery = "+finalQuery);
+        log.trace("finalQuery = "+finalQuery);
 
         this.forwardSolrResponse(response, finalQuery);
 
