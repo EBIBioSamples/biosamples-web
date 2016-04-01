@@ -36,7 +36,6 @@
      * @return {Object} A key-value object representing the facets names and the count
      */
     function readFacets(facets) {
-      console.log("--+ readFacets");
         var obj = _.create({});
         obj.keys = [];
         obj.vals = [];
@@ -100,7 +99,6 @@
          * @method ready
          */
         ready: function() {
-            console.log("--+ ready");
             this.registerEventHandlers();
             this.readLocationSearchAndQuerySamples();
         },
@@ -233,16 +231,13 @@
                 });
 
                 this.$on('bar-selected', function(d) {
-                  console.log("you clicked on a bar");
                   this.querySamples();
                 })
 
                 this.$on('facet-selected', function(key, value) {
                     if (value === "") {
-                        console.log("Removed filter: [" + key + "]");
                         Vue.delete(this.filterQuery,key);
                     } else {
-                        console.log("this Set filter: [" + key + "]=" + value);
                         Vue.set(this.filterQuery,key,value);
                     }
                     this.querySamples();
