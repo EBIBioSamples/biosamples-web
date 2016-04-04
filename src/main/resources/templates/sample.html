@@ -32,6 +32,7 @@
                     href="//www.ebi.ac.uk/pride">PRIDE</a>.
                 It provides links to assays for specific samples, and accepts direct submissions of samples information.
             </p>
+<<<<<<< HEAD
         </section>
 
         <div class="grid_8 alpha">
@@ -53,6 +54,82 @@
                 <li>Contact us by emailing <a
                         href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a></li>
             </ul>
+=======
+        </nav>
+
+        <!-- Biosamples specific content goes here -->
+        <div id="bs_content">
+            <div class="detail_table">
+                <h4 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h4>
+
+                <table id="bs_results_tablesamplegroupdetail">
+                    <tbody>
+                    <!-- Common sample attributes -->
+                    <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_name') and #arrays.length(sample.characteristics.sample_name) > 0}">
+                        <td class="col_title"><b>Sample Name : </b></td>
+                        <td>
+                            <div th:each="name: ${sample.characteristicsText.sample_name}">
+                                <span th:text="${name}"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_title') and #arrays.length(sample.characteristics.sample_title) > 0}">
+                        <td class="col_title"><b>Sample Title : </b></td>
+                        <td>
+                            <div th:each="title: ${sample.characteristicsText.sample_title}">
+                                <span th:text="${title}"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_description') and #arrays.length(sample.characteristics.sample_description) > 0}">
+                        <td class="col_title"><b>Sample Description : </b></td>
+                        <td>
+                            <div th:each="description: ${sample.characteristicsText.sample_description}">
+                                <span th:text="${description}"></span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Dedicated organism attribute -->
+                    <tr th:if="${#maps.containsKey(sample.characteristics, 'organism') and #arrays.length(sample.characteristics.organism) > 0}">
+                        <td class="col_title"><b>Organism : </b></td>
+                        <td>
+                            <div class="characteristic-mapping" th:each="organism: ${sample.characteristics.get('organism')}">
+                                <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- start all characteristics -->
+                    <tr th:each="characteristic: ${sample.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'sample_name'  or characteristic.key == 'sample_title' or characteristic.key == 'sample_description'}">
+                        <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
+                        <td th:if="${#maps.containsKey(sample.characteristics,characteristic.key)}">
+                            <div class="characteristic-mapping" th:each="value: ${sample.characteristics.get(characteristic.key)}">
+                                <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- end all characteristics -->
+
+                    <!-- update times metadata -->
+                    <tr>
+                        <td class="col_title"><b>Release Date :</b></td>
+                        <td th:text="${sample.releaseDate}"></td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>Last Updated :</b></td>
+                        <td th:text="${sample.submissionUpdateDate}"></td>
+                    </tr>
+                    <tr>
+                        <td class="col_title"><b>Groups :</b></td>
+                        <td>
+                            <!--<a href="../group/SAMEG39304"><id>SAMEG39304</id></a>-->
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+>>>>>>> master
         </div>
         <div class="grid_8">
             <h3 class="icon icon-generic" data-icon="L">External links</h3>

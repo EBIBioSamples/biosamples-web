@@ -8,14 +8,14 @@
 (function(window){
     "use strict";
 
-    window.apiUrl = "http://localhost:8080/search_api/";
+    window.apiUrl = "search_api/";
 
     // Required
     var _           = require("lodash");
     var _mixins     = require('./utilities/_mixins.js');
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
-    var Biosample   = require('./components/Biosample.js');
+    var Biosample   = require('./components/BioSample.js');
 
 
     // Vue Configuration

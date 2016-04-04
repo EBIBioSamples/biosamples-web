@@ -1,9 +1,10 @@
 # Frontend
-node_modules
-bower_components
+/node
+/node_modules
+/bower_components
 
 # Javascript/Stylesheets automatically generated
-src/main/resources/static/stylesheets/flexboxgrid.css
-src/main/resources/static/stylesheets/main_samelf.css
-src/main/resources/static/javascript/searchComponents.js
-src/main/resources/static/javascript/searchComponents.js.map
+/src/main/resources/static/stylesheets/flexboxgrid.css
+/src/main/resources/static/stylesheets/main_samelf.css
+/src/main/resources/static/javascript/searchComponents.js
+/src/main/resources/static/javascript/searchComponents.js.map
