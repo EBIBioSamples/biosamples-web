@@ -126,6 +126,7 @@
 						<fileset>
 							<directory>.</directory>
 							<includes>
+								<include>**/logs/</include>
 								<include>**/node/</include>
 								<include>**/node_modules/</include>
 								<include>**/bower_components/</include>
