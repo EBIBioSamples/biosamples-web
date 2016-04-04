@@ -81,18 +81,23 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
-	console.log("loadDataFromGET 2");
+	console.log("loadDataFromGET in src/main/resources/static/javascript");
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
 	nodeData.color=[];
 	nodeData.accessions="";
+
+	console.log("Before Step 0");
 
 	for (var i=0;i< results.data.response.docs.length;i++){
 		nodeData.accessions+=results.data.response.docs[i].accession+' ';
 		//Circle Data Set
 		// group
 		if (results.data.response.docs[i].content_type=="group"){
+			console.log("group : ");console.log(results.data.response.docs[i].accession);
 			if (typeof results.data.response.docs[i].grp_sample_accessions !== 'undefined'){
+				console.log("results.data.response.docs[i].grp_sample_accessions : ");
+				console.log(results.data.response.docs[i].grp_sample_accessions);
 			  nodeData.nodes.push({
 			  	"radius": 10,
 			  	"color" : getRandomColor(),
@@ -119,10 +124,13 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			  });
 			  groupsReturned[results.data.response.docs[i].Group_Name_crt]=[];
 			}
-			nameToNodeIndex[ results.data.response.docs[i].accession[0] ] = nodeData.nodes.length-1;
+			console.log("results.data.response.docs[i].accession : ");console.log(results.data.response.docs[i].accession);
+			nameToNodeIndex[ results.data.response.docs[i].accession ] = nodeData.nodes.length-1;
 		} //sample
 		else {
+			console.log("sample : ");console.log(results.data.response.docs[i].accession);
 			if (typeof results.data.response.docs[i].sample_grp_accessions !== 'undefined'){
+			  console.log("results.data.response.docs[i].sample_grp_accessions : ");console.log(results.data.response.docs[i].sample_grp_accessions);
 			  nodeData.nodes.push({ 	
 			  	"radius": 5, 
 			  	"color" : getRandomColor(), 
@@ -134,10 +142,13 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
 			  });
 
+			  console.log("nodeData.nodes push done");
+
 			  if ( typeof groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]] === 'undefined' ){
 			  	groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]]=[];
 			  }
-			  groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]].push(results.data.response.docs[i].accession[0]);
+			  console.log("results.data.response.docs["+i+"] : ");console.log(results.data.response.docs[i]);
+			  groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]].push(results.data.response.docs[i].accession);
 			} else {
 			  nodeData.nodes.push({ 
 			  	"radius": 5,
@@ -149,17 +160,19 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
 			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
 			  });
-			}
-
+			}			
 		}
-		nameToNodeIndex[results.data.response.docs[i].accession[0]]=nodeData.nodes.length-1;
+		nameToNodeIndex[results.data.response.docs[i].accession] = nodeData.nodes.length-1;
+		console.log("PASSED THIS !");
 	}
+
+	console.log("Before Step 1");
 
 	var accessionToIndex={};
 	// Step 1: save from group to sample in nodes
 	for (var i=0; i < nodeData.nodes.length;i++){
 		//nodeData.nodes.push({"name":nodeData.stuff[i].accession[0]});
-		accessionToIndex[nodeData.nodes[i].accession[0]] = i;
+		accessionToIndex[nodeData.nodes[i].accession] = i;
 		nodeData.group[i]='';
 		nodeData.color[i]='';
 	}
@@ -191,8 +204,8 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			var indexNodeGroup = nameToNodeIndex[group];
 			nodeData.color[ indexNodeGroup ] = colorGroup;
 			nodeData.nodes[ indexNodeGroup ].color = colorGroup;
-			console.log("nodeData.nodes[ indexNodeGroup ].groupAttributes : ");console.log(nodeData.nodes[ indexNodeGroup ].groupAttributes);
 		}
+			/*
 			// BUGGY, NORMALLY IN THE ELSE 1
 			console.log("nodeData.nodes[ nameToNodeIndex[group] ] : ");console.log(nodeData.nodes[ nameToNodeIndex[group] ]);
 			nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes = {};
@@ -211,20 +224,32 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 					// at index [attr given by sample], add +1
 					//var attrSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr] ];
 					var attrSample = attr;
-					console.log("attrSample : ");console.log(attrSample);
 					( typeof nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] === "undefined" ) ?
 					 nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] = 0  : nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] += 1 ;
+					 console.log("attrSample : ");console.log(attrSample);
+					 console.log("nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] : ");console.log(nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample]);
 				}
 			}
-			
+			*/
 
 
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
+				console.log("+++++++++++++++++++");
+				console.log(" nameToNodeIndex[ groupsReturned[group][i]] : ");
+				console.log( nameToNodeIndex[ groupsReturned[group][i]] );
+				console.log("nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");
+				console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
+				console.log("nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");
+				console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
+				console.log("nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");
+				console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
+				console.log("nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color : ");
+				console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color);
 
 				nodeData.links.push({
 					"source": nameToNodeIndex[ groupsReturned[group][i] ],

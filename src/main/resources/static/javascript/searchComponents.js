@@ -29479,7 +29479,7 @@ function doD3Stuff(results) {
       d3.select(self.frameElement).style("height", width - 150 + "px");
     };
 
-    document.getElementById("infoVizRelations").innerHTML = '<h3>Result information</h3>  <div id=\"infoVizRelations1\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' ></div><div id=\"infoVizRelations2\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + '></div> <h3>Clicked element information</h3> <div id=\"textData\">  </div>';
+    document.getElementById("infoVizRelations").innerHTML = '<h3>Result information</h3> ' + '<table style="width:100%" <tr> <td> <div id=\"infoVizRelations1\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' > </td> <td>  </div><div id=\"infoVizRelations2\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + '></div> </td> </tr> </table> <h3>Clicked element information</h3> <div id=\"textData\">  </div>';
 
     console.log("======================");
     console.log("this : ");console.log(this);
