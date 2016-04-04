@@ -29149,14 +29149,15 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
        * @method querySamples
        * @param  e {Event} the click event
        */
-      querySamples: function querySamples(e) {
-        if (e !== undefined) {
+      querySamples: function querySamples(e, loadD3) {
+        if (e !== undefined && typeof e.preventDefault !== "undefined") {
           e.preventDefault();
         }
         if (_.isEmpty(this.searchTerm)) {
           return;
         }
         var queryParams = this.getQueryParameters();
+        console.log("queryParams : ");console.log(queryParams);
         var server = apiUrl + "query";
 
         this.$http.get(server, queryParams).then(function (results) {
@@ -29184,7 +29185,11 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
           this.queryResults = validDocs;
           this.biosamples = validDocs;
 
-          doD3Stuff(results, vm);
+          // Variable to know whether we just to a get to
+          // just get data or reload the scene
+          if (typeof loadD3 === "undefined" || loadD3) {
+            doD3Stuff(results, vm);
+          }
         }).catch(function (data, status, response) {
           console.log("data : ");console.log(data);
           console.log("status : ");console.log(status);
@@ -29258,8 +29263,10 @@ module.exports = '<div v-for="element in elements">\n	<component is="biosample"\
           this.querySamples();
         });
 
-        this.$on('bar-selected', function (d) {
-          this.querySamples();
+        this.$on('bar-selected', function (d, loadD3) {
+          // If we desire to have an event happening without reloading d3
+          // we need to pass false as a second argument to querySamples function
+          this.querySamples(d, loadD3);
         });
 
         this.$on('facet-selected', function (key, value) {
@@ -29614,9 +29621,8 @@ function doD3Stuff(results) {
         vm.$data.filterQuery.typeFilter = '';
       }
       vm.$emit("bar-selected");
-
-      console.log("//////");
-      //vm.$options.methods.querySamples();
+      vm.$options.methods.querySamples(this, false);
+      //console.log("//////");
     }).append("text").attr("transform", "rotate(-90)").attr("y", 40).attr("dy", ".71em").attr("opacity", 1).style("text-anchor", "end").text(function (d) {
       return d.content;
     });

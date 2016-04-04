@@ -1,3 +1,4 @@
+//This is the file to work with for toolsFunctions
 function getRandomColor() {
   var letters = '0123456789ABCDEF'.split('');
   var color = '#';
@@ -80,19 +81,22 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
+	console.log("loadDataFromGET 2");
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
 	nodeData.color=[];
+	nodeData.accessions="";
 
 	for (var i=0;i< results.data.response.docs.length;i++){
+		nodeData.accessions+=results.data.response.docs[i].accession+' ';
 		//Circle Data Set
 		// group
 		if (results.data.response.docs[i].content_type=="group"){
 			if (typeof results.data.response.docs[i].grp_sample_accessions !== 'undefined'){
-			  nodeData.nodes.push({ 	
-			  	"radius": 10, 
-			  	"color" : getRandomColor(), 
-			  	"type":"group", 
+			  nodeData.nodes.push({
+			  	"radius": 10,
+			  	"color" : getRandomColor(),
+			  	"type":"group",
 			  	"name":results.data.response.docs[i].accession,
 			  	"accession":results.data.response.docs[i].accession,
 			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
@@ -160,25 +164,60 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 		nodeData.color[i]='';
 	}
 	// Step 2: for every element in the group to sample, create a link (do it just once)
+	console.log("Step 2 : groupsReturned : ");console.log(groupsReturned);
 	var indexCalculation=0;
 	for (var group in groupsReturned){
 		// TODO: GET request to get the information in global about the samples within the group
 		colorGroup = getRandomColor();
-		indexCalculation++;
-		nodeData.nodes.push({
-			"radius": 10,
-			//"color" : getRandomColor(), 
-			"type":"groupViz",
-			"name":group,
-			"accession":group,
-			"sample_grp_accessions":undefined,
-		    "Derived_From_crt": undefined,"Same_As_crt": undefined,"Child_Of_crt": undefined,
-		    "id": undefined,"responseDoc":undefined,
-		    "color":colorGroup
-		});
-		nodeData.group.push(group);
-		nodeData.color.push(colorGroup);
-		nameToNodeIndex[group]=nodeData.nodes.length-1;
+		if ( nodeData.accessions.indexOf( group ) === -1 ){
+			indexCalculation++;
+			nodeData.nodes.push({
+				"radius": 10,
+				//"color" : getRandomColor(), 
+				"type":"groupViz",
+				"name":group,
+				"accession":group,
+				"sample_grp_accessions":undefined,
+				"grp_sample_accessions":groupsReturned[group],
+			    "Derived_From_crt": undefined,"Same_As_crt": undefined,"Child_Of_crt": undefined,
+			    "id": undefined,"responseDoc":undefined,
+			    "color":colorGroup
+			});
+			nodeData.group.push(group);
+			nodeData.color.push(colorGroup);
+			nameToNodeIndex[group]=nodeData.nodes.length-1;
+		} // The node for the group already has been returned else 1
+		else {
+			var indexNodeGroup = nameToNodeIndex[group];
+			nodeData.color[ indexNodeGroup ] = colorGroup;
+			nodeData.nodes[ indexNodeGroup ].color = colorGroup;
+			console.log("nodeData.nodes[ indexNodeGroup ].groupAttributes : ");console.log(nodeData.nodes[ indexNodeGroup ].groupAttributes);
+		}
+			// BUGGY, NORMALLY IN THE ELSE 1
+			console.log("nodeData.nodes[ nameToNodeIndex[group] ] : ");console.log(nodeData.nodes[ nameToNodeIndex[group] ]);
+			nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes = {};
+			console.log("nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes");console.log(nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes);
+
+			console.log("groupsReturned[group] : ");console.log(groupsReturned[group]);
+			console.log("nodeData.nodes : ");console.log(nodeData.nodes);
+			
+			for (var i=0; i < groupsReturned[group].length; i ++){
+				console.log("---------");
+				console.log("group : ");console.log(group);
+				console.log("groupsReturned[group][i] : ");console.log(groupsReturned[group][i]);
+				console.log("nodeData.nodes[nameToNodeIndex[group]]");console.log(nodeData.nodes[nameToNodeIndex[group]]);
+
+				for (var attr in nodeData.nodes[nameToNodeIndex[group]].responseDoc){
+					// at index [attr given by sample], add +1
+					//var attrSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr] ];
+					var attrSample = attr;
+					console.log("attrSample : ");console.log(attrSample);
+					( typeof nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] === "undefined" ) ?
+					 nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] = 0  : nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] += 1 ;
+				}
+			}
+			
+
 
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
@@ -195,6 +234,9 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			}
 		}
 	}
+
+	console.log("nodeData : ");console.log(nodeData);
+	console.log("===========================");
 	return [nodeData,groupsReturned,nameToNodeIndex];
 }
 

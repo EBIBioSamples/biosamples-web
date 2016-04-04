@@ -118,14 +118,15 @@
              * @method querySamples
              * @param  e {Event} the click event
              */
-            querySamples: function(e) {
-                if (e !== undefined) {
+            querySamples: function(e,loadD3) {
+                if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
                     e.preventDefault();
                 }
                 if (_.isEmpty(this.searchTerm)) {
                     return;
                 }
                 var queryParams = this.getQueryParameters();
+                console.log("queryParams : ");console.log(queryParams);
                 var server = apiUrl + "query";
 
                 this.$http.get(server,queryParams)
@@ -154,7 +155,12 @@
                 this.queryResults = validDocs;
                 this.biosamples = validDocs;
 
-                doD3Stuff(results,vm);
+
+                // Variable to know whether we just to a get to
+                // just get data or reload the scene
+                if ( typeof loadD3 === "undefined" || loadD3 ){
+                  doD3Stuff(results,vm);
+                }
               })
               .catch(function(data,status,response){
                 console.log("data : ");console.log(data);
@@ -230,9 +236,11 @@
                     this.querySamples();
                 });
 
-                this.$on('bar-selected', function(d) {
-                  this.querySamples();
-                })
+                this.$on('bar-selected', function(d,loadD3) {
+                  // If we desire to have an event happening without reloading d3
+                  // we need to pass false as a second argument to querySamples function
+                  this.querySamples(d,loadD3);
+                });
 
                 this.$on('facet-selected', function(key, value) {
                     if (value === "") {
@@ -482,9 +490,8 @@ function doD3Stuff( results, vm=0 ){
             vm.$data.filterQuery.typeFilter = '';
           }
           vm.$emit("bar-selected");
-
-          console.log("//////");
-          //vm.$options.methods.querySamples();
+          vm.$options.methods.querySamples(this,false);
+          //console.log("//////");
         })
         .append("text")
           .attr("transform", "rotate(-90)")
