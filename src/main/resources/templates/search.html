@@ -4,6 +4,8 @@
     <title>Search</title>
     <!--<link rel="stylesheet" href="stylesheets/main_samelf.css">-->
     <link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -25,10 +27,11 @@
 
     <nav id="breadcrumb">
         <p>
-            <a href="#">BioSamples</a> &gt;
-            Search
+            <a href="/biosamples/">BioSamples</a> &gt; <a href="/search/">Search</a></span>
         </p>
     </nav>
+    <!--<div layout:include="fragments/breadcrumbs :: breadcrumbs(pages='Search')" th:remove="tag">-->
+    <!--</div>-->
 
     <!-- Example layout containers -->
 

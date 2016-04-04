@@ -21,9 +21,12 @@
 
         <nav id="breadcrumb">
             <p>
-                <a href="/biosamples/">BioSamples</a> &gt; <a href="/biosamples/browse.html">Groups</a> &gt; <span th:text="${group.accession}"></span>
+                <a href="/">BioSamples</a> &gt; <a href="/groups/">Groups</a> &gt; <span th:text="${group.accession}"></span>
             </p>
         </nav>
+
+        <!--<div layout:include="fragments/breadcrumbs :: breadcrumbs(pages=${ {'Groups', group.accession} })" th:remove="tag">-->
+        <!--</div>-->
 
         <!-- Biosamples specific content goes here -->
         <div id="group_content">

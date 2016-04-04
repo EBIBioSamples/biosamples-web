@@ -25,25 +25,4 @@ public class BiosamplesWebConfiguration {
         return new HttpSolrServer(solrServer);
     }
 
-<<<<<<< HEAD
-=======
-//    @Bean RepositoryRestConfigurerAdapter repositoryRestConfigurerAdapter() {
-//        return new RepositoryRestConfigurerAdapter() {
-//            @Override public void configureJacksonObjectMapper(ObjectMapper objectMapper) {
-//                objectMapper.registerModule(new SimpleModule("SampleCharacteristicsModule") {
-//                    @Override public void setupModule(SetupContext context) {
-//                        SimpleSerializers serializers = new SimpleSerializers();
-//                        SimpleDeserializers deserializers = new SimpleDeserializers();
-//
-//                        serializers.addSerializer(Sample.class, new SampleSerializer());
-//                        deserializers.addDeserializer(Sample.class, new SampleDeserializer());
-//
-//                        context.addSerializers(serializers);
-//                        context.addDeserializers(deserializers);
-//                    }
-//                });
-//            }
-//        };
-//    }
->>>>>>> master
 }

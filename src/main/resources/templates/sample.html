@@ -1,7 +1,7 @@
 <!doctype html>
 <html layout:decorator="base" xmlns:layout="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title th:text="${group.accession} + ' &lt; BioSamples &lt; EMBL-EBI'">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
+    <title th:text="${sample.accession} + ' &lt; BioSamples &lt; EMBL-EBI'">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
 </head>
 <body>
 
@@ -19,6 +19,12 @@
 </nav>
 
 <div layout:fragment="content">
+
+    <nav id="breadcrumb">
+        <p>
+            <a href="/biosamples/">BioSamples</a> &gt; <a href="/samples/">Sample</a> &gt; <span th:text="${sample.accession}"></span>
+        </p>
+    </nav>
 
     <div id="bs_content">
         <section>

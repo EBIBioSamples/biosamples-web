@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body layout:fragment="breadcrumbs(pages)">
+    <nav id="breadcrumb">
+        <p>
+            <a href="#">BioSamples</a>
+            <span th:each="page: ${pages}" th:text="'&gt; ' + ${page}"></span>
+        </p>
+    </nav>
+</body>
+</html>
