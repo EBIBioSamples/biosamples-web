@@ -29523,14 +29523,23 @@ function doD3Stuff(results) {
     var barChart1 = d3.select("#infoVizRelations1").insert("svg", ":first-child").attr("width", width).attr("height", height)
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("id", "resultsViz1").attr("class", "bar").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
-    var barChart2 = d3.select("#infoVizRelations2").insert("svg", ":first-child")
-    //.attr("width", width)
-    .attr("width", function () {
-      return margin.left + margin.right + (5 + 10) * (results.data.facet_counts.facet_fields.organ_crt.length / 2);
-    }).attr("height", height)
-    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    .attr("id", "resultsViz2").attr("class", "bar").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
 
+    var numberFacetsUnEmpty = 0;
+    for (var u = 0; u < results.data.facet_counts.facet_fields.organ_crt.length; u++) {
+      if (u % 2 === 0 && results.data.facet_counts.facet_fields.organ_crt[u + 1] !== 0) {
+        numberFacetsUnEmpty++;
+      }
+    }
+
+    if (numberFacetsUnEmpty > 0) {
+      var barChart2 = d3.select("#infoVizRelations2").insert("svg", ":first-child")
+      //.attr("width", width)
+      .attr("width", function () {
+        return margin.left + margin.right + (5 + 10) * numberFacetsUnEmpty;
+      }).attr("height", height)
+      //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .attr("id", "resultsViz2").attr("class", "bar").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
+    }
     //var x = d3.scale.ordinal().rangeRoundBands([0, document.getElementById("infoVizRelations1").getBoundingClientRect().width], .1);
     //var y = d3.scale.linear().range([0, height]);
     var x = d3.scale.linear().domain([0, width]).range([0, width]);
@@ -29575,7 +29584,10 @@ function doD3Stuff(results) {
       u % 2 === 0 ? dataBar1.push({ "content": results.data.facet_counts.facet_fields.content_type[u], "occurence": 0, "x": Math.floor(u / 2) * (widthRectangle1 + 5) + margin.left, "index": Math.floor(u / 2) }) : dataBar1[Math.floor(u / 2)].occurence = results.data.facet_counts.facet_fields.content_type[u];
     }
     for (var u = 0; u < results.data.facet_counts.facet_fields.organ_crt.length; u++) {
-      u % 2 === 0 ? dataBar2.push({ "content": results.data.facet_counts.facet_fields.organ_crt[u], "occurence": 0, "x": Math.floor(u / 2) * (widthRectangle2 + 5) + margin.left, "index": Math.floor(u / 2) }) : dataBar2[Math.floor(u / 2)].occurence = results.data.facet_counts.facet_fields.organ_crt[u];
+      if (u % 2 === 0 && results.data.facet_counts.facet_fields.organ_crt[u + 1] !== 0) {
+        dataBar2.push({ "content": results.data.facet_counts.facet_fields.organ_crt[u], "occurence": 0, "x": Math.floor(u / 2) * (widthRectangle2 + 5) + margin.left, "index": Math.floor(u / 2) });
+        dataBar2[dataBar2.length - 1].occurence = results.data.facet_counts.facet_fields.organ_crt[u + 1];
+      }
     }
     //x.domain(barChart1.map(function(d) { return d.content; }));
     //y.domain([0, d3.max(barChart1, function(d) { return d.occurence; })]);         
