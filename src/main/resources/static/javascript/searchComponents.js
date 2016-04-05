@@ -29486,27 +29486,36 @@ function doD3Stuff(results) {
       }
     }
 
+    document.getElementById("buttonRezInfo").style.visibility = "visible";
+    document.getElementById("titleRezInfo").innerHTML = "Display result information";
+    document.getElementById("sectionVizResult").style.visibility = "hidden";
     if (numberFacetsUnEmpty > 0) {
       document.getElementById("infoVizRelations").innerHTML = ' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
-
-      document.getElementById("sectionTitle").innerHTML = '<h2 id="sectionTitle">BioSample Database Search Interface</h2> <hr/>' + '<div id="buttonRezInfo"> <h4>Result information</h4></div> <div id="tableResults"> <table id="tableResults" style="width:100%" <tr> <td> <div id="infoVizRelations1" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' > </td> <td>  </div><div id=\"infoVizRelations2\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + '></div> </td> </tr> </table> </div>';
-      //document.getElementById("tableResults").style.visibility="hidden";
+      document.getElementById("sectionVizResult").innerHTML = ' <div id="tableResults"> <table id="tableResults" style="width:100%" <tr> <td> <div id="infoVizRelations1" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' > </td> <td>  </div><div id=\"infoVizRelations2\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + '></div> </td> </tr> </table> </div>';
+      document.getElementById("sectionVizResult").style.height = "0px";
     } else {
-        document.getElementById("infoVizRelations").innerHTML = ' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+      document.getElementById("infoVizRelations").innerHTML = ' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+      document.getElementById("sectionVizResult").innerHTML = ' <div id="tableResults"> <table  style="width:100%" <tr> <td> <div id=\"infoVizRelations1\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' > </td> </tr> </table> </div>';
+      document.getElementById("sectionVizResult").style.height = "0px";
+    }
 
-        document.getElementById("sectionTitle").innerHTML = '<h2 id="sectionTitle">BioSample Database Search Interface</h2> <hr/> ' + '<div id="buttonRezInfo"> <h4>Result information</h4></div> <div id="tableResults"> <table  style="width:100%" <tr> <td> <div id=\"infoVizRelations1\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' > </td> </tr> </table> </div>';
-        //document.getElementById("tableResults").style.visibility="hidden";
+    document.getElementById("buttonRezInfo").onclick = function () {
+      if (document.getElementById("sectionVizResult").style.visibility == "hidden") {
+        document.getElementById("sectionVizResult").style.visibility = "visible";
+        document.getElementById("titleRezInfo").innerHTML = "Hide the result information ";
+        // Hard coded value, we should use the heightD3, but the conversion from d3 to html height is problematic
+        document.getElementById("sectionVizResult").style.height = 225 + 'px';
+      } else {
+        document.getElementById("sectionVizResult").style.visibility = "hidden";
+        document.getElementById("titleRezInfo").innerHTML = "Display the result information ";
+        document.getElementById("sectionVizResult").style.height = "0px";
       }
-    /*
-    document.getElementById("buttonRezInfo").onclick = function(){
-      console.log("trying to shoz tableResults");
-      document.getElementById("tableResults").style.visibility="visible";
     };
-    */
-
-    console.log("======================");
-    console.log("this : ");console.log(this);
-    console.log("results : ");console.log(results);
+    $("#buttonRezInfo").hover(function () {
+      $(this).css("background-color", "#D0D0D0");
+    }, function () {
+      $(this).css("background-color", "white");
+    });
     /*
     console.log("resultsInfo : ");console.log(resultsInfo);
     console.log("types : ");console.log(types);
@@ -29519,11 +29528,7 @@ function doD3Stuff(results) {
     console.log("this.facets.organs : ");console.log(this.facets.organs);
     console.log("this.facets : ");console.log(this.facets);
     */
-
-    //console.log("this.queryTerm : ");console.log(this.queryTerm);
-    //console.log("this.queryResults : ");console.log(this.queryResults);          
     var fill = d3.scale.category20();
-
     var widthD3 = $(".container").width();
 
     var heightD3 = widthD3 / 2;
@@ -29533,40 +29538,23 @@ function doD3Stuff(results) {
     var width = document.getElementById("infoVizRelations").getBoundingClientRect().width - 5;
     var height = document.getElementById("infoVizRelations").getBoundingClientRect().height / 3;
 
-    // Vars used to load data and viz for bar charts
-    // width, height, margin, results, dataBar1,dataBar2,dataBars
-    // and d3. It is possible it complains
-    // Soon to also interact with vm
-
     var dataBar1 = [];
     var dataBar2 = [];
     var dataBars = [];
 
     // Visual part of barChart
-    var barChart1 = d3.select("#infoVizRelations1").insert("svg", ":first-child").attr("width", width).attr("height", height)
-    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-    .attr("id", "resultsViz1").attr("class", "bar").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
+    var barChart1 = d3.select("#infoVizRelations1").insert("svg", ":first-child").attr("width", width).attr("height", height).attr("id", "resultsViz1").attr("class", "bar").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
 
     if (numberFacetsUnEmpty > 0) {
-      var barChart2 = d3.select("#infoVizRelations2").insert("svg", ":first-child")
-      //.attr("width", width)
-      .attr("width", function () {
+      var barChart2 = d3.select("#infoVizRelations2").insert("svg", ":first-child").attr("width", function () {
         return margin.left + margin.right + (5 + 10) * numberFacetsUnEmpty;
-      }).attr("height", height)
-      //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-      .attr("id", "resultsViz2").attr("class", "bar").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
+      }).attr("height", height).attr("id", "resultsViz2").attr("class", "bar").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
     }
-    //var x = d3.scale.ordinal().rangeRoundBands([0, document.getElementById("infoVizRelations1").getBoundingClientRect().width], .1);
-    //var y = d3.scale.linear().range([0, height]);
     var x = d3.scale.linear().domain([0, width]).range([0, width]);
 
     var y = d3.scale.linear().domain([0, height]).range([height, 0]);
 
-    //var dataBars = loadBarCharts();
-
     var widthRectangle1 = (width - 5) / Math.floor(results.data.facet_counts.facet_fields.content_type.length / 2) - margin.left - margin.right;
-    // TODO: change the svg for this bar chart area to be bigger than the html div
-    //var widthRectangle2 = (width - 5)/( Math.floor(results.data.facet_counts.facet_fields.organ_crt.length/2) ) -margin.right ;
     var widthRectangle2 = 10;
 
     var maxOccurence1 = 0;
@@ -29587,7 +29575,7 @@ function doD3Stuff(results) {
     .domain(dataBar1.map(function (d) {
       return d.content;
     })).range([15, width - 30]);
-    var scale1y = d3.scale.linear().domain([0, maxOccurence1]).range([1, height - 40]);
+    var scale1y = d3.scale.linear().domain([0, maxOccurence1]).range([1, Math.floor(height * 0.8)]);
 
     var scale2x = d3.scale.ordinal()
     // domain is input data, range is output to put the data to
@@ -29605,8 +29593,6 @@ function doD3Stuff(results) {
         dataBar2[dataBar2.length - 1].occurence = results.data.facet_counts.facet_fields.organ_crt[u + 1];
       }
     }
-    //x.domain(barChart1.map(function(d) { return d.content; }));
-    //y.domain([0, d3.max(barChart1, function(d) { return d.occurence; })]);         
 
     var xAxis1 = d3.svg.axis().scale(scale1x).orient("bottom");
     var yAxis = d3.svg.axis().scale(scale1y).orient("left");
@@ -29641,8 +29627,6 @@ function doD3Stuff(results) {
       return scale1y(d.occurence);
     }).attr("opacity", "0.5").on("mousedown", function (d) {
       console.log("You clicked on a rectangle and d is : ");console.log(d);
-      console.log("vm still here ?");console.log(vm);
-      console.log("d : ");console.log(d);
       if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter !== d.content) {
         vm.$data.filterQuery.typeFilter = d.content;
       } else {
@@ -29650,7 +29634,6 @@ function doD3Stuff(results) {
       }
       vm.$emit("bar-selected");
       vm.$options.methods.querySamples(this, false);
-      //console.log("//////");
     }).append("text").attr("transform", "rotate(-90)").attr("y", 40).attr("dy", ".71em").attr("opacity", 1).style("text-anchor", "end").text(function (d) {
       return d.content;
     });
