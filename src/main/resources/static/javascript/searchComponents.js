@@ -29479,7 +29479,30 @@ function doD3Stuff(results) {
       d3.select(self.frameElement).style("height", width - 150 + "px");
     };
 
-    document.getElementById("infoVizRelations").innerHTML = '<h3>Result information</h3> ' + '<table style="width:100%" <tr> <td> <div id=\"infoVizRelations1\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' > </td> <td>  </div><div id=\"infoVizRelations2\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + '></div> </td> </tr> </table> <h3>Clicked element information</h3> <div id=\"textData\">  </div>';
+    var numberFacetsUnEmpty = 0;
+    for (var u = 0; u < results.data.facet_counts.facet_fields.organ_crt.length; u++) {
+      if (u % 2 === 0 && results.data.facet_counts.facet_fields.organ_crt[u + 1] !== 0) {
+        numberFacetsUnEmpty++;
+      }
+    }
+
+    if (numberFacetsUnEmpty > 0) {
+      document.getElementById("infoVizRelations").innerHTML = ' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+
+      document.getElementById("sectionTitle").innerHTML = '<h2 id="sectionTitle">BioSample Database Search Interface</h2> <hr/>' + '<div id="buttonRezInfo"> <h4>Result information</h4></div> <div id="tableResults"> <table id="tableResults" style="width:100%" <tr> <td> <div id="infoVizRelations1" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' > </td> <td>  </div><div id=\"infoVizRelations2\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + '></div> </td> </tr> </table> </div>';
+      //document.getElementById("tableResults").style.visibility="hidden";
+    } else {
+        document.getElementById("infoVizRelations").innerHTML = ' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+
+        document.getElementById("sectionTitle").innerHTML = '<h2 id="sectionTitle">BioSample Database Search Interface</h2> <hr/> ' + '<div id="buttonRezInfo"> <h4>Result information</h4></div> <div id="tableResults"> <table  style="width:100%" <tr> <td> <div id=\"infoVizRelations1\" height=' + document.getElementById("infoVizRelations").getBoundingClientRect().height / 3 + ' > </td> </tr> </table> </div>';
+        //document.getElementById("tableResults").style.visibility="hidden";
+      }
+    /*
+    document.getElementById("buttonRezInfo").onclick = function(){
+      console.log("trying to shoz tableResults");
+      document.getElementById("tableResults").style.visibility="visible";
+    };
+    */
 
     console.log("======================");
     console.log("this : ");console.log(this);
@@ -29523,13 +29546,6 @@ function doD3Stuff(results) {
     var barChart1 = d3.select("#infoVizRelations1").insert("svg", ":first-child").attr("width", width).attr("height", height)
     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
     .attr("id", "resultsViz1").attr("class", "bar").style("stroke", "black").style("stroke-width", 1).style("border", "solid").style("border-color", "#5D8C83").style("border-radius", "10px");
-
-    var numberFacetsUnEmpty = 0;
-    for (var u = 0; u < results.data.facet_counts.facet_fields.organ_crt.length; u++) {
-      if (u % 2 === 0 && results.data.facet_counts.facet_fields.organ_crt[u + 1] !== 0) {
-        numberFacetsUnEmpty++;
-      }
-    }
 
     if (numberFacetsUnEmpty > 0) {
       var barChart2 = d3.select("#infoVizRelations2").insert("svg", ":first-child")
@@ -29653,26 +29669,29 @@ function doD3Stuff(results) {
       //.attr("transform", "translate(-"+  +","+ height/2 +") rotate(-90)");
       ;
     }
-    barChart2.selectAll(".bar").data(dataBar2).enter().append("rect").attr("class", "bar").attr("id", function (d) {
-      return d.content;
-    })
-    // space is 5
-    .attr("width", widthRectangle2).attr("x", function (d) {
-      return d.x;
-    }).attr("y", function (d) {
-      return height - margin.top - scale2y(d.occurence);
-    }).attr("height", function (d) {
-      return scale2y(d.occurence);
-    }).attr("opacity", "0.5").on("mousedown", function (d) {
-      if (vm.$data.filterQuery.organFilter === '' || vm.$data.filterQuery.organFilter !== d.content) {
-        vm.$data.filterQuery.organFilter = d.content;
-      } else {
-        vm.$data.filterQuery.organFilter = '';
-      }
-      vm.$emit("bar-selected");
-    }).append("text").attr("transform", "rotate(-90)").attr("y", 40).attr("dy", ".71em").attr("opacity", 1).style("text-anchor", "end").text(function (d) {
-      return d.content;
-    });
+
+    if (numberFacetsUnEmpty > 0) {
+      barChart2.selectAll(".bar").data(dataBar2).enter().append("rect").attr("class", "bar").attr("id", function (d) {
+        return d.content;
+      })
+      // space is 5
+      .attr("width", widthRectangle2).attr("x", function (d) {
+        return d.x;
+      }).attr("y", function (d) {
+        return height - margin.top - scale2y(d.occurence);
+      }).attr("height", function (d) {
+        return scale2y(d.occurence);
+      }).attr("opacity", "0.5").on("mousedown", function (d) {
+        if (vm.$data.filterQuery.organFilter === '' || vm.$data.filterQuery.organFilter !== d.content) {
+          vm.$data.filterQuery.organFilter = d.content;
+        } else {
+          vm.$data.filterQuery.organFilter = '';
+        }
+        vm.$emit("bar-selected");
+      }).append("text").attr("transform", "rotate(-90)").attr("y", 40).attr("dy", ".71em").attr("opacity", 1).style("text-anchor", "end").text(function (d) {
+        return d.content;
+      });
+    }
 
     // Nodes relationships here
     var svg;
@@ -29697,7 +29716,7 @@ function doD3Stuff(results) {
 
     var width = document.getElementById("vizSpotRelations").getBoundingClientRect().width;
     var height = document.getElementById("vizSpotRelations").getBoundingClientRect().height;
-    document.getElementById("infoVizRelations").style.height = height - 4 + "px";
+    document.getElementById("infoVizRelations").style.height = height + "px";
 
     var groupsReturned = {};
     var nameToNodeIndex = {};

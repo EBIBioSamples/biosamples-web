@@ -87,17 +87,12 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 	nodeData.color=[];
 	nodeData.accessions="";
 
-	console.log("Before Step 0");
-
 	for (var i=0;i< results.data.response.docs.length;i++){
 		nodeData.accessions+=results.data.response.docs[i].accession+' ';
 		//Circle Data Set
 		// group
 		if (results.data.response.docs[i].content_type=="group"){
-			console.log("group : ");console.log(results.data.response.docs[i].accession);
 			if (typeof results.data.response.docs[i].grp_sample_accessions !== 'undefined'){
-				console.log("results.data.response.docs[i].grp_sample_accessions : ");
-				console.log(results.data.response.docs[i].grp_sample_accessions);
 			  nodeData.nodes.push({
 			  	"radius": 10,
 			  	"color" : getRandomColor(),
@@ -124,13 +119,10 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			  });
 			  groupsReturned[results.data.response.docs[i].Group_Name_crt]=[];
 			}
-			console.log("results.data.response.docs[i].accession : ");console.log(results.data.response.docs[i].accession);
 			nameToNodeIndex[ results.data.response.docs[i].accession ] = nodeData.nodes.length-1;
 		} //sample
 		else {
-			console.log("sample : ");console.log(results.data.response.docs[i].accession);
 			if (typeof results.data.response.docs[i].sample_grp_accessions !== 'undefined'){
-			  console.log("results.data.response.docs[i].sample_grp_accessions : ");console.log(results.data.response.docs[i].sample_grp_accessions);
 			  nodeData.nodes.push({ 	
 			  	"radius": 5, 
 			  	"color" : getRandomColor(), 
@@ -142,12 +134,9 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
 			  });
 
-			  console.log("nodeData.nodes push done");
-
 			  if ( typeof groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]] === 'undefined' ){
 			  	groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]]=[];
 			  }
-			  console.log("results.data.response.docs["+i+"] : ");console.log(results.data.response.docs[i]);
 			  groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]].push(results.data.response.docs[i].accession);
 			} else {
 			  nodeData.nodes.push({ 
@@ -163,7 +152,6 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			}			
 		}
 		nameToNodeIndex[results.data.response.docs[i].accession] = nodeData.nodes.length-1;
-		console.log("PASSED THIS !");
 	}
 
 	console.log("Before Step 1");
@@ -205,51 +193,43 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			nodeData.color[ indexNodeGroup ] = colorGroup;
 			nodeData.nodes[ indexNodeGroup ].color = colorGroup;
 		}
-			/*
-			// BUGGY, NORMALLY IN THE ELSE 1
-			console.log("nodeData.nodes[ nameToNodeIndex[group] ] : ");console.log(nodeData.nodes[ nameToNodeIndex[group] ]);
-			nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes = {};
-			console.log("nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes");console.log(nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes);
 
-			console.log("groupsReturned[group] : ");console.log(groupsReturned[group]);
-			console.log("nodeData.nodes : ");console.log(nodeData.nodes);
-			
-			for (var i=0; i < groupsReturned[group].length; i ++){
-				console.log("---------");
-				console.log("group : ");console.log(group);
-				console.log("groupsReturned[group][i] : ");console.log(groupsReturned[group][i]);
-				console.log("nodeData.nodes[nameToNodeIndex[group]]");console.log(nodeData.nodes[nameToNodeIndex[group]]);
+		/*
+		// BUGGY, NORMALLY IN THE ELSE 1
+		console.log("nodeData.nodes[ nameToNodeIndex[group] ] : ");console.log(nodeData.nodes[ nameToNodeIndex[group] ]);
+		nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes = {};
+		console.log("nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes");console.log(nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes);
 
-				for (var attr in nodeData.nodes[nameToNodeIndex[group]].responseDoc){
-					// at index [attr given by sample], add +1
-					//var attrSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr] ];
-					var attrSample = attr;
-					( typeof nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] === "undefined" ) ?
-					 nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] = 0  : nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] += 1 ;
-					 console.log("attrSample : ");console.log(attrSample);
-					 console.log("nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] : ");console.log(nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample]);
-				}
+		console.log("groupsReturned[group] : ");console.log(groupsReturned[group]);
+		console.log("nodeData.nodes : ");console.log(nodeData.nodes);
+		
+		for (var i=0; i < groupsReturned[group].length; i ++){
+			console.log("---------");
+			console.log("group : ");console.log(group);
+			console.log("groupsReturned[group][i] : ");console.log(groupsReturned[group][i]);
+			console.log("nodeData.nodes[nameToNodeIndex[group]]");console.log(nodeData.nodes[nameToNodeIndex[group]]);
+
+			for (var attr in nodeData.nodes[nameToNodeIndex[group]].responseDoc){
+				// at index [attr given by sample], add +1
+				//var attrSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr] ];
+				var attrSample = attr;
+				( typeof nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] === "undefined" ) ?
+				 nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] = 0  : nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] += 1 ;
+				 console.log("attrSample : ");console.log(attrSample);
+				 console.log("nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] : ");console.log(nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample]);
 			}
-			*/
-
+		}
+		*/
 
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
-				console.log("+++++++++++++++++++");
-				console.log(" nameToNodeIndex[ groupsReturned[group][i]] : ");
 				console.log( nameToNodeIndex[ groupsReturned[group][i]] );
-				console.log("nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");
 				console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
-				console.log("nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");
 				console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
-				console.log("nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");
-				console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
-				console.log("nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color : ");
-				console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color);
 
 				nodeData.links.push({
 					"source": nameToNodeIndex[ groupsReturned[group][i] ],
