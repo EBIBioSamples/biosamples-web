@@ -29340,34 +29340,8 @@ function doD3Stuff(results) {
       //Add circles to the svgContainer
       var node = svg.selectAll("node").data(nodeData.nodes).enter().append("g").attr("class", "node").call(force.drag);
 
-      node.append("circle").on("mousedown", function (d) {
-        console.log("inside circle mousedown this : ");console.log(this);
-        //console.log("on mousedown circle d : ");console.log(d);
-        d3.selectAll("circle").style("stroke-width", 1);
-        d3.select(this).style("stroke-width", 5);
-        document.getElementById("infoVizRelations").className = d.accession;
-        // Fill in the infoVizRelations according to data returned
-        document.getElementById("textData").innerHTML = '<p>';
-        var URLs = [];
-        for (var prop in d.responseDoc) {
-          // skip loop if the property is from prototype
-          if (!d.responseDoc.hasOwnProperty(prop)) continue;
-          document.getElementById("textData").innerHTML += "" + prop + " = " + d.responseDoc[prop] + "" + "<hr/>";
-          URLs = getURLsFromObject(d.responseDoc, prop);
-          if (URLs.length > 0) {
-            for (var k = 0; k < URLs.length; k++) {
-              document.getElementById("textData").innerHTML += "<a href=\"" + URLs[k] + "\">link text</a>+<br/>";
-              document.getElementById("textData").innerHTML += "<img src=\"" + URLs[k] + "\" alt=\"google.com\" style=\"height:200px;\" ><br/>";
-            }
-          }
-        }
-        document.getElementById("textData").innerHTML += '</p>';
-      }).on("mouseout", function (d) {}).on("mouseover", function (d) {
-        //console.log("on mouseover circle ");
-        //d3.select(this).attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
-      })
+      node.append("circle").on("mousedown", function (d) {}).on("mouseout", function (d) {}).on("mouseover", function (d) {})
       // Added attributes
-      //.attr("cx", function (d) { return d.cx; }) .attr("cy", function (d) { return d.cy; })
       .attr("r", function (d) {
         return d.radius;
       }).attr("accession", function (d) {
@@ -29416,32 +29390,47 @@ function doD3Stuff(results) {
         }
       }).on("mousedown", function (d) {
         console.log('mousedown node d : ');console.log(d);
-      }).on("mouseup", function (d) {}).on("mouseover", function (d) {
-        console.log("on mouseover node");
-        // Math wrong and need to check if draggable
-        //d3.select(this).attr("x", d.x = d3.event.x).attr("y", d.y = d3.event.y);
+        d3.selectAll("circle").style("stroke-width", 1);
+        d3.select(this).select("circle").style("stroke-width", 5);
+        document.getElementById("infoVizRelations").className = d.accession;
+        // Fill in the infoVizRelations according to data returned
+        document.getElementById("textData").innerHTML = '<p>';
+        var URLs = [];
+        for (var prop in d.responseDoc) {
+          // skip loop if the property is from prototype
+          if (!d.responseDoc.hasOwnProperty(prop)) continue;
+          document.getElementById("textData").innerHTML += "" + prop + " = " + d.responseDoc[prop] + "" + "<hr/>";
+          URLs = getURLsFromObject(d.responseDoc, prop);
+          if (URLs.length > 0) {
+            for (var k = 0; k < URLs.length; k++) {
+              document.getElementById("textData").innerHTML += "<a href=\"" + URLs[k] + "\">link text</a>+<br/>";
+              document.getElementById("textData").innerHTML += "<img src=\"" + URLs[k] + "\" alt=\"google.com\" style=\"height:200px;\" ><br/>";
+            }
+          }
+        }
+        document.getElementById("textData").innerHTML += '</p>';
+      }).on("mouseup", function (d) {}).on("mouseout", function (d) {
+        d3.selectAll("text").style("opacity", 1);
+        d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+        d3.selectAll(".node").selectAll("text").style("dx", 12);
+        d3.selectAll(".node").selectAll("text").attr("transform", "translate(" + 0 + "," + 0 + ")");
+        d3.selectAll(".node").selectAll("circle").style("r", this.radius);
+      }).on("mouseover", function (d) {
+        console.log("on mouseover node d : ");console.log(d);
+        var circleNode = d3.select(this).select("circle");
+        var textNode = d3.select(this).select("text");
+
+        d3.selectAll(".node").selectAll("text").style("opacity", .25);
+        d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+        textNode.style("opacity", 1);
+        circleNode.style("r", d.radius * 3);
+        textNode.attr("transform", "translate(" + circleNode[0][0].style.r + "," + 0 + ")");
+        textNode.style("font-size", "20px");
       });
 
-      node.append("text")
-      //.attr("x", function(d) { return d.cx + d.radius; }).attr("y", function(d) { return d.cy; })
-      .attr("dx", 12).attr("dy", ".35em")
-      //.text( function (d) { return "[" + d.accession+"]"+"["+d.sample_grp_accessions+"]"; })
-      .text(function (d) {
+      node.append("text").attr("dx", 12).attr("dy", ".35em").text(function (d) {
         return "[" + d.accession + "]";
-      }).attr("font-family", "sans-serif").attr("font-size", "10px").attr("border", "solid").attr("border-radius", "10px").style("border", "solid").style("border-radius", "10px").style("box-shadow", "gray").style("background-color", "green").attr("fill", "#4D504F").on("mouseover", function (d) {
-        d3.selectAll(".node").selectAll("text").style("opacity", .25);
-        d3.select(this).style("opacity", 1);
-        //d3.select(this).style("font-weight","bold");
-      }).on("mouseout", function (d) {
-        //console.log("mouseout");
-        //d3.selectAll("text").style("visibility","visible");
-        d3.selectAll("text").style("opacity", 1);
-        //d3.select(this).style("font-weight","bold");  
-      }).on("mousedown", function (d) {
-        //d3.selectAll("text").style("font-weight","normal");
-        //d3.select(this).style("font-weight","bold");
-        svg.attr("transform", " scale(" + d3.event.scale + ")");
-      }).on("mouseup", function (d) {});
+      }).attr("font-family", "sans-serif").attr("font-size", "10px").attr("border", "solid").attr("border-radius", "10px").style("border", "solid").style("border-radius", "10px").style("box-shadow", "gray").style("background-color", "green").attr("fill", "#4D504F");
 
       var hull = svg.append("path").attr("class", "hull");
 
