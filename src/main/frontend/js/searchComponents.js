@@ -298,6 +298,7 @@ function doD3Stuff( results, vm=0 ){
   console.log("_______doD3Stuff______");
   //console.log("---- vm : ");console.log(vm);
   //console.log("---- vm.$data");console.log(vm.$data);
+  console.log("results");console.log(results);
   
   if (typeof results !== 'undefined'){
 

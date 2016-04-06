@@ -192,42 +192,43 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			var indexNodeGroup = nameToNodeIndex[group];
 			nodeData.color[ indexNodeGroup ] = colorGroup;
 			nodeData.nodes[ indexNodeGroup ].color = colorGroup;
-		}
+	
+			// => change this into a hash map
+			// .groupAttributesToValues [attribute] => [ [value,samples with this value] ]
+			// .groupValuesToSamples [attribute value] => samples with this value
+			nodeData.nodes[ nameToNodeIndex[group] ].groupAttributesToValues = {};
+			nodeData.nodes[ nameToNodeIndex[group] ].groupValuesToSamples = {};
 
-		/*
-		// BUGGY, NORMALLY IN THE ELSE 1
-		console.log("nodeData.nodes[ nameToNodeIndex[group] ] : ");console.log(nodeData.nodes[ nameToNodeIndex[group] ]);
-		nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes = {};
-		console.log("nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes");console.log(nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes);
+			for (var i=0; i < groupsReturned[group].length; i ++){
+				//console.log("nodeData.nodes[nameToNodeIndex[group]].responseDoc : ");
+				//console.log(nodeData.nodes[nameToNodeIndex[group]].responseDoc);
+				for (var attr in nodeData.nodes[nameToNodeIndex[group]].responseDoc){
 
-		console.log("groupsReturned[group] : ");console.log(groupsReturned[group]);
-		console.log("nodeData.nodes : ");console.log(nodeData.nodes);
-		
-		for (var i=0; i < groupsReturned[group].length; i ++){
-			console.log("---------");
-			console.log("group : ");console.log(group);
-			console.log("groupsReturned[group][i] : ");console.log(groupsReturned[group][i]);
-			console.log("nodeData.nodes[nameToNodeIndex[group]]");console.log(nodeData.nodes[nameToNodeIndex[group]]);
+					var attrSample = attr;
+					var valueSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr];
+					//console.log("attrSample : "+attrSample);
+					//console.log("valueSample : "+valueSample);
+					( typeof nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample] === "undefined" ) ?
+					nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample] = [ groupsReturned[group][i] ] 
+					: nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample].push(groupsReturned[group][i]);
 
-			for (var attr in nodeData.nodes[nameToNodeIndex[group]].responseDoc){
-				// at index [attr given by sample], add +1
-				//var attrSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr] ];
-				var attrSample = attr;
-				( typeof nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] === "undefined" ) ?
-				 nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] = 0  : nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] += 1 ;
-				 console.log("attrSample : ");console.log(attrSample);
-				 console.log("nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] : ");console.log(nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample]);
+					nodeData.nodes[nameToNodeIndex[group]].groupAttributesToValues[attrSample] = [ valueSample, nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample]  ] 
+					//console.log("nodeData.nodes[nameToNodeIndex[group]].groupAttributesToValues[attrSample] : ");
+					//console.log(nodeData.nodes[nameToNodeIndex[group]].groupAttributesToValues[attrSample]);
+				}
 			}
+
 		}
-		*/
+
+		// BUGGY, NORMALLY IN THE ELSE 1
 
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
-				console.log( nameToNodeIndex[ groupsReturned[group][i]] );
-				console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
-				console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
+				//console.log( nameToNodeIndex[ groupsReturned[group][i]] );
+				//console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
+				//console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
 
