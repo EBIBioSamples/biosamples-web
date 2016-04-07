@@ -29414,7 +29414,7 @@ function doD3Stuff(results) {
         d3.selectAll(".node").selectAll("text").style("font-size", "10px");
         d3.selectAll(".node").selectAll("text").style("dx", 12);
         d3.selectAll(".node").selectAll("text").attr("transform", "translate(" + 0 + "," + 0 + ")");
-        d3.selectAll(".node").selectAll("circle").style("r", this.radius);
+        d3.selectAll(".node").selectAll("circle").transition().style("r", this.radius);
       }).on("mouseover", function (d) {
         console.log("on mouseover node d : ");console.log(d);
         var circleNode = d3.select(this).select("circle");
@@ -29423,9 +29423,9 @@ function doD3Stuff(results) {
         d3.selectAll(".node").selectAll("text").style("opacity", .25);
         d3.selectAll(".node").selectAll("text").style("font-size", "10px");
         textNode.style("opacity", 1);
-        circleNode.style("r", d.radius * 3);
-        textNode.attr("transform", "translate(" + circleNode[0][0].style.r + "," + 0 + ")");
-        textNode.style("font-size", "20px");
+        circleNode.transition().style("r", d.radius * 3);
+        textNode.attr("transform", "translate(" + d.radius * 1.5 + "," + 0 + ")");
+        textNode.transition().style("font-size", "20px");
       });
 
       node.append("text").attr("dx", 12).attr("dy", ".35em").text(function (d) {
@@ -29493,8 +29493,8 @@ function doD3Stuff(results) {
       if (document.getElementById("sectionVizResult").style.visibility == "hidden") {
         document.getElementById("sectionVizResult").style.visibility = "visible";
         document.getElementById("titleRezInfo").innerHTML = "Hide the result information ";
-        // Hard coded value, we should use the heightD3, but the conversion from d3 to html height is problematic
-        document.getElementById("sectionVizResult").style.height = 225 + 'px';
+        var heightBars = $('#resultsViz1').height();
+        document.getElementById("sectionVizResult").style.height = heightBars + 35 + 'px';
       } else {
         document.getElementById("sectionVizResult").style.visibility = "hidden";
         document.getElementById("titleRezInfo").innerHTML = "Display the result information ";

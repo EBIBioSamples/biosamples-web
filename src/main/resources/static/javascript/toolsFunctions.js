@@ -174,7 +174,6 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			indexCalculation++;
 			nodeData.nodes.push({
 				"radius": 10,
-				//"color" : getRandomColor(), 
 				"type":"groupViz",
 				"name":group,
 				"accession":group,
