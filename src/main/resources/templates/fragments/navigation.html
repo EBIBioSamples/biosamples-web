@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+<body layout:fragment="navigation(customBase,customPage)">
+    <nav th:with="currentPage= ${#strings.defaultString(customPage,'home')}">
+        <ul class="grid_24" id="local-nav">
+            <li class="first" th:classappend="${currentPage == 'home'} ? 'active'">
+                <a th:href="@{/}" href="/" title="Biosamples">Home</a>
+            </li>
+            <li th:classappend="${currentPage == 'search'} ? 'active'">
+                <a th:href="@{/search}" href="/search">Search</a>
+            </li>
+            <li th:classappend="${currentPage == 'samples'} ? 'active'">
+                <a th:href="@{/samples}" href="/samples" title="Samples">Samples</a>
+            </li>
+            <li th:classappend="${currentPage == 'groups'} ? 'active'">
+                <a th:href="@{/groups}" href="/groups" title="Groups">Sample Groups</a>
+            </li>
+            <li th:classappend="${currentPage == 'submit'} ? 'active'">
+                <a th:href="@{/help/submit}" href="/help/submit" title="Submit">Submit</a>
+            </li>
+            <li th:classappend="${currentPage == 'help'} ? 'active'">
+                <a th:href="@{/help}" href="/help" title="Help">Help</a>
+            </li>
+            <li class="last" th:classappend="${currentPage == 'about'} ? 'active'">
+                <a th:href="@{/about}" href="about">About BioSamples</a>
+            </li>
+            <li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

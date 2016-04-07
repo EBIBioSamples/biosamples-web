@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 08/03/2016
  */
 @Controller
-public class SearchController {
+public class SearchController{
 
     @RequestMapping("/search")
     public String search(Model model, String searchTerm) {

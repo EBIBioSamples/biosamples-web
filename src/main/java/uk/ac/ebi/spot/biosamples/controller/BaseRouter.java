@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 18/03/2016
  */
 @Controller
+//@RequestMapping("/biosamples")
 public class BaseRouter {
 
     @RequestMapping("/")

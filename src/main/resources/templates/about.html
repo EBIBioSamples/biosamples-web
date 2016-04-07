@@ -1,26 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" layout:decorator="base" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="base"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'about'"
+>
+      <!--th:with="baseUrl = ${@environment.getProperty('web.base.url')}">-->
 <head><title>About</title></head>
 <body>
-
-<nav layout:fragment="navigation" >
-    <ul class="grid_24" id="local-nav">
-        <li class="first"><a href="/" title="Biosamples">Home</a></li>
-        <li><a href="/search">Search</a></li>
-        <li><a href="/samples/" title="Samples">Samples</a></li>
-        <li><a href="/groups/" title="Groups">Sample Groups</a></li>
-        <li><a href="/help/submit/" title="Submit">Submit</a></li>
-        <li><a href="/help/" title="Help">Help</a></li>
-        <li class="last active"><a href="/about">About BioSamples</a></li>
-        <li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li>
-    </ul>
-</nav>
 
 <div layout:fragment="content">
 
     <nav id="breadcrumb">
         <p>
-            <a href="/">BioSamples</a> &gt; <a href="/help/">About</a></span>
+            <a href="../biosamples/">BioSamples</a> &gt; <a href="./about">About</a></span>
         </p>
     </nav>
 

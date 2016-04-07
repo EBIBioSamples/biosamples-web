@@ -1,28 +1,18 @@
 <!doctype html>
-<html layout:decorator="base" xmlns:layout="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="base"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'submit'">
 <head>
     <title>Submit < Help </title>
 </head>
 <body>
 
-<nav layout:fragment="navigation" >
-    <ul class="grid_24" id="local-nav">
-        <li class="first"><a href="/" title="Biosamples">Home</a></li>
-        <li><a href="/search">Search</a></li>
-        <li><a href="/samples/" title="Samples">Samples</a></li>
-        <li><a href="/groups/" title="Groups">Sample Groups</a></li>
-        <li class="active"><a href="/help/submit/" title="Submit">Submit</a></li>
-        <li><a href="/help/" title="Help">Help</a></li>
-        <li class="last"><a href="/about">About BioSamples</a></li>
-        <li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li>
-    </ul>
-</nav>
-
 <div layout:fragment="content">
 
     <nav id="breadcrumb">
         <p>
-            <a href="/">BioSamples</a> &gt; <a href="/help/">Help</a> &gt; Submit</span>
+            <a th:href="@{/}" href="/">BioSamples</a> &gt; <a th:href="@{/help}" href="../help">Help</a> &gt; Submit</span>
         </p>
     </nav>
 
