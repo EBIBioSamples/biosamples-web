@@ -46,6 +46,9 @@
                 obj.vals.push(+facets[i+1]);
             }
         }
+        console.log("!!!");
+        console.log("readFacets obj : ");console.log(obj);
+        console.log("!!!");
         return obj;
     }
 
@@ -113,61 +116,60 @@
               this.querySamples();
           },
             
-            /**
-             * Make the request for the SolR documents
-             * @method querySamples
-             * @param  e {Event} the click event
-             */
-            querySamples: function(e,loadD3) {
-                if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
-                    e.preventDefault();
-                }
-                if (_.isEmpty(this.searchTerm)) {
-                    return;
-                }
-                var queryParams = this.getQueryParameters();
-                console.log("queryParams : ");console.log(queryParams);
-                var server = apiUrl + "query";
+          /**
+           * Make the request for the SolR documents
+           * @method querySamples
+           * @param  e {Event} the click event
+           */
+          querySamples: function(e,loadD3) {
+            if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
+                e.preventDefault();
+            }
+            if (_.isEmpty(this.searchTerm)) {
+                return;
+            }
+            var queryParams = this.getQueryParameters();
+            var server = apiUrl + "query";
 
-                this.$http.get(server,queryParams)
-                    .then(function(results){
+            this.$http.get(server,queryParams)
+                .then(function(results){
 
-                this.currentQueryParams = queryParams;  
+              console.log("first results : ");console.log(results);
+              this.currentQueryParams = queryParams;  
 
-                var resultsInfo = results.data.response;
-                var highLights = results.data.highlighting;
-                var types = results.data.facet_counts.facet_fields.content_type;
-                var organisms = results.data.facet_counts.facet_fields.organism_crt;
-                var organs = results.data.facet_counts.facet_fields.organ_crt;
-                var docs = resultsInfo.docs;
-                var hlDocs = this.associateHighlights(docs, highLights);
-                
-                this.queryTerm = this.searchTerm;
-                this.resultsNumber = resultsInfo.numFound;
-                this.facets.types = readFacets(types);
-                this.facets.organisms = readFacets(organisms);
-                this.facets.organs = readFacets(organs);
-                
-                var validDocs = [];
-                for (var i = 0, n = hlDocs.length; i < n; i++) {
-                  validDocs.push(new Biosample(hlDocs[i]));
-                }
-                this.queryResults = validDocs;
-                this.biosamples = validDocs;
+              var resultsInfo = results.data.response;
+              var highLights = results.data.highlighting;
+              var types = results.data.facet_counts.facet_fields.content_type;
+              var organisms = results.data.facet_counts.facet_fields.organism_crt;
+              var organs = results.data.facet_counts.facet_fields.organ_crt;
+              var docs = resultsInfo.docs;
+              var hlDocs = this.associateHighlights(docs, highLights);
+              
+              this.queryTerm = this.searchTerm;
+              this.resultsNumber = resultsInfo.numFound;
+              this.facets.types = readFacets(types);
+              this.facets.organisms = readFacets(organisms);
+              this.facets.organs = readFacets(organs);
+              
+              var validDocs = [];
+              for (var i = 0, n = hlDocs.length; i < n; i++) {
+                validDocs.push(new Biosample(hlDocs[i]));
+              }
+              this.queryResults = validDocs;
+              this.biosamples = validDocs;
 
-
-                // Variable to know whether we just to a get to
-                // just get data or reload the scene
-                if ( typeof loadD3 === "undefined" || loadD3 ){
-                  doD3Stuff(results,vm);
-                }
-              })
-              .catch(function(data,status,response){
-                console.log("data : ");console.log(data);
-                console.log("status : ");console.log(status);
-                console.log("response : ");console.log(response);
-              });
-            },
+              // Variable to know whether we just to a get to
+              // just get data or reload the scene
+              if ( typeof loadD3 === "undefined" || loadD3 ){
+                doD3Stuff(results,server,vm);
+              }
+            })
+            .catch(function(data,status,response){
+              console.log("data : ");console.log(data);
+              console.log("status : ");console.log(status);
+              console.log("response : ");console.log(response);
+            });
+          },
 
 
             /**
@@ -294,11 +296,10 @@
 })(window);
 
 
-function doD3Stuff( results, vm=0 ){
+function doD3Stuff( results, server, vm=0  ){
   console.log("_______doD3Stuff______");
-  //console.log("---- vm : ");console.log(vm);
-  //console.log("---- vm.$data");console.log(vm.$data);
-  console.log("results");console.log(results);
+  //console.log("results");console.log(results);
+  //console.log("server : ");console.log(server);
 
   if (typeof results !== 'undefined'){
 
@@ -343,9 +344,8 @@ function doD3Stuff( results, vm=0 ){
     };
     $("#buttonRezInfo").hover(
       function(){
-        $(this).css("background-color", "#D0D0D0");        
-      }
-      , 
+        $(this).css("background-color", "#E0E0E0");        
+      }, 
       function(){
         $(this).css("background-color", "white");        
       });
@@ -500,7 +500,7 @@ function doD3Stuff( results, vm=0 ){
         .attr("width", widthRectangle1 )
         .attr("x",function(d){return d.x;})
         .attr("y", function(d){ return height - margin.top - scale1y(d.occurence);} )
-        .attr("height", function(d) { return scale1y(d.occurence); })
+        .attr("height", function(d) { return Math.max(0,scale1y(d.occurence)); })
         .attr("opacity","0.5")
         .on("mousedown",function(d){
           console.log("You clicked on a rectangle and d is : ");console.log(d);
@@ -548,7 +548,7 @@ function doD3Stuff( results, vm=0 ){
           .attr("width", widthRectangle2 )
           .attr("x",function(d){return d.x;})
           .attr("y", function(d){ return height - margin.top - scale2y(d.occurence);} )
-          .attr("height", function(d) { return scale2y(d.occurence); })
+          .attr("height", function(d) { return Math.max(0,scale2y(d.occurence)); })
           .attr("opacity","0.5")
           .on("mousedown",function(d){
             if (vm.$data.filterQuery.organFilter === '' || vm.$data.filterQuery.organFilter !== d.content){
@@ -633,7 +633,7 @@ function doD3Stuff( results, vm=0 ){
       console.log("results.data.response.docs.length>0");
       d3.select("#vizSpotRelations").attr("visibility","visible");
 
-      var resLoad = loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex);
+      var resLoad = loadDataFromGET(results, nodeData, vm,server, nameToNodeIndex);
       nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
 
       draw(svg,nodeData);
@@ -643,6 +643,9 @@ function doD3Stuff( results, vm=0 ){
         d3.select("#vizSpotRelations").attr("visibility","hidden");
         d3.select("#vizSpotRelations").selectAll("*").remove();
         document.getElementById("infoVizRelations").style.visibility="hidden";
+        document.getElementById("buttonRezInfo").style.visibility="hidden";
+        document.getElementById("infoVizRelations").style.height="0px";
+        document.getElementById("vizSpotRelations").style.height="0px";
       }
 
       function draw(svg,nodeData){
@@ -745,7 +748,6 @@ function doD3Stuff( results, vm=0 ){
           d3.selectAll(".node").selectAll("circle").transition().style("r", this.radius);
         })
         .on("mouseover",function(d){
-          console.log("on mouseover node d : ");console.log(d);
           var circleNode = d3.select(this).select("circle");
           var textNode = d3.select(this).select("text");
 
@@ -808,3 +810,4 @@ function doD3Stuff( results, vm=0 ){
       }
   }
 }
+

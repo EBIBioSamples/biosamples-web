@@ -1,3 +1,5 @@
+//var Biosample   = require('./components/Biosample.js');
+
 //This is the file to work with for toolsFunctions
 function getRandomColor() {
   var letters = '0123456789ABCDEF'.split('');
@@ -80,12 +82,14 @@ function getURLsFromObject(objectToRead,prop){
 	return arrayUrls;
 }
 
-function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
+function loadDataFromGET(results, nodeData, vm,server, nameToNodeIndex){
 	console.log("loadDataFromGET in src/main/resources/static/javascript");
+	console.log("server : ");console.log(server);
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
 	nodeData.color=[];
 	nodeData.accessions="";
+	var groupsReturned = {};
 
 	for (var i=0;i< results.data.response.docs.length;i++){
 		nodeData.accessions+=results.data.response.docs[i].accession+' ';
@@ -199,28 +203,29 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			nodeData.nodes[ nameToNodeIndex[group] ].groupValuesToSamples = {};
 
 			for (var i=0; i < groupsReturned[group].length; i ++){
-				//console.log("nodeData.nodes[nameToNodeIndex[group]].responseDoc : ");
-				//console.log(nodeData.nodes[nameToNodeIndex[group]].responseDoc);
 				for (var attr in nodeData.nodes[nameToNodeIndex[group]].responseDoc){
 
 					var attrSample = attr;
 					var valueSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr];
-					//console.log("attrSample : "+attrSample);
-					//console.log("valueSample : "+valueSample);
+
 					( typeof nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample] === "undefined" ) ?
 					nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample] = [ groupsReturned[group][i] ] 
 					: nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample].push(groupsReturned[group][i]);
 
 					nodeData.nodes[nameToNodeIndex[group]].groupAttributesToValues[attrSample] = [ valueSample, nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample]  ] 
-					//console.log("nodeData.nodes[nameToNodeIndex[group]].groupAttributesToValues[attrSample] : ");
-					//console.log(nodeData.nodes[nameToNodeIndex[group]].groupAttributesToValues[attrSample]);
 				}
 			}
 
 		}
 
-		// BUGGY, NORMALLY IN THE ELSE 1
-
+		// Probably here that we should decide what to get in the new get request
+		console.log("vm : ");console.log(vm);
+		console.log("vm.getQueryParameters() : ");console.log(vm.getQueryParameters());
+		// Need to define the format we want for the parameters. Let's just take "Brain" for now
+		var parameters = { searchTerm:"Brain" };
+		var results2 = loadDataWithoutRefresh(vm,server, parameters );
+		console.log("results2 : ");console.log(results2);
+		
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
@@ -253,3 +258,83 @@ function getSamplesFromGroup(apiUrl,group){
 
 }
 
+function loadDataWithoutRefresh(vm,server,parameters){
+  var queryParams = vm.getQueryParameters();
+  queryParams.searchTerm = parameters.searchTerm;
+  console.log("************");
+  console.log("loadDataWithoutRefresh : ");
+  console.log("vm : ");console.log(vm);
+  console.log("server : ");console.log(server);
+  console.log("queryParams : ");console.log(queryParams);
+  console.log("************");
+
+  var rezToReturn = vm.$http.get(server,queryParams)
+    .then(function(results){
+
+	  vm.currentQueryParams = queryParams;  
+
+	  var resultsInfo = results.data.response;
+	  var highLights = results.data.highlighting;
+	  var types = results.data.facet_counts.facet_fields.content_type;
+	  var organisms = results.data.facet_counts.facet_fields.organism_crt;
+	  var organs = results.data.facet_counts.facet_fields.organ_crt;
+	  var docs = resultsInfo.docs;
+	  var hlDocs = vm.associateHighlights(docs, highLights);
+	  
+	  console.log("Stuff returned by the second http get : ");
+	  console.log(resultsInfo);
+	  console.log(highLights);
+	  console.log(types);
+	  console.log(organisms);
+	  console.log(organs);
+	  console.log(docs);
+	  console.log(hlDocs);
+
+
+	  //vm.queryTerm = this.searchTerm;
+	  
+	  //vm.queryTerm = "Death";
+	  //vm.resultsNumber = resultsInfo.numFound;
+	  //vm.facets.types = readFacets(types);
+	  //vm.facets.organisms = readFacets(organisms);
+	  //vm.facets.organs = readFacets(organs);
+	  
+	  var validDocs = [];
+	  for (var i = 0, n = hlDocs.length; i < n; i++) {
+	    //validDocs.push(new Biosample(hlDocs[i]));
+	  }
+	  //vm.queryResults = validDocs;
+	  //vm.biosamples = validDocs;
+	  console.log("end of the get of loadDataWithoutRefresh");
+	  console.log("results : ");console.log(results);
+	  console.log("---------------");
+	  
+	  //rezToReturn.push(results);
+	  return results;
+
+	})
+	.catch(function(data,status,response){
+	  console.log("data : ");console.log(data);
+	  console.log("status : ");console.log(status);
+	  console.log("response : ");console.log(response);
+	});
+	console.log("outside the get of loadDataWithoutRefresh");
+	console.log("rezToReturn : ");console.log(rezToReturn);
+	return rezToReturn;
+}
+
+// Doublon, but **** it
+function readFacets(facets) {
+    var obj = _.create({});
+    obj.keys = [];
+    obj.vals = [];
+    for (var i=0;i<facets.length; i = i+2) {
+        if (+facets[i+1] > 0) {
+            obj[facets[i]] = +facets[i+1];
+            obj.keys.push(facets[i]);
+            obj.vals.push(+facets[i+1]);
+        }
+    }
+    console.log("readFacets obj : ");console.log(obj);
+    return obj;
+}
