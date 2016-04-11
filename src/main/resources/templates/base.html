@@ -12,39 +12,30 @@
 <!--<![endif]-->
 <head>
     <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
-    <object th:include="fragments/head :: head" th:remove="tag"></object>
+    <!--<object th:include="fragments/head :: head" th:remove="tag"></object>-->
+    <th:block th:include="fragments/head :: head"></th:block>
 </head>
 
 
-<body class="level2" layout:fragment="body"><!-- add any of your classes or IDs -->
+<body class="level2"><!-- add any of your classes or IDs -->
 
-<div id="skip-to">
-    <ul>
-        <li><a href="#content">Skip to main content</a></li>
-        <li><a href="#local-nav">Skip to local navigation</a></li>
-        <li><a href="#global-nav">Skip to EBI global navigation menu</a></li>
-        <li><a href="#global-nav-expanded">Skip to expanded EBI global navigation menu (includes all sub-sections)</a></li>
-    </ul>
-</div>
+<th:block th:replace="fragments/skipTo :: skipNavigation"></th:block>
 
 <div id="wrapper" class="container_24">
-    <header th:include="fragments/header :: header"></header>
 
-    <div id="content" role="main" class="grid_24 clearfix">
+    <th:block th:include="fragments/header::header"></th:block>
 
-        <!-- Biosamples specific content goes here -->
-        <div layout:fragment="content">
-            Hello world
-        </div>
-
+    <div id="content" role="main" class="grid_24 clearfix" layout:fragment="content">
+        Hello World
     </div>
+
     <footer th:replace="fragments/footer :: footer"></footer>
 </div> <!--! end of #wrapper -->
 
 
-<th:block th:include="fragments/footer_scripts :: scripts" th:remove="tag"></th:block>
+<th:block th:include="fragments/common-endpage-scripts :: scripts" th:remove="tag"></th:block>
 
-<th:block layout:fragment="custom-footer-scripts" th:remove="tag"></th:block>
+<th:block layout:fragment="custom-endpage-scripts" th:remove="tag"></th:block>
 
 </body>
 </html>

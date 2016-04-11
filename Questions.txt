@@ -1,0 +1,7 @@
+Questions for BioSamples web page
+
+1) Samples and Groups home pages -> What should we present
+2) Need to check the "save history" part
+3) Add a spinner when fetching informations from server
+4) Create a "plugin version" of the search component
+5) Understand how to handle searches -> keep the search box in the top right on every page? Have a dedicated search page, like in OLS?

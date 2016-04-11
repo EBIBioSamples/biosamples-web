@@ -2,8 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.w3.org/1999/xhtml">
-<body layout:fragment="navigation(customBase,customPage)">
-    <nav th:with="currentPage= ${#strings.defaultString(customPage,'home')}">
+<body>
+<!-- Primary Navigation -->
+<th:block layout:fragment="navigation(customBase,customPage)">
+    <nav th:with="currentPage=${#strings.defaultString(customPage,'home')}">
         <ul class="grid_24" id="local-nav">
             <li class="first" th:classappend="${currentPage == 'home'} ? 'active'">
                 <a th:href="@{/}" href="/" title="Biosamples">Home</a>
@@ -29,6 +31,6 @@
             <li class="functional feedback last first"><a href="#" class="icon icon-static" data-icon="\">Feedback</a></li>
         </ul>
     </nav>
-</div>
+</th:block>
 </body>
 </html>

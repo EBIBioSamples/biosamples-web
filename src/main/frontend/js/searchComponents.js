@@ -200,7 +200,7 @@
                 return {
                     'searchTerm': this.searchTerm,
                     'rows': this.samplesToRetrieve,
-                    'start': this.pageNumber,
+                    'start': (this.pageNumber - 1) * this.samplesToRetrieve,
                     'useFuzzySearch': this.useFuzzy,
                     'organFilter': this.filterQuery.organFilter,
                     'typeFilter': this.filterQuery.typeFilter,
@@ -211,7 +211,7 @@
             populateDataWithUrlParameter: function(urlParams) {
                 this.searchTerm = urlParams.searchTerm;
                 this.samplesToRetrieve = _.toInteger(urlParams.rows);
-                this.pageNumber= _.toInteger(urlParams.start);
+                this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve;
                 this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
                 this.filterQuery.organFilter = urlParams.organFilter;
                 this.filterQuery.typeFilter = urlParams.typeFilter;

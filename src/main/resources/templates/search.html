@@ -1,7 +1,7 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
-      layout:decorator="base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="base"
       th:with="currentPage = 'search'">
 <head>
     <title>Search</title>
@@ -102,10 +102,10 @@
     </section>
 </div>
 
-<div layout:fragment="custom-footer-scripts">
+<th:block layout:fragment="custom-endpage-scripts">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
-    <script src="/javascript/searchComponents.js"></script>
-</div>
+    <script th:src="@{/javascript/searchComponents.js}"></script>
+</th:block>
 
 </body>
 </html>
