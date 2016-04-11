@@ -1,7 +1,11 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import uk.ac.ebi.spot.biosamples.model.Breadcrumb;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Javadocs go here!
@@ -10,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 18/03/2016
  */
 @Controller
-//@RequestMapping("/biosamples")
 public class BaseRouter {
 
     @RequestMapping("/")
@@ -18,10 +21,11 @@ public class BaseRouter {
         return "home";
     }
 
-//    @RequestMapping("/search")
-//    public String search() {
-//        return "search";
-//    }
+    @RequestMapping("/search")
+    public String search(Model model, String searchTerm, HttpServletRequest request) {
+        model.addAttribute("searchTerm",searchTerm);
+        return "search";
+    }
 
     @RequestMapping("/samples")
     public String samples() {
