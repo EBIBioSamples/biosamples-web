@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SearchController{
 
-    @RequestMapping("/search")
-    public String search(Model model, String searchTerm) {
-        model.addAttribute("searchTerm",searchTerm);
-        return "search";
-    }
+//    @RequestMapping("/search")
+//    public String search(Model model, String searchTerm) {
+//        model.addAttribute("searchTerm",searchTerm);
+//        return "search";
+//    }
 
 //    @RequestMapping("/test")
 //    public String test(Model model) {

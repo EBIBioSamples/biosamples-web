@@ -2,13 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorator="base"
-      th:with="currentPage = 'search'">
+      th:with="currentPage = 'search'"
+      th:with="apiUrl = 'http://localhost:8080/biosamples/search_api/'"
+      >
 <head>
     <title>Search</title>
     <!--<link rel="stylesheet" href="stylesheets/main_samelf.css">-->
     <link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.apiUrl = [[${apiUrl}]];
+        /*]]>*/
+    </script>
 </head>
 <body id="app">
 
@@ -104,6 +111,9 @@
 
 <th:block layout:fragment="custom-endpage-scripts">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
+    <script>
+
+    </script>
     <script th:src="@{/javascript/searchComponents.js}"></script>
 </th:block>
 

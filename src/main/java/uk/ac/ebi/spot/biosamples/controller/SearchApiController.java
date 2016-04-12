@@ -10,14 +10,26 @@ import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.solr.core.SolrOperations;
+import org.springframework.data.solr.core.SolrTemplate;
+import org.springframework.data.solr.core.query.*;
+import org.springframework.data.solr.core.query.result.FacetFieldEntry;
+import org.springframework.data.solr.core.query.result.FacetPage;
+import org.springframework.data.solr.core.query.result.FacetQueryEntry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import uk.ac.ebi.spot.biosamples.model.Merged;
 import uk.ac.ebi.spot.biosamples.model.SearchRequest;
+import uk.ac.ebi.spot.biosamples.repository.MergedRepository;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by lucacherubin on 01/03/2016.
@@ -26,6 +38,12 @@ import javax.validation.constraints.NotNull;
 public class SearchApiController {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private SolrOperations mergedSolrTemplate;
+
+    @Autowired
+    private MergedRepository mergedRepository;
 	
     @NotNull
     @Value("${solr.searchapi.server}")
@@ -53,22 +71,30 @@ public class SearchApiController {
 
         // Setup facets
         query.setFacet(true);
+
+
+
+
         query.addFacetField("content_type");
-        query.addFacetField("organism_crt");
-        query.addFacetField("organ_crt");
+
+
+        List<String> dynamicFacets = getMostUsedFacets(searchTerm,5);
+        dynamicFacets.forEach(facet->query.addFacetField(facet));
+
+
 
         // Add filter querys
         if (!searchRequest.getTypeFilter().isEmpty()) {
             query.addFilterQuery(String.format("content_type:%s", searchRequest.getTypeFilter()));
         }
 
-        if (!searchRequest.getOrganismFilter().isEmpty()) {
-            query.addFilterQuery(String.format("organism_crt:%s", searchRequest.getOrganismFilter()));
-        }
-
-        if (!searchRequest.getOrganFilter().isEmpty()) {
-            query.addFilterQuery(String.format("organ_crt:%s", searchRequest.getOrganFilter()));
-        }
+//        if (!searchRequest.getOrganismFilter().isEmpty()) {
+//            query.addFilterQuery(String.format("organism_crt:%s", searchRequest.getOrganismFilter()));
+//        }
+//
+//        if (!searchRequest.getOrganFilter().isEmpty()) {
+//            query.addFilterQuery(String.format("organ_crt:%s", searchRequest.getOrganFilter()));
+//        }
 
         query.setRows(searchRequest.getRows()).setStart(searchRequest.getStart());
 
@@ -104,5 +130,30 @@ public class SearchApiController {
 
         }
     }
+
+    private List<String> getMostUsedFacets(String searchTerm, int facetLimit) {
+
+        List<String> dynamicFacets = new ArrayList<>();
+
+
+        FacetQuery facetQuery = new SimpleFacetQuery(new SimpleStringCriteria(searchTerm));
+        FacetOptions facetOptions = new FacetOptions();
+        facetOptions.addFacetOnField("crt_type_ft");
+        facetOptions.setFacetLimit(facetLimit);
+        facetQuery.setFacetOptions(facetOptions);
+        FacetPage<Merged> facetResults = mergedSolrTemplate.queryForFacetPage(facetQuery,Merged.class);
+
+        Iterator<FacetQueryEntry> i = facetResults.getFacetQueryResult().iterator();
+        while(i.hasNext()) {
+            FacetQueryEntry e = i.next();
+            String facetValue = e.getValue();
+            dynamicFacets.add(e.getValue());
+        }
+
+        return dynamicFacets;
+
+    }
+
+
 
 }

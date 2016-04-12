@@ -10,7 +10,7 @@
 
     // Create a plugin and pass the apiURL using an option
     // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
-    window.apiUrl = "http://localhost:8080/search_api/";
+    // window.apiUrl = "http://localhost:8080/biosamples/search_api/";
 
     // Required
     var _           = require("lodash");
@@ -57,7 +57,7 @@
             queryTerm:'',
             filterTerm: '',
             useFuzzy: false,
-            pageNumber: 0,
+            pageNumber: 1,
             samplesToRetrieve: 10,
             resultsNumber: '',
             queryResults: {},
@@ -164,7 +164,9 @@
 
                     })
                     .catch(function(data,status,response){
+                        console.log(data);
                         console.log(status);
+                        console.log(response);
                     });
             },
 
