@@ -324,28 +324,27 @@ function doD3Stuff( results, server, vm=0  ){
     document.getElementById("titleRezInfo").innerHTML="Display result information";
     document.getElementById("sectionVizResult").style.visibility="hidden";
 
-    //if (numberFacetsUnEmpty > 0){
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
       document.getElementById("infoVizRelations").innerHTML=' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
       var cpt = 0;
 
-      //var strResults = ' <div id="tableResults"> <table id="tableResults" style="width:100%;overflow:scroll; overflow-x:visible"> <tr>';
-      //var strResults = ' <div id="tableResults" style="width:100%;overflow:scroll; overflow-x:visible;display: inline-block">';
-      var strResults = ''
+      var strResults = '<table id="table" > <tr> ';
+      
       for (var u in numberFacetsUnEmpty){
-        console.log("numberFacetsUnEmpty[u] *15 + margin.right + margin.left : ");console.log(numberFacetsUnEmpty[u] *15 + margin.right + margin.left)
-        //console.log("numberFacetsUnEmpty[u] *15 + margin.right + margin.left : ");
-        //console.log(numberFacetsUnEmpty[u] *15 + margin.right + margin.left);
-        strResults+= '<div id="infoVizRelations'+cpt+'" height='
-        +document.getElementById("infoVizRelations").getBoundingClientRect().height/3
-        //+' width = '+ ( numberFacetsUnEmpty[u] *15 + margin.right + margin.left ) + "px"
-        //+' overflow=scroll; overflow-x=visible  > </div> ';
-        +' overflow=hidden  > </div> ';
+        if ( numberFacetsUnEmpty[u] > 0 ){
+          strResults+= '<td align="center">'+ u +'</td>';
+        }
+      }
+      strResults+= '</tr> <tr>';
+      for (var u in numberFacetsUnEmpty){
+        if ( numberFacetsUnEmpty[u] > 0 ){
+          strResults+= '<td>  <div id="infoVizRelations'+cpt+'" height='
+          +document.getElementById("infoVizRelations").getBoundingClientRect().height/3
+          +' overflow=scroll; overflow-x=visible  > </div>   </td>';
+        }
         cpt++;
       }
-      // css to add : overflow:scroll; overflow-x:visible ?
-      //strResults += '</tr> </table> </div>';
-      //strResults += '</div>';
+      strResults += '</tr> </table>';
       document.getElementById("sectionVizResult").innerHTML= strResults;
       document.getElementById("sectionVizResult").style.height="0px";
       /*
@@ -371,7 +370,8 @@ function doD3Stuff( results, server, vm=0  ){
         document.getElementById("titleRezInfo").innerHTML="Hide the result information ";
         //var heightBars = $('#resultsViz1').height();
         var heightBars = $('#resultsViz0').height();
-        document.getElementById("sectionVizResult").style.height=(heightBars+35)+'px';
+        document.getElementById("sectionVizResult").style.height= (heightBars+100)+ "px";
+
       } else {
         document.getElementById("sectionVizResult").style.visibility="hidden";
         document.getElementById("titleRezInfo").innerHTML="Display the result information ";
@@ -413,21 +413,26 @@ function doD3Stuff( results, server, vm=0  ){
     var barCharts=[];
     var cpt = 0;
     for (var u in numberFacetsUnEmpty){
-      var idToSelect = "#infoVizRelations"+cpt;
-      console.log("idToSelect : ");console.log(idToSelect);
-      barCharts.push(
-        d3.select( idToSelect )
-          .insert("svg",":first-child")
-          //.attr("width", width)
-          .attr("height", height)
-          .attr("id","resultsViz"+cpt+"")
-          .attr("class","bar")
-          .style("stroke", "black")
-          .style("stroke-width", 1)
-          .style("border","solid")
-          .style("border-color","#5D8C83")
-          .style("border-radius","10px")
-      );
+      if (numberFacetsUnEmpty[u] > 0){
+        var idToSelect = "#infoVizRelations"+cpt;
+        console.log("idToSelect : ");console.log(idToSelect);
+        barCharts.push(
+          d3.select( idToSelect )
+            .insert("svg",":first-child")
+            .attr("width", function (){
+              // Possibility to modify the value for cpt == 0 if we want a special case for sample and group
+              return margin.left+margin.right + (5+10)* (numberFacetsUnEmpty[u]);
+            })
+            .attr("height", height)
+            .attr("id","resultsViz"+cpt+"")
+            .attr("class","bar")
+            .style("stroke", "black")
+            .style("stroke-width", 1)
+            .style("border","solid")
+            .style("border-color","#5D8C83")
+            .style("border-radius","10px")
+        );
+      }
       cpt++;
     }
 
@@ -477,9 +482,10 @@ function doD3Stuff( results, server, vm=0  ){
     var widthRectangles = [];
     var cpt =0;
     for (var u in numberFacetsUnEmpty){
+      // Possibility to modify the value for cpt == 0 if we want a special case for sample and group
       /*
       if (cpt== 0){
-        widthRectangles.push( (width - 5)/( Math.floor(results.data.facet_counts.facet_fields.content_type.length/2) ) - margin.left - margin.right );
+        widthRectangles.push( (width - 5 - margin.right - margin.left)/( Math.floor(results.data.facet_counts.facet_fields.content_type.length/2) ) );
       } else {
         widthRectangles.push(10);
       }
@@ -539,7 +545,7 @@ function doD3Stuff( results, server, vm=0  ){
       //dataBars.push([]);
       scalesY.push( 
         d3.scale.linear().domain([0, maxOccurences[cpt] ])
-        .range([ 0, height ])
+        .range([ margin.bottom , height -margin.top ])
       );
       cpt++;
     }
@@ -570,7 +576,7 @@ function doD3Stuff( results, server, vm=0  ){
         if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){ 
                 dataBars[cpt].push({"content":results.data.facet_counts.facet_fields[u][v],
                  "occurence":0 , "x":Math.floor(v/2) * (widthRectangles[cpt] + 5) +margin.left,
-                 "index":Math.floor(cpt/2) }) ;
+                 "index":Math.floor(v/2) }) ;
                 dataBars[cpt][ dataBars[cpt].length -1 ].occurence=results.data.facet_counts.facet_fields[u][v+1];
         }      
       }
@@ -672,6 +678,7 @@ function doD3Stuff( results, server, vm=0  ){
         .on("mousedown",function(d){
           // Filter the data. We now want to highlight selection instead
           console.log("You clicked on a rectangle and d is : ");console.log(d);
+          /*
           if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
             vm.$data.filterQuery.typeFilter=d.content;
           } else {
@@ -679,6 +686,7 @@ function doD3Stuff( results, server, vm=0  ){
           }
           vm.$emit("bar-selected");
           vm.$options.methods.querySamples(this,false);          
+          */
         })
         .append("text")
           .attr("transform", "rotate(-90)")
@@ -841,7 +849,7 @@ function doD3Stuff( results, server, vm=0  ){
             .style("border","solid")
             .style("overflow","scroll")
             .style("border-color","#5D8C83")
-            .style("border-radius","10px")
+            .style("border-radius","4px")
             .call(d3.behavior.zoom().on("zoom", (function (d) {
                 svg.attr("transform", 
                   "translate(" + d3.event.translate + ")" + 
@@ -863,7 +871,7 @@ function doD3Stuff( results, server, vm=0  ){
         .style("border","solid")
         .style("overflow","scroll")
         .style("border-color","#5D8C83")
-        .style("border-radius","10px")
+        .style("border-radius","4px")
         .call(d3.behavior.zoom().on("zoom", (function (d) {
             //console.log("onzoom d : ");console.log(d);
             //console.log("onzoom d3 : ");console.log(d3);
