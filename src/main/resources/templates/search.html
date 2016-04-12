@@ -65,7 +65,14 @@
                                            v-model="useFuzzy"
                                            v-on:change="querySamples" />
                                 </form>
-                                <component is="facet" title="Content Type"
+                               
+                                <component v-for="(key,facetObj) in facets" 
+                                            is="facet" v-bind:title="key"
+                                            v-bind:keys="facetObj.keys"
+                                            v-bind:values="facetObj.vals"
+                                            v-bind:facet-id="key + 'Filter'">
+                                </component>
+                                <!-- <component is="facet" title="Content Type"
                                            v-bind:keys="facets.types.keys"
                                            v-bind:values="facets.types.vals"
                                            facet-id="typeFilter">
@@ -74,7 +81,7 @@
                                            v-bind:keys="facets.organs.keys"
                                            v-bind:values="facets.organs.vals"
                                            facet-id="organFilter">
-                                </component>
+                                </component> -->
                                 <!--<component is="facet" title="Organism"
                                         :keys="facets.organisms.keys"
                                         :values="facets.organisms.vals"

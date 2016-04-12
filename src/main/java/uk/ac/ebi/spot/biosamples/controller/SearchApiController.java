@@ -8,6 +8,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.solr.core.SolrOperations;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
+import org.springframework.data.solr.core.query.result.FacetEntry;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.data.solr.core.query.result.FacetQueryEntry;
@@ -79,8 +81,11 @@ public class SearchApiController {
 
 
         List<String> dynamicFacets = getMostUsedFacets(searchTerm,5);
-        dynamicFacets.forEach(facet->query.addFacetField(facet));
+        for(String facet: dynamicFacets) {
+            query.addFacetField(facet);
+        }
 
+        query.setFacetLimit(5);
 
 
         // Add filter querys
@@ -143,10 +148,9 @@ public class SearchApiController {
         facetQuery.setFacetOptions(facetOptions);
         FacetPage<Merged> facetResults = mergedSolrTemplate.queryForFacetPage(facetQuery,Merged.class);
 
-        Iterator<FacetQueryEntry> i = facetResults.getFacetQueryResult().iterator();
+        Iterator<FacetFieldEntry> i = facetResults.getFacetResultPage("crt_type_ft").iterator();
         while(i.hasNext()) {
-            FacetQueryEntry e = i.next();
-            String facetValue = e.getValue();
+            FacetFieldEntry e = i.next();
             dynamicFacets.add(e.getValue());
         }
 
