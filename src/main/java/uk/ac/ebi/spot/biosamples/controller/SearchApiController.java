@@ -66,7 +66,13 @@ public class SearchApiController {
             query.addFilterQuery(String.format("organ_crt:%s", searchRequest.getOrganFilter()));
         }
 
-        query.setRows(searchRequest.getRows()).setStart(searchRequest.getStart());
+        int searchStart = searchRequest.getStart();
+        
+        if (searchStart > 0) {
+            searchStart = searchStart -1;
+        }
+
+        query.setRows(searchRequest.getRows()).setStart(searchStart);
 
 
         query.setHighlight(true);

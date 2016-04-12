@@ -219,12 +219,14 @@ function loadDataFromGET(results, nodeData, vm,server, nameToNodeIndex){
 		}
 
 		// Probably here that we should decide what to get in the new get request
-		console.log("vm : ");console.log(vm);
-		console.log("vm.getQueryParameters() : ");console.log(vm.getQueryParameters());
+		//console.log("vm : ");console.log(vm);
+		//console.log("vm.getQueryParameters() : ");console.log(vm.getQueryParameters());
 		// Need to define the format we want for the parameters. Let's just take "Brain" for now
+		/*
 		var parameters = { searchTerm:"Brain" };
 		var results2 = loadDataWithoutRefresh(vm,server, parameters );
 		console.log("results2 : ");console.log(results2);
+		*/
 		
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
@@ -271,6 +273,7 @@ function loadDataWithoutRefresh(vm,server,parameters){
   var rezToReturn = vm.$http.get(server,queryParams)
     .then(function(results){
 
+	  console.log("results : ");console.log(results);
 	  vm.currentQueryParams = queryParams;  
 
 	  var resultsInfo = results.data.response;
@@ -281,6 +284,7 @@ function loadDataWithoutRefresh(vm,server,parameters){
 	  var docs = resultsInfo.docs;
 	  var hlDocs = vm.associateHighlights(docs, highLights);
 	  
+	  /*
 	  console.log("Stuff returned by the second http get : ");
 	  console.log(resultsInfo);
 	  console.log(highLights);
@@ -289,24 +293,24 @@ function loadDataWithoutRefresh(vm,server,parameters){
 	  console.log(organs);
 	  console.log(docs);
 	  console.log(hlDocs);
+	  */
 
-
+	  // Do not touch vm, unless you want to modify the vue
 	  //vm.queryTerm = this.searchTerm;
-	  
 	  //vm.queryTerm = "Death";
 	  //vm.resultsNumber = resultsInfo.numFound;
 	  //vm.facets.types = readFacets(types);
 	  //vm.facets.organisms = readFacets(organisms);
 	  //vm.facets.organs = readFacets(organs);
 	  
-	  var validDocs = [];
-	  for (var i = 0, n = hlDocs.length; i < n; i++) {
+	  //var validDocs = [];
+	  //for (var i = 0, n = hlDocs.length; i < n; i++) {
 	    //validDocs.push(new Biosample(hlDocs[i]));
-	  }
+	  //}
 	  //vm.queryResults = validDocs;
 	  //vm.biosamples = validDocs;
-	  console.log("end of the get of loadDataWithoutRefresh");
-	  console.log("results : ");console.log(results);
+	  //console.log("end of the get of loadDataWithoutRefresh");
+	  //console.log("results : ");console.log(results);
 	  console.log("---------------");
 	  
 	  //rezToReturn.push(results);
