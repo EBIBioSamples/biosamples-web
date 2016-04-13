@@ -1,0 +1,63 @@
+<!doctype html>
+<html class="no-js"
+      lang="en"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<!--
+
+## General Documentation ##
+
+
+- Use th:class on decorating fragments to replace parent fragment classes
+- Use th:appendclass on deoreating fragments to append class to parent fragments
+
+
+## Page variables ##
+
+overrideTitle = {true,false} - you can use this variable in combination with the title block to override the title-pattern
+currentPage = 'some strings' -
+-->
+
+
+
+
+<head>
+    <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
+    <th:block th:include="fragments/head :: head"></th:block>
+    <!-- All the assets you're putting in the head are automatically added to the head for the decorating page -->
+</head>
+
+
+<body class="level2">
+
+<!-- Skip navigation is automatically added here using markup inside fragments/skipTo.html -->
+<th:block th:replace="fragments/skipTo :: skipNavigation"></th:block>
+
+<div id="wrapper" class="container_24">
+
+    <!-- Header markup is imported here from fragments/header.html -->
+    <th:block th:include="fragments/header::header"></th:block>
+
+    <div id="content" role="main" class="grid_24 clearfix" layout:fragment="content">
+        <!-- This is what distinguish each page, use this fragment to define the content of your page -->
+        <!-- If no specific content is provided, content in the parent layout is used as default contant -->
+        Hello World
+    </div>
+    
+    <!-- Footer is imported here from fragments/footer.html -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+</div> <!--! end of #wrapper -->
+
+
+<th:block th:include="fragments/common-endpage-scripts :: scripts" th:remove="tag">
+    <!-- Common footer scripts are included here. Common scripts are available in fragments/common-endpage-scripts.html -->
+</th:block>
+
+
+<th:block layout:fragment="custom-endpage-scripts" th:remove="tag">
+    <!-- Each page can contain custom scripts that you want to add. This fragment let you add custom scripts to the end of the page -->    
+</th:block>
+
+</body>
+</html>

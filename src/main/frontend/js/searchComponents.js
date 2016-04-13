@@ -8,7 +8,12 @@
 (function(window){
     "use strict";
 
-    window.apiUrl = "search_api/";
+    // Create a plugin and pass the apiURL using an option
+    // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
+    if (!window.apiUrl) {
+        window.apiUrl ="http://localhost:8080/biosamples/search_api/";
+    }
+
 
     // Required
     var _           = require("lodash");
@@ -16,6 +21,7 @@
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Biosample   = require('./components/BioSample.js');
+    var apiUrl      = window.apiUrl;
 
 
     // Vue Configuration
@@ -47,7 +53,7 @@
         }
         return obj;
     }
-
+    
     new Vue({
         el: '#app',
         data: {
@@ -55,7 +61,7 @@
             queryTerm:'',
             filterTerm: '',
             useFuzzy: false,
-            pageNumber: 0,
+            pageNumber: 1,
             samplesToRetrieve: 10,
             resultsNumber: '',
             queryResults: {},
@@ -66,9 +72,9 @@
                 organFilter: ''
             },
             facets: {
-                types: {},
-                organisms: {},
-                organs: {},
+                // types: {},
+                // organisms: {},
+                // organs: {}
             },
             previousQueryParams: {},
             currentQueryParams: {}
@@ -134,19 +140,28 @@
                     .then(function(results){
 
 
-                        var resultsInfo = results.data.response;
-                        var highLights  = results.data.highlighting;
-                        var types       = results.data.facet_counts.facet_fields.content_type;
-                        var organisms   = results.data.facet_counts.facet_fields.organism_crt;
-                        var organs      = results.data.facet_counts.facet_fields.organ_crt;
+                        var resultsInfo      = results.data.response;
+                        var highLights       = results.data.highlighting;
+                        var dynamicFacets    = results.data.facet_counts.facet_fields;
+                        var dynamicFacetsKey = _.keys(dynamicFacets);
+                        this.facets          = {};
+                        var vm               = this;
+
+                        _.forEach(dynamicFacetsKey, function(key) {
+                            let readableKey = key.replace('_crt','');
+                            vm.facets[readableKey] = readFacets(dynamicFacets[key]);
+                        });
+                        // var types       = results.data.facet_counts.facet_fields.content_type;
+                        // var organisms   = results.data.facet_counts.facet_fields.organism_crt;
+                        // var organs      = results.data.facet_counts.facet_fields.organ_crt;
                         var docs        = resultsInfo.docs;
                         var hlDocs      = this.associateHighlights(docs,highLights);
 
                         this.queryTerm        = this.searchTerm;
                         this.resultsNumber    = resultsInfo.numFound;
-                        this.facets.types     = readFacets(types);
-                        this.facets.organisms = readFacets(organisms);
-                        this.facets.organs    = readFacets(organs);
+                        // this.facets.types     = readFacets(types);
+                        // this.facets.organisms = readFacets(organisms);
+                        // this.facets.organs    = readFacets(organs);
 
                         var validDocs = [];
 
@@ -159,9 +174,12 @@
 
                         this.currentQueryParams = queryParams;
 
+
                     })
                     .catch(function(data,status,response){
+                        console.log(data);
                         console.log(status);
+                        console.log(response);
                     });
             },
 
@@ -197,7 +215,7 @@
                 return {
                     'searchTerm': this.searchTerm,
                     'rows': this.samplesToRetrieve,
-                    'start': this.pageNumber,
+                    'start': (this.pageNumber - 1) * this.samplesToRetrieve,
                     'useFuzzySearch': this.useFuzzy,
                     'organFilter': this.filterQuery.organFilter,
                     'typeFilter': this.filterQuery.typeFilter,
@@ -208,7 +226,7 @@
             populateDataWithUrlParameter: function(urlParams) {
                 this.searchTerm = urlParams.searchTerm;
                 this.samplesToRetrieve = _.toInteger(urlParams.rows);
-                this.pageNumber= _.toInteger(urlParams.start);
+                this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve;
                 this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
                 this.filterQuery.organFilter = urlParams.organFilter;
                 this.filterQuery.typeFilter = urlParams.typeFilter;
@@ -222,12 +240,14 @@
             registerEventHandlers: function() {
                 this.$on('page-changed', function(newPage) {
                     this.pageNumber = newPage;
+                    this.saveHistoryState();
                     this.querySamples();
                 });
                 this.$on('dd-item-chosen', function(item) {
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
                     this.pageNumber = 1;
+                    this.saveHistoryState();
                     this.querySamples();
                 });
 
@@ -239,6 +259,7 @@
                         console.log("Set filter: [" + key + "]=" + value);
                         Vue.set(this.filterQuery,key,value);
                     }
+                    this.saveHistoryState();
                     this.querySamples();
                 });
             },

@@ -38,8 +38,8 @@ public class SearchRequest {
                                                  }
 
     public int getStart() {
-                        return start;
-                                     }
+        return start;
+    }
 
     public void setStart(int start) {
                                   this.start = start;

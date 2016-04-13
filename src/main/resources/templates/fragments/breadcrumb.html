@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body layout:fragment="breadcrumb(breadcrumbObj)">
+    <!-- WIP -->
+    <nav id="breadcrumb">
+        <th:span th:each="pageNameLinkPair:${breadcrumbObj.getStructure()}" th:remove="tag">
+            <a th:href="@{${pageNameLinkPair.getUrl()}}" href="" th:text="${pageNameLinkPair.getName()}"></a>
+        </th:span>
+        </p>
+    </nav>
+</body>
+</html>
