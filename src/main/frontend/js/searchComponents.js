@@ -312,14 +312,7 @@ function doD3Stuff( results, server, vm=0  ){
       }
     }
     console.log( "numberFacetsUnEmpty : " );console.log( numberFacetsUnEmpty );
-    /*
-    var numberFacetsUnEmpty = 0;
-    for (var u=0; u < results.data.facet_counts.facet_fields.organ_crt.length;u++){
-      if (u%2 === 0 && results.data.facet_counts.facet_fields.organ_crt[u+1] !== 0 ){ 
-        numberFacetsUnEmpty++;
-      }
-    }
-    */
+
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").innerHTML="Display result information";
     document.getElementById("sectionVizResult").style.visibility="hidden";
@@ -347,17 +340,6 @@ function doD3Stuff( results, server, vm=0  ){
       strResults += '</tr> </table>';
       document.getElementById("sectionVizResult").innerHTML= strResults;
       document.getElementById("sectionVizResult").style.height="0px";
-      /*
-        document.getElementById("infoVizRelations").innerHTML=' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
-        document.getElementById("sectionVizResult").innerHTML= 
-        ' <div id="tableResults"> <table id="tableResults" style="width:100%"> <tr> <td> <div id="infoVizRelations1" height='
-        +document.getElementById("infoVizRelations").getBoundingClientRect().height/3
-        +' > </td>'
-        +' <td>  </div><div id=\"infoVizRelations2\" height='
-        +document.getElementById("infoVizRelations").getBoundingClientRect().height/3
-        +'></div> </td> </tr> </table> </div>';
-        document.getElementById("sectionVizResult").style.height="0px";
-      */
     } else {
       document.getElementById("infoVizRelations").innerHTML=' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
       document.getElementById("sectionVizResult").innerHTML= ' <div id="tableResults"> <table  style="width:100%" <tr> <td>  </table> </div>';
@@ -436,39 +418,7 @@ function doD3Stuff( results, server, vm=0  ){
       cpt++;
     }
 
-    /*
     // Visual part of barChart
-    var barChart1 = d3.select("#infoVizRelations1")
-      .insert("svg",":first-child")
-      //.attr("width", width)
-      .attr("height", height)
-      .attr("id","resultsViz1")
-      .attr("class","bar")
-      .style("stroke", "black")
-      .style("stroke-width", 1)
-      .style("border","solid")
-      .style("border-color","#5D8C83")
-      .style("border-radius","10px")
-    ;
-    */
-    /*
-    if (numberFacetsUnEmpty >0 ){
-      var barChart2 = d3.select("#infoVizRelations2")
-        .insert("svg",":first-child")
-        .attr("width", function (){
-          return margin.left+margin.right + (5+10)* (numberFacetsUnEmpty);
-        })
-        .attr("height", height)
-        .attr("id","resultsViz2")
-        .attr("class","bar")
-        .style("stroke", "black")
-        .style("stroke-width", 1)
-        .style("border","solid")
-        .style("border-color","#5D8C83")
-        .style("border-radius","10px")
-      ;    
-    }
-    */
 
     // To modify to use the data of barCharts
     var x = d3.scale.linear()
@@ -503,10 +453,6 @@ function doD3Stuff( results, server, vm=0  ){
       //console.log(results.data.facet_counts.facet_fields[u]);
       var cpt=0;
       for (var v = 0; v < results.data.facet_counts.facet_fields[u].length ;v++ ){
-        /*
-        console.log("results.data.facet_counts.facet_fields[u][v] : ");
-        console.log(results.data.facet_counts.facet_fields[u][v]);        
-        */
         if (typeof results.data.facet_counts.facet_fields[u][v] !== "string" ){
           if (maxOccurences[ maxOccurences.length-1 ] < results.data.facet_counts.facet_fields[u][v]){
             maxOccurences[maxOccurences.length-1] = results.data.facet_counts.facet_fields[u][v];
@@ -515,22 +461,6 @@ function doD3Stuff( results, server, vm=0  ){
       }
     }
     console.log("maxOccurences : ");console.log(maxOccurences);
-    /*
-    var maxOccurence1 = 0;
-    for (var i=0; i < results.data.facet_counts.facet_fields.content_type.length;i++){
-      if (typeof results.data.facet_counts.facet_fields.content_type[i] !== "string" ){
-        if (maxOccurence1 < results.data.facet_counts.facet_fields.content_type[i])
-          maxOccurence1 = results.data.facet_counts.facet_fields.content_type[i];
-      }
-    }
-    var maxOccurence2 = 0;
-    for (var i=0; i < results.data.facet_counts.facet_fields.organ_crt.length;i++){
-      if (typeof results.data.facet_counts.facet_fields.organ_crt[i] !== "string" ){
-        if (maxOccurence2 < results.data.facet_counts.facet_fields.organ_crt[i])
-          maxOccurence2 = results.data.facet_counts.facet_fields.organ_crt[i];
-      }
-    }          
-    */
 
     var scalesX = []; var scalesY = [];
     var cpt=0;
@@ -541,8 +471,7 @@ function doD3Stuff( results, server, vm=0  ){
         .domain(dataBars[cpt].map(function(d){ console.log("d.content : "+d.content); return d.content;}))
         .range([margin.left, width - margin.right - margin.left])
       );
-      //cpt++
-      //dataBars.push([]);
+
       scalesY.push( 
         d3.scale.linear().domain([0, maxOccurences[cpt] ])
         .range([ margin.bottom , height -margin.top ])
@@ -552,23 +481,6 @@ function doD3Stuff( results, server, vm=0  ){
     console.log("dataBars");console.log(dataBars);
     console.log("scalesX");console.log(scalesX);
     console.log("scalesY");console.log(scalesY);
-    /*
-    var scale1x = d3.scale.ordinal()
-      // domain is input data, range is output to put the data to
-      .domain(dataBar1.map(function(d){ return d.content;}))
-      .range([margin.left, width - margin.right])
-    ;
-    var scale1y = d3.scale.linear().domain([0, maxOccurence1 ])
-      .range([1, Math.floor(height * 0.8) ]);
-
-    var scale2x = d3.scale.ordinal()
-      // domain is input data, range is output to put the data to
-      .domain(dataBar2.map(function(d){ return d.content;}))
-      .range([margin.left, width - margin.right])
-    ;
-    var scale2y = d3.scale.linear().domain([0, maxOccurence2 ])
-     .range([1, Math.floor(height * 0.8) ]);
-     */
 
     var cpt=0;
     for (var u in results.data.facet_counts.facet_fields ){
@@ -580,27 +492,10 @@ function doD3Stuff( results, server, vm=0  ){
                 dataBars[cpt][ dataBars[cpt].length -1 ].occurence=results.data.facet_counts.facet_fields[u][v+1];
         }      
       }
-      //console.log("dataBars["+cpt+"] : ");console.log(dataBars[cpt]);
       cpt++;
     }
     console.log("dataBars : ");console.log(dataBars);
-    /*
-    for (var u=0; u < results.data.facet_counts.facet_fields.content_type.length;u++){
-      (u%2 === 0) ? 
-      dataBar1.push({"content":results.data.facet_counts.facet_fields.content_type[u],
-       "occurence":0 , "x":Math.floor(u/2) * (widthRectangle1 + 5) +margin.left,
-       "index":Math.floor(u/2) }) 
-      : dataBar1[Math.floor(u/2)].occurence=results.data.facet_counts.facet_fields.content_type[u]
-    }
-    for (var u=0; u < results.data.facet_counts.facet_fields.organ_crt.length;u++){
-      if (u%2 === 0 && results.data.facet_counts.facet_fields.organ_crt[u+1] !== 0 ){ 
-        dataBar2.push({"content":results.data.facet_counts.facet_fields.organ_crt[u],
-         "occurence":0 , "x":Math.floor(u/2) * (widthRectangle2 + 5) +margin.left,
-         "index":Math.floor(u/2) }) ;
-        dataBar2[ dataBar2.length -1 ].occurence=results.data.facet_counts.facet_fields.organ_crt[u+1];
-      }
-    }
-    */
+
     var xAxises = [];
     var yAxises = [];
     var cpt=0;
@@ -621,24 +516,7 @@ function doD3Stuff( results, server, vm=0  ){
     console.log(xAxises);
     console.log("yAxises : ");
     console.log(yAxises);    
-    /*
-    var xAxis1 = d3.svg.axis()
-      .scale(scale1x)
-      .orient("bottom")
-    ;
-    var yAxis = d3.svg.axis()
-      .scale(scale1y)
-      .orient("left");
-    ;
-    var xAxis2 = d3.svg.axis()
-      .scale(scale2x)
-      .orient("bottom")
-    ;
-    var yAxis2 = d3.svg.axis()
-      .scale(scale2y)
-      .orient("left");
-    ;
-    */
+
     console.log("barCharts : ");console.log(barCharts);
     console.log("dataBars : ");console.log(dataBars);
     for (var h=0; h < dataBars.length; h++){
@@ -687,6 +565,19 @@ function doD3Stuff( results, server, vm=0  ){
           vm.$emit("bar-selected");
           vm.$options.methods.querySamples(this,false);          
           */
+
+          var content = d.content;
+          // Choice for now: The highlighting is done by looking through the returned elements.
+          d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){            
+
+            var rez = d.responseDoc;
+            for (var u in d.responseDoc){
+              var stringResponse = d.responseDoc[u]+'';
+              if ( stringResponse.indexOf ( content ) > -1 ){
+                return "white";
+              }
+            }
+          });
         })
         .append("text")
           .attr("transform", "rotate(-90)")
@@ -697,144 +588,6 @@ function doD3Stuff( results, server, vm=0  ){
           .text(function(d){return d.content;})
         ;
     }
-
-    /*
-    barChart1.selectAll(".bar")
-      .data(dataBar1)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("id",function(d){return d.content;} )
-      // space is 5
-      .attr("width", widthRectangle1 )
-      .attr("x",function(d){return d.x;})
-      .attr("y", function(d){ return height - margin.top - scale1y(d.occurence);} )
-      .attr("height", function(d) { return Math.max(0,scale1y(d.occurence)); })
-      .attr("opacity","0.5")
-      .on("mousedown",function(d){
-        // Filter the data. We now want to highlight selection instead
-        console.log("You clicked on a rectangle and d is : ");console.log(d);
-        if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
-          vm.$data.filterQuery.typeFilter=d.content;
-        } else {
-          vm.$data.filterQuery.typeFilter = '';
-        }
-        vm.$emit("bar-selected");
-        vm.$options.methods.querySamples(this,false);          
-      })
-      .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 40)
-        .attr("dy", ".71em")
-        .attr("opacity",1)
-        .style("text-anchor", "end")
-        .text(function(d){return d.content;})
-      ;
-    */
-
-    /*
-    // Second attributes of research displayed
-    for (var i=0; i < dataBar1.length;i++)
-    {
-      var xHere=i*(widthRectangle1+5)+margin.left;
-      var yHere=height - margin.bottom;
-      d3.select("#resultsViz1")
-        .append("text")
-          .attr("class","text-d3")
-          .attr("x",function(){ return xHere + widthRectangle1/2 ;})                
-          .attr("y", function(){ return 0; })
-          .attr("dy", ".71em")
-          .attr("opacity","1")
-          .attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90")
-          .text(function(){ return dataBar1[i].content+' : '+dataBar1[i].occurence;})
-          //.attr("transform", "translate(-"+  +","+ height/2 +") rotate(-90)");
-      ;
-    }
-    */
-    /*
-    barChart1.selectAll(".bar")
-      .data(dataBar1)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("id",function(d){return d.content;} )
-      // space is 5
-      .attr("width", widthRectangle1 )
-      .attr("x",function(d){return d.x;})
-      .attr("y", function(d){ return height - margin.top - scale1y(d.occurence);} )
-      .attr("height", function(d) { return Math.max(0,scale1y(d.occurence)); })
-      .attr("opacity","0.5")
-      .on("mousedown",function(d){
-        // Filter the data. We now want to highlight selection instead
-        console.log("You clicked on a rectangle and d is : ");console.log(d);
-        if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
-          vm.$data.filterQuery.typeFilter=d.content;
-        } else {
-          vm.$data.filterQuery.typeFilter = '';
-        }
-        vm.$emit("bar-selected");
-        vm.$options.methods.querySamples(this,false);          
-      })
-      .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 40)
-        .attr("dy", ".71em")
-        .attr("opacity",1)
-        .style("text-anchor", "end")
-        .text(function(d){return d.content;})
-      ;
-    */
-
-    // Second attributes of research displayed
-    /*
-    for (var i=0; i < dataBar2.length;i++)
-    {
-      var xHere=i*(widthRectangle2+5)+margin.left;
-      var yHere=height - margin.bottom;
-      d3.select("#resultsViz2")
-        .append("text")
-          .attr("x",function(){ return xHere + widthRectangle2/2 ;})
-          .attr("y", function(){ return 0; })
-          .attr("dy", ".71em")
-          .attr("opacity","1")
-          .attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90")
-          .text(function(){ return dataBar2[i].content+' : '+dataBar2[i].occurence;})
-          //.attr("transform", "translate(-"+  +","+ height/2 +") rotate(-90)");
-      ;
-    }
-
-    if ( numberFacetsUnEmpty > 0 ){
-      barChart2.selectAll(".bar")
-        .data(dataBar2)
-        .enter().append("rect")
-        .attr("class", "bar")
-        .attr("id",function(d){return d.content;} )
-        // space is 5
-        .attr("width", widthRectangle2 )
-        .attr("x",function(d){return d.x;})
-        .attr("y", function(d){ return height - margin.top - scale2y(d.occurence);} )
-        .attr("height", function(d) { return Math.max(0,scale2y(d.occurence)); })
-        .attr("opacity","0.5")
-        .on("mousedown",function(d){
-          // Filter the data. We now want to highlight selection instead
-
-          if (vm.$data.filterQuery.organFilter === '' || vm.$data.filterQuery.organFilter !== d.content){
-            vm.$data.filterQuery.organFilter=d.content;
-          } else {
-            vm.$data.filterQuery.organFilter='';
-          }
-          vm.$emit("bar-selected");
-
-        })
-        .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 40)
-          .attr("dy", ".71em")
-          .attr("opacity",1)
-          .style("text-anchor", "end")
-          .text(function(d){return d.content;})
-        ;
-    }
-    */
-
 
 
     // Nodes relationships here
@@ -848,6 +601,7 @@ function doD3Stuff( results, server, vm=0  ){
             .style("stroke-width", 1)
             .style("border","solid")
             .style("overflow","scroll")
+            .style("background-color","#f5f5f5")
             .style("border-color","#5D8C83")
             .style("border-radius","4px")
             .call(d3.behavior.zoom().on("zoom", (function (d) {
@@ -959,6 +713,7 @@ function doD3Stuff( results, server, vm=0  ){
           //.attr("id", function (d) { return d.id; })
           .attr("type", function (d) { return d.type; })
           .style("fill", function (d) {  return d.color; })
+          .style("stroke-width",3)
           .style("opacity", .8)
           // Added part for dragging
           //.call(drag)
@@ -973,6 +728,7 @@ function doD3Stuff( results, server, vm=0  ){
         .attr("responseDoc",function(d){return d.responseDoc})
         //.attr("id", function (d) { return d.id; })
         .attr("type", function (d) { return d.type; })
+        .style("stroke-width",1)
         //.style("fill", function (d) { return d.color; })
         .style("fill", function(d) { 
           if (typeof d.group !==  'undefined'){
@@ -987,8 +743,9 @@ function doD3Stuff( results, server, vm=0  ){
         })
         .on("mousedown",function(d){
           console.log('mousedown node d : ');console.log(d);
-          d3.selectAll("circle").style("stroke-width",1);
-          d3.select(this).select("circle").style("stroke-width", 5);
+          d3.selectAll("circle").style("stroke-width",3);
+          d3.selectAll("circle").style("stroke-color","black");
+          d3.select(this).select("circle").style("stroke-width", 6);
           document.getElementById("infoVizRelations").className=d.accession;
           // Fill in the infoVizRelations according to data returned
           document.getElementById("textData").innerHTML='<p>';
