@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       layout:decorator="base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="currentPage = 'search', apiUrl = '#{/api/search}'">
+      th:with="currentPage = 'search', apiUrl = '@{/api/search}'">
 <head>
     <title>Search</title>
     <!--<link rel="stylesheet" href="stylesheets/main_samelf.css">-->
