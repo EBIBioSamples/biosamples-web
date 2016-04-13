@@ -8,3 +8,6 @@
 /src/main/resources/static/stylesheets/main_samelf.css
 /src/main/resources/static/javascript/searchComponents.js
 /src/main/resources/static/javascript/searchComponents.js.map
+
+# Properties we don't want to share
+/src/main/resources/application.properties
