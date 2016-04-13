@@ -528,10 +528,47 @@ function doD3Stuff( results, server, vm=0  ){
         d3.select( idToSelect )
           .append("text")
             .attr("class","text-d3")
+            .attr("content",function(d){
+              dataBars[h][i].content;
+            })
+            .attr("occurence",function(d){
+              dataBars[h][i].occurence;
+            })            
+            .attr("id", function (d){
+              return 'text_'+dataBars[h][i].content;
+            })
             .attr("x",function(){ return xHere + widthRectangles[h]/2 ;})
             .attr("y", function(){ return 0; })
             .attr("dy", ".71em")
             .attr("opacity","1")
+            .on("mouseover",function(){
+              console.log("mouseover");
+              var idToSelect = '#bar_'+this.id.substring(5, this.id.length);
+              d3.selectAll(".text-d3").style("opacity",.5);
+              d3.select(this).style("opacity",1);
+              d3.select(idToSelect).style("fill","green");              
+            })
+            .on("mouseout",function(){
+              d3.selectAll(".text-d3").style("opacity",1);
+              d3.selectAll(".bar").style("fill","steelblue");              
+            })
+            .on("mousedown",function(){
+
+              d3.selectAll("circle").style("stroke","black");
+              var content = this.id.substring(5, this.id.length);
+              // Choice for now: The highlighting is done by looking through the returned elements.
+              d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){            
+                var rez = d.responseDoc;
+                for (var u in d.responseDoc){
+                  var stringResponse = d.responseDoc[u]+'';
+                  if ( stringResponse.indexOf ( content ) > -1 ){
+                    return "white";
+                  }
+                }
+
+              });
+
+            })         
             .attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90")
             .text(function(){ return dataBars[h][i].content+' : '+dataBars[h][i].occurence;})
             //.attr("transform", "translate(-"+  +","+ height/2 +") rotate(-90)");
@@ -546,13 +583,28 @@ function doD3Stuff( results, server, vm=0  ){
         .data(dataBars[h])
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("id",function(d){return d.content;} )
+        .attr("id",function(d){return 'bar_'+d.content;} )
         // space is 5
         .attr("width", widthRectangles[h] )
+        .attr("fill", "steelblue" )
+        .on("mouseover",function(d,i){
+          //var idToSelect = '#_'+d.content;
+          var idToSelect = '#_'+d.content;
+          d3.selectAll(".text-d3").style("opacity",.5);
+          d3.select(idToSelect).style("opacity",1);
+          d3.select(this).style("fill","green");
+        })
+        .on("mouseout",function(d,i){
+          d3.selectAll(".text-d3").style("opacity",1);
+          d3.select(this).style("fill","steelblue");
+        })
         .attr("x",function(d){return d.x;})
         .attr("y", function(d){ return height - margin.top - scalesY[h](d.occurence);} )
         .attr("height", function(d) { return Math.max(0,scalesY[h](d.occurence)); })
         .attr("opacity","0.5")
+        .on("dblclick",function(d){ 
+          console.log("dblclick");
+        })
         .on("mousedown",function(d){
           // Filter the data. We now want to highlight selection instead
           console.log("You clicked on a rectangle and d is : ");console.log(d);
@@ -565,7 +617,7 @@ function doD3Stuff( results, server, vm=0  ){
           vm.$emit("bar-selected");
           vm.$options.methods.querySamples(this,false);          
           */
-
+          d3.selectAll("circle").style("stroke","black");
           var content = d.content;
           // Choice for now: The highlighting is done by looking through the returned elements.
           d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){            
@@ -583,7 +635,7 @@ function doD3Stuff( results, server, vm=0  ){
           .attr("transform", "rotate(-90)")
           .attr("y", 40)
           .attr("dy", ".71em")
-          .attr("opacity",1)
+          //.attr("opacity",1)
           .style("text-anchor", "end")
           .text(function(d){return d.content;})
         ;
@@ -744,7 +796,6 @@ function doD3Stuff( results, server, vm=0  ){
         .on("mousedown",function(d){
           console.log('mousedown node d : ');console.log(d);
           d3.selectAll("circle").style("stroke-width",3);
-          d3.selectAll("circle").style("stroke-color","black");
           d3.select(this).select("circle").style("stroke-width", 6);
           document.getElementById("infoVizRelations").className=d.accession;
           // Fill in the infoVizRelations according to data returned

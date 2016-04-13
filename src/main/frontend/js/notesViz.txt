@@ -355,3 +355,13 @@ node.attr( "transform", function(d) { //console.log("d : ");console.log(d);
     ;
   }
 });
+
+
+**************
+
+.bar {
+  fill: steelblue;
+}
+.bar:hover {
+  fill: green;
+}
