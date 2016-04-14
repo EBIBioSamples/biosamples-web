@@ -365,3 +365,20 @@ node.attr( "transform", function(d) { //console.log("d : ");console.log(d);
 .bar:hover {
   fill: green;
 }
+
+
+
+*************
+
+    /*
+    console.log("resultsInfo : ");console.log(resultsInfo);
+    console.log("types : ");console.log(types);
+    console.log("organisms : ");console.log(organisms);
+    console.log("docs : ");console.log(docs);
+    console.log("hlDocs : ");console.log(hlDocs);
+    console.log("this.queryTerm : ");console.log(this.queryTerm);
+    console.log("this.facets.types : ");console.log(this.facets.types);
+    console.log("this.facets.organisms : ");console.log(this.facets.organisms);
+    console.log("this.facets.organs : ");console.log(this.facets.organs);
+    console.log("this.facets : ");console.log(this.facets);
+    */

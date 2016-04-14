@@ -29321,8 +29321,6 @@ function doD3Stuff(results, server) {
   var vm = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
 
   console.log("_______doD3Stuff______");
-  //console.log("results");console.log(results);
-  //console.log("server : ");console.log(server);
   var margin = { top: 10, right: 10, bottom: 10, left: 10 };
 
   if (typeof results !== 'undefined') {
@@ -29354,9 +29352,7 @@ function doD3Stuff(results, server) {
         return d.grp_sample_accessions;
       }).attr("responseDoc", function (d) {
         return d.responseDoc;
-      })
-      //.attr("id", function (d) { return d.id; })
-      .attr("type", function (d) {
+      }).attr("type", function (d) {
         return d.type;
       }).style("fill", function (d) {
         return "grey";
@@ -29376,9 +29372,7 @@ function doD3Stuff(results, server) {
         return d.grp_sample_accessions;
       }).attr("responseDoc", function (d) {
         return d.responseDoc;
-      })
-      //.attr("id", function (d) { return d.id; })
-      .attr("type", function (d) {
+      }).attr("type", function (d) {
         return d.type;
       }).style("fill", function (d) {
         return d.color;
@@ -29398,13 +29392,9 @@ function doD3Stuff(results, server) {
         return d.grp_sample_accessions;
       }).attr("responseDoc", function (d) {
         return d.responseDoc;
-      })
-      //.attr("id", function (d) { return d.id; })
-      .attr("type", function (d) {
+      }).attr("type", function (d) {
         return d.type;
-      }).style("stroke-width", 1)
-      //.style("fill", function (d) { return d.color; })
-      .style("fill", function (d) {
+      }).style("stroke-width", 1).style("fill", function (d) {
         if (typeof d.group !== 'undefined') {
           if (typeof d.group.color !== 'undefined') {
             return fill(d.group.color);
@@ -29447,7 +29437,6 @@ function doD3Stuff(results, server) {
         d3.selectAll(".node").selectAll("text").attr("transform", "translate(" + 0 + "," + 0 + ")");
         d3.selectAll(".node").selectAll("circle").transition().style("r", this.radius);
       }).on("mouseover", function (d) {
-        //var circleNode = d3.select(this).select("circle");
         var circleNode = d3.select(this).selectAll("circle");
         var textNode = d3.select(this).select("text");
 
@@ -29496,13 +29485,11 @@ function doD3Stuff(results, server) {
         node.attr("transform", function (d) {
           return "translate(" + d.x + "," + d.y + ")";
         });
-        //text.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
       });
 
       d3.select(self.frameElement).style("height", width - 150 + "px");
     };
 
-    //console.log("results.data.facet_counts.facet_fields");console.log(results.data.facet_counts.facet_fields);
     var numberFacetsUnEmpty = {};
     for (var u in results.data.facet_counts.facet_fields) {
       numberFacetsUnEmpty[u] = 0;
@@ -29549,7 +29536,6 @@ function doD3Stuff(results, server) {
       if (document.getElementById("sectionVizResult").style.visibility == "hidden") {
         document.getElementById("sectionVizResult").style.visibility = "visible";
         document.getElementById("titleRezInfo").innerHTML = "Hide the result information ";
-        //var heightBars = $('#resultsViz1').height();
         var heightBars = $('#resultsViz0').height();
         document.getElementById("sectionVizResult").style.height = heightBars + 100 + "px";
       } else {
@@ -29563,18 +29549,6 @@ function doD3Stuff(results, server) {
     }, function () {
       $(this).css("background-color", "white");
     });
-    /*
-    console.log("resultsInfo : ");console.log(resultsInfo);
-    console.log("types : ");console.log(types);
-    console.log("organisms : ");console.log(organisms);
-    console.log("docs : ");console.log(docs);
-    console.log("hlDocs : ");console.log(hlDocs);
-    console.log("this.queryTerm : ");console.log(this.queryTerm);
-    console.log("this.facets.types : ");console.log(this.facets.types);
-    console.log("this.facets.organisms : ");console.log(this.facets.organisms);
-    console.log("this.facets.organs : ");console.log(this.facets.organs);
-    console.log("this.facets : ");console.log(this.facets);
-    */
 
     var fill = d3.scale.category20();
     var widthD3 = $(".container").width();
@@ -29622,13 +29596,9 @@ function doD3Stuff(results, server) {
       cpt++;
     }
     console.log("widthRectangles : ");console.log(widthRectangles);
-    //var widthRectangle1 = (width - 5)/( Math.floor(results.data.facet_counts.facet_fields.content_type.length/2) ) - margin.left - margin.right;
-    //var widthRectangle2 = 10;
     var maxOccurences = [];
     for (var u in results.data.facet_counts.facet_fields) {
       maxOccurences.push(0);
-      //console.log("results.data.facet_counts.facet_fields[u] : ");
-      //console.log(results.data.facet_counts.facet_fields[u]);
       var cpt = 0;
       for (var v = 0; v < results.data.facet_counts.facet_fields[u].length; v++) {
         if (typeof results.data.facet_counts.facet_fields[u][v] !== "string") {
@@ -29651,9 +29621,6 @@ function doD3Stuff(results, server) {
       scalesY.push(d3.scale.linear().domain([0, maxOccurences[cpt]]).range([margin.bottom, height - margin.top]));
       cpt++;
     }
-    //console.log("dataBars");console.log(dataBars);
-    //console.log("scalesX");console.log(scalesX);
-    //console.log("scalesY");console.log(scalesY);
 
     var cpt = 0;
     console.log("results.data.facet_counts.facet_fields : ");console.log(results.data.facet_counts.facet_fields);
@@ -29668,7 +29635,6 @@ function doD3Stuff(results, server) {
       }
       cpt++;
     }
-    //console.log("dataBars : ");console.log(dataBars);
 
     var xAxises = [];
     var yAxises = [];
@@ -29678,13 +29644,7 @@ function doD3Stuff(results, server) {
       yAxises.push(d3.svg.axis().scale(scalesY[cpt]).orient("left"));
       cpt++;
     }
-    console.log("xAxises : ");
-    console.log(xAxises);
-    console.log("yAxises : ");
-    console.log(yAxises);
 
-    //console.log("barCharts : ");console.log(barCharts);
-    //console.log("dataBars : ");console.log(dataBars);
     for (var h = 0; h < dataBars.length; h++) {
       for (var i = 0; i < dataBars[h].length; i++) {
         var xHere = i * (widthRectangles[h] + 5) + margin.left;
@@ -29724,9 +29684,7 @@ function doD3Stuff(results, server) {
           });
         }).attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90").text(function () {
           return dataBars[h][i].content + ' : ' + dataBars[h][i].occurence;
-        })
-        //.attr("transform", "translate(-"+  +","+ height/2 +") rotate(-90)");
-        ;
+        });
       }
     }
 
@@ -29771,7 +29729,6 @@ function doD3Stuff(results, server) {
           console.log("currentFacet : " + currentFacet);
           console.log("uFiltered : " + uFiltered);
           if (uFiltered === currentFacet) {
-
             if (vm.$data.filterQuery[u] === '' || uFiltered !== currentFacet) {
               vm.$data.filterQuery[u] = d.content;
             } else {
@@ -29782,30 +29739,12 @@ function doD3Stuff(results, server) {
             vm.$options.methods.querySamples(this, false);
           }
         }
-        /*
-        if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
-          vm.$data.filterQuery.typeFilter=d.content;
-        } else {
-          vm.$data.filterQuery.typeFilter = '';
-        }
-        vm.$emit("bar-selected");
-        vm.$options.methods.querySamples(this,false);
-        */
-
         console.log("dblclick");
       }).on("mousedown", function (d) {
         // Filter the data. We now want to highlight selection instead
         console.log("You clicked on a rectangle");
         console.log("d : ");console.log(d);
-        /*
-        if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
-          vm.$data.filterQuery.typeFilter=d.content;
-        } else {
-          vm.$data.filterQuery.typeFilter = '';
-        }
-        vm.$emit("bar-selected");
-        vm.$options.methods.querySamples(this,false);          
-        */
+
         d3.selectAll("circle").style("stroke", "black");
         d3.selectAll(".ghost_circle").style("visibility", "hidden");
         var content = d.content;
