@@ -29340,12 +29340,36 @@ function doD3Stuff(results, server) {
       //Add circles to the svgContainer
       var node = svg.selectAll("node").data(nodeData.nodes).enter().append("g").attr("class", "node").call(force.drag);
 
+      node.append("circle")
+      // Added attributes
+      .attr("r", function (d) {
+        return d.radius * 3;
+      }).attr("accession", function (d) {
+        return d.accession;
+      }).attr("class", "ghost_circle").attr("id", function (d) {
+        return 'ghost_' + d.accession;
+      }).attr("sample_grp_accessions", function (d) {
+        return d.sample_grp_accessions;
+      }).attr("grp_sample_accessions", function (d) {
+        return d.grp_sample_accessions;
+      }).attr("responseDoc", function (d) {
+        return d.responseDoc;
+      })
+      //.attr("id", function (d) { return d.id; })
+      .attr("type", function (d) {
+        return d.type;
+      }).style("fill", function (d) {
+        return "grey";
+      }).style("stroke", "black").style("stroke-width", 3).style("stroke-opacity", 1).style("opacity", .7).style("visibility", "hidden");
+
       node.append("circle").on("mousedown", function (d) {}).on("mouseout", function (d) {}).on("mouseover", function (d) {})
       // Added attributes
       .attr("r", function (d) {
         return d.radius;
       }).attr("accession", function (d) {
         return d.accession;
+      }).attr("id", function (d) {
+        return 'circle_' + d.accession;
       }).attr("sample_grp_accessions", function (d) {
         return d.sample_grp_accessions;
       }).attr("grp_sample_accessions", function (d) {
@@ -29358,7 +29382,7 @@ function doD3Stuff(results, server) {
         return d.type;
       }).style("fill", function (d) {
         return d.color;
-      }).style("stroke-width", 3).style("opacity", .8)
+      }).style("stroke", "black").style("stroke-width", 3).style("stroke-opacity", 1).style("opacity", .7)
       // Added part for dragging
       //.call(drag)
       //.style("fill", function(d) { return fill(d.group); })
@@ -29366,6 +29390,8 @@ function doD3Stuff(results, server) {
 
       node.attr("accession", function (d) {
         return d.accession;
+      }).attr("id", function (d) {
+        return 'node_' + d.accession;
       }).attr("sample_grp_accessions", function (d) {
         return d.sample_grp_accessions;
       }).attr("grp_sample_accessions", function (d) {
@@ -29421,7 +29447,8 @@ function doD3Stuff(results, server) {
         d3.selectAll(".node").selectAll("text").attr("transform", "translate(" + 0 + "," + 0 + ")");
         d3.selectAll(".node").selectAll("circle").transition().style("r", this.radius);
       }).on("mouseover", function (d) {
-        var circleNode = d3.select(this).select("circle");
+        //var circleNode = d3.select(this).select("circle");
+        var circleNode = d3.select(this).selectAll("circle");
         var textNode = d3.select(this).select("text");
 
         d3.selectAll(".node").selectAll("text").style("opacity", .25);
@@ -29432,7 +29459,9 @@ function doD3Stuff(results, server) {
         textNode.transition().style("font-size", "20px");
       });
 
-      node.append("text").attr("dx", 12).attr("dy", ".35em").text(function (d) {
+      node.append("text").attr("dx", 12).attr("dy", ".35em").attr("id", function (d) {
+        return 'text_' + d.accession;
+      }).text(function (d) {
         return "[" + d.accession + "]";
       }).attr("font-family", "sans-serif").attr("font-size", "10px").attr("border", "solid").attr("border-radius", "10px").style("border", "solid").style("border-radius", "10px").style("box-shadow", "gray").style("background-color", "green").attr("fill", "#4D504F");
 
@@ -29727,9 +29756,24 @@ function doD3Stuff(results, server) {
         return Math.max(0, scalesY[h](d.occurence));
       }).attr("opacity", "0.5").on("dblclick", function (d) {
         console.log("dblclick");
+        console.log("d : ");console.log(d);
+        console.log("this : ");console.log(this);
+        console.log("d3.select(this) : ");
+        console.log(d3.select(this));
+        /*
+        if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
+          vm.$data.filterQuery.typeFilter=d.content;
+        } else {
+          vm.$data.filterQuery.typeFilter = '';
+        }
+        vm.$emit("bar-selected");
+        vm.$options.methods.querySamples(this,false);
+        */
+
+        console.log("dblclick");
       }).on("mousedown", function (d) {
         // Filter the data. We now want to highlight selection instead
-        console.log("You clicked on a rectangle and d is : ");console.log(d);
+        console.log("You clicked on a rectangle");
         /*
         if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
           vm.$data.filterQuery.typeFilter=d.content;
@@ -29740,15 +29784,22 @@ function doD3Stuff(results, server) {
         vm.$options.methods.querySamples(this,false);          
         */
         d3.selectAll("circle").style("stroke", "black");
+        d3.selectAll(".ghost_circle").style("visibility", "hidden");
         var content = d.content;
         // Choice for now: The highlighting is done by looking through the returned elements.
         d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function (d) {
-
+          // Actually not necessary to get the stroke, but now we have the selection done
           var rez = d.responseDoc;
           for (var u in d.responseDoc) {
             var stringResponse = d.responseDoc[u] + '';
             if (stringResponse.indexOf(content) > -1) {
-              return "white";
+              console.log("this : ");console.log(this);
+              console.log("d3.select(this) : ");console.log(d3.select(this));
+              //this.attr("stroke-opacity","1");
+              d3.select(this).style("stroke-opacity", "1");
+              //d3.select(this).style("shape-rendering","crispEdges");
+              var idGhost = "#ghost_" + rez.accession;
+              d3.select(idGhost).style("visibility", "visible");
             }
           }
         });
