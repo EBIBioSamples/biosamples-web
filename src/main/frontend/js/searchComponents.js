@@ -388,8 +388,6 @@ function doD3Stuff( results, server, vm=0  ){
     var width = document.getElementById("infoVizRelations").getBoundingClientRect().width - 5;
     var height = document.getElementById("infoVizRelations").getBoundingClientRect().height/3;
 
-    var dataBar1 = [];
-    var dataBar2 = [];
     var dataBars = [];
 
     var barCharts=[];
@@ -478,23 +476,24 @@ function doD3Stuff( results, server, vm=0  ){
       );
       cpt++;
     }
-    console.log("dataBars");console.log(dataBars);
-    console.log("scalesX");console.log(scalesX);
-    console.log("scalesY");console.log(scalesY);
+    //console.log("dataBars");console.log(dataBars);
+    //console.log("scalesX");console.log(scalesX);
+    //console.log("scalesY");console.log(scalesY);
 
     var cpt=0;
+    console.log("results.data.facet_counts.facet_fields : ");console.log(results.data.facet_counts.facet_fields);
     for (var u in results.data.facet_counts.facet_fields ){
       for (var v =0; v < results.data.facet_counts.facet_fields[u].length; v++ ){
         if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){ 
                 dataBars[cpt].push({"content":results.data.facet_counts.facet_fields[u][v],
                  "occurence":0 , "x":Math.floor(v/2) * (widthRectangles[cpt] + 5) +margin.left,
-                 "index":Math.floor(v/2) }) ;
+                 "index":Math.floor(v/2), "facet":u,  }) ;
                 dataBars[cpt][ dataBars[cpt].length -1 ].occurence=results.data.facet_counts.facet_fields[u][v+1];
         }      
       }
       cpt++;
     }
-    console.log("dataBars : ");console.log(dataBars);
+    //console.log("dataBars : ");console.log(dataBars);
 
     var xAxises = [];
     var yAxises = [];
@@ -517,8 +516,8 @@ function doD3Stuff( results, server, vm=0  ){
     console.log("yAxises : ");
     console.log(yAxises);    
 
-    console.log("barCharts : ");console.log(barCharts);
-    console.log("dataBars : ");console.log(dataBars);
+    //console.log("barCharts : ");console.log(barCharts);
+    //console.log("dataBars : ");console.log(dataBars);
     for (var h=0; h < dataBars.length; h++){
       for (var i=0; i < dataBars[h].length;i++)
       {
@@ -542,7 +541,6 @@ function doD3Stuff( results, server, vm=0  ){
             .attr("dy", ".71em")
             .attr("opacity","1")
             .on("mouseover",function(){
-              console.log("mouseover");
               var idToSelect = '#bar_'+this.id.substring(5, this.id.length);
               d3.selectAll(".text-d3").style("opacity",.5);
               d3.select(this).style("opacity",1);
@@ -577,13 +575,15 @@ function doD3Stuff( results, server, vm=0  ){
     }
 
     // part to do with barCharts 
-    //Apparently we are forced to have array of array with svg at element 0 of second array
     for (var h=0; h < barCharts.length; h++){
       barCharts[h].selectAll(".bar")
         .data(dataBars[h])
         .enter().append("rect")
         .attr("class", "bar")
         .attr("id",function(d){return 'bar_'+d.content;} )
+        .attr("facet",function(d){ 
+          return d.facet;
+        })
         // space is 5
         .attr("width", widthRectangles[h] )
         .attr("fill", "steelblue" )
@@ -604,10 +604,34 @@ function doD3Stuff( results, server, vm=0  ){
         .attr("opacity","0.5")
         .on("dblclick",function(d){ 
           console.log("dblclick");
-          console.log("d : ");console.log(d);
-          console.log("this : ");console.log(this);
-          console.log("d3.select(this) : ");
-          console.log(d3.select(this));
+          //console.log("d : ");console.log(d);
+          //console.log("this : ");console.log(this);
+          //console.log("d3.select(this) : ");
+          //console.log(d3.select(this));
+          //console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
+          for (var u in vm.$data.filterQuery){
+            console.log(" u : ");console.log(u);
+            console.log( "vm.$data.filterQuery[u] : ");console.log( vm.$data.filterQuery[u] );
+            console.log("d.facet : ");console.log(d.facet);
+            var indexFilter = u.indexOf("Filter");
+            var uFiltered = u.substring(0,indexFilter);
+            var indexToCut = d.facet.indexOf('_');
+            var currentFacet = d.facet.substring(0, indexToCut);
+            console.log("currentFacet : "+currentFacet);
+            console.log("uFiltered : "+uFiltered);
+            if ( uFiltered === currentFacet ){
+
+              if (vm.$data.filterQuery[u] === '' || uFiltered !== currentFacet ){
+                vm.$data.filterQuery[u] =d.content;
+              } else {
+                vm.$data.filterQuery[u] = '';
+              }
+              vm.$emit("bar-selected");
+              console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
+              vm.$options.methods.querySamples(this,false);
+
+            }
+          }
           /*
           if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
             vm.$data.filterQuery.typeFilter=d.content;
@@ -623,6 +647,7 @@ function doD3Stuff( results, server, vm=0  ){
         .on("mousedown",function(d){
           // Filter the data. We now want to highlight selection instead
           console.log("You clicked on a rectangle");
+          console.log("d : ");console.log(d);
           /*
           if (vm.$data.filterQuery.typeFilter === '' || vm.$data.filterQuery.typeFilter!== d.content ){
             vm.$data.filterQuery.typeFilter=d.content;
@@ -642,8 +667,6 @@ function doD3Stuff( results, server, vm=0  ){
             for (var u in d.responseDoc){
               var stringResponse = d.responseDoc[u]+'';
               if ( stringResponse.indexOf ( content ) > -1 ){
-                console.log("this : "); console.log(this);
-                console.log("d3.select(this) : "); console.log(d3.select(this));
                 //this.attr("stroke-opacity","1");
                 d3.select(this).style("stroke-opacity","1");
                 //d3.select(this).style("shape-rendering","crispEdges");

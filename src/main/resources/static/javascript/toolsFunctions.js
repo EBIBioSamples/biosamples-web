@@ -10,7 +10,7 @@ function getRandomColor() {
   return color;
 }
 
-function loadBars(width,height,margin,results,dataBar1,dataBar2,dataBars){
+function loadBars(width,height,margin,results,dataBars){
 
 }
 
