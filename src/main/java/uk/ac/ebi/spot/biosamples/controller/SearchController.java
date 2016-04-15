@@ -23,7 +23,6 @@ import org.springframework.data.solr.core.query.result.FacetQueryEntry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import uk.ac.ebi.spot.biosamples.model.Merged;
 import uk.ac.ebi.spot.biosamples.model.SearchRequest;
 import uk.ac.ebi.spot.biosamples.repository.MergedRepository;
@@ -53,72 +52,68 @@ public class SearchController {
     @Value("${solr.searchapi.server}")
     private String baseSolrUrl;
 
-    @Value("#{'${dynamic.facet.ignored.fields}'.split(',')}")
-    private List<String> ignoredFacetFields;
-
     @CrossOrigin
     @RequestMapping(value = "/search")
     public void find(
-//            SearchRequest searchRequest, //TODO Spring is not able to read correctly the filter fields
-            @RequestParam("searchTerm") String searchTerm,
-            @RequestParam(value = "useFuzzySearch", defaultValue = "false") boolean useFuzzySearch,
-            @RequestParam(value = "start", defaultValue = "0") int start,
-            @RequestParam(value = "row", defaultValue = "10") int row,
-            @RequestParam(value = "filters[]", required = false, defaultValue = "") String[] filters,
+            SearchRequest searchRequest,
             HttpServletResponse response) throws Exception {
+
+
+        String searchTerm = searchRequest.getSearchTerm();
 
         SolrQuery query = new SolrQuery();
 
-//        String searchTerm = searchRequest.getSearchTerm();
 
-//        if (searchRequest.useFuzzySearch()) {
-//            searchTerm = searchRequest.getFuzzyfiedTerm();
-//        }
-
-        if (useFuzzySearch) {
-            searchTerm = searchTerm.replaceAll("(\\w+)","$0~");
+        if (searchRequest.useFuzzySearch()) {
+            searchTerm = searchRequest.getFuzzyfiedTerm();
         }
+
 
         query.set("q", searchTerm);
         query.set("wt", "json");
 
         // Setup facets
         query.setFacet(true);
+
+
+
+
         query.addFacetField("content_type");
+
+
         List<String> dynamicFacets = getMostUsedFacets(searchTerm,5);
-        dynamicFacets.forEach(query::addFacetField);
-        query.setFacetLimit(5);
-
-        // Setup filters
-        for(String filter: filters) {
-            String[] baseFilter = filter.split("(Filter\\|)");
-            if (baseFilter.length == 2) {
-                String filterKey = baseFilter[0];
-                String filterValue = baseFilter[1];
-
-                switch (filterKey) {
-                    case "content_type":
-                        break;
-                    default:
-                        filterKey = String.format("%s_crt", filterKey);
-                }
-                query.addFilterQuery(String.format("%s:%s", filterKey, filterValue));
-            }
+        for(String facet: dynamicFacets) {
+            query.addFacetField(facet);
         }
 
-        // Setup result number
-//        query.setRows(searchRequest.getRows()).setStart(searchRequest.getStart());
-        query.setRows(row).setStart(start);
+        query.setFacetLimit(5);
 
-        // Setup highlighting
+
+        // Add filter querys
+//        if (!searchRequest.getTypeFilter().isEmpty()) {
+//            query.addFilterQuery(String.format("content_type:%s", searchRequest.getTypeFilter()));
+//        }
+//        if (!searchRequest.getOrganismFilter().isEmpty()) {
+//            query.addFilterQuery(String.format("organism_crt:%s", searchRequest.getOrganismFilter()));
+//        }
+//
+//        if (!searchRequest.getOrganFilter().isEmpty()) {
+//            query.addFilterQuery(String.format("organ_crt:%s", searchRequest.getOrganFilter()));
+//        }
+
+        query.setRows(searchRequest.getRows()).setStart(searchRequest.getStart());
+
+
         query.setHighlight(true);
         query.setHighlightFragsize(0);
         query.addHighlightField("description");
         query.setHighlightSimplePre("<span class='highlight'>").setHighlightSimplePost("</span>");
 
-        // Forward query to SolR
+
         String finalQuery = baseSolrUrl + query.toString();
+        
         log.trace("finalQuery = "+finalQuery);
+
         this.forwardSolrResponse(response, finalQuery);
 
     }
@@ -144,7 +139,7 @@ public class SearchController {
     private List<String> getMostUsedFacets(String searchTerm, int facetLimit) {
 
         List<String> dynamicFacets = new ArrayList<>();
-        facetLimit = ignoredFacetFields.size() - 1 + facetLimit;
+
 
         FacetQuery facetQuery = new SimpleFacetQuery(new SimpleStringCriteria(searchTerm));
         FacetOptions facetOptions = new FacetOptions();
@@ -153,11 +148,10 @@ public class SearchController {
         facetQuery.setFacetOptions(facetOptions);
         FacetPage<Merged> facetResults = mergedSolrTemplate.queryForFacetPage(facetQuery,Merged.class);
 
-        for (FacetFieldEntry e : facetResults.getFacetResultPage("crt_type_ft")) {
-            String facetName = e.getValue();
-            if ( ! ignoredFacetFields.contains(facetName) ) {
-                dynamicFacets.add(String.format("%s_ft", facetName));
-            }
+        Iterator<FacetFieldEntry> i = facetResults.getFacetResultPage("crt_type_ft").iterator();
+        while(i.hasNext()) {
+            FacetFieldEntry e = i.next();
+            dynamicFacets.add(e.getValue());
         }
 
         return dynamicFacets;

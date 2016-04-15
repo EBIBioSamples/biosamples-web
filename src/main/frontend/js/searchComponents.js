@@ -11,7 +11,7 @@
     // Create a plugin and pass the apiURL using an option
     // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
     if (!window.apiUrl) {
-        window.apiUrl ="http://localhost:8080/biosamples/api/search/";
+        window.apiUrl ="http://localhost:8080/biosamples/search_api/";
     }
 
 
@@ -32,7 +32,6 @@
 
     // Filters & Components
     Vue.filter('excerpt',require('./filters/excerptFilter.js'));
-    Vue.filter('startCase', require('./filters/startCaseFilter.js'));
     Vue.component('badge', require('./components/badge/Badge.js'));
 
     /**
@@ -68,9 +67,9 @@
             queryResults: {},
             biosamples: [],
             filterQuery: {
-                // typeFilter: '',
-                // organismFilter: '',
-                // organFilter: ''
+                typeFilter: '',
+                organismFilter: '',
+                organFilter: ''
             },
             facets: {
                 // types: {},
@@ -117,7 +116,7 @@
                 }
 
                 this.useFuzzy = true;
-                this.querySamples(e);
+                this.querySamples();
             },
             
             /**
@@ -135,8 +134,9 @@
                 }
 
                 var queryParams = this.getQueryParameters();
+                var server = apiUrl + "query";
 
-                this.$http.get(apiUrl,queryParams)
+                this.$http.get(server,queryParams)
                     .then(function(results){
 
 
@@ -148,7 +148,7 @@
                         var vm               = this;
 
                         _.forEach(dynamicFacetsKey, function(key) {
-                            let readableKey = key.replace('_crt_ft','');
+                            let readableKey = key.replace('_crt','');
                             vm.facets[readableKey] = readFacets(dynamicFacets[key]);
                         });
                         // var types       = results.data.facet_counts.facet_fields.content_type;
@@ -217,28 +217,20 @@
                     'rows': this.samplesToRetrieve,
                     'start': (this.pageNumber - 1) * this.samplesToRetrieve,
                     'useFuzzySearch': this.useFuzzy,
-                    'filters': this.serializeFilterQuery()
+                    'organFilter': this.filterQuery.organFilter,
+                    'typeFilter': this.filterQuery.typeFilter,
+                    'organismFilter': this.filterQuery.organismFilter
                 };
-            },
-
-            serializeFilterQuery: function() {
-                let filterArray = [];
-                _.each(this.filterQuery, (value,key) => {
-                    if ( !_.isNil(value) ) {
-                        filterArray.push(`${key}|${value}`);
-                    }
-                });
-                return filterArray;
             },
 
             populateDataWithUrlParameter: function(urlParams) {
                 this.searchTerm = urlParams.searchTerm;
                 this.samplesToRetrieve = _.toInteger(urlParams.rows);
-                this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve + 1;
+                this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve;
                 this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
-                // this.filterQuery.organFilter = urlParams.organFilter;
-                // this.filterQuery.typeFilter = urlParams.typeFilter;
-                // this.filterQuery.organismFilter = urlParams.organismFilter;
+                this.filterQuery.organFilter = urlParams.organFilter;
+                this.filterQuery.typeFilter = urlParams.typeFilter;
+                this.filterQuery.organismFilter = urlParams.organismFilter;
             },
 
             /**

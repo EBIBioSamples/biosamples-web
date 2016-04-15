@@ -65,7 +65,7 @@
                                 </form>
                                
                                 <component v-for="(key,facetObj) in facets" 
-                                            is="facet" v-bind:title="key | startCase"
+                                            is="facet" v-bind:title="key"
                                             v-bind:keys="facetObj.keys"
                                             v-bind:values="facetObj.vals"
                                             v-bind:facet-id="key + 'Filter'">
@@ -87,13 +87,19 @@
                                 </component> -->
                             </div>
                             <div class="panel-footer">
-                                <component is="items-dropdown">
-                                </component>
-                                <component is="pagination"
-                                           v-bind:total-results="resultsNumber"
-                                           v-bind:displayed-results="samplesToRetrieve"
-                                           style="float:right">
-                                </component>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <component is="pagination"
+                                                   v-bind:total-results="resultsNumber"
+                                                   v-bind:displayed-results="samplesToRetrieve"
+                                                   style="float:right">
+                                        </component>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <component is="items-dropdown">
+                                        </component>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

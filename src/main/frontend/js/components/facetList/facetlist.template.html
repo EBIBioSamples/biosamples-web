@@ -4,16 +4,11 @@
     </div>
     <div class="panel-body facet-panel__content">
         <ul class="list-group facet-list">
-            <li v-for="key in keys" @click="facetSelected(key)"
-                class="list-group-item facet-entry"
-                :class="{'selected': isSelected(key)}"
-                style="display:flex; justify-content:space-between; align-items: center;">
-                <div class="facet-name">
-                    <span class="h5">{{key}}</span>
-                </div>
-                <div class="facet-count">
-                    <span class="badge">{{values[$index]}}</span>
-                </div>
+			<li v-for="key in keys" @click="facetSelected(key)"
+				class="list-group-item facet-entry"
+				:class="{'selected': isSelected(key)}">
+               <span class="h5">{{key}}</span>
+               <span class="badge">{{values[$index]}}</span>
             </li>
         </ul>
     </div>
