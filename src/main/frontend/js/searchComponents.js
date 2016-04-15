@@ -308,7 +308,6 @@ function doD3Stuff( results, server, vm=0  ){
         }
       }
     }
-    console.log( "numberFacetsUnEmpty : " );console.log( numberFacetsUnEmpty );
 
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").innerHTML="Display result information";
@@ -517,11 +516,11 @@ function doD3Stuff( results, server, vm=0  ){
               d3.select(idToSelect).style("fill","green");              
             })
             .on("mouseout",function(){
+              console.log("text mouseout");
               d3.selectAll(".text-d3").style("opacity",1);
               d3.selectAll(".bar").style("fill","steelblue");              
             })
             .on("mousedown",function(){
-
               d3.selectAll("circle").style("stroke","black");
               var content = this.id.substring(5, this.id.length);
               // Choice for now: The highlighting is done by looking through the returned elements.
@@ -533,9 +532,7 @@ function doD3Stuff( results, server, vm=0  ){
                     return "white";
                   }
                 }
-
               });
-
             })         
             .attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90")
             .text(function(){ return dataBars[h][i].content+' : '+dataBars[h][i].occurence;})
@@ -558,7 +555,7 @@ function doD3Stuff( results, server, vm=0  ){
         .attr("fill", "steelblue" )
         .on("mouseover",function(d,i){
           //var idToSelect = '#_'+d.content;
-          var idToSelect = '#_'+d.content;
+          var idToSelect = '#text_'+d.content;
           d3.selectAll(".text-d3").style("opacity",.5);
           d3.select(idToSelect).style("opacity",1);
           d3.select(this).style("fill","green");
@@ -637,6 +634,7 @@ function doD3Stuff( results, server, vm=0  ){
 
 
     // Nodes relationships here
+    // FORCE VARIABLE !
     var svg;
     if ( document.getElementById("vizSpotRelations") === null ){            
       svg = d3.select(".container").insert("svg",":first-child")
@@ -650,6 +648,7 @@ function doD3Stuff( results, server, vm=0  ){
             .style("background-color","#f5f5f5")
             .style("border-color","#5D8C83")
             .style("border-radius","4px")
+            // FORCE VARIABLE !
             .call(d3.behavior.zoom().on("zoom", (function (d) {
                 svg.attr("transform", 
                   "translate(" + d3.event.translate + ")" + 
@@ -672,6 +671,7 @@ function doD3Stuff( results, server, vm=0  ){
         .style("overflow","scroll")
         .style("border-color","#5D8C83")
         .style("border-radius","4px")
+        // FORCE VARIABLE
         .call(d3.behavior.zoom().on("zoom", (function (d) {
             //console.log("onzoom d : ");console.log(d);
             //console.log("onzoom d3 : ");console.log(d3);
@@ -722,11 +722,12 @@ function doD3Stuff( results, server, vm=0  ){
         var width=document.getElementById("vizSpotRelations").getBoundingClientRect().width;
         var height=document.getElementById("vizSpotRelations").getBoundingClientRect().height;
 
+        // FORCE VARIABLE !
         var force = d3.layout.force()
-          .gravity(.05)
-          .distance(80)
-          .charge(-300)
-          .friction(0.5)
+          .gravity(.08)
+          .distance(50)
+          .charge(-100)
+          //.friction(0.5)
           .size([width, height]);
 
         var link = svg.selectAll(".link")
@@ -736,14 +737,13 @@ function doD3Stuff( results, server, vm=0  ){
         .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
         //Add circles to the svgContainer
+        // FORCE VARIABLE !
         var node = svg.selectAll("node")
           .data(nodeData.nodes)
           .enter().append("g")
           .attr("class","node")
           .call(force.drag)
         ;
-
-
 
         node.append("circle")
           // Added attributes
@@ -810,6 +810,9 @@ function doD3Stuff( results, server, vm=0  ){
         })
         .on("mousedown",function(d){
           console.log('mousedown node d : ');console.log(d);
+          
+          d3.event.stopPropagation();
+
           d3.selectAll("circle").style("stroke-width",3);
           d3.select(this).select("circle").style("stroke-width", 6);
           document.getElementById("infoVizRelations").className=d.accession;
@@ -840,21 +843,21 @@ function doD3Stuff( results, server, vm=0  ){
         })
         .on("mouseout",function(d){
           d3.selectAll("text").style("opacity",1);
-          d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+          //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
           d3.selectAll(".node").selectAll("text").style("dx", 12);
           d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
-          d3.selectAll(".node").selectAll("circle").transition().style("r", this.radius);
+          d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
         })
         .on("mouseover",function(d){
           var circleNode = d3.select(this).selectAll("circle");
           var textNode = d3.select(this).select("text");
 
           d3.selectAll(".node").selectAll("text").style("opacity",.25);
-          d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+          //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
           textNode.style("opacity",1);
-          circleNode.transition().style("r", d.radius*3);
+          circleNode.transition().duration(10).style("r", d.radius*3);
           textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
-          textNode.transition().style("font-size", "20px");
+          //textNode.transition().duration(10).style("font-size", "20px");
         })
         ;
 
@@ -869,6 +872,9 @@ function doD3Stuff( results, server, vm=0  ){
         .style("box-shadow","gray")
         .style("background-color","green")
         .attr("fill", "#4D504F")
+        .on("mouseover",function(d){
+          d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+        })
         ;
 
 
