@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 
 @SpringBootApplication
-public class BiosamplesWebApplication extends SpringBootServletInitializer {
+public class BiosamplesWebApplication {
     public static void main(String[] args) {
         SpringApplication.run(BiosamplesWebApplication.class, args);
     }

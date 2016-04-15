@@ -14,10 +14,14 @@
 	let _ = require("lodash");
 
 	module.exports = function(strings) {
-		let capitalStrings = []; 
-		_.forEach(strings, function(value) {
-			capitalStrings.push(_.chain(value).lowerCase().capitalized().value());
-		});
-		return capitalStrings;
+		if ( _.isArray(strings) ) {
+			let startCaseString = [];
+			_.forEach(strings, function(value) {
+				startCaseString.push(_.chain(value).lowerCase().capitalize().value());
+			});
+			return startCaseString;
+		} else {
+			return _.chain(strings).lowerCase().capitalize().value();
+		}
 	};
 })();

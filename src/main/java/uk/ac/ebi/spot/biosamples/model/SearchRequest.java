@@ -1,17 +1,27 @@
 package uk.ac.ebi.spot.biosamples.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by lucacherubin on 01/03/2016.
  */
 public class SearchRequest {
 
     private String searchTerm = "*";
+    private String[] filters = {};
     private boolean useFuzzySearch = false;
     private int rows = 10;
     private int start = 0;
-    private String typeFilter = "";
-    private String organismFilter = "";
-    private String organFilter = "";
+
+    public String[] getFilters() {
+        return filters;
+    }
+
+    public void setFilters(String[] filters) {
+        this.filters = filters;
+    }
 
     public String getSearchTerm() {
                                 return searchTerm;
@@ -29,6 +39,13 @@ public class SearchRequest {
                                                      this.useFuzzySearch = useFuzzySearch;
                                                                                           }
 
+    public String getFuzzyfiedTerm() {
+
+        return this.getSearchTerm().replaceAll("(\\w+)","$0~");
+
+    }
+
+
     public int getRows() {
                        return rows;
                                    }
@@ -45,35 +62,6 @@ public class SearchRequest {
                                   this.start = start;
                                                      }
 
-    public String getTypeFilter() {
-                                return typeFilter;
-                                                  }
-
-    public void setTypeFilter(String typeFilter) {
-                                               this.typeFilter = typeFilter;
-                                                                            }
-
-    public String getOrganismFilter() {
-                                    return organismFilter;
-                                                          }
-
-    public void setOrganismFilter(String organismFilter) {
-                                                       this.organismFilter = organismFilter;
-                                                                                            }
-
-    public String getOrganFilter() {
-                                 return organFilter;
-                                                    }
-
-    public void setOrganFilter(String organFilter) {
-        this.organFilter = organFilter;
-    }
-
-    public String getFuzzyfiedTerm() {
-
-            return this.getSearchTerm().replaceAll("(\\w+)","$0~");
-
-    }
 
 
 }
