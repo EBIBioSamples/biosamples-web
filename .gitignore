@@ -11,3 +11,4 @@
 
 # Properties we don't want to share
 /src/main/resources/application.properties
+/src/main/resources/ignored.properties
