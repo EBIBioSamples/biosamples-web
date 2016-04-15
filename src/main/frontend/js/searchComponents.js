@@ -570,15 +570,11 @@ function doD3Stuff( results, server, vm=0  ){
         .attr("opacity","0.5")
         .on("dblclick",function(d){ 
           console.log("dblclick");
-          //console.log("d : ");console.log(d);
-          //console.log("this : ");console.log(this);
-          //console.log("d3.select(this) : ");
-          //console.log(d3.select(this));
-          //console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
           for (var u in vm.$data.filterQuery){
             console.log(" u : ");console.log(u);
             console.log( "vm.$data.filterQuery[u] : ");console.log( vm.$data.filterQuery[u] );
             console.log("d.facet : ");console.log(d.facet);
+            // TO MODIFY !
             var indexFilter = u.indexOf("Filter");
             var uFiltered = u.substring(0,indexFilter);
             var indexToCut = d.facet.indexOf('_');
@@ -757,7 +753,7 @@ function doD3Stuff( results, server, vm=0  ){
           .attr("type", function (d) { return d.type; })
           .style("fill", function (d) {  return "grey"; })
           .style("stroke","black")
-          .style("stroke-width",3)
+          .style("stroke-width",2)
           .style("stroke-opacity",1)
           .style("opacity", .7)
           .style("visibility", "hidden")
@@ -780,7 +776,7 @@ function doD3Stuff( results, server, vm=0  ){
           .attr("type", function (d) { return d.type; })
           .style("fill", function (d) {  return d.color; })
           .style("stroke","black")
-          .style("stroke-width",3)
+          .style("stroke-width",2)
           .style("stroke-opacity",1)
           .style("opacity", .7)
           // Added part for dragging
@@ -810,11 +806,18 @@ function doD3Stuff( results, server, vm=0  ){
         })
         .on("mousedown",function(d){
           console.log('mousedown node d : ');console.log(d);
+
+          d3.selectAll("circle").style("stroke-width",2);
+          d3.select(this).selectAll("circle").style("stroke-width", 4);
+          //d3.select(this).select("circle").style("border-radius", "6px");
+
           
           d3.event.stopPropagation();
 
-          d3.selectAll("circle").style("stroke-width",3);
-          d3.select(this).select("circle").style("stroke-width", 6);
+          console.log('d3.select(this).select("circle") : ');
+          console.log(d3.select(this).select("circle"));
+          console.log("+++++++++");
+
           document.getElementById("infoVizRelations").className=d.accession;
           // Fill in the infoVizRelations according to data returned
           document.getElementById("textData").innerHTML='<p>';

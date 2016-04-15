@@ -29360,7 +29360,7 @@ function doD3Stuff(results, server) {
         return d.type;
       }).style("fill", function (d) {
         return "grey";
-      }).style("stroke", "black").style("stroke-width", 3).style("stroke-opacity", 1).style("opacity", .7).style("visibility", "hidden");
+      }).style("stroke", "black").style("stroke-width", 2).style("stroke-opacity", 1).style("opacity", .7).style("visibility", "hidden");
 
       node.append("circle").on("mousedown", function (d) {}).on("mouseout", function (d) {}).on("mouseover", function (d) {})
       // Added attributes
@@ -29380,7 +29380,7 @@ function doD3Stuff(results, server) {
         return d.type;
       }).style("fill", function (d) {
         return d.color;
-      }).style("stroke", "black").style("stroke-width", 3).style("stroke-opacity", 1).style("opacity", .7)
+      }).style("stroke", "black").style("stroke-width", 2).style("stroke-opacity", 1).style("opacity", .7)
       // Added part for dragging
       //.call(drag)
       //.style("fill", function(d) { return fill(d.group); })
@@ -29411,10 +29411,16 @@ function doD3Stuff(results, server) {
       }).on("mousedown", function (d) {
         console.log('mousedown node d : ');console.log(d);
 
+        d3.selectAll("circle").style("stroke-width", 2);
+        d3.select(this).selectAll("circle").style("stroke-width", 4);
+        //d3.select(this).select("circle").style("border-radius", "6px");
+
         d3.event.stopPropagation();
 
-        d3.selectAll("circle").style("stroke-width", 3);
-        d3.select(this).select("circle").style("stroke-width", 6);
+        console.log('d3.select(this).select("circle") : ');
+        console.log(d3.select(this).select("circle"));
+        console.log("+++++++++");
+
         document.getElementById("infoVizRelations").className = d.accession;
         // Fill in the infoVizRelations according to data returned
         document.getElementById("textData").innerHTML = '<p>';
@@ -29721,15 +29727,11 @@ function doD3Stuff(results, server) {
         return Math.max(0, scalesY[h](d.occurence));
       }).attr("opacity", "0.5").on("dblclick", function (d) {
         console.log("dblclick");
-        //console.log("d : ");console.log(d);
-        //console.log("this : ");console.log(this);
-        //console.log("d3.select(this) : ");
-        //console.log(d3.select(this));
-        //console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
         for (var u in vm.$data.filterQuery) {
           console.log(" u : ");console.log(u);
           console.log("vm.$data.filterQuery[u] : ");console.log(vm.$data.filterQuery[u]);
           console.log("d.facet : ");console.log(d.facet);
+          // TO MODIFY !
           var indexFilter = u.indexOf("Filter");
           var uFiltered = u.substring(0, indexFilter);
           var indexToCut = d.facet.indexOf('_');
