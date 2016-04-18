@@ -8,31 +8,34 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.response.FacetField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.solr.core.SolrOperations;
-import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
-import org.springframework.data.solr.core.query.result.FacetEntry;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPage;
-import org.springframework.data.solr.core.query.result.FacetQueryEntry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import uk.ac.ebi.spot.biosamples.model.Merged;
-import uk.ac.ebi.spot.biosamples.model.SearchRequest;
 import uk.ac.ebi.spot.biosamples.repository.MergedRepository;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by lucacherubin on 01/03/2016.
@@ -53,8 +56,34 @@ public class SearchController {
     @Value("${solr.searchapi.server}")
     private String baseSolrUrl;
 
-    @Value("#{'${dynamic.facet.ignored.fields}'.split(',')}")
-    private List<String> ignoredFacetFields;
+    @Value("classpath:ignoredFacets.fields")
+    private Resource ignoredFacetsResource;
+
+    private Set<String> ignoredFacets;
+
+    @PostConstruct
+    private void readIgnoredFacet() {
+
+        ignoredFacets = new HashSet<>();
+        ignoredFacets.add("content_type"); // content_type is always returned as facet
+
+        Pattern pattern = Pattern.compile("^(\\w+)\\s*(?:#.*)?$");
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(ignoredFacetsResource.getInputStream()));
+            String line = br.readLine();
+            while ( line != null ) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    ignoredFacets.add(matcher.group(1).trim());
+                }
+                line = br.readLine();
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            ignoredFacets.add("content_type");
+        }
+    }
 
     @CrossOrigin
     @RequestMapping(value = "/search")
@@ -144,7 +173,7 @@ public class SearchController {
     private List<String> getMostUsedFacets(String searchTerm, int facetLimit) {
 
         List<String> dynamicFacets = new ArrayList<>();
-        facetLimit = ignoredFacetFields.size() - 1 + facetLimit;
+        facetLimit = ignoredFacets.size() - 1 + facetLimit;
 
         FacetQuery facetQuery = new SimpleFacetQuery(new SimpleStringCriteria(searchTerm));
         FacetOptions facetOptions = new FacetOptions();
@@ -155,7 +184,7 @@ public class SearchController {
 
         for (FacetFieldEntry e : facetResults.getFacetResultPage("crt_type_ft")) {
             String facetName = e.getValue();
-            if ( ! ignoredFacetFields.contains(facetName) ) {
+            if ( ! ignoredFacets.contains(facetName) ) {
                 dynamicFacets.add(String.format("%s_ft", facetName));
             }
         }
