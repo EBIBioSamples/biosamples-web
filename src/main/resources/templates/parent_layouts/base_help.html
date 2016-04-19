@@ -6,13 +6,14 @@
 <!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
 <!--[if gt IE 8]><!-->
 <html class="no-js"
-    lang="en"
-    xmlns:th="http://www.thymeleaf.org"
-    xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+      lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
 <!--<![endif]-->
 <head>
     <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
     <!--<object th:include="fragments/head :: head" th:remove="tag"></object>-->
+    <!--<th:block th:include="${fragment_dir + /head :: head}"></th:block>-->
     <th:block th:include="fragments/head :: head"></th:block>
 </head>
 
@@ -26,8 +27,13 @@
     <th:block th:include="fragments/header::header"></th:block>
 
     <div id="content" role="main" class="grid_24 clearfix" layout:fragment="content">
-        Hello World
     </div>
+
+    <aside class="grid_6 omega">
+        <th:block layout:replace="fragments/helpNavigation :: helpNavigation(customHelpBaseUrl=${helpHomeUrl}, customHelpPage=${currentHelpPage})">
+
+        </th:block>
+    </aside>
 
     <footer th:replace="fragments/footer :: footer"></footer>
 </div> <!--! end of #wrapper -->

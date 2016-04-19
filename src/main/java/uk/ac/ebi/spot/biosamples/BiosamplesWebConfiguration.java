@@ -32,9 +32,10 @@ public class BiosamplesWebConfiguration {
 
     @Bean
     public SolrOperations getMergedSolrTemplate() {
-
         return new SolrTemplate(getSolrServer(),"merged");
     }
+
+
 
 
 }

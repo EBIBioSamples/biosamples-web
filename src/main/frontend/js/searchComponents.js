@@ -134,9 +134,8 @@
                 }
 
                 var queryParams = this.getQueryParameters();
-                var server = apiUrl + "query";
 
-                this.$http.get(server,queryParams)
+                this.$http.get(apiUrl,queryParams)
                     .then(function(results){
 
 

@@ -1,6 +1,6 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
-      layout:decorator="base"
+      layout:decorator="parent_layouts/base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
       th:with="overrideTitle = true">
       <!--th:with="baseUrl = '..'">-->
@@ -14,7 +14,7 @@
 
     <div id="bs_content">
         <section>
-            <h2>BioSamples - database of sample descriptions What the hell</h2>
+            <h2>BioSamples - database of sample descriptions</h2>
             <p class="intro justify">
                 The BioSamples database aggregates sample information for reference
                 samples (e.g. Coriell Cell lines) and samples for which data exist
