@@ -382,3 +382,18 @@ node.attr( "transform", function(d) { //console.log("d : ");console.log(d);
     console.log("this.facets.organs : ");console.log(this.facets.organs);
     console.log("this.facets : ");console.log(this.facets);
     */
+
+
+/*
+  // Possibility to modify the value for cpt == 0 if we want a special case for sample and group
+  if (cpt== 0){
+    widthRectangles.push( (width - 5 - margin.right - margin.left)/( Math.floor(results.data.facet_counts.facet_fields.content_type.length/2) ) );
+  } else {
+    widthRectangles.push(10);
+  }
+*/
+
+
+////
+// timer to reload  the querySamples function
+v-on:keyup="querySamples | debounce 500"/>

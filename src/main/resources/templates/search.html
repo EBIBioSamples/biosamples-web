@@ -106,8 +106,10 @@ cursos:pointer;
 
 #elementHelp{
     position:fixed; 
-    top:2%; 
+    top:4%; 
     right:2%;
+    width:300px;
+    text-align: center;
     background: grey;
     color:white;
     stroke: steelblue;
@@ -115,6 +117,22 @@ cursos:pointer;
     border: 4px solid grey;
     visibility: hidden;
 }
+
+#infoPop{
+    position:fixed; 
+    top:20%; 
+    right:30%;
+    left:30%;
+    width:40%;
+    text-align: center;
+    background: black;
+    color:white;
+    stroke: steelblue;
+    stroke-width: 32px;
+    border: 4px solid grey;
+    display:none
+}
+
 
 table {
     border: 4px solid grey;
@@ -195,7 +213,7 @@ table {
                                        id="local-searchbox"
                                        placeholder="Start your search"
                                        v-model="searchTerm"
-                                       v-on:keyup="querySamples | debounce 500"/>
+                                       v-on:keyup="querySamples | debounce 1000"/>
                             </label>
 
                         </div>
@@ -254,18 +272,12 @@ table {
             </div>
 
         </section>
+
 <div id="infoVizRelations" style="visibility:hidden; position:absolute; 
 border:solid;border-color:black; border-radius:4px; height:586px; 
 width:38%;
 left:60%; right:5%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible">
-<table>
-    <tr> <td>
-<div id="infoVizRelations1"></div>
-    </td> </tr>
-    <tr> <td>
-<div id="infoVizRelations2"></div>
-    </td> </tr>
-</table>
+<div id="buttons-display"></div>
 <div id="textData"></div>
 </div>      
         <section class="container" v-show="queryTermPresent" v-cloak>
@@ -344,6 +356,7 @@ left:60%; right:5%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll;
         <!-- End example layout containers -->
 
         <div id="elementHelp"> Help </div>
+        <div id="infoPop"> Temporary display of information </div>
 
     </div>
 

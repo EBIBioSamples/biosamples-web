@@ -342,3 +342,20 @@ function readFacets(facets) {
     console.log("readFacets obj : ");console.log(obj);
     return obj;
 }
+
+function popOutDiv(stringDiv){
+	var stringID = '#'+stringDiv;
+	//clearTimeout(stringID);
+	var timeOutHandle = setTimeout(function() {
+	  $(stringID).fadeIn('fast');
+	}, 5); // <-- time in milliseconds
+}
+
+function fadeOutDiv(stringDiv){
+	
+	var stringID = '#'+stringDiv;
+	//clearTimeout(stringID);
+	setTimeout(function() {
+	  $(stringID).fadeOut('slow');
+	}, 3500); // <-- time in milliseconds	
+}

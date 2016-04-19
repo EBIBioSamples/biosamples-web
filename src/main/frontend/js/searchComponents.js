@@ -313,8 +313,23 @@ function doD3Stuff( results, server, vm=0  ){
     document.getElementById("titleRezInfo").innerHTML="Display result information";
     document.getElementById("sectionVizResult").style.visibility="hidden";
 
+    d3.select("#sectionVizResult").on("mouseenter",function(){
+      document.getElementById("elementHelp").style.visibility="visible";
+      document.getElementById("elementHelp").innerHTML = "Help "
+      +"<hr/> • Click on a bar or a text to highlight the nodes with these values."
+      +"<br/> • Double click to filter the results according to a facet. ";
+    })
+
+    .on("mouseleave",function(){
+      document.getElementById("elementHelp").style.visibility="hidden";
+      document.getElementById("elementHelp").innerHTML = "Help ";
+    })
+
+
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
-      document.getElementById("infoVizRelations").innerHTML=' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+      document.getElementById("infoVizRelations").innerHTML=' <h3>Clicked element information</h3>'
+       +'<div id ="buttons-display"></div>'
+       +'<div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
       var cpt = 0;
 
       var strResults = '<table id="table" > <tr> ';
@@ -337,7 +352,9 @@ function doD3Stuff( results, server, vm=0  ){
       document.getElementById("sectionVizResult").innerHTML= strResults;
       document.getElementById("sectionVizResult").style.height="0px";
     } else {
-      document.getElementById("infoVizRelations").innerHTML=' <h3>Clicked element information</h3> <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+      document.getElementById("infoVizRelations").innerHTML=' <h3>Clicked element information</h3>'
+      +'<div id ="buttons-display"></div>'
+      +' <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
       document.getElementById("sectionVizResult").innerHTML= ' <div id="tableResults"> <table  style="width:100%" <tr> <td>  </table> </div>';
       document.getElementById("sectionVizResult").style.height="0px";
     }
@@ -366,7 +383,7 @@ function doD3Stuff( results, server, vm=0  ){
     var fill = d3.scale.category20();
     var widthD3 = $(".container").width();
     var heightD3 = widthD3/2;
-    heightD3+=120;
+    //heightD3+=120;
 
     var width = document.getElementById("infoVizRelations").getBoundingClientRect().width - 5;
     var height = document.getElementById("infoVizRelations").getBoundingClientRect().height/3;
@@ -413,14 +430,6 @@ function doD3Stuff( results, server, vm=0  ){
     var widthRectangles = [];
     var cpt =0;
     for (var u in numberFacetsUnEmpty){
-      // Possibility to modify the value for cpt == 0 if we want a special case for sample and group
-      /*
-      if (cpt== 0){
-        widthRectangles.push( (width - 5 - margin.right - margin.left)/( Math.floor(results.data.facet_counts.facet_fields.content_type.length/2) ) );
-      } else {
-        widthRectangles.push(10);
-      }
-      */
       widthRectangles.push(10);
       cpt++;
     }
@@ -437,7 +446,6 @@ function doD3Stuff( results, server, vm=0  ){
         }
       }
     }
-    console.log("maxOccurences : ");console.log(maxOccurences);
 
     var scalesX = []; var scalesY = [];
     var cpt=0;
@@ -509,31 +517,101 @@ function doD3Stuff( results, server, vm=0  ){
             .attr("y", function(){ return 0; })
             .attr("dy", ".71em")
             .attr("opacity","1")
-            .on("mouseover",function(){
-              var idToSelect = '#bar_'+this.id.substring(5, this.id.length);
+            .on("mouseover",function(d){
+              document.getElementById("elementHelp").style.visibility="visible";
+              var indexToCut = this.id.indexOf("_");
+              var idToSelect = this.id.substring(indexToCut+1,this.id.length)
+
+              var content = d3.select('#bar_'+idToSelect).attr("content");
+              var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
+              var facet = d3.select('#bar_'+idToSelect).attr("facet");
+
+              document.getElementById("elementHelp").innerHTML=
+                "Help"
+                +"<hr/> "+ facet +" <hr/> "+  content+ " : " + occurence ;
               d3.selectAll(".text-d3").style("opacity",.5);
               d3.select(this).style("opacity",1);
-              d3.select(idToSelect).style("fill","green");              
+              d3.select('#bar_'+idToSelect).style("fill","green");
             })
             .on("mouseout",function(){
-              console.log("text mouseout");
+              document.getElementById("elementHelp").visibility="visible";
+              document.getElementById("elementHelp").innerHTML = "Help "
+              +"<hr/> • Click on a bar or a text to highlight the nodes with these values."
+              +"<br/> • Double click to filter the results according to a facet. ";              
+
               d3.selectAll(".text-d3").style("opacity",1);
-              d3.selectAll(".bar").style("fill","steelblue");              
+              d3.selectAll(".bar").style("fill","steelblue");
             })
             .on("mousedown",function(){
+              console.log("mousedown text");
               d3.selectAll("circle").style("stroke","black");
-              var content = this.id.substring(5, this.id.length);
+
+              var indexToCut = this.id.indexOf("_");
+              var idToSelect = this.id.substring(indexToCut+1,this.id.length)
+
+              var content = d3.select('#bar_'+idToSelect).attr("content");
+              var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
+              var facet = d3.select('#bar_'+idToSelect).attr("facet");
+
+              d3.selectAll("circle").style("stroke","black");
+              d3.selectAll(".ghost_circle").style("visibility","hidden");
+
+              var cptHighlighted = 0;
+              var gotHighlighted = false;
               // Choice for now: The highlighting is done by looking through the returned elements.
-              d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){            
+              d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){
+                // Actually not necessary to get the stroke, but now we have the selection done
+                gotHighlighted = false;
                 var rez = d.responseDoc;
                 for (var u in d.responseDoc){
                   var stringResponse = d.responseDoc[u]+'';
                   if ( stringResponse.indexOf ( content ) > -1 ){
-                    return "white";
+                    d3.select(this).style("stroke-opacity","1");
+                    var idGhost = "#ghost_"+rez.accession ;
+                    d3.select(idGhost).style("visibility","visible");
+                    if (!gotHighlighted){ cptHighlighted++; gotHighlighted = true; }
                   }
                 }
-              });
-            })         
+              })
+
+              document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.";
+              popOutDiv("infoPop");
+              fadeOutDiv("infoPop");
+
+            })
+            .on("dblclick",function(d){
+              var arrayStuffName=[];var arrayStuffValue=[];
+              var indexToCut = this.id.indexOf("_");// arrayStuffName.push("indexToCut");arrayStuffValue.push(indexToCut);
+              var idToSelect = this.id.substring(indexToCut+1,this.id.length);// arrayStuffName.push("idToSelect");arrayStuffValue.push(idToSelect);
+              var content = d3.select('#bar_'+idToSelect).attr("content");// arrayStuffName.push("content");arrayStuffValue.push(content);
+              var occurence = d3.select('#bar_'+idToSelect).attr("occurence");// arrayStuffName.push("occurence");arrayStuffValue.push(occurence);
+              var currentFacet = d3.select('#bar_'+idToSelect).attr("facet");// arrayStuffName.push("currentFacet");arrayStuffValue.push(currentFacet);
+              var facetsFiltererd = currentFacet.split("_");
+              //console.log("facetsFiltererd : ");console.log(facetsFiltererd);
+              var indexFacet = currentFacet.indexOf("_"); //arrayStuffName.push("indexFacet");arrayStuffValue.push(indexFacet);
+              var currentFacetFiltered = currentFacet.substring(0, indexFacet );// arrayStuffName.push("currentFacetFiltered");arrayStuffValue.push(currentFacetFiltered);
+              for (var u in vm.$data.filterQuery){
+                // FILTER TO MODIFY !
+                var indexFilter = u.indexOf("Filter");
+                var uFiltered = u.substring(0,indexFilter);
+                for (var v =0; v < facetsFiltererd.length; v++){
+                  if ( uFiltered == facetsFiltererd[v] ){
+                    console.log("uFiltered == facetsFiltererd[v] == "+facetsFiltererd[v]);
+                    if (vm.$data.filterQuery[u] === '' || uFiltered !== currentFacet ){
+                      vm.$data.filterQuery[u] = content;
+                    } else {
+                      vm.$data.filterQuery[u] = '';
+                    }
+                    vm.$emit("bar-selected");
+                    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                    popOutDiv("infoPop");
+                    fadeOutDiv("infoPop");                    
+                    vm.$options.methods.querySamples(this,false);
+                  }
+                }
+
+              }
+            })
             .attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90")
             .text(function(){ return dataBars[h][i].content+' : '+dataBars[h][i].occurence;})
         ;
@@ -550,17 +628,35 @@ function doD3Stuff( results, server, vm=0  ){
         .attr("facet",function(d){ 
           return d.facet;
         })
+        .attr("content",function(d){ 
+          return d.content;
+        })
+        .attr("occurence",function(d){ 
+          return d.occurence;
+        })
         // space is 5
         .attr("width", widthRectangles[h] )
         .attr("fill", "steelblue" )
         .on("mouseover",function(d,i){
-          //var idToSelect = '#_'+d.content;
+          console.log("bar chart")
+          document.getElementById("elementHelp").style.visibility="visible";
+          console.log("facet of bar : ");console.log(d.facet);
+          document.getElementById("elementHelp").innerHTML=
+            "Help"
+            +"<hr/>"+ d.facet +" <hr/> "+d.content
+            +", "+d.occurence;
+
           var idToSelect = '#text_'+d.content;
           d3.selectAll(".text-d3").style("opacity",.5);
           d3.select(idToSelect).style("opacity",1);
           d3.select(this).style("fill","green");
         })
         .on("mouseout",function(d,i){
+          document.getElementById("elementHelp").innerHTML = "Help "
+          +"<hr/> • Click on a bar or a text to highlight the nodes with these values."
+          +"<br/> • Double click to filter the results according to a facet. ";        
+          document.getElementById("elementHelp").visibility="visible";
+
           d3.selectAll(".text-d3").style("opacity",1);
           d3.select(this).style("fill","steelblue");
         })
@@ -570,6 +666,7 @@ function doD3Stuff( results, server, vm=0  ){
         .attr("opacity","0.5")
         .on("dblclick",function(d){ 
           console.log("dblclick");
+          var content = d.content;
           for (var u in vm.$data.filterQuery){
             console.log(" u : ");console.log(u);
             console.log( "vm.$data.filterQuery[u] : ");console.log( vm.$data.filterQuery[u] );
@@ -577,35 +674,39 @@ function doD3Stuff( results, server, vm=0  ){
             // TO MODIFY !
             var indexFilter = u.indexOf("Filter");
             var uFiltered = u.substring(0,indexFilter);
-            var indexToCut = d.facet.indexOf('_');
-            var currentFacet = d.facet.substring(0, indexToCut);
-            console.log("currentFacet : "+currentFacet);
-            console.log("uFiltered : "+uFiltered);
-            if ( uFiltered === currentFacet ){
-              if (vm.$data.filterQuery[u] === '' || uFiltered !== currentFacet ){
-                vm.$data.filterQuery[u] =d.content;
-              } else {
-                vm.$data.filterQuery[u] = '';
+            var facetsFiltererd = d.facet.split("_");
+            for (var v in facetsFiltererd){
+              if ( uFiltered === facetsFiltererd[v] ){
+                if (vm.$data.filterQuery[u] === '' || uFiltered !== facetsFiltererd[v] ){
+                  vm.$data.filterQuery[u] =d.content;
+                } else {
+                  vm.$data.filterQuery[u] = '';
+                }
+                vm.$emit("bar-selected");
+                console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
+
+                document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                popOutDiv("infoPop");
+                fadeOutDiv("infoPop");
+
+                vm.$options.methods.querySamples(this,false);
               }
-              vm.$emit("bar-selected");
-              console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
-              vm.$options.methods.querySamples(this,false);
             }
           }
-          console.log("dblclick");
         })
         .on("mousedown",function(d){
           // Filter the data. We now want to highlight selection instead
-          console.log("You clicked on a rectangle");
-          console.log("d : ");console.log(d);
 
           d3.selectAll("circle").style("stroke","black");
           d3.selectAll(".ghost_circle").style("visibility","hidden");
           var content = d.content;
+          var cptHighlighted = 0;
+          var gotHighlighted = false;
           // Choice for now: The highlighting is done by looking through the returned elements.
-          d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){            
+          d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){        
             // Actually not necessary to get the stroke, but now we have the selection done
             var rez = d.responseDoc;
+            gotHighlighted = false;
             for (var u in d.responseDoc){
               var stringResponse = d.responseDoc[u]+'';
               if ( stringResponse.indexOf ( content ) > -1 ){
@@ -614,9 +715,15 @@ function doD3Stuff( results, server, vm=0  ){
                 //d3.select(this).style("shape-rendering","crispEdges");
                 var idGhost = "#ghost_"+rez.accession ;
                 d3.select(idGhost).style("visibility","visible");
+                if (!gotHighlighted){ cptHighlighted++; gotHighlighted = true; }
               }
             }
           });
+
+          document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.";
+          popOutDiv("infoPop");
+          fadeOutDiv("infoPop");
+
         })
         .append("text")
           .attr("transform", "rotate(-90)")
@@ -630,7 +737,6 @@ function doD3Stuff( results, server, vm=0  ){
 
 
     // Nodes relationships here
-    // FORCE VARIABLE !
     var svg;
     if ( document.getElementById("vizSpotRelations") === null ){            
       svg = d3.select(".container").insert("svg",":first-child")
@@ -644,7 +750,14 @@ function doD3Stuff( results, server, vm=0  ){
             .style("background-color","#f5f5f5")
             .style("border-color","#5D8C83")
             .style("border-radius","4px")
-            // FORCE VARIABLE !
+            .on("mouseenter",function(){
+              document.getElementById("elementHelp").style.visibility="visible";
+              d3.html("Help <hr/> Hover over a node to make it bigger. <b r/> Click on a node to display its information.");
+            })
+            .on("mouseleave",function(){
+              document.getElementById("elementHelp").style.visibility="hidden";
+              d3.select("#elementHelp").html("Help");
+            })            
             .call(d3.behavior.zoom().on("zoom", (function (d) {
                 svg.attr("transform", 
                   "translate(" + d3.event.translate + ")" + 
@@ -667,19 +780,21 @@ function doD3Stuff( results, server, vm=0  ){
         .style("overflow","scroll")
         .style("border-color","#5D8C83")
         .style("border-radius","4px")
-        // FORCE VARIABLE
+        .on("mouseenter",function(){
+          document.getElementById("elementHelp").style.visibility="visible";
+          d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+        })
+        .on("mouseleave",function(){
+          document.getElementById("elementHelp").style.visibility="hidden";
+          d3.select("#elementHelp").html("Help");
+        })
         .call(d3.behavior.zoom().on("zoom", (function (d) {
-            //console.log("onzoom d : ");console.log(d);
-            //console.log("onzoom d3 : ");console.log(d3);
-            //console.log("svg : ");console.log(svg);
-            //console.log("this : ");console.log(this);
             svg.attr("transform", 
-              // TODO ? ADD STUFF TO CHECK IF CLASS IS DRAGGABLE !
               "translate(" + d3.event.translate + ")" + 
               " scale(" + d3.event.scale + ")"
               );
           })
-        ) )
+        ))
         .append("g")
         ;
     }
@@ -718,12 +833,10 @@ function doD3Stuff( results, server, vm=0  ){
         var width=document.getElementById("vizSpotRelations").getBoundingClientRect().width;
         var height=document.getElementById("vizSpotRelations").getBoundingClientRect().height;
 
-        // FORCE VARIABLE !
         var force = d3.layout.force()
           .gravity(.08)
           .distance(50)
           .charge(-100)
-          //.friction(0.5)
           .size([width, height]);
 
         var link = svg.selectAll(".link")
@@ -733,7 +846,6 @@ function doD3Stuff( results, server, vm=0  ){
         .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
         //Add circles to the svgContainer
-        // FORCE VARIABLE !
         var node = svg.selectAll("node")
           .data(nodeData.nodes)
           .enter().append("g")
@@ -742,7 +854,6 @@ function doD3Stuff( results, server, vm=0  ){
         ;
 
         node.append("circle")
-          // Added attributes
           .attr("r", function (d) { return d.radius * 3; })
           .attr("accession",function(d){return d.accession})
           .attr("class","ghost_circle")
@@ -766,7 +877,6 @@ function doD3Stuff( results, server, vm=0  ){
           })
           .on("mouseover",function(d){
           })
-          // Added attributes
           .attr("r", function (d) { return d.radius; })
           .attr("accession",function(d){return d.accession})
           .attr("id",function(d){ return 'circle_'+d.accession })
@@ -810,13 +920,8 @@ function doD3Stuff( results, server, vm=0  ){
           d3.selectAll("circle").style("stroke-width",2);
           d3.select(this).selectAll("circle").style("stroke-width", 4);
           //d3.select(this).select("circle").style("border-radius", "6px");
-
           
           d3.event.stopPropagation();
-
-          console.log('d3.select(this).select("circle") : ');
-          console.log(d3.select(this).select("circle"));
-          console.log("+++++++++");
 
           document.getElementById("infoVizRelations").className=d.accession;
           // Fill in the infoVizRelations according to data returned
@@ -845,13 +950,19 @@ function doD3Stuff( results, server, vm=0  ){
         .on("mouseup",function(d){
         })
         .on("mouseout",function(d){
+          //document.getElementById("elementHelp").style.visibility="hidden";
           d3.selectAll("text").style("opacity",1);
           //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
           d3.selectAll(".node").selectAll("text").style("dx", 12);
           d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
           d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
+          d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+          //document.getElementById("elementHelp").style.visibility="hidden";
         })
         .on("mouseover",function(d){
+          document.getElementById("elementHelp").style.visibility="visible";
+          d3.select("#elementHelp").html("Help <hr/> "+d.accession);
+
           var circleNode = d3.select(this).selectAll("circle");
           var textNode = d3.select(this).select("text");
 
