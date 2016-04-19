@@ -65,7 +65,7 @@
                                 </form>
                                
                                 <component v-for="(key,facetObj) in facets" 
-                                            is="facet" v-bind:title="key"
+                                            is="facet" v-bind:title="key | startCase"
                                             v-bind:keys="facetObj.keys"
                                             v-bind:values="facetObj.vals"
                                             v-bind:facet-id="key + 'Filter'">
