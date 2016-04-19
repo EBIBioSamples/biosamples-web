@@ -1,126 +1,24 @@
 $icon-font-path: '../fonts/';
-
+$primary-color:   #B6DEDF;
+$highlight-color:  #9CFF0D;
 // bower:scss
 @import "custom_bootstrap.scss";
 // endbower
-
+@import 'components/side_panel';
 @import 'mixins/flexbox-mixins';
-@import 'components/labels';
-@import 'components/facets';
+@import 'grid/flexbox';
+
+
 // personal:scss
 
 [v-cloak] {
   display: none;
 }
 
-.browserupgrade {
-  margin: 0.2em 0;
-  background: #ccc;
-  color: #000;
-  padding: 0.2em 0;
-}
-
-
-
-/* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.marketing,
-.footer {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-/* Custom page header */
-.header {
-  border-bottom: 1px solid #e5e5e5;
-
-  /* Make the masthead heading the same height as the navigation */
-  h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
-    padding-bottom: 19px;
-  }
-}
-
-/* Custom page footer */
-.footer {
-  padding-top: 19px;
-  color: #777;
-  border-top: 1px solid #e5e5e5;
-}
-
-.container-narrow > hr {
-  margin: 30px 0;
-}
-
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-  .btn {
-    font-size: 21px;
-    padding: 14px 24px;
-  }
-}
-
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-  p + h4 {
-    margin-top: 28px;
-  }
-}
-
-
-/* Table */
-a {
-  font-weight: normal;
-  color: blue;
-}
-
-a.active {
-  color: red;
-  font-weight: bold;
-}
-
-.triangle {
-  display: inline-block;
-  width: 0;
-  height: 0;
-  vertical-align: middle;
-  cursor: pointer;
-  margin-left: 2px;
-  color: blue;
-  &:first{
-    margin-left: 5px;
-  }
-}
-
-.triangle-up {
-  @extend .triangle;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-
-  border-bottom: 5px solid;
-  &.active {
-    color: red;
-  }
-}
-
-.triangle-down {
-  @extend .triangle;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-
-  border-top: 5px solid;
-  &.active {
-    color: red;
-  }
-}
-
 .pagination {
   margin: 0;
+  display: flex;
+  align-items: center;
   #inputPageContainer {
     text-align: center;
     min-width: 100px;
@@ -138,14 +36,9 @@ a.active {
 }
 
 .highlight {
-  background-color: #9CFF0D;
+  background-color: $highlight-color;
 }
 
-// .v-align {
-//   position: relative;
-//   top: 50%;
-//   transform: translateY(-50%);
-// }
 
 .v-align-children {
    // display:table;
@@ -160,14 +53,10 @@ a.v-link-active {
   text-decoration: none;
 }
 
-@import 'grid/flexbox';
 
-.badge-container {
-   margin: 5px 0;
-}
 
 .badge {
-  background-color: #B6DEDF;
+  background-color: $primary-color;
 }
 
 
