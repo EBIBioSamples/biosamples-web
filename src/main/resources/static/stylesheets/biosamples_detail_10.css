@@ -411,8 +411,8 @@ overflow-x: scroll; overflow-y:hidden;}
 
 /*on MAC OSX Lion and always show the scrollbars on Webkit browsers (Chrome / Safari) */
 ::-webkit-scrollbar {
-	-webkit-appearance: none;
-	width: 7px;
+	/*-webkit-appearance: none;*/
+	/*width: 7px;*/
 }
 ::-webkit-scrollbar-thumb {
 	border-radius: 4px;
