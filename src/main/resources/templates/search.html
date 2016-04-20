@@ -7,6 +7,7 @@
     <title>Search</title>
     <!--<link rel="stylesheet" href="stylesheets/main_samelf.css">-->
     <link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script th:inline="javascript">
@@ -14,6 +15,129 @@
         window.apiUrl = [[${apiUrl}]];
         /*]]>*/
     </script>
+  <style type="text/css">
+    /* You have the option of setting a maximum width for your page, and making sure everything is centered */
+    /* body { max-width: 1600px; margin: 0 auto; } */
+    .node circle {
+      fill: #000;
+      opacity:0.8;
+    }
+    .node text {
+    stroke:#333;
+    cursos:pointer;
+    }
+    .node {
+      font: 10px sans-serif;
+    }
+    .link {
+      stroke: #aaa;
+      stroke-width: 1.5px;
+      opacity:.6;
+    }
+    .text-d3{
+      border:solid;  
+      border-radius:10px;
+      background-color:green;
+      font-family:arial;
+      font-size:10px;
+    }
+    .text-d3:hover{
+        fill:black;
+    }
+
+    .axis {
+      font: 10px sans-serif;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+    .x.axis path {
+      display: none;
+    }    
+
+    .hull {
+      fill: steelblue;
+      stroke: steelblue;
+      stroke-width: 32px;
+      stroke-linejoin: round;
+    }
+
+    #vizSpotRelations{
+        background-color: #ffffff;
+    }
+
+    #elementHelp{
+        position:fixed; 
+        top:4%; 
+        right:2%;
+        width:300px;
+        text-align: center;
+        background: grey;
+        color:white;
+        stroke: steelblue;
+        stroke-width: 32px;
+        border: 4px solid grey;
+        visibility: hidden;
+    }
+
+    #infoPop{
+        position:fixed; 
+        top:20%; 
+        right:30%;
+        left:30%;
+        width:40%;
+        text-align: center;
+        background: black;
+        color:white;
+        stroke: steelblue;
+        stroke-width: 32px;
+        border: 4px solid grey;
+        display:none
+    }
+
+    ::-webkit-scrollbar {
+      width: 15px;
+      height: 15px;
+    }
+    ::-webkit-scrollbar-button {
+      width: 31px;
+      height: 31px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #000000;
+      border: 6px solid #ffffff;
+      border-radius: 7px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3bcf88;
+    }
+    ::-webkit-scrollbar-thumb:active {
+      background: #000000;
+    }
+    ::-webkit-scrollbar-track {
+      background: #a9a9a9;
+      border: 72px none #ffffff;
+      border-radius: 84px;
+    }
+    ::-webkit-scrollbar-track:hover {
+      background: #5e5e5e;
+    }
+    ::-webkit-scrollbar-track:active {
+      background: #c0c0c0;
+    }
+    ::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    table {
+        border: 4px solid grey;
+    }
+
+  </style>  
+  <!-- end CSS-->    
 </head>
 <body id="app">
 
@@ -28,12 +152,30 @@
     </nav>
 
     <!-- Example layout containers -->
-
-    <section>
+    <section id="sectionTitle" >
         <h2>BioSample Database Search Interface</h2>
+
+            <div id="buttonRezInfo" style="border:solid;border-color:grey;  border-radius:1px;visibility:hidden;"> 
+                <h4 id="titleRezInfo" >
+                    Display result information
+                </h4>
+            </div>
+            <div id="sectionVizResult" 
+                style="visibility:hidden; height:0px;
+                 overflow: auto;" >
+            </div>
+
     </section>
 
     <section class="container" v-show="queryTermPresent" v-cloak>
+
+        <div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; top:100px; height:586px; 
+        left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible">
+            <div id="infoVizRelations1"></div>
+            <div id="infoVizRelations2"></div>
+            <div id="textData"></div>
+        </div>
+
         <div v-if="!queryHasResults">
             <div class="row">
                 <h3>
@@ -96,6 +238,8 @@
             </div>
         </div>
     </section>
+    <div id="elementHelp"> Help </div>
+    <div id="infoPop"> Temporary display of information </div>
 </div>
 
 <th:block layout:fragment="custom-endpage-scripts">
@@ -104,6 +248,7 @@
 
     </script>
     <script th:src="@{/javascript/searchComponents.js}"></script>
+    <script th:src="@{javascript/toolsFunctions.js}"></script>
 </th:block>
 
 </body>
