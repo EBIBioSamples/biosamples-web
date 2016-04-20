@@ -8,14 +8,20 @@
 (function(window){
     "use strict";
 
-    window.apiUrl = "http://localhost:8080/search_api/";
+    // Create a plugin and pass the apiURL using an option
+    // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
+    if (!window.apiUrl) {
+        window.apiUrl ="http://localhost:8080/biosamples/api/search/";
+    }
+
 
     // Required
     var _           = require("lodash");
     var _mixins     = require('./utilities/_mixins.js');
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
-    var Biosample   = require('./components/Biosample.js');
+    var Biosample   = require('./components/BioSample.js');
+    var apiUrl      = window.apiUrl;
 
 
     // Vue Configuration
@@ -27,6 +33,7 @@
 
     // Filters & Components
     Vue.filter('excerpt',require('./filters/excerptFilter.js'));
+    Vue.filter('startCase', require('./filters/startCaseFilter.js'));
     Vue.component('badge', require('./components/badge/Badge.js'));
 
     /**
@@ -56,20 +63,20 @@
             queryTerm:'',
             filterTerm: '',
             useFuzzy: false,
-            pageNumber: 0,
+            pageNumber: 1,
             samplesToRetrieve: 10,
             resultsNumber: '',
             queryResults: {},
             biosamples: [],
             filterQuery: {
-                typeFilter: '',
-                organismFilter: '',
-                organFilter: ''
+                // typeFilter: '',
+                // organismFilter: '',
+                // organFilter: ''
             },
             facets: {
-                types: {},
-                organisms: {},
-                organs: {},
+                // types: {},
+                // organisms: {},
+                // organs: {}
             },
             previousQueryParams: {},
             currentQueryParams: {}
@@ -168,7 +175,6 @@
             });
           },
 
-
             /**
              * Highlights the searched term within the returned SolR documents
              * @method associateHighlights
@@ -201,22 +207,35 @@
                 return {
                     'searchTerm': this.searchTerm,
                     'rows': this.samplesToRetrieve,
-                    'start': this.pageNumber,
+                    'start': (this.pageNumber - 1) * this.samplesToRetrieve,
                     'useFuzzySearch': this.useFuzzy,
-                    'organFilter': this.filterQuery.organFilter,
-                    'typeFilter': this.filterQuery.typeFilter,
-                    'organismFilter': this.filterQuery.organismFilter
-                };              
+                    'filters': this.serializeFilterQuery()
+                };
+                /*
+                'organFilter': this.filterQuery.organFilter,
+                'typeFilter': this.filterQuery.typeFilter,
+                'organismFilter': this.filterQuery.organismFilter
+                */
+            },
+
+            serializeFilterQuery: function() {
+                let filterArray = [];
+                _.each(this.filterQuery, (value,key) => {
+                    if ( !_.isNil(value) ) {
+                        filterArray.push(`${key}|${value}`);
+                    }
+                });
+                return filterArray;
             },
 
             populateDataWithUrlParameter: function(urlParams) {
-              this.searchTerm = urlParams.searchTerm;
-              this.samplesToRetrieve = _.toInteger(urlParams.rows);
-              this.pageNumber= _.toInteger(urlParams.start);
-              this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
-              this.filterQuery.organFilter = urlParams.organFilter;
-              this.filterQuery.typeFilter = urlParams.typeFilter;
-              this.filterQuery.organismFilter = urlParams.organismFilter;
+                this.searchTerm = urlParams.searchTerm;
+                this.samplesToRetrieve = _.toInteger(urlParams.rows);
+                this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve + 1;
+                this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
+                // this.filterQuery.organFilter = urlParams.organFilter;
+                // this.filterQuery.typeFilter = urlParams.typeFilter;
+                // this.filterQuery.organismFilter = urlParams.organismFilter;
             },
 
             /**
@@ -226,12 +245,14 @@
             registerEventHandlers: function() {
                 this.$on('page-changed', function(newPage) {
                     this.pageNumber = newPage;
+                    this.saveHistoryState();
                     this.querySamples();
                 });
                 this.$on('dd-item-chosen', function(item) {
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
                     this.pageNumber = 1;
+                    this.saveHistoryState();
                     this.querySamples();
                 });
 
@@ -247,6 +268,7 @@
                     } else {
                         Vue.set(this.filterQuery,key,value);
                     }
+                    this.saveHistoryState();
                     this.querySamples();
                 });
             },

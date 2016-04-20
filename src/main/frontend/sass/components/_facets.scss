@@ -4,10 +4,17 @@
 
 .facet-entry{
 	cursor: pointer;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
 
 	&.selected {
 		background-color: $brand-primary;
 		color: white;
 		text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+	}
+
+	.facet-name {
+		padding-right: 1em;
 	}
 }

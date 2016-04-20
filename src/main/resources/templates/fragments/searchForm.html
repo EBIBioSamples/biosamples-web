@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Seach Form</title>
+</head>
+<body>
+
+<!-- Search Input Form - based on Vue.js javascript framework -->
+<form th:fragment="searchInput" id="local-search" name="local-search" method="post" v-on:submit.prevent.stop="querySamples">
+
+    <fieldset>
+        <div class="left">
+            <label>
+                <input type="text"
+                       th:value="${searchTerm}"
+                       name="first"
+                       id="local-searchbox"
+                       placeholder="Start your search"
+                       v-model="searchTerm"
+                       v-on:keyup="querySamples | debounce 500"/>
+            </label>
+
+        </div>
+
+        <div class="right">
+            <input type="submit" name="submit" value="Search" class="submit" />
+        </div>
+    </fieldset>
+
+</form>
+</body>
+</html>

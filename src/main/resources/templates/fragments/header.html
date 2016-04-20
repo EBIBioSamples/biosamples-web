@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="">
+      <!--th:with="baseUrl = ${@environment.getProperty('web.base.url')}">-->
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <title>Whatever</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.1.3/material.css">
+</head>
+<body>
+<header th:fragment="header">
+    <div id="global-masthead" class="masthead grid_24">
+        <!--This has to be one line and no newline characters-->
+        <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png" alt="EMBL European Bioinformatics Institute" /></a>
+
+        <nav>
+            <ul id="global-nav">
+                <!-- set active class as appropriate -->
+                <li class="first active" id="services"><a href="//www.ebi.ac.uk/services">Services</a></li>
+                <li id="research"><a href="//www.ebi.ac.uk/research">Research</a></li>
+                <li id="training"><a href="//www.ebi.ac.uk/training">Training</a></li>
+                <li id="industry"><a href="//www.ebi.ac.uk/industry">Industry</a></li>
+                <li id="about" class="last"><a href="//www.ebi.ac.uk/about">About us</a></li>
+            </ul>
+        </nav>
+
+    </div>
+
+    <div id="local-masthead" class="masthead grid_24 nomenu">
+
+        <!-- local-title -->
+        <!-- NB: for additional title style patterns, see http://frontier.ebi.ac.uk/web/style/patterns -->
+
+        <div class="grid_12 alpha" id="local-title">
+            <h1><a th:href="@{/}" href="/" title="Back to BioSamples homepage"><img th:src="@{/images/BioSamples_logo.png}" src="../static/images/BioSamples_logo.png" alt="BioSamples logo" />BioSamples</a></h1>
+        </div>
+
+        <!-- /local-title -->
+
+        <!-- local-search -->
+        <!-- NB: if you do not have a local-search, delete the following div, and drop the class="grid_12 alpha" class from local-title above -->
+
+        <div class="grid_12 omega">
+            <th:block th:replace="fragments/searchForm::searchInput"></th:block>
+        </div>
+
+        <!-- /local-search -->
+
+        <!-- local-nav -->
+        <th:block layout:replace="fragments/primaryNavigation :: navigation(customBase=${baseUrl},customPage=${currentPage})">
+
+        </th:block>
+        <!-- /local-nav -->
+    </div>
+</header>
+</body>
+</html>
