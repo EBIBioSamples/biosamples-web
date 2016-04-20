@@ -29509,6 +29509,9 @@ function doD3Stuff(results, server) {
       }
     }
 
+    document.getElementById("elementHelp").style.visibility = "hidden";
+    document.getElementById("elementHelp").innerHTML = "Help";
+
     document.getElementById("buttonRezInfo").style.visibility = "visible";
     document.getElementById("titleRezInfo").innerHTML = "Display result information";
     document.getElementById("sectionVizResult").style.visibility = "hidden";
