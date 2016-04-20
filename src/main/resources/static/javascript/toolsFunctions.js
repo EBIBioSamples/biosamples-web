@@ -83,7 +83,7 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData, vm,server, nameToNodeIndex){
-	console.log("loadDataFromGET in src/main/resources/static/javascript");
+	console.log("loadDataFromGET in src/main/resources/static/javascript ");
 	console.log("server : ");console.log(server);
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];

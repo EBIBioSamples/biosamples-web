@@ -779,8 +779,8 @@ console.log("went that far 2");
     // Nodes relationships here
     var svg;
     if ( document.getElementById("vizSpotRelations") === null ){            
-      svg = d3.select(".container").insert("svg",":first-child")
-            .attr("width", "60%")
+      svg = d3.select("#vizNodeLink").insert("svg",":first-child")
+            .attr("width", "100%")
             .attr("height", heightD3)
             .attr("id","vizSpotRelations")
             .style("stroke","green")
@@ -810,8 +810,8 @@ console.log("went that far 2");
     } else {
       d3.select("#vizSpotRelations").remove();
       document.getElementById("infoVizRelations").style.visibility="hidden";            
-      svg = d3.select(".container").insert("svg",":first-child")
-        .attr("width", "60%")
+      svg = d3.select("#vizNodeLink").insert("svg",":first-child")
+        .attr("width", "100%")
         .attr("height", heightD3)
         .attr("id","vizSpotRelations")
         .style("stroke", "black")

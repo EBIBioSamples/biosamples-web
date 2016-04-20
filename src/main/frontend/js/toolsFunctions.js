@@ -81,7 +81,7 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
-	console.log("loadDataFromGET 2");
+	console.log("loadDataFromGET 2 ");
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
 	nodeData.color=[];

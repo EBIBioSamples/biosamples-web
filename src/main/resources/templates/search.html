@@ -65,6 +65,14 @@
       stroke-linejoin: round;
     }
 
+    #vizNodeLink{
+        float: left;
+        width:70%;
+    }
+    #infoVizRelations{
+        float: right;
+    }
+
     #vizSpotRelations{
         background-color: #ffffff;
     }
@@ -168,8 +176,8 @@
     </section>
 
     <section class="container" v-show="queryTermPresent" v-cloak>
-
-        <div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; top:100px; height:586px; 
+        <div id= "vizNodeLink"></div>
+        <div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; height:586px; 
         left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible">
             <div id="infoVizRelations1"></div>
             <div id="infoVizRelations2"></div>
