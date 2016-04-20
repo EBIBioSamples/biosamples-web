@@ -120,60 +120,74 @@
               this.querySamples();
           },
             
-          /**
-           * Make the request for the SolR documents
-           * @method querySamples
-           * @param  e {Event} the click event
-           */
-          querySamples: function(e,loadD3) {
-            if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
-                e.preventDefault();
-            }
-            if (_.isEmpty(this.searchTerm)) {
-                return;
-            }
-            var queryParams = this.getQueryParameters();
-            var server = apiUrl + "query";
 
-            this.$http.get(server,queryParams)
-                .then(function(results){
-
-              console.log("first results : ");console.log(results);
-              this.currentQueryParams = queryParams;  
-
-              var resultsInfo = results.data.response;
-              var highLights = results.data.highlighting;
-              var types = results.data.facet_counts.facet_fields.content_type;
-              var organisms = results.data.facet_counts.facet_fields.organism_crt;
-              var organs = results.data.facet_counts.facet_fields.organ_crt;
-              var docs = resultsInfo.docs;
-              var hlDocs = this.associateHighlights(docs, highLights);
-              
-              this.queryTerm = this.searchTerm;
-              this.resultsNumber = resultsInfo.numFound;
-              this.facets.types = readFacets(types);
-              this.facets.organisms = readFacets(organisms);
-              this.facets.organs = readFacets(organs);
-              
-              var validDocs = [];
-              for (var i = 0, n = hlDocs.length; i < n; i++) {
-                validDocs.push(new Biosample(hlDocs[i]));
+            /**
+             * Make the request for the SolR documents
+             * @method querySamples
+             * @param  e {Event} the click event
+             */
+            querySamples: function(e) {
+              log("Query Samples");
+              if (e !== undefined) {
+                  e.preventDefault();
               }
-              this.queryResults = validDocs;
-              this.biosamples = validDocs;
 
-              // Variable to know whether we just to a get to
-              // just get data or reload the scene
-              if ( typeof loadD3 === "undefined" || loadD3 ){
-                doD3Stuff(results,server,vm);
+              if (_.isEmpty(this.searchTerm)) {
+                  return;
               }
-            })
-            .catch(function(data,status,response){
-              console.log("data : ");console.log(data);
-              console.log("status : ");console.log(status);
-              console.log("response : ");console.log(response);
-            });
-          },
+
+              var queryParams = this.getQueryParameters();
+
+              this.$http.get(apiUrl,queryParams)
+                .then(function(results) {
+                    this.consumeResults(results);
+                    this.currentQueryParams = queryParams;
+                    // Variable to know whether we just to a get to
+                    // just get data or reload the scene
+                    if ( typeof loadD3 === "undefined" || loadD3 ){
+                      doD3Stuff(results,server,vm);
+                    }
+                    this.saveHistoryState();
+                })
+                .catch(function(data,status,response){
+                  console.log("data : ");console.log(data);
+                  console.log("status : ");console.log(status);
+                  console.log("response : ");console.log(response);
+                });
+            },
+
+            consumeResults: function(results) {
+
+                log("Consuming ajax results","Consume Results");
+                var resultsInfo      = results.data.response;
+                var highLights       = results.data.highlighting;
+                var dynamicFacets    = results.data.facet_counts.facet_fields;
+                var dynamicFacetsKey = _.keys(dynamicFacets);
+                this.facets          = {};
+                var vm               = this;
+
+                _.forEach(dynamicFacetsKey, function(key) {
+                    let readableKey = key.replace('_crt_ft','');
+                    vm.facets[readableKey] = readFacets(dynamicFacets[key]);
+                });
+
+
+                var docs        = resultsInfo.docs;
+                var hlDocs      = this.associateHighlights(docs,highLights);
+
+                this.queryTerm        = this.searchTerm;
+                this.resultsNumber    = resultsInfo.numFound;
+                var validDocs = [];
+                for (var i=0, n=hlDocs.length; i<n; i++) {
+                    validDocs.push(new Biosample(hlDocs[i]));
+                }
+
+                this.queryResults = validDocs;
+                this.biosamples = validDocs;
+
+            },
+
+
 
             /**
              * Highlights the searched term within the returned SolR documents
@@ -233,9 +247,7 @@
                 this.samplesToRetrieve = _.toInteger(urlParams.rows);
                 this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve + 1;
                 this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
-                // this.filterQuery.organFilter = urlParams.organFilter;
-                // this.filterQuery.typeFilter = urlParams.typeFilter;
-                // this.filterQuery.organismFilter = urlParams.organismFilter;
+                
             },
 
             /**
@@ -245,14 +257,13 @@
             registerEventHandlers: function() {
                 this.$on('page-changed', function(newPage) {
                     this.pageNumber = newPage;
-                    this.saveHistoryState();
                     this.querySamples();
                 });
                 this.$on('dd-item-chosen', function(item) {
+                    debugger;
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
                     this.pageNumber = 1;
-                    this.saveHistoryState();
                     this.querySamples();
                 });
 
@@ -268,7 +279,6 @@
                     } else {
                         Vue.set(this.filterQuery,key,value);
                     }
-                    this.saveHistoryState();
                     this.querySamples();
                 });
             },
@@ -296,10 +306,13 @@
              * @method saveHistoryState
              */
             saveHistoryState: function() {
+                log("Saving history","History");
                 if ( !_.isEmpty( this.currentQueryParams ) ) {
                     if ( _.isEqual( this.currentQueryParams, this.previousQueryParams ) ) {
+                        log("Replacing history","History");
                         History.replaceState(this.currentQueryParams, 'test', _.toQueryString(this.currentQueryParams));
                     } else {
+                        log("Push new history state","History");
                         this.previousQueryParams = this.currentQueryParams;
                         History.pushState(this.currentQueryParams, 'test', _.toQueryString(this.currentQueryParams));
                     }
@@ -1055,3 +1068,12 @@ function doD3Stuff( results, server, vm=0  ){
   }
 }
 
+
+function log(value,context) {
+    if (context) {
+        console.log( context + " - " + value);
+    } else {
+        console.log(value);
+    }
+
+}

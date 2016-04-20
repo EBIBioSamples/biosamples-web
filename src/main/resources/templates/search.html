@@ -198,9 +198,8 @@
                 </h3>
             </div>
         </div>
-        
 
-        <div v-else="" v-on:mouseenter="saveHistoryState">
+        <div v-else="">
             <div class="row">
                 <div class="col-md-4"></div>
                 <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
@@ -217,8 +216,7 @@
                                 <form>
                                     <label for="fuzzy-search">Search for similar terms</label>
                                     <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
-                                           v-model="useFuzzy"
-                                           v-on:change="querySamples" />
+                                           v-model="useFuzzy" v-on:change="querySamples" />
                                 </form>
                                
                                 <component v-for="(key,facetObj) in facets" 
@@ -227,21 +225,6 @@
                                             v-bind:values="facetObj.vals"
                                             v-bind:facet-id="key + 'Filter'">
                                 </component>
-                                <!-- <component is="facet" title="Content Type"
-                                           v-bind:keys="facets.types.keys"
-                                           v-bind:values="facets.types.vals"
-                                           facet-id="typeFilter">
-                                </component>
-                                <component is="facet" title="Organ"
-                                           v-bind:keys="facets.organs.keys"
-                                           v-bind:values="facets.organs.vals"
-                                           facet-id="organFilter">
-                                </component> -->
-                                <!--<component is="facet" title="Organism"
-                                        :keys="facets.organisms.keys"
-                                        :values="facets.organisms.vals"
-                                        facet-id="organismFilter">
-                                </component> -->
                             </div>
                             <div class="panel-footer">
                                 <div class="row">

@@ -71,7 +71,7 @@ module.exports = {
 	 * @method ready
 	 */
 	ready: function() {
-		this.updateItemsPerPage(this.choices[0]);
+//		this.updateItemsPerPage(this.choices[0]);
 	},
 
 	methods: {
