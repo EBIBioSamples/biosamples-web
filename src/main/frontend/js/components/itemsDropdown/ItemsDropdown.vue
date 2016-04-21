@@ -11,7 +11,7 @@
  */
 
 <template>
-<div class="dropdown">
+<div class="dropdown" data-component="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="itemsPerPageMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{textFiller}} {{itemsPerPage}}
     <span class="caret"></span></button>
     <ul class="dropdown-menu" aria-labelledby="itemsPerPageMenu">

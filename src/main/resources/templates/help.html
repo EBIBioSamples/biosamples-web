@@ -1,8 +1,8 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
-      layout:decorator="parent_layouts/base_help"
+      layout:decorator="__parent_help"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="currentPage = 'help'">
+      th:with="currentHelpPage='home'">
 <html layout:decorator="base" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <title>Help</title>
@@ -11,80 +11,60 @@
 
 <div layout:fragment="content">
 
-    <nav id="breadcrumb">
-        <p>
-            <a th:href="@{/}" href="/">BioSamples</a> &gt; <a th:href="@{/help}" href="../help">Help</a></span>
-        </p>
-    </nav>
-
-    <div id="content" role="main" class="grid_24 clearfix">
-        <section id="ae-login" style="display: none">
-            <h3>BioSamples login<a id="ae-login-close" href="#" class="icon icon-functional" data-icon="x"></a></h3>
-            <form id="ae-login-form" method="post" action="/biosamples/auth">
-                <fieldset>
-                    <label for="ae-user-field">User name</label>
-                    <input id="ae-user-field" name="u" maxlength="50" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAkCAYAAADo6zjiAAAAAXNSR0IArs4c6QAABBRJREFUWAnFV0tIVGEUPjO+cMwnUlaCD1yZGQRSyUAKoRASLiNatAgKxxYKWqCpiLRQiFr0cNEipQgZCYqMQMqFDFEgpqA0KAZOToIzKI6iKU7fuXmud65eZxyt+eFw/vM+/znn/++MiSK0WlpariP0DXOE4nPYfEBhJBNQzh7xBKI5DfTjMNBtwGnAD7PZ/Lipqekr9gELehaTyVTn9/utEMxh39Xc3Pw+QAlET09P1Pj4eDX0ykD+BryGbZdej2kzBJnAI1CuBZQArm1sbDjAr9QacHDQXyBrgc4FwGXs+8Cv1eqBbxobG3sH2QPsLwIqAc+h90SrJ3tuQTsUjgiDMWiuzFMYKRXalNWDf2Jzr0X3oHdMGK2trVegVy60YPBuQnZOaMGcQKkQWgwDToonVZaRXhxaoTqG3Y567ASyEnEmmBPwC6HHmAVDmV5XQ+/JhhP4pDFWtzjVL/RxXBigP8pei8FfiY6OdgjPSI/lqMC2WGYY13MwccAY9BrQDfR2Xfgw7gB/VGjB4N1paGhwC43b8wq8PqEFg/cI/j4LLdjc2Nj4E8RJKHCAfsAz0Geh/EaUGINeTkpKOgP5XcAHwAtAOa7hQ60eeP78/PxLwLcAbwF2tPIq7Ku1erI3yeZ/YyR0HzFtPAMRXdp7bphIW1vb8fX19XYolGAW1DtvaLCLAC2ZgXgA4GO1oC1Aqfil/IbAaWxwgMuH2fgeSgs6/kFwPsch+HWGksD5Azy13lVJ0ASQ5VG9lRGN/hqJduSz75CGcEdrMNPT06m4uJgyMzMpOTmZYmJiaHFxkZxOJw0ODtLCwoKRqcoPO4G0tDSqqqoiDJLqjDecSFFREeXl5VFnZyetrKwEyPVEoLVeugvt9XppaGhI0VhdXSW3202MZaWmplJubq6QhjjsCrDH/v5+crlcNDIyQvhwUWJiItXU1KhVCWUm9pUAl3d4eFg5HbciJydHDb60tESTk5OGJxfBvhJgJwUFBVRWVkbx8fHKEDJvbm6Oent7g/afdfedAE8+vpLsS1nLy8s0OjpKXIFQVthDKM752k1NTdHs7KwyBxaLhUpLS8lms1FGRoaoGeJ9V2BiYoIYePG7IFczLi6OrFYr2e12w+AsCLsCKSkplJCQEOB8fn6e1tb4x9TfpZcLX4vDrgBPfEVFBU1PTxO/CXhWKTs7m/jksmZm+Mu7+wo7AXYbFRWlBOXA+sVJORzqb1W9WKXDToCHju95VlYW4Yet6pBvAb8NHDyUm7BlqboI3OA1c+/0ReTydnd3Kw8P9zo2NpZ8Pl/AcxzoaTvFvkMZwoHtplscfoL5Kno8nj0F3/QwEDQBlLcOmXq2Qh7MDj698FQfNAH+34AkTsHgJSD4WAfJj32wL/gsxO9N1x+Y7Il8SkmJsAAAAABJRU5ErkJggg==&quot;); background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; background-repeat: no-repeat;" autocomplete="off"></fieldset><fieldset><label for="ae-pass-field">Password</label><input id="ae-pass-field" type="password" name="p" maxlength="50" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAkCAYAAADo6zjiAAAAAXNSR0IArs4c6QAABBRJREFUWAnFV0tIVGEUPjO+cMwnUlaCD1yZGQRSyUAKoRASLiNatAgKxxYKWqCpiLRQiFr0cNEipQgZCYqMQMqFDFEgpqA0KAZOToIzKI6iKU7fuXmud65eZxyt+eFw/vM+/znn/++MiSK0WlpariP0DXOE4nPYfEBhJBNQzh7xBKI5DfTjMNBtwGnAD7PZ/Lipqekr9gELehaTyVTn9/utEMxh39Xc3Pw+QAlET09P1Pj4eDX0ykD+BryGbZdej2kzBJnAI1CuBZQArm1sbDjAr9QacHDQXyBrgc4FwGXs+8Cv1eqBbxobG3sH2QPsLwIqAc+h90SrJ3tuQTsUjgiDMWiuzFMYKRXalNWDf2Jzr0X3oHdMGK2trVegVy60YPBuQnZOaMGcQKkQWgwDToonVZaRXhxaoTqG3Y567ASyEnEmmBPwC6HHmAVDmV5XQ+/JhhP4pDFWtzjVL/RxXBigP8pei8FfiY6OdgjPSI/lqMC2WGYY13MwccAY9BrQDfR2Xfgw7gB/VGjB4N1paGhwC43b8wq8PqEFg/cI/j4LLdjc2Nj4E8RJKHCAfsAz0Geh/EaUGINeTkpKOgP5XcAHwAtAOa7hQ60eeP78/PxLwLcAbwF2tPIq7Ku1erI3yeZ/YyR0HzFtPAMRXdp7bphIW1vb8fX19XYolGAW1DtvaLCLAC2ZgXgA4GO1oC1Aqfil/IbAaWxwgMuH2fgeSgs6/kFwPsch+HWGksD5Azy13lVJ0ASQ5VG9lRGN/hqJduSz75CGcEdrMNPT06m4uJgyMzMpOTmZYmJiaHFxkZxOJw0ODtLCwoKRqcoPO4G0tDSqqqoiDJLqjDecSFFREeXl5VFnZyetrKwEyPVEoLVeugvt9XppaGhI0VhdXSW3202MZaWmplJubq6QhjjsCrDH/v5+crlcNDIyQvhwUWJiItXU1KhVCWUm9pUAl3d4eFg5HbciJydHDb60tESTk5OGJxfBvhJgJwUFBVRWVkbx8fHKEDJvbm6Oent7g/afdfedAE8+vpLsS1nLy8s0OjpKXIFQVthDKM752k1NTdHs7KwyBxaLhUpLS8lms1FGRoaoGeJ9V2BiYoIYePG7IFczLi6OrFYr2e12w+AsCLsCKSkplJCQEOB8fn6e1tb4x9TfpZcLX4vDrgBPfEVFBU1PTxO/CXhWKTs7m/jksmZm+Mu7+wo7AXYbFRWlBOXA+sVJORzqb1W9WKXDToCHju95VlYW4Yet6pBvAb8NHDyUm7BlqboI3OA1c+/0ReTydnd3Kw8P9zo2NpZ8Pl/AcxzoaTvFvkMZwoHtplscfoL5Kno8nj0F3/QwEDQBlLcOmXq2Qh7MDj698FQfNAH+34AkTsHgJSD4WAfJj32wL/gsxO9N1x+Y7Il8SkmJsAAAAABJRU5ErkJggg==&quot;); background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; background-repeat: no-repeat;" autocomplete="off"></fieldset><span id="ae-login-remember-option"><input id="ae-login-remember" name="r" type="checkbox"><label for="ae-login-remember">Remember me</label></span><input class="submit" type="submit" value="Login"><div class="ae-login-status" style="display: none"><span class="alert"></span><span class="alert"></span><span class="alert"></span></div><div id="ae-login-forgot"><a href="#">Forgot user name or password?</a></div></form><form id="ae-forgot-form" method="post" action="/biosamples/auth"><fieldset><label for="ae-name-email-field">User name or email address</label>
-                    <input id="ae-name-email-field" name="e" maxlength="50">
-                </fieldset>
-                <fieldset>
-                    <label for="ae-accession-field">Experiment accession associated with the account</label>
-                    <input id="ae-accession-field" name="a" maxlength="14">
-                </fieldset>
-                <div>We will send you a reminder with your account information</div>
-                <div class="ae-login-status" style="display: none">
-                    <span class="alert"></span>
-                    <span class="alert"></span>
-                    <span class="alert"></span>
-                </div>
-                <input class="submit" type="submit" value="Send">
-            </form>
-        </section>
-        <section id="ae-feedback" style="display:none;">
-            <h3>Have your say<a id="ae-feedback-close" href="#" class="icon icon-functional" data-icon="x"></a></h3>
-            <form method="post" action="#" onsubmit="return false">
-                <fieldset>
-                    <label for="ae-feedback-message">We value your feedback. Please leave your comment below.</label>
-                    <textarea id="ae-feedback-message" name="m"></textarea>
-                </fieldset>
-                <fieldset>
-                    <label for="ae-email-field"> Optionally please enter your email address if you wish to get a response.
-                        <br><br>We will never share this address with anyone else.
-                    </label>
-                    <input id="ae-email-field" name="e" maxlength="50">
-                </fieldset>
-                <input type="hidden" name="p" value="www.ebi.ac.uk/biosamples/help/index.html?filename=help/index.html">
-                <input type="hidden" name="r" value="www.ebi.ac.uk/biosamples">
-                <input class="submit" type="submit" value="Send">
-            </form>
-        </section>
-        <section id="bsd-help" class="grid_18 alpha">
-            <h2>Welcome to BioSamples Database Help</h2>
-            <div>
-                <div class="grid_12">
-                    <div style="padding: 30px 15px;  position: relative; background-color: rgb(249, 243, 238);">
-                        <a href="search.html"><img src="/biosamples/assets/images/help/user.png" title="Find out more" width="40" height="40"><b> I'd like to browse or search BioSamples Database</b></a>
-                    </div>
-                </div>
-                <div class="grid_12">
-                    <div style="padding: 30px 15px;  position: relative; background-color: rgb(238, 249, 243);">
-                        <a href="submit.html"><img src="/biosamples/assets/images/help/submitter.png" title="Find out more" width="40" height="40"><b>I'd like to submit data to BioSamples Database</b></a>
-                    </div>
+    <section id="ae-login" style="display: none">
+        <h3>BioSamples login<a id="ae-login-close" href="#" class="icon icon-functional" data-icon="x"></a></h3>
+        <form id="ae-login-form" method="post" action="/biosamples/auth">
+            <fieldset>
+                <label for="ae-user-field">User name</label>
+                <input id="ae-user-field" name="u" maxlength="50" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAkCAYAAADo6zjiAAAAAXNSR0IArs4c6QAABBRJREFUWAnFV0tIVGEUPjO+cMwnUlaCD1yZGQRSyUAKoRASLiNatAgKxxYKWqCpiLRQiFr0cNEipQgZCYqMQMqFDFEgpqA0KAZOToIzKI6iKU7fuXmud65eZxyt+eFw/vM+/znn/++MiSK0WlpariP0DXOE4nPYfEBhJBNQzh7xBKI5DfTjMNBtwGnAD7PZ/Lipqekr9gELehaTyVTn9/utEMxh39Xc3Pw+QAlET09P1Pj4eDX0ykD+BryGbZdej2kzBJnAI1CuBZQArm1sbDjAr9QacHDQXyBrgc4FwGXs+8Cv1eqBbxobG3sH2QPsLwIqAc+h90SrJ3tuQTsUjgiDMWiuzFMYKRXalNWDf2Jzr0X3oHdMGK2trVegVy60YPBuQnZOaMGcQKkQWgwDToonVZaRXhxaoTqG3Y567ASyEnEmmBPwC6HHmAVDmV5XQ+/JhhP4pDFWtzjVL/RxXBigP8pei8FfiY6OdgjPSI/lqMC2WGYY13MwccAY9BrQDfR2Xfgw7gB/VGjB4N1paGhwC43b8wq8PqEFg/cI/j4LLdjc2Nj4E8RJKHCAfsAz0Geh/EaUGINeTkpKOgP5XcAHwAtAOa7hQ60eeP78/PxLwLcAbwF2tPIq7Ku1erI3yeZ/YyR0HzFtPAMRXdp7bphIW1vb8fX19XYolGAW1DtvaLCLAC2ZgXgA4GO1oC1Aqfil/IbAaWxwgMuH2fgeSgs6/kFwPsch+HWGksD5Azy13lVJ0ASQ5VG9lRGN/hqJduSz75CGcEdrMNPT06m4uJgyMzMpOTmZYmJiaHFxkZxOJw0ODtLCwoKRqcoPO4G0tDSqqqoiDJLqjDecSFFREeXl5VFnZyetrKwEyPVEoLVeugvt9XppaGhI0VhdXSW3202MZaWmplJubq6QhjjsCrDH/v5+crlcNDIyQvhwUWJiItXU1KhVCWUm9pUAl3d4eFg5HbciJydHDb60tESTk5OGJxfBvhJgJwUFBVRWVkbx8fHKEDJvbm6Oent7g/afdfedAE8+vpLsS1nLy8s0OjpKXIFQVthDKM752k1NTdHs7KwyBxaLhUpLS8lms1FGRoaoGeJ9V2BiYoIYePG7IFczLi6OrFYr2e12w+AsCLsCKSkplJCQEOB8fn6e1tb4x9TfpZcLX4vDrgBPfEVFBU1PTxO/CXhWKTs7m/jksmZm+Mu7+wo7AXYbFRWlBOXA+sVJORzqb1W9WKXDToCHju95VlYW4Yet6pBvAb8NHDyUm7BlqboI3OA1c+/0ReTydnd3Kw8P9zo2NpZ8Pl/AcxzoaTvFvkMZwoHtplscfoL5Kno8nj0F3/QwEDQBlLcOmXq2Qh7MDj698FQfNAH+34AkTsHgJSD4WAfJj32wL/gsxO9N1x+Y7Il8SkmJsAAAAABJRU5ErkJggg==&quot;); background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; background-repeat: no-repeat;" autocomplete="off"></fieldset><fieldset><label for="ae-pass-field">Password</label><input id="ae-pass-field" type="password" name="p" maxlength="50" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAkCAYAAADo6zjiAAAAAXNSR0IArs4c6QAABBRJREFUWAnFV0tIVGEUPjO+cMwnUlaCD1yZGQRSyUAKoRASLiNatAgKxxYKWqCpiLRQiFr0cNEipQgZCYqMQMqFDFEgpqA0KAZOToIzKI6iKU7fuXmud65eZxyt+eFw/vM+/znn/++MiSK0WlpariP0DXOE4nPYfEBhJBNQzh7xBKI5DfTjMNBtwGnAD7PZ/Lipqekr9gELehaTyVTn9/utEMxh39Xc3Pw+QAlET09P1Pj4eDX0ykD+BryGbZdej2kzBJnAI1CuBZQArm1sbDjAr9QacHDQXyBrgc4FwGXs+8Cv1eqBbxobG3sH2QPsLwIqAc+h90SrJ3tuQTsUjgiDMWiuzFMYKRXalNWDf2Jzr0X3oHdMGK2trVegVy60YPBuQnZOaMGcQKkQWgwDToonVZaRXhxaoTqG3Y567ASyEnEmmBPwC6HHmAVDmV5XQ+/JhhP4pDFWtzjVL/RxXBigP8pei8FfiY6OdgjPSI/lqMC2WGYY13MwccAY9BrQDfR2Xfgw7gB/VGjB4N1paGhwC43b8wq8PqEFg/cI/j4LLdjc2Nj4E8RJKHCAfsAz0Geh/EaUGINeTkpKOgP5XcAHwAtAOa7hQ60eeP78/PxLwLcAbwF2tPIq7Ku1erI3yeZ/YyR0HzFtPAMRXdp7bphIW1vb8fX19XYolGAW1DtvaLCLAC2ZgXgA4GO1oC1Aqfil/IbAaWxwgMuH2fgeSgs6/kFwPsch+HWGksD5Azy13lVJ0ASQ5VG9lRGN/hqJduSz75CGcEdrMNPT06m4uJgyMzMpOTmZYmJiaHFxkZxOJw0ODtLCwoKRqcoPO4G0tDSqqqoiDJLqjDecSFFREeXl5VFnZyetrKwEyPVEoLVeugvt9XppaGhI0VhdXSW3202MZaWmplJubq6QhjjsCrDH/v5+crlcNDIyQvhwUWJiItXU1KhVCWUm9pUAl3d4eFg5HbciJydHDb60tESTk5OGJxfBvhJgJwUFBVRWVkbx8fHKEDJvbm6Oent7g/afdfedAE8+vpLsS1nLy8s0OjpKXIFQVthDKM752k1NTdHs7KwyBxaLhUpLS8lms1FGRoaoGeJ9V2BiYoIYePG7IFczLi6OrFYr2e12w+AsCLsCKSkplJCQEOB8fn6e1tb4x9TfpZcLX4vDrgBPfEVFBU1PTxO/CXhWKTs7m/jksmZm+Mu7+wo7AXYbFRWlBOXA+sVJORzqb1W9WKXDToCHju95VlYW4Yet6pBvAb8NHDyUm7BlqboI3OA1c+/0ReTydnd3Kw8P9zo2NpZ8Pl/AcxzoaTvFvkMZwoHtplscfoL5Kno8nj0F3/QwEDQBlLcOmXq2Qh7MDj698FQfNAH+34AkTsHgJSD4WAfJj32wL/gsxO9N1x+Y7Il8SkmJsAAAAABJRU5ErkJggg==&quot;); background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%; background-repeat: no-repeat;" autocomplete="off"></fieldset><span id="ae-login-remember-option"><input id="ae-login-remember" name="r" type="checkbox"><label for="ae-login-remember">Remember me</label></span><input class="submit" type="submit" value="Login"><div class="ae-login-status" style="display: none"><span class="alert"></span><span class="alert"></span><span class="alert"></span></div><div id="ae-login-forgot"><a href="#">Forgot user name or password?</a></div></form><form id="ae-forgot-form" method="post" action="/biosamples/auth"><fieldset><label for="ae-name-email-field">User name or email address</label>
+                <input id="ae-name-email-field" name="e" maxlength="50">
+            </fieldset>
+            <fieldset>
+                <label for="ae-accession-field">Experiment accession associated with the account</label>
+                <input id="ae-accession-field" name="a" maxlength="14">
+            </fieldset>
+            <div>We will send you a reminder with your account information</div>
+            <div class="ae-login-status" style="display: none">
+                <span class="alert"></span>
+                <span class="alert"></span>
+                <span class="alert"></span>
+            </div>
+            <input class="submit" type="submit" value="Send">
+        </form>
+    </section>
+    <section id="ae-feedback" style="display:none;">
+        <h3>Have your say<a id="ae-feedback-close" href="#" class="icon icon-functional" data-icon="x"></a></h3>
+        <form method="post" action="#" onsubmit="return false">
+            <fieldset>
+                <label for="ae-feedback-message">We value your feedback. Please leave your comment below.</label>
+                <textarea id="ae-feedback-message" name="m"></textarea>
+            </fieldset>
+            <fieldset>
+                <label for="ae-email-field"> Optionally please enter your email address if you wish to get a response.
+                    <br><br>We will never share this address with anyone else.
+                </label>
+                <input id="ae-email-field" name="e" maxlength="50">
+            </fieldset>
+            <input type="hidden" name="p" value="www.ebi.ac.uk/biosamples/help/index.html?filename=help/index.html">
+            <input type="hidden" name="r" value="www.ebi.ac.uk/biosamples">
+            <input class="submit" type="submit" value="Send">
+        </form>
+    </section>
+    <section id="bsd-help" class="grid_18 alpha">
+        <h2>Welcome to BioSamples Database Help</h2>
+        <div>
+            <div class="grid_12">
+                <div style="padding: 30px 15px;  position: relative; background-color: rgb(249, 243, 238);">
+                    <a th:href="@{/help/search}" href="help_search.html"><img th:src="@{/images/user.png}" src="../static/images/user.png" title="Find out more" width="40" height="40"><b> I'd like to browse or search BioSamples Database</b></a>
                 </div>
             </div>
-        </section>
-        <aside class="grid_6 omega">
-            <h3>Help</h3>
-            <ul id="secondary-nav">
-                <li class="active"><a href="./">Help home</a></li>
-                <li><a href="search/">Searching</a></li>
-                <li><a href="submit/">Submitting</a></li>
-                <li><a href="api/">Programatic interface</a></li>
-                <li><a href="faq/">FAQ</a></li>
-                <li><a href="news/">News</a></li>
-                <li><a href="contact_us/">Contact us</a></li>
-            </ul>
-        </aside>
-    </div>
+            <div class="grid_12">
+                <div style="padding: 30px 15px;  position: relative; background-color: rgb(238, 249, 243);">
+                    <a th:href="@{/help/submit}" href="help_submit.html"><img  th:src="@{/images/submitter.png}" src="../static/images/submitter.png" title="Find out more" width="40" height="40"><b>I'd like to submit data to BioSamples Database</b></a>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 </body>
 </html>

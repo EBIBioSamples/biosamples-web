@@ -140,8 +140,6 @@
                 this.$http.get(apiUrl,queryParams)
                     .then(function(results) {
                         this.consumeResults(results);
-                        this.currentQueryParams = queryParams;
-                        this.saveHistoryState();
                     })
                     .catch(function(data,status,response){
                         console.log(data);
@@ -154,6 +152,11 @@
 
                 log("Consuming ajax results","Consume Results");
                 var resultsInfo      = results.data.response;
+                if (_.isNull(resultsInfo)) {
+                    alert("Request made to server was malformed, please send an email to biosamples@ebi.ac.uk");
+                    return;
+                }
+
                 var highLights       = results.data.highlighting;
                 var dynamicFacets    = results.data.facet_counts.facet_fields;
                 var dynamicFacetsKey = _.keys(dynamicFacets);
@@ -178,6 +181,10 @@
 
                 this.queryResults = validDocs;
                 this.biosamples = validDocs;
+
+
+                this.currentQueryParams = queryParams;
+                this.saveHistoryState();
 
             },
 
@@ -231,12 +238,28 @@
                 return filterArray;
             },
 
+            deserializeFilterQuery: function(serializedQuery) {
+                // let re = new RegExp("(\w+)Filter\|(\w+)");
+                let filtersObj = {};
+                _(serializedQuery).forEach(function(value) {
+                    // var tuple = re.exec(value);
+                    // if (tuple.length == 2) {
+                    //     self.filterQuery[tuple[0]] = tuple[1];
+                    // }
+                    let [filterKey,filterValue] = value.split("Filter|");
+                    if (!_.isEmpty(filterKey)) {
+                        filtersObj[filterKey] = filterValue;
+                    }
+                });
+                return filtersObj;
+            },
+
             populateDataWithUrlParameter: function(urlParams) {
                 this.searchTerm = urlParams.searchTerm;
                 this.samplesToRetrieve = _.toInteger(urlParams.rows);
                 this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve + 1;
-                this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
-                
+                this.useFuzzy = urlParams.useFuzzySearch === "true";
+                this.filterQuery = this.deserializeFilterQuery(urlParams.filters);
             },
 
             /**
@@ -249,7 +272,6 @@
                     this.querySamples();
                 });
                 this.$on('dd-item-chosen', function(item) {
-                    debugger;
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
                     this.pageNumber = 1;
@@ -278,7 +300,6 @@
                 var urlParam = historyState.data;
                 if (! _.isEmpty(urlParam) ) {
                     this.populateDataWithUrlParameter(urlParam);
-
                     this.querySamples();
                 } else {
                     console.log("No parameters")
@@ -317,5 +338,4 @@ function log(value,context) {
     } else {
         console.log(value);
     }
-
 }

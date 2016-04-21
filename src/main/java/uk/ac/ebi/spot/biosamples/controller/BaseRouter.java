@@ -2,6 +2,7 @@ package uk.ac.ebi.spot.biosamples.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.ac.ebi.spot.biosamples.model.Breadcrumb;
 
@@ -41,11 +42,13 @@ public class BaseRouter {
     public String help() {
         return "help";
     }
-
-    @RequestMapping("/help/submit")
-    public String helpSubmit() {
-        return "help_submit";
+    @RequestMapping("/help/{page}")
+    public String helpInnerPage(@PathVariable("page") String innerPage) {
+        return "help_" + innerPage;
     }
+
+
+
     @RequestMapping("/about")
     public String about() {
         return "about";

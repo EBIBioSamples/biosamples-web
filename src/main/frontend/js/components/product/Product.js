@@ -106,9 +106,9 @@
             itemPage: function() {
                 switch(this.type.toLowerCase()) {
                     case 'sample':
-                        return '/sample/' + this.accession;
+                        return 'sample/' + this.accession;
                     case 'group':
-                        return '/group/' + this.accession;
+                        return 'group/' + this.accession;
                 }
             },
 

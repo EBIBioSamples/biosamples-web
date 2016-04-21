@@ -4,6 +4,13 @@
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <body>
 <!-- Primary Navigation -->
+<!--/*
+
+    Currently available values for currentPage are:
+    - 'home'
+    - 'search'
+
+*/-->
 <th:block layout:fragment="navigation(customBase,customPage)">
     <nav th:with="currentPage=${#strings.defaultString(customPage,'home')}">
         <ul class="grid_24" id="local-nav">
