@@ -136,10 +136,16 @@
                     return;
                 }
 
-                var queryParams = this.getQueryParameters();
+                let queryParams = this.getQueryParameters();
+                // Options passed to ajax request
+                // Timeout set to prevent infinite waiting
+                let ajaxOptions = {
+                    timeout: 10000
+                };
+
                 this.isQuerying = true;
 
-                this.$http.get(apiUrl,queryParams)
+                this.$http.get(apiUrl,queryParams,ajaxOptions)
                     .then(function(results) {
                         this.consumeResults(results);
                     })
