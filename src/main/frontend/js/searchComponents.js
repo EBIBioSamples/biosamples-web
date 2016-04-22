@@ -581,8 +581,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     }
 
     for (var h=0; h < dataBars.length; h++){
-      for (var i=0; i < dataBars[h].length;i++)
-      {
+      for (var i=0; i < dataBars[h].length;i++){
         var xHere=i*(widthRectangles[h]+5)+margin.left;
         var yHere=height - margin.bottom;
         var idToSelect = "#resultsViz"+h;
@@ -596,8 +595,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               dataBars[h][i].occurence;
             })            
             .attr("id", function (d){
+              console.log("h : ");console.log(h);
+              console.log("i : ");console.log(i);
               return 'text_'+dataBars[h][i].content;
             })
+            .attr("content",function (d){ return dataBars[h][i].content; })
             .attr("x",function(){ return xHere + widthRectangles[h]/2 ;})
             .attr("y", function(){ return 0; })
             .attr("dy", ".71em")
@@ -662,43 +664,61 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.";
               popOutDiv("infoPop");
               fadeOutDiv("infoPop");
-
             })
             .on("dblclick",function(d){
               console.log("dblclick text");
-              var arrayStuffName=[];var arrayStuffValue=[];
-              var indexToCut = this.id.indexOf("_");// arrayStuffName.push("indexToCut");arrayStuffValue.push(indexToCut);
-              var idToSelect = this.id.substring(indexToCut+1,this.id.length);// arrayStuffName.push("idToSelect");arrayStuffValue.push(idToSelect);
-              var content = d3.select('#bar_'+idToSelect).attr("content");// arrayStuffName.push("content");arrayStuffValue.push(content);
-              var occurence = d3.select('#bar_'+idToSelect).attr("occurence");// arrayStuffName.push("occurence");arrayStuffValue.push(occurence);
-              var currentFacet = d3.select('#bar_'+idToSelect).attr("facet");// arrayStuffName.push("currentFacet");arrayStuffValue.push(currentFacet);
-              var facetsFiltererd = currentFacet.split("_");
-              //console.log("facetsFiltererd : ");console.log(facetsFiltererd);
-              var indexFacet = currentFacet.indexOf("_"); //arrayStuffName.push("indexFacet");arrayStuffValue.push(indexFacet);
-              var currentFacetFiltered = currentFacet.substring(0, indexFacet );// arrayStuffName.push("currentFacetFiltered");arrayStuffValue.push(currentFacetFiltered);
+                var indexUnderscore = this.id.indexOf("_");
+                var nameClickedBar = this.id.substring(indexUnderscore+1, this.id.length);
 
-              console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
-              for (var u in vm.$data.filterQuery){
-                // FILTER TO MODIFY !
-                var indexFilter = u.indexOf("Filter");
-                var uFiltered = u.substring(0,indexFilter);
-                for (var v =0; v < facetsFiltererd.length; v++){
-                  if ( uFiltered == facetsFiltererd[v] ){
-                    console.log("uFiltered == facetsFiltererd[v] == "+facetsFiltererd[v]);
-                    if (vm.$data.filterQuery[u] === '' || uFiltered !== currentFacet ){
-                      vm.$data.filterQuery[u] = content;
-                    } else {
-                      vm.$data.filterQuery[u] = '';
+                for (var u in vm.$data.facets){
+                  for (var v in vm.$data.facets[u] ){
+                    if ( v == "keys"){
+                      for (var w in vm.$data.facets[u][v]){
+                          console.log(" vm.$data.facets[u][v][w]");
+                          console.log(vm.$data.facets[u][v][w]);
+                        if ( nameClickedBar == vm.$data.facets[u][v][w]){
+                          // vm.data. filterQuery . 'facetName'Filter = nameClickedBar
+                          console.log("u : "+u);
+                          console.log("v : "+v);
+                          console.log("w : "+w);
+                          console.log("nameClickedBar == vm.$data.facets[u][v][w] == "+nameClickedBar);
+                          var nameOfFilter = u+'Filter';
+                          //vm.$data.filterQuery[ nameOfFilter ] = vm.$data.facets[u][v][w];
+                          console.log( "vm.$data.filterQuery[ nameOfFilter ] : ");
+                          console.log( vm.$data.filterQuery[ nameOfFilter ] );
+                          if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
+                            console.log("time to start facets and stuff");
+                            console.log("typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined'");
+                            console.log(typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined');
+                            console.log("vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar");
+                            console.log(vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar);
+
+                            vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
+
+                            vm.$emit("bar-selected");
+                            console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
+                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                            popOutDiv("infoPop");
+                            fadeOutDiv("infoPop");
+                            vm.$options.methods.querySamples(this,false);
+                          } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
+                            console.log("vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar");
+                            vm.$data.filterQuery[ nameOfFilter ] = '';
+
+                            vm.$emit("bar-selected");
+                            console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
+                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                            popOutDiv("infoPop");
+                            fadeOutDiv("infoPop");
+                            vm.$options.methods.querySamples(this,false);
+                          } else {
+                            console.log("hum... what the hell is happening ?");
+                          }
+                        }
+                      }
                     }
-                    vm.$emit("bar-selected");
-                    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
-                    popOutDiv("infoPop");
-                    fadeOutDiv("infoPop");                    
-                    vm.$options.methods.querySamples(this,false);
                   }
                 }
-
-              }
             })
             .attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90")
             .text(function(){ return dataBars[h][i].content+' : '+dataBars[h][i].occurence;})
@@ -764,11 +784,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
           var nameClickedBar = d.content;
 
-          var indexKey, indexVals;
           for (var u in vm.$data.facets){
             for (var v in vm.$data.facets[u] ){
               if ( v == "keys"){
-                indexKey = v;
                 for (var w in vm.$data.facets[u][v]){
                     console.log(" vm.$data.facets[u][v][w]");
                     console.log(vm.$data.facets[u][v][w]);
@@ -813,56 +831,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                   }
                 }
               }
-
-
-
-              /*
-              if ( uFiltered === vm.$data.facets[u][v] ){
-                if (vm.$data.filterQuery[u] === '' || uFiltered !== facetsFiltererd[v] ){
-                  vm.$data.filterQuery[u] = d.content;
-                } else {
-                  vm.$data.filterQuery[u] = '';
-                }
-                vm.$emit("bar-selected");
-                console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
-
-                document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
-                popOutDiv("infoPop");
-                fadeOutDiv("infoPop");
-
-                vm.$options.methods.querySamples(this,false);
-              }
-              */
             }
           }
-          /*
-          for (var u in vm.$data.filterQuery){
-            console.log(" u : ");console.log(u);
-            console.log( "vm.$data.filterQuery[u] : ");console.log( vm.$data.filterQuery[u] );
-            console.log("d.facet : ");console.log(d.facet);
-            // TO MODIFY !
-            var indexFilter = u.indexOf("Filter");
-            var uFiltered = u.substring(0,indexFilter);
-            var facetsFiltererd = d.facet.split("_");
-            for (var v in facetsFiltererd){
-              if ( uFiltered === facetsFiltererd[v] ){
-                if (vm.$data.filterQuery[u] === '' || uFiltered !== facetsFiltererd[v] ){
-                  vm.$data.filterQuery[u] =d.content;
-                } else {
-                  vm.$data.filterQuery[u] = '';
-                }
-                vm.$emit("bar-selected");
-                console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
-
-                document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
-                popOutDiv("infoPop");
-                fadeOutDiv("infoPop");
-
-                vm.$options.methods.querySamples(this,false);
-              }
-            }
-          }
-          */
         })
         .on("mousedown",function(d){
           // Filter the data. We now want to highlight selection instead
