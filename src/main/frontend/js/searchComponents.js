@@ -139,12 +139,19 @@
 
               var queryParams = this.getQueryParameters();
 
+              console.log("queryParams : ");
+              console.log(queryParams);
+
               this.$http.get(apiUrl,queryParams)
                 .then(function(results) {
                     this.consumeResults(results);
                     this.currentQueryParams = queryParams;
                     // Variable to know whether we just to a get to
                     // just get data or reload the scene
+                    console.log("§§§§");
+                    console.log("results before calling loadD3 : ");
+                    console.log(results);
+                    console.log("§§§§");
                     if ( typeof loadD3 === "undefined" || loadD3 ){
                       //doD3Stuff(results,server,vm);
                       doD3Stuff(results,apiUrl,vm);
@@ -253,36 +260,39 @@
              */
             registerEventHandlers: function() {
                 this.$on('page-changed', function(newPage) {
+
+                    console.log(" on page-changed");
+
                     this.pageNumber = newPage;
                     this.querySamples();
                 });
 
                 this.$on('dd-item-chosen', function(item) {
+                    console.log(" on dd-item-chosen");
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
+                    console.log("this : "); console.log(this);
+                    console.log('this.samplesToRetrieve : ');
+                    console.log(this.samplesToRetrieve);
                     this.pageNumber = 1;
                     this.querySamples();
                 });
 
                 this.$on('bar-selected', function(d,loadD3) {
+                  console.log(" on bar-selected");
                   // If we desire to have an event happening without reloading d3
-                  // we need to pass false as a second argument to querySamples function
+                  // we need to pass false as a second argument 
                   this.querySamples(d,loadD3);
                 });
 
                 this.$on('facet-selected', function(key, value) {
+                    console.log(" on facet-selected");
                     if (value === "") {
                         Vue.delete(this.filterQuery,key);
                     } else {
                         Vue.set(this.filterQuery,key,value);
                     }
                     this.querySamples();
-                });
-
-                this.$on('bar-selected', function(d,loadD3) {
-                  // If we desire to have an event happening without reloading d3
-                  // we need to pass false as a second argument to querySamples function
-                  this.querySamples(d,loadD3);
                 });
             },
 
@@ -338,7 +348,7 @@ function log(value,context) {
 
 function doD3Stuff( results, apiUrl, vm=0  ){
   console.log("_______doD3Stuff______");
-  console.log("results : ");console.log(results);
+  //console.log("results : ");console.log(results);
   var fill = d3.scale.category20();
   var widthTitle = $("#sectionTitle").width();
   var widthD3 = Math.floor( (70*widthTitle)/100 );
@@ -346,18 +356,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
   document.getElementById("infoVizRelations").style.height = heightD3+'px';  
 
-  console.log(" widthTitle :  "+widthTitle);
-  console.log(" widthD3 :  "+widthD3);
-  console.log(" heightD3 :  "+heightD3);
-  console.log('document.getElementById("infoVizRelations").style.height : ' );
-  console.log(document.getElementById("infoVizRelations").style.height);
-  console.log("____");
-
   var margin = {top: 10, right: 10, bottom: 10, left: 10};
 
   if (typeof results !== 'undefined'){
 
     var numberFacetsUnEmpty = {};
+    console.log( "results.data.facet_counts : " );
+    console.log( results.data.facet_counts );
     for (var u in results.data.facet_counts.facet_fields){
       numberFacetsUnEmpty[u]=0;
       for (var v=0; v < results.data.facet_counts.facet_fields[u].length;v++){
@@ -385,8 +390,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       document.getElementById("elementHelp").style.visibility="hidden";
       document.getElementById("elementHelp").innerHTML = "Help ";
     })
-
-    console.log("went that far here 1 :) ");
 
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
         console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) TRUE ");
@@ -426,12 +429,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       document.getElementById("sectionVizResult").style.height="0px";
     }
     
-    console.log("went that far here 2 :) ");
-
     document.getElementById("buttonRezInfo").onclick = function(){
       if ( document.getElementById("sectionVizResult").style.visibility == "hidden" ){
         document.getElementById("sectionVizResult").style.visibility="visible";
         document.getElementById("titleRezInfo").innerHTML="Hide the result information ";
+        console.log("§§§");
         var heightBars = $('#resultsViz0').height();
         document.getElementById("sectionVizResult").style.height= (heightBars+100)+ "px";
 
@@ -456,7 +458,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     var barCharts=[];
     var cpt = 0;
 
-    console.log("before numberFacetsUnEmpty filling :")
     console.log(" widthD3 : ");console.log(widthD3);
     console.log(" heightD3 : ");console.log(heightD3);
 
@@ -487,10 +488,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }
       cpt++;
     }
+
     // Visual part of barChart
-
-    console.log("Yo went that far 3");
-
     // To modify to use the data of barCharts
     /*
     var x = d3.scale.linear()
@@ -549,8 +548,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       );
       cpt++;
     }
-
-    console.log("went that far 4");
 
     var cpt=0;
     console.log("results.data.facet_counts.facet_fields : ");console.log(results.data.facet_counts.facet_fields);
@@ -668,6 +665,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
             })
             .on("dblclick",function(d){
+              console.log("dblclick text");
               var arrayStuffName=[];var arrayStuffValue=[];
               var indexToCut = this.id.indexOf("_");// arrayStuffName.push("indexToCut");arrayStuffValue.push(indexToCut);
               var idToSelect = this.id.substring(indexToCut+1,this.id.length);// arrayStuffName.push("idToSelect");arrayStuffValue.push(idToSelect);
@@ -678,6 +676,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               //console.log("facetsFiltererd : ");console.log(facetsFiltererd);
               var indexFacet = currentFacet.indexOf("_"); //arrayStuffName.push("indexFacet");arrayStuffValue.push(indexFacet);
               var currentFacetFiltered = currentFacet.substring(0, indexFacet );// arrayStuffName.push("currentFacetFiltered");arrayStuffValue.push(currentFacetFiltered);
+
+              console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
               for (var u in vm.$data.filterQuery){
                 // FILTER TO MODIFY !
                 var indexFilter = u.indexOf("Filter");
@@ -753,8 +753,89 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .attr("height", function(d) { return Math.max(0,scalesY[h](d.occurence)); })
         .attr("opacity","0.5")
         .on("dblclick",function(d){ 
-          console.log("dblclick");
+          console.log("dblclick rectangle");
           var content = d.content;
+          console.log("vm.$data : ");
+          console.log(vm.$data);
+          console.log( "vm.$data.facets.content_type : ");
+          console.log( vm.$data.facets.content_type );
+          console.log( "vm.$data.facets.content_type.keys : ");
+          console.log( vm.$data.facets.content_type.keys );
+
+          var nameClickedBar = d.content;
+
+          var indexKey, indexVals;
+          for (var u in vm.$data.facets){
+            for (var v in vm.$data.facets[u] ){
+              if ( v == "keys"){
+                indexKey = v;
+                for (var w in vm.$data.facets[u][v]){
+                    console.log(" vm.$data.facets[u][v][w]");
+                    console.log(vm.$data.facets[u][v][w]);
+                  if ( nameClickedBar == vm.$data.facets[u][v][w]){
+                    // vm.data. filterQuery . 'facetName'Filter = nameClickedBar
+                    console.log("u : "+u);
+                    console.log("v : "+v);
+                    console.log("w : "+w);
+                    console.log("nameClickedBar == vm.$data.facets[u][v][w] == "+nameClickedBar);
+                    var nameOfFilter = u+'Filter';
+                    //vm.$data.filterQuery[ nameOfFilter ] = vm.$data.facets[u][v][w];
+                    console.log( "vm.$data.filterQuery[ nameOfFilter ] : ");
+                    console.log( vm.$data.filterQuery[ nameOfFilter ] );
+                    if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
+                      console.log("time to start facets and stuff");
+                      console.log("typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined'");
+                      console.log(typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined');
+                      console.log("vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar");
+                      console.log(vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar);
+
+                      vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
+
+                      vm.$emit("bar-selected");
+                      console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
+                      document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                      popOutDiv("infoPop");
+                      fadeOutDiv("infoPop");
+                      vm.$options.methods.querySamples(this,false);
+                    } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
+                      console.log("vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar");
+                      vm.$data.filterQuery[ nameOfFilter ] = '';
+
+                      vm.$emit("bar-selected");
+                      console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
+                      document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                      popOutDiv("infoPop");
+                      fadeOutDiv("infoPop");
+                      vm.$options.methods.querySamples(this,false);
+                    } else {
+                      console.log("hum... what the hell is happening ?");
+                    }
+                  }
+                }
+              }
+
+
+
+              /*
+              if ( uFiltered === vm.$data.facets[u][v] ){
+                if (vm.$data.filterQuery[u] === '' || uFiltered !== facetsFiltererd[v] ){
+                  vm.$data.filterQuery[u] = d.content;
+                } else {
+                  vm.$data.filterQuery[u] = '';
+                }
+                vm.$emit("bar-selected");
+                console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
+
+                document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                popOutDiv("infoPop");
+                fadeOutDiv("infoPop");
+
+                vm.$options.methods.querySamples(this,false);
+              }
+              */
+            }
+          }
+          /*
           for (var u in vm.$data.filterQuery){
             console.log(" u : ");console.log(u);
             console.log( "vm.$data.filterQuery[u] : ");console.log( vm.$data.filterQuery[u] );
@@ -781,6 +862,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               }
             }
           }
+          */
         })
         .on("mousedown",function(d){
           // Filter the data. We now want to highlight selection instead
@@ -871,8 +953,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       console.log("results.data.response.docs.length>0");
       d3.select("#vizSpotRelations").attr("visibility","visible");
 
+      console.log("##### about to call loadDataFromGET ####");
       var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
       nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
+      console.log("##### after calling loadDataFromGET ####");
 
       draw(svg,nodeData);
 

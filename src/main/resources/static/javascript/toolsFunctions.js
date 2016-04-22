@@ -84,9 +84,13 @@ function getURLsFromObject(objectToRead,prop){
 
 //function loadDataFromGET(results, nodeData, vm,server, nameToNodeIndex){
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	console.log("loadDataFromGET in src/main/resources/static/javascript");
+	//console.log("!!!!! HUGE STUFF TO HAPPEN HERE 2 !!!!!");
+	//console.log("loadDataFromGET in src/main/resources/static/javascript/toolsFunctions");
 
-	console.log("apiUrl : ");console.log(apiUrl);
+	//console.log("results.data.response.docs.length : ");
+	//console.log(results.data.response.docs.length);
+
+	//console.log("apiUrl : ");console.log(apiUrl);
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
 	nodeData.color=[];
@@ -160,8 +164,6 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		nameToNodeIndex[results.data.response.docs[i].accession] = nodeData.nodes.length-1;
 	}
 
-	console.log("Before Step 1");
-
 	var accessionToIndex={};
 	// Step 1: save from group to sample in nodes
 	for (var i=0; i < nodeData.nodes.length;i++){
@@ -171,7 +173,6 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		nodeData.color[i]='';
 	}
 	// Step 2: for every element in the group to sample, create a link (do it just once)
-	console.log("Step 2 : groupsReturned : ");console.log(groupsReturned);
 	var indexCalculation=0;
 	for (var group in groupsReturned){
 		// TODO: GET request to get the information in global about the samples within the group
@@ -221,14 +222,6 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		}
 
 		// Probably here that we should decide what to get in the new get request
-		//console.log("vm : ");console.log(vm);
-		//console.log("vm.getQueryParameters() : ");console.log(vm.getQueryParameters());
-		// Need to define the format we want for the parameters. Let's just take "Brain" for now
-		/*
-		var parameters = { searchTerm:"Brain" };
-		var results2 = loadDataWithoutRefresh(vm,server, parameters );
-		console.log("results2 : ");console.log(results2);
-		*/
 		
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
@@ -254,15 +247,10 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 	return [nodeData,groupsReturned,nameToNodeIndex];
 }
 
-function loadLinks(results){
-	return [];
-}
-
 function getSamplesFromGroup(apiUrl,group){
 
 }
 
-//function loadDataWithoutRefresh(vm,server,parameters){
 function loadDataWithoutRefresh(vm,apiUrl,parameters){	
   var queryParams = vm.getQueryParameters();
   queryParams.searchTerm = parameters.searchTerm;
@@ -277,7 +265,6 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
   var rezToReturn = vm.$http.get(apiUrl,queryParams)
     .then(function(results){
 
-	  console.log("results : ");console.log(results);
 	  vm.currentQueryParams = queryParams;  
 
 	  var resultsInfo = results.data.response;
@@ -288,36 +275,6 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 	  var docs = resultsInfo.docs;
 	  var hlDocs = vm.associateHighlights(docs, highLights);
 	  
-	  /*
-	  console.log("Stuff returned by the second http get : ");
-	  console.log(resultsInfo);
-	  console.log(highLights);
-	  console.log(types);
-	  console.log(organisms);
-	  console.log(organs);
-	  console.log(docs);
-	  console.log(hlDocs);
-	  */
-
-	  // Do not touch vm, unless you want to modify the vue
-	  //vm.queryTerm = this.searchTerm;
-	  //vm.queryTerm = "Death";
-	  //vm.resultsNumber = resultsInfo.numFound;
-	  //vm.facets.types = readFacets(types);
-	  //vm.facets.organisms = readFacets(organisms);
-	  //vm.facets.organs = readFacets(organs);
-	  
-	  //var validDocs = [];
-	  //for (var i = 0, n = hlDocs.length; i < n; i++) {
-	    //validDocs.push(new Biosample(hlDocs[i]));
-	  //}
-	  //vm.queryResults = validDocs;
-	  //vm.biosamples = validDocs;
-	  //console.log("end of the get of loadDataWithoutRefresh");
-	  //console.log("results : ");console.log(results);
-	  console.log("---------------");
-	  
-	  //rezToReturn.push(results);
 	  return results;
 
 	})
@@ -331,7 +288,6 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 	return rezToReturn;
 }
 
-// Doublon, but **** it
 function readFacets(facets) {
     var obj = _.create({});
     obj.keys = [];
@@ -343,7 +299,6 @@ function readFacets(facets) {
             obj.vals.push(+facets[i+1]);
         }
     }
-    console.log("readFacets obj : ");console.log(obj);
     return obj;
 }
 
