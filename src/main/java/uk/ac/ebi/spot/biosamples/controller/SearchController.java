@@ -97,15 +97,18 @@ public class SearchController {
             HttpServletResponse response) throws Exception {
 
         SolrQuery query = new SolrQuery();
-
+        boolean isGenericQuery = searchTerm.matches("\\**");
 //        String searchTerm = searchRequest.getSearchTerm();
 
 //        if (searchRequest.useFuzzySearch()) {
 //            searchTerm = searchRequest.getFuzzyfiedTerm();
 //        }
-
-        if (useFuzzySearch) {
-            searchTerm = searchTerm.replaceAll("(\\w+)","$0~");
+        if (isGenericQuery) {
+            searchTerm = "*:*";
+        } else {
+            if (useFuzzySearch) {
+                searchTerm = searchTerm.replaceAll("(\\w+)","$0~");
+            }
         }
 
         query.set("q", searchTerm);
@@ -140,10 +143,13 @@ public class SearchController {
         query.setRows(rows).setStart(start);
 
         // Setup highlighting
-        query.setHighlight(true);
-        query.setHighlightFragsize(0);
-        query.addHighlightField("description");
-        query.setHighlightSimplePre("<span class='highlight'>").setHighlightSimplePost("</span>");
+        // Highlight is working only if searching for specific terms
+        if (!isGenericQuery) {
+            query.setHighlight(true);
+            query.setHighlightFragsize(0);
+            query.addHighlightField("description");
+            query.setHighlightSimplePre("<span class='highlight'>").setHighlightSimplePost("</span>");
+        }
 
         // Forward query to SolR
         String finalQuery = solrServerUrl + "merged/select?" + query.toString();

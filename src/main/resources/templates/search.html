@@ -33,69 +33,70 @@
         <h2>BioSample Database Search Interface</h2>
     </section>
 
-    <section class="container" v-show="queryTermPresent" v-cloak>
-        <div v-if="!queryHasResults">
-            <div class="row">
-                <h3>
-                    No results have been found for <i>{{queryTerm}}</i>
+    <div v-bind:class="{loading: isQuerying}"></div>
+        <section class="container" v-show="queryTermPresent" v-cloak>
+            <div v-if="!queryHasResults">
+                <div class="row">
+                    <h3>
+                        No results have been found for <i>{{queryTerm}}</i>
 
-                    <span class="small"><a href="#" v-on:click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
-                </h3>
+                        <span class="small"><a href="#" v-on:click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
+                    </h3>
+                </div>
             </div>
-        </div>
-        <div v-else="">
-            <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
-            </div>
+            <div v-else="">
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
+                </div>
 
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3>Refine search results</h3>
-                            </div>
-                            <div class="panel-body">
-                                <form>
-                                    <label for="fuzzy-search">Search for similar terms</label>
-                                    <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
-                                           v-model="useFuzzy" v-on:change="querySamples" />
-                                </form>
-                               
-                                <component v-for="(key,facetObj) in facets" 
-                                            is="facet" v-bind:title="key | startCase"
-                                            v-bind:keys="facetObj.keys"
-                                            v-bind:values="facetObj.vals"
-                                            v-bind:facet-id="key + 'Filter'">
-                                </component>
-                            </div>
-                            <div class="panel-footer">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <component is="pagination"
-                                                   v-bind:total-results="resultsNumber"
-                                                   v-bind:displayed-results="samplesToRetrieve"
-                                                   style="float:right">
-                                        </component>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <component is="items-dropdown">
-                                        </component>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3>Refine search results</h3>
+                                </div>
+                                <div class="panel-body">
+                                    <form>
+                                        <label for="fuzzy-search">Search for similar terms</label>
+                                        <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
+                                               v-model="useFuzzy" v-on:change="querySamples" />
+                                    </form>
+
+                                    <component v-for="(key,facetObj) in facets"
+                                               is="facet" v-bind:title="key | startCase"
+                                               v-bind:keys="facetObj.keys"
+                                               v-bind:values="facetObj.vals"
+                                               v-bind:facet-id="key + 'Filter'">
+                                    </component>
+                                </div>
+                                <div class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <component is="pagination"
+                                                       v-bind:total-results="resultsNumber"
+                                                       v-bind:displayed-results="samplesToRetrieve"
+                                                       style="float:right">
+                                            </component>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <component is="items-dropdown">
+                                            </component>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-8">
-                    <component is="biosamples-list"
-                               v-bind:elements="biosamples">
-                    </component>
+                    <div class="col-md-8">
+                        <component is="biosamples-list"
+                                   v-bind:elements="biosamples">
+                        </component>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 </div>
 
 <th:block layout:fragment="custom-endpage-scripts">

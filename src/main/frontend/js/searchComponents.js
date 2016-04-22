@@ -54,7 +54,7 @@
         }
         return obj;
     }
-    
+
     new Vue({
         el: '#app',
         data: {
@@ -64,6 +64,7 @@
             useFuzzy: false,
             pageNumber: 1,
             samplesToRetrieve: 10,
+            isQuerying: false,
             resultsNumber: '',
             queryResults: {},
             biosamples: [],
@@ -119,7 +120,7 @@
                 this.useFuzzy = true;
                 this.querySamples(e);
             },
-            
+
             /**
              * Make the request for the SolR documents
              * @method querySamples
@@ -130,12 +131,13 @@
                 if (e !== undefined) {
                     e.preventDefault();
                 }
-
-                if (_.isEmpty(this.searchTerm)) {
+                if (this.isQuerying) {
+                    log("Still getting results from previous query, new query aborted");
                     return;
                 }
 
                 var queryParams = this.getQueryParameters();
+                this.isQuerying = true;
 
                 this.$http.get(apiUrl,queryParams)
                     .then(function(results) {
@@ -145,6 +147,9 @@
                         console.log(data);
                         console.log(status);
                         console.log(response);
+                    })
+                    .then(function() {
+                        this.isQuerying = false;
                     });
             },
 
@@ -183,7 +188,7 @@
                 this.biosamples = validDocs;
 
 
-                this.currentQueryParams = queryParams;
+                this.currentQueryParams = this.getQueryParameters();
                 this.saveHistoryState();
 
             },
