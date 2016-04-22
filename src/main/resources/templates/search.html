@@ -207,12 +207,24 @@
       stroke-linejoin: round;
     }
 
+    #areaNodeLink{
+      position:relative;
+      width:100%;
+    }
+
     #vizNodeLink{
         float: left;
         width:70%;
     }
     #infoVizRelations{
-        float: right;
+        float: left;
+        width:30%;
+        border:solid;
+        border-color:black; 
+        border-radius:4px;
+        background-color: rgba(200, 200, 200, 0.5); 
+        overflow:scroll;
+        overflow-x:visible;
     }
 
     #vizSpotRelations{
@@ -335,13 +347,13 @@
     </section>
 
     <section class="container" v-show="queryTermPresent" v-cloak>
+        <div id="areaNodeLink">
         <div id= "vizNodeLink"></div>
-        <div id="infoVizRelations" style="visibility:hidden; position:absolute; border:solid;border-color:black; border-radius:10px; height:586px; 
-        left:70%; right:8%; background-color: rgba(200, 200, 200, 0.5); overflow:scroll; overflow-x:visible">
-            <div id="infoVizRelations1"></div>
-            <div id="infoVizRelations2"></div>
-            <div id="textData"></div>
+        <div id="infoVizRelations">
+        <h3> Clicked element information </h3>
+            <div id="textData">Click on an element of the diagram to display its information </div>
         </div>
+      </div>
 
         <div v-if="!queryHasResults">
             <div class="row">

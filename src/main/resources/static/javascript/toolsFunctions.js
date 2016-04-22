@@ -17,7 +17,7 @@ function loadBars(width,height,margin,results,dataBars){
 function getURLsFromObject(objectToRead,prop){
 	var arrayUrls = [];
 	var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
-	// Loop through the img file formats, and if found, get the url, then add its display in infoVizRelations
+	// Loop through the img file formats, and if found, get the url, then add its display in the text area
 	for (var i =0; i < arrayImgTypes.length;i++){
 	  if (typeof objectToRead[prop] == "string" ){
 	    // Loop through different kind of common separators, and turn the string into an array. Then you can use the code previously used to work with an array
@@ -82,11 +82,11 @@ function getURLsFromObject(objectToRead,prop){
 	return arrayUrls;
 }
 
-function loadDataFromGET(results, nodeData, vm,server, nameToNodeIndex){
-
+//function loadDataFromGET(results, nodeData, vm,server, nameToNodeIndex){
+function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 	console.log("loadDataFromGET in src/main/resources/static/javascript");
 
-	console.log("server : ");console.log(server);
+	console.log("apiUrl : ");console.log(apiUrl);
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
 	nodeData.color=[];
@@ -262,17 +262,19 @@ function getSamplesFromGroup(apiUrl,group){
 
 }
 
-function loadDataWithoutRefresh(vm,server,parameters){
+//function loadDataWithoutRefresh(vm,server,parameters){
+function loadDataWithoutRefresh(vm,apiUrl,parameters){	
   var queryParams = vm.getQueryParameters();
   queryParams.searchTerm = parameters.searchTerm;
   console.log("************");
   console.log("loadDataWithoutRefresh : ");
   console.log("vm : ");console.log(vm);
-  console.log("server : ");console.log(server);
+  console.log("apiUrl : ");console.log(apiUrl);
   console.log("queryParams : ");console.log(queryParams);
   console.log("************");
 
-  var rezToReturn = vm.$http.get(server,queryParams)
+  //var rezToReturn = vm.$http.get(server,queryParams)
+  var rezToReturn = vm.$http.get(apiUrl,queryParams)
     .then(function(results){
 
 	  console.log("results : ");console.log(results);
