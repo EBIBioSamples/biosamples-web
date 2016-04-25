@@ -12,6 +12,7 @@
     // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
     if (!window.apiUrl) {
         window.apiUrl ="http://localhost:8080/biosamples/api/search/";
+        window.siteUrl = "http://localhost:8080/biosamples";
     }
 
 
@@ -21,7 +22,13 @@
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Biosample   = require('./components/BioSample.js');
+    var Store       = require('./components/Store.js');
     var apiUrl      = window.apiUrl;
+
+    Store.getInstance({
+        apiUrl: window.apiUrl,
+        baseUrl: window.baseUrl
+    });
 
 
     // Vue Configuration

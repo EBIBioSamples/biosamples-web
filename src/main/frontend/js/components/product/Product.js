@@ -7,6 +7,9 @@
     "use strict";
 
     var _ = require('lodash');
+    var Store = require('../Store.js');
+
+
 
     /**
      * Remove the `_crt` suffix from the characteristics
@@ -106,9 +109,9 @@
             itemPage: function() {
                 switch(this.type.toLowerCase()) {
                     case 'sample':
-                        return 'sample/' + this.accession;
+                        return `${Store.getInstance().baseUrl}sample/${this.accession}`;
                     case 'group':
-                        return 'group/' + this.accession;
+                        return `${Store.getInstance().baseUrl}group/${this.accession}`;
                 }
             },
 
