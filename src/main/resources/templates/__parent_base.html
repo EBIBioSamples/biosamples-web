@@ -20,7 +20,8 @@
 <html class="no-js"
     lang="en"
     xmlns:th="http://www.thymeleaf.org"
-    xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+    xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+    th:with="currentPage='home',overrideTitle=false">
 <!--<![endif]-->
 <head>
     <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
