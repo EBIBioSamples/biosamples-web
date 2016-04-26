@@ -4,6 +4,20 @@
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <body>
 <!-- Primary Navigation -->
+<!--/*
+
+    Currently available values for currentPage are:
+    - 'home'
+    - 'search'
+    - 'samples'
+    - 'groups'
+    - 'submit'
+    - 'help'
+    - 'about'
+
+    You can add or remove pages form the navigation, remember to update also this documentation
+
+*/-->
 <th:block layout:fragment="navigation(customBase,customPage)">
     <nav th:with="currentPage=${#strings.defaultString(customPage,'home')}">
         <ul class="grid_24" id="local-nav">

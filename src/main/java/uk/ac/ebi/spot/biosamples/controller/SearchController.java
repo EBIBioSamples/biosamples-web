@@ -14,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.solr.core.SolrOperations;
-import org.springframework.data.solr.core.query.*;
+import org.springframework.data.solr.core.SolrTemplate;
+import org.springframework.data.solr.core.query.FacetOptions;
+import org.springframework.data.solr.core.query.FacetQuery;
+import org.springframework.data.solr.core.query.SimpleFacetQuery;
+import org.springframework.data.solr.core.query.SimpleStringCriteria;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.stereotype.Controller;
@@ -22,11 +26,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import uk.ac.ebi.spot.biosamples.model.Merged;
-import uk.ac.ebi.spot.biosamples.repository.MergedRepository;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -47,14 +49,12 @@ public class SearchController {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private SolrOperations mergedSolrTemplate;
+    private SolrOperations mergedCoreSolrTemplate;
 
-    @Autowired
-    private MergedRepository mergedRepository;
-	
-    @NotNull
-    @Value("${solr.searchapi.server}")
-    private String baseSolrUrl;
+//    @NotNull
+//    @Value("${solr.searchapi.server}")
+    @Value("${solr.server}")
+    private String solrServerUrl;
 
     @Value("classpath:ignoredFacets.fields")
     private Resource ignoredFacetsResource;
@@ -92,20 +92,23 @@ public class SearchController {
             @RequestParam("searchTerm") String searchTerm,
             @RequestParam(value = "useFuzzySearch", defaultValue = "false") boolean useFuzzySearch,
             @RequestParam(value = "start", defaultValue = "0") int start,
-            @RequestParam(value = "row", defaultValue = "10") int row,
+            @RequestParam(value = "rows", defaultValue = "10") int rows,
             @RequestParam(value = "filters[]", required = false, defaultValue = "") String[] filters,
             HttpServletResponse response) throws Exception {
 
         SolrQuery query = new SolrQuery();
-
+        boolean isGenericQuery = searchTerm.matches("\\**");
 //        String searchTerm = searchRequest.getSearchTerm();
 
 //        if (searchRequest.useFuzzySearch()) {
 //            searchTerm = searchRequest.getFuzzyfiedTerm();
 //        }
-
-        if (useFuzzySearch) {
-            searchTerm = searchTerm.replaceAll("(\\w+)","$0~");
+        if (isGenericQuery) {
+            searchTerm = "*:*";
+        } else {
+            if (useFuzzySearch) {
+                searchTerm = searchTerm.replaceAll("(\\w+)","$0~");
+            }
         }
 
         query.set("q", searchTerm);
@@ -129,24 +132,27 @@ public class SearchController {
                     case "content_type":
                         break;
                     default:
-                        filterKey = String.format("%s_crt", filterKey);
+                        filterKey = String.format("%s_crt_ft", filterKey);
                 }
-                query.addFilterQuery(String.format("%s:%s", filterKey, filterValue));
+                query.addFilterQuery(String.format("%s:\"%s\"", filterKey, filterValue));
             }
         }
 
         // Setup result number
 //        query.setRows(searchRequest.getRows()).setStart(searchRequest.getStart());
-        query.setRows(row).setStart(start);
+        query.setRows(rows).setStart(start);
 
         // Setup highlighting
-        query.setHighlight(true);
-        query.setHighlightFragsize(0);
-        query.addHighlightField("description");
-        query.setHighlightSimplePre("<span class='highlight'>").setHighlightSimplePost("</span>");
+        // Highlight is working only if searching for specific terms
+        if (!isGenericQuery) {
+            query.setHighlight(true);
+            query.setHighlightFragsize(0);
+            query.addHighlightField("description");
+            query.setHighlightSimplePre("<span class='highlight'>").setHighlightSimplePost("</span>");
+        }
 
         // Forward query to SolR
-        String finalQuery = baseSolrUrl + query.toString();
+        String finalQuery = solrServerUrl + "merged/select?" + query.toString();
         log.trace("finalQuery = "+finalQuery);
         this.forwardSolrResponse(response, finalQuery);
 
@@ -180,7 +186,7 @@ public class SearchController {
         facetOptions.addFacetOnField("crt_type_ft");
         facetOptions.setFacetLimit(facetLimit);
         facetQuery.setFacetOptions(facetOptions);
-        FacetPage<Merged> facetResults = mergedSolrTemplate.queryForFacetPage(facetQuery,Merged.class);
+        FacetPage<Merged> facetResults = mergedCoreSolrTemplate.queryForFacetPage(facetQuery,Merged.class);
 
         for (FacetFieldEntry e : facetResults.getFacetResultPage("crt_type_ft")) {
             String facetName = e.getValue();

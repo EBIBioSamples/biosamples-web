@@ -397,3 +397,12 @@ node.attr( "transform", function(d) { //console.log("d : ");console.log(d);
 ////
 // timer to reload  the querySamples function
 v-on:keyup="querySamples | debounce 500"/>
+
+
+/////
+solr.server                         http://beans.ebi.ac.uk:8989/solr/
+
+solr.searchapi.server               http://beans.ebi.ac.uk:8989/solr/merged/select?
+spring.data.rest.base-path          /api
+spring.data.rest.default-page-size  50
+spring.thymeleaf.mode               LEGACYHTML5

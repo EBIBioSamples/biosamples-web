@@ -1,4 +1,14 @@
 <!doctype html>
+
+<!--/*
+
+    Thymeleaf template variables:
+
+    overrideTitle   = {true,false} - you can use this variable in combination with the title block to override the title-pattern
+    currentPage     = 'String' - define the current page inside the primary navigation. Check out fragments/primaryNavigation for info
+    currentHelpPage = 'String' - define the current page inside the help navigation. Check fragments/helpNavigation for infos
+*/-->
+
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -8,7 +18,8 @@
 <html class="no-js"
       lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+      xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'help'">
 <!--<![endif]-->
 <head>
     <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
@@ -26,14 +37,20 @@
 
     <th:block th:include="fragments/header::header"></th:block>
 
-    <div id="content" role="main" class="grid_24 clearfix" layout:fragment="content">
+    <div id="content" role="main" class="grid_24 clearfix">
+
+        <!--<th:block layout:fragment="content" th:remove="tag">-->
+
+        <!--</th:block>-->
+        <th:block layout:fragment="content"></th:block>
+
+        <aside class="grid_6 omega">
+            <h3>Help</h3>
+            <th:block layout:replace="fragments/helpNavigation :: helpNavigation(customHelpBaseUrl=${helpHomeUrl}, customHelpPage=${currentHelpPage})">
+
+            </th:block>
+        </aside>
     </div>
-
-    <aside class="grid_6 omega">
-        <th:block layout:replace="fragments/helpNavigation :: helpNavigation(customHelpBaseUrl=${helpHomeUrl}, customHelpPage=${currentHelpPage})">
-
-        </th:block>
-    </aside>
 
     <footer th:replace="fragments/footer :: footer"></footer>
 </div> <!--! end of #wrapper -->

@@ -3,29 +3,43 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.w3.org/1999/xhtml">
 <body>
-<!-- Primary Navigation -->
+<!-- Help Navigation -->
+<!--/*
+
+    Currently available values for currentPage are:
+    - 'home'
+    - 'search'
+    - 'submitting'
+    - 'api'
+    - 'faq'
+    - 'news'
+    - 'contactus'
+
+    You can add or remove pages form the navigation, remember to update also this documentation
+
+*/-->
 <th:block layout:fragment="helpNavigation(customHelpBaseUrl,customHelpPage)">
     <ul id="secondary-nav" th:with="helpHomeUrl=${#strings.defaultString(customHelpBaseUrl,'/help')}">
         <li class="first" th:classappend="${currentHelpPage == 'home'} ? 'active'">
             <a th:href="@{${helpHomeUrl}}" title="Help - Home">Help - Home</a>
         </li>
         <li class="first" th:classappend="${currentHelpPage == 'search'} ? 'active'">
-            <a th:href="@{${helpHomeUrl}/search}" title="Searching">Searching</a>
+            <a th:href="@{${helpHomeUrl + '/search'}}" title="Searching">Searching</a>
         </li>
         <li class="first" th:classappend="${currentHelpPage == 'submitting'} ? 'active'">
-            <a th:href="@{${helpHomeUrl}/submit}" title="Submitting">Submitting</a>
+            <a th:href="@{${helpHomeUrl + '/submit'}}" title="Submitting">Submitting</a>
         </li>
         <li class="first" th:classappend="${currentHelpPage == 'api'} ? 'active'">
-            <a th:href="@{${helpHomeUrl}/api}" title="Programatic interface">Programatic interface</a>
+            <a th:href="@{${helpHomeUrl + '/api'}}" title="Programatic interface">Programatic interface</a>
         </li>
         <li class="first" th:classappend="${currentHelpPage == 'faq'} ? 'active'">
-            <a th:href="@{${helpHomeUrl}/faq}" title="Frequently Asked Questions">FAQ</a>
+            <a th:href="@{${helpHomeUrl + '/faq'}}" title="Frequently Asked Questions">FAQ</a>
         </li>
         <li class="first" th:classappend="${currentHelpPage == 'news'} ? 'active'">
-            <a th:href="@{${helpHomeUrl}/news}" title="news">News</a>
+            <a th:href="@{${helpHomeUrl + '/news'}}" title="news">News</a>
         </li>
         <li class="first" th:classappend="${currentHelpPage == 'contactus'} ? 'active'">
-            <a th:href="@{${helpHomeUrl}/contact_us}" title="Contact Us">Contact Us</a>
+            <a th:href="@{${helpHomeUrl + '/contact_us'}}" title="Contact Us">Contact Us</a>
         </li>
     </ul>
 </th:block>

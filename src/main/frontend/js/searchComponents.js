@@ -12,6 +12,7 @@
     // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
     if (!window.apiUrl) {
         window.apiUrl ="http://localhost:8080/biosamples/api/search/";
+        window.siteUrl = "http://localhost:8080/biosamples";
     }
 
 
@@ -21,7 +22,13 @@
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Biosample   = require('./components/BioSample.js');
+    var Store       = require('./components/Store.js');
     var apiUrl      = window.apiUrl;
+
+    Store.getInstance({
+        apiUrl: window.apiUrl,
+        baseUrl: window.baseUrl
+    });
 
 
     // Vue Configuration
@@ -65,6 +72,7 @@
             useFuzzy: false,
             pageNumber: 1,
             samplesToRetrieve: 10,
+            isQuerying: false,
             resultsNumber: '',
             queryResults: {},
             biosamples: [],
@@ -112,6 +120,7 @@
 
         methods: {
 
+
           querySamplesUsingFuzzy: function(e) {
               if (e !== undefined) {
                   e.preventDefault();
@@ -120,7 +129,6 @@
               this.querySamples();
           },
             
-
             /**
              * Make the request for the SolR documents
              * @method querySamples
@@ -128,47 +136,51 @@
              */
 
             querySamples: function(e) {
-              log("Query Samples");
-              if (e !== undefined) {
-                  e.preventDefault();
-              }
+                log("Query Samples");
+                if (e !== undefined) {
+                    if (typeof e.preventDefault == 'function')
+                    e.preventDefault();
+                }
+                if (this.isQuerying) {
+                    log("Still getting results from previous query, new query aborted");
+                    return;
+                }
 
-              if (_.isEmpty(this.searchTerm)) {
-                  return;
-              }
+                let queryParams = this.getQueryParameters();
+                // Options passed to ajax request
+                // Timeout set to prevent infinite waiting
+                let ajaxOptions = {
+                    timeout: 10000
+                };
 
-              var queryParams = this.getQueryParameters();
+                this.isQuerying = true;
 
-              console.log("queryParams : ");
-              console.log(queryParams);
-
-              this.$http.get(apiUrl,queryParams)
-                .then(function(results) {
-                    this.consumeResults(results);
-                    this.currentQueryParams = queryParams;
-                    // Variable to know whether we just to a get to
-                    // just get data or reload the scene
-                    console.log("§§§§");
-                    console.log("results before calling loadD3 : ");
-                    console.log(results);
-                    console.log("§§§§");
-                    if ( typeof loadD3 === "undefined" || loadD3 ){
-                      //doD3Stuff(results,server,vm);
-                      doD3Stuff(results,apiUrl,vm);
-                    }
-                    this.saveHistoryState();
-                })
-                .catch(function(data,status,response){
-                  console.log("data : ");console.log(data);
-                  console.log("status : ");console.log(status);
-                  console.log("response : ");console.log(response);
-                });
+                this.$http.get(apiUrl,queryParams,ajaxOptions)
+                    .then(function(results) {
+                        this.consumeResults(results);
+                        // ----
+                        doD3Stuff(results,apiUrl,this);
+                        // ----
+                    })
+                    .catch(function(data,status,response){
+                        console.log("data");console.log(data);
+                        console.log("status");console.log(status);
+                        console.log("response");console.log(response);
+                    })
+                    .then(function() {
+                        this.isQuerying = false;
+                    });
             },
 
             consumeResults: function(results) {
 
                 log("Consuming ajax results","Consume Results");
                 var resultsInfo      = results.data.response;
+                if (_.isNull(resultsInfo)) {
+                    alert("Request made to server was malformed, please send an email to biosamples@ebi.ac.uk");
+                    return;
+                }
+
                 var highLights       = results.data.highlighting;
                 var dynamicFacets    = results.data.facet_counts.facet_fields;
                 var dynamicFacetsKey = _.keys(dynamicFacets);
@@ -192,6 +204,10 @@
 
                 this.queryResults = validDocs;
                 this.biosamples = validDocs;
+
+                this.currentQueryParams = this.getQueryParameters();
+                this.saveHistoryState();
+
             },
 
             /**
@@ -247,11 +263,29 @@
                 return filterArray;
             },
 
+            deserializeFilterQuery: function(serializedQuery) {
+                // let re = new RegExp("(\w+)Filter\|(\w+)");
+                let filtersObj = {};
+                _(serializedQuery).forEach(function(value) {
+                    // var tuple = re.exec(value);
+                    // if (tuple.length == 2) {
+                    //     self.filterQuery[tuple[0]] = tuple[1];
+                    // }
+                    let [filterKey,filterValue] = value.split("Filter|");
+                    if (!_.isEmpty(filterKey)) {
+                        filtersObj[filterKey] = filterValue;
+                    }
+                });
+                return filtersObj;
+            },
+
             populateDataWithUrlParameter: function(urlParams) {
                 this.searchTerm = urlParams.searchTerm;
                 this.samplesToRetrieve = _.toInteger(urlParams.rows);
                 this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve + 1;
-                this.useFuzzy = urlParams.useFuzzySearch === "true" ? true : false;
+
+                this.useFuzzy = urlParams.useFuzzySearch === "true";
+                this.filterQuery = this.deserializeFilterQuery(urlParams.filters);
             },
 
             /**
@@ -268,7 +302,6 @@
                 });
 
                 this.$on('dd-item-chosen', function(item) {
-                    console.log(" on dd-item-chosen");
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
                     console.log("this : "); console.log(this);
@@ -306,7 +339,6 @@
                 var urlParam = historyState.data;
                 if (! _.isEmpty(urlParam) ) {
                     this.populateDataWithUrlParameter(urlParam);
-                    //vm.populateDataWithUrlParameter(urlParam);
                     this.querySamples();
                     //vm.querySamples();
                 } else {
@@ -348,13 +380,26 @@ function log(value,context) {
 
 function doD3Stuff( results, apiUrl, vm=0  ){
   console.log("_______doD3Stuff______");
-  //console.log("results : ");console.log(results);
+  console.log("results : ");console.log(results);
+
+
+  // var testStringSpecial = "$-jhu_@n:.a/b/c d e f";
+  // console.log("testStringSpecial : ");console.log(testStringSpecial);
+  // var modifSpecial = changeSpecialCharacters(testStringSpecial);
+  // console.log("modifSpecial : ");console.log(modifSpecial);
+
+
   var fill = d3.scale.category20();
   var widthTitle = $("#sectionTitle").width();
   var widthD3 = Math.floor( (70*widthTitle)/100 );
   var heightD3 = widthTitle/2;
 
   document.getElementById("infoVizRelations").style.height = heightD3+'px';  
+  if (results.data.response.docs.length == 0  ){
+    document.getElementById("infoVizRelations").style.visibility='hidden';
+  } else {
+    document.getElementById("infoVizRelations").style.visibility='visible';
+  }
 
   var margin = {top: 10, right: 10, bottom: 10, left: 10};
 
@@ -433,10 +478,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       if ( document.getElementById("sectionVizResult").style.visibility == "hidden" ){
         document.getElementById("sectionVizResult").style.visibility="visible";
         document.getElementById("titleRezInfo").innerHTML="Hide the result information ";
-        console.log("§§§");
         var heightBars = $('#resultsViz0').height();
         document.getElementById("sectionVizResult").style.height= (heightBars+100)+ "px";
-
       } else {
         document.getElementById("sectionVizResult").style.visibility="hidden";
         document.getElementById("titleRezInfo").innerHTML="Display the result information ";
@@ -467,7 +510,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     for (var u in numberFacetsUnEmpty){
       if (numberFacetsUnEmpty[u] > 0){
         var idToSelect = "#rezFacets"+cpt;
-        console.log("idToSelect : ");console.log(idToSelect);
         barCharts.push(
           d3.select( idToSelect )
             .insert("svg",":first-child")
@@ -595,10 +637,12 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               dataBars[h][i].occurence;
             })            
             .attr("id", function (d){
-              console.log("h : ");console.log(h);
-              console.log("i : ");console.log(i);
-              return 'text_'+dataBars[h][i].content;
+                var modifiedContent = changeSpecialCharacters(dataBars[h][i].content);
+              return 'text_'+modifiedContent;
             })
+            .attr("idUnaltered", function (d){
+              return 'text_'+dataBars[h][i].content;
+            })            
             .attr("content",function (d){ return dataBars[h][i].content; })
             .attr("x",function(){ return xHere + widthRectangles[h]/2 ;})
             .attr("y", function(){ return 0; })
@@ -635,6 +679,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
+              console.log("mousedown idToSelect : "+idToSelect);
 
               var content = d3.select('#bar_'+idToSelect).attr("content");
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
@@ -667,53 +712,51 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             })
             .on("dblclick",function(d){
               console.log("dblclick text");
-                var indexUnderscore = this.id.indexOf("_");
-                var nameClickedBar = this.id.substring(indexUnderscore+1, this.id.length);
+                console.log("this : ");console.log(this);
+                console.log( "vm.$data.filterQuery");console.log( vm.$data.filterQuery );
+                console.log("this.textContent : ");console.log(this.textContent);
+                var indexUnderscore = this.textContent.indexOf(":");
+                var nameClickedBar = this.textContent.substring(0, indexUnderscore-1);
+                console.log("nameClickedBar : ");console.log(nameClickedBar);
+                console.log("vm : ");console.log(vm);
 
                 for (var u in vm.$data.facets){
                   for (var v in vm.$data.facets[u] ){
                     if ( v == "keys"){
+                        console.log("KEYS");
                       for (var w in vm.$data.facets[u][v]){
-                          console.log(" vm.$data.facets[u][v][w]");
-                          console.log(vm.$data.facets[u][v][w]);
                         if ( nameClickedBar == vm.$data.facets[u][v][w]){
-                          // vm.data. filterQuery . 'facetName'Filter = nameClickedBar
-                          console.log("u : "+u);
-                          console.log("v : "+v);
-                          console.log("w : "+w);
-                          console.log("nameClickedBar == vm.$data.facets[u][v][w] == "+nameClickedBar);
+                            console.log("####");
                           var nameOfFilter = u+'Filter';
-                          //vm.$data.filterQuery[ nameOfFilter ] = vm.$data.facets[u][v][w];
-                          console.log( "vm.$data.filterQuery[ nameOfFilter ] : ");
-                          console.log( vm.$data.filterQuery[ nameOfFilter ] );
-                          if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
-                            console.log("time to start facets and stuff");
-                            console.log("typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined'");
-                            console.log(typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined');
-                            console.log("vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar");
-                            console.log(vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar);
+                          console.log("INSIDE THE IF nameOfFilter : "+nameOfFilter);
+                          //console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
+                          console.log("nameOfFilter : ");console.log(nameOfFilter);
+                          //console.log( "vm.$data.filterQuery[ nameOfFilter ] : ");
+                          //console.log( vm.$data.filterQuery[ nameOfFilter ] );
 
-                            vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
+                                  if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
+                                     console.log("time to start facets filtering");
+                                    vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
+                                    console.log("vm.$data.filterQuery");console.log(vm.$data.filterQuery);
+                                    vm.$emit("bar-selected");
+                                    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+nameClickedBar;
+                                    popOutDiv("infoPop");
+                                    fadeOutDiv("infoPop");
+                                    vm.$options.methods.querySamples(this,false);
+                                  } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
+                                    vm.$data.filterQuery[ nameOfFilter ] = '';
 
-                            vm.$emit("bar-selected");
-                            console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
-                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
-                            popOutDiv("infoPop");
-                            fadeOutDiv("infoPop");
-                            vm.$options.methods.querySamples(this,false);
-                          } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
-                            console.log("vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar");
-                            vm.$data.filterQuery[ nameOfFilter ] = '';
+                                    vm.$emit("bar-selected");
+                                    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                                    popOutDiv("infoPop");
+                                    fadeOutDiv("infoPop");
+                                    vm.$options.methods.querySamples(this,false);
+                                  } else {
+                                    console.log("hum... what the hell is happening ?");
+                                  }
 
-                            vm.$emit("bar-selected");
-                            console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
-                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
-                            popOutDiv("infoPop");
-                            fadeOutDiv("infoPop");
-                            vm.$options.methods.querySamples(this,false);
-                          } else {
-                            console.log("hum... what the hell is happening ?");
-                          }
+
+                          console.log("####");
                         }
                       }
                     }
@@ -732,7 +775,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .data(dataBars[h])
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("id",function(d){return 'bar_'+d.content;} )
+        .attr("id",function(d){
+            var modifiedContent = changeSpecialCharacters(d.content);
+            return 'bar_'+modifiedContent;
+        })
         .attr("facet",function(d){ 
           return d.facet;
         })
@@ -746,15 +792,14 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .attr("width", widthRectangles[h] )
         .attr("fill", "steelblue" )
         .on("mouseover",function(d,i){
-          console.log("bar chart")
           document.getElementById("elementHelp").style.visibility="visible";
-          console.log("facet of bar : ");console.log(d.facet);
           document.getElementById("elementHelp").innerHTML=
             "Help"
             +"<hr/>"+ d.facet +" <hr/> "+d.content
             +", "+d.occurence;
 
-          var idToSelect = '#text_'+d.content;
+          var modifiedContent = changeSpecialCharacters(d.content);
+          var idToSelect = '#text_'+modifiedContent;
           d3.selectAll(".text-d3").style("opacity",.5);
           d3.select(idToSelect).style("opacity",1);
           d3.select(this).style("fill","green");
@@ -772,15 +817,15 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .attr("y", function(d){ return height - margin.top - scalesY[h](d.occurence);} )
         .attr("height", function(d) { return Math.max(0,scalesY[h](d.occurence)); })
         .attr("opacity","0.5")
-        .on("dblclick",function(d){ 
+        .on("dblclick",function(d){
           console.log("dblclick rectangle");
           var content = d.content;
-          console.log("vm.$data : ");
-          console.log(vm.$data);
-          console.log( "vm.$data.facets.content_type : ");
-          console.log( vm.$data.facets.content_type );
-          console.log( "vm.$data.facets.content_type.keys : ");
-          console.log( vm.$data.facets.content_type.keys );
+          // console.log("vm.$data : ");
+          // console.log(vm.$data);
+          // console.log( "vm.$data.facets.content_type : ");
+          // console.log( vm.$data.facets.content_type );
+          // console.log( "vm.$data.facets.content_type.keys : ");
+          // console.log( vm.$data.facets.content_type.keys );
 
           var nameClickedBar = d.content;
 
@@ -788,8 +833,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             for (var v in vm.$data.facets[u] ){
               if ( v == "keys"){
                 for (var w in vm.$data.facets[u][v]){
-                    console.log(" vm.$data.facets[u][v][w]");
-                    console.log(vm.$data.facets[u][v][w]);
+                    // console.log(" vm.$data.facets[u][v][w]");
+                    // console.log(vm.$data.facets[u][v][w]);
                   if ( nameClickedBar == vm.$data.facets[u][v][w]){
                     // vm.data. filterQuery . 'facetName'Filter = nameClickedBar
                     console.log("u : "+u);
@@ -798,10 +843,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                     console.log("nameClickedBar == vm.$data.facets[u][v][w] == "+nameClickedBar);
                     var nameOfFilter = u+'Filter';
                     //vm.$data.filterQuery[ nameOfFilter ] = vm.$data.facets[u][v][w];
+                    console.log("nameOfFilter : "+nameOfFilter);
+                    console.log( "vm.$data.filterQuery : "); 
+                    console.log( vm.$data.filterQuery);
                     console.log( "vm.$data.filterQuery[ nameOfFilter ] : ");
                     console.log( vm.$data.filterQuery[ nameOfFilter ] );
                     if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
-                      console.log("time to start facets and stuff");
+                      console.log("time to filter");
                       console.log("typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined'");
                       console.log(typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined');
                       console.log("vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar");
@@ -878,11 +926,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     // Nodes relationships here
     var svg;
-    console.log(" -------  ")
-    console.log(" before adding svg ");
-    console.log("widthD3 : "+widthD3);
-    console.log("heightD3 : "+heightD3);
-    console.log(" ------- ")
 
     d3.select("#vizSpotRelations").remove();
     svg = d3.select("#vizNodeLink").insert("svg")
@@ -923,10 +966,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       console.log("results.data.response.docs.length>0");
       d3.select("#vizSpotRelations").attr("visibility","visible");
 
-      console.log("##### about to call loadDataFromGET ####");
       var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
       nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
-      console.log("##### after calling loadDataFromGET ####");
 
       draw(svg,nodeData);
 
@@ -1121,12 +1162,12 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           var isDragging = false;
           var accessionDragged = '';
           var elements = svg.selectAll('g');
-          for (var i=0; i < elements[0].length; i++){      
+          for (var i=0; i < elements[0].length; i++){
             if ( elements[0][i].classList.length > 1 ){
               isDragging = true;
               accessionDragged = elements[0][i].accession;
             }
-          }          
+          }
           node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
         });
 

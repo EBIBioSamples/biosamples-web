@@ -318,3 +318,8 @@ function fadeOutDiv(stringDiv){
 	  $(stringID).fadeOut('slow');
 	}, 3500); // <-- time in milliseconds	
 }
+
+
+function changeSpecialCharacters( myid ) { 
+    return myid.replace( /(:|\.|\-|\{|\}| |\.|\,|\;|\[|\]|,)/g, "_" );
+}

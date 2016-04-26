@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="__parent_help"
+      th:with="currentPage='help',currentHelpPage = 'search'">
+<head>
+    <title>Search &lt; Help &lt;</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <section class="grid_18 alpha">
+        <h2>How to search BioSamples Database</h2>
+        <p>Searching over the biosamples database is a two-step process. The first step is to find a group that contains interesting samples, and the second step is to find interesting samples within that group.</p>
+
+        <h3>Finding group(s)</h3>
+
+        <p>At the top of each page is a search box. You can enter any words that describe your samples of interest here. As you start typing, a drop-down list will appear suggesting terms that match.  For terms that are in <a href="/efo">EFO</a>, a button in the drop-down list will expand to suggest more specific terms.
+
+        <p>Once a query has been entered, click on the "search" button to view the results. Search results keep the original query in the serach box, where it can be easily refined.</p>
+
+        <p>The main section of the results page is a table of matching sample groups, including each of their titles and how many samples they contain. The results are ordered by quality of match by default, or you can click on column headings to sort by that column (ascending or descending). If there are many results they will be split over multiple pages; links above the column headings allow you to change the number of groups displayed per page and which page number is currently visible. The accession number for each result is a hyperlink to a more detailed page about that group.</p>
+
+        <p>Within the results any matching terms are highlighted. <span class="ae_text_hit">Yellow highlighting</span> indicates exact matches, <span class="ae_text_syn">green highlighting</span> indicates synyonms, and <span class="ae_text_efo">pink highlighting</span> indicates more specific matches (e.g. "amygdala" as a more specific term for "brain"). These more specific terms are from EFO, the same as the auto complete term expansion. Note that these matches are not the only factors in determining how well a group matches a search result, and it is not uncommon to see no highlighting on the top hits.</p>
+
+        <h3>Finding sample(s)</h3>
+
+        <p>Each group of samples has a webpage with information about that group. There are two main sections - meta information, and sample information. Meta information includes overall descriptions, update information, literature links, etc. Sample information summarizes the key/value attributes that describe the samples within the group. Like the group results pages, the sample information may be spread over multiple pages if there are many samples.</p>
+
+        <p>At the top of the sample information, there is a search box. This is used in the same manner as the group search box, but applies only to the samples within the group. By default, this will contain the same query as was used at the group - this may result in no samples being displayed initially. As with the group query, sample queries have auto-complete and query expansion for synonyms and more specific terms.</p>
+
+        <h3><a id="advanced">Advanced search</a></h3>
+
+        <p>In addition to the auto-completion and term expansion outlined above (synonyms, more specific terms, etc) there are some advanced query features that can be used.</p>
+
+        <h4>AND OR NOT ( )</h4>
+        <p>Each word in the query is treated as a separate term (unless surrounded by double quotes) and by default every result has to contain all the terms.</p>
+        <p>This behaviour can be modified by using boolean operators and brackets; e.g. <code>Leukemia AND ( mouse OR human )</code>.</p>
+        <p>Some combinations are not possible e.g. <code>NOT human</code>. This is a technical limitation that is not practical to solve.</p>
+
+        <h4>Wildcards</h4>
+        <p>Queries containing star or question mark characters are treated separately. A star character will match any combination of zero or more characters e.g. <code>leuk*mia</code> will match to leukemia and leukaemia as well as leukqwertymia. A question mark character will match any single characters e.g. <code>m?n</code> will match both man and men.</p>
+        <p>Queries that include wildcards are not expanded, and wildcards cannot be at the beginning of terms e.g. <code>?ouse</code> is not possible. These are technical limitations that cannot be solved practically.</p>
+
+        <h4>Range queries</h4>
+        <p>Certain attributes can be queried for ranges of matching values. For example for things that were last updated between the 1st and 4th of April 2014.</p>
+        <p>Attributes that can be searched using ranges are:
+        <ul>
+            <li>Last update date e.g. <code>updatedate:[2014-04-01 TO 2014-04-04]</code></li>
+            <li>Release date e.g. <code>releasedate:[2014-04-01 TO 2014-04-04]</code></li>
+        </ul>
+        Please note that the date syntax is yyyy-MM-dd, a double digit month is required to satisfy the query syntax.</p>
+    </section>
+</div>
+</body>
+</html>
