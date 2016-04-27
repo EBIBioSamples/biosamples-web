@@ -385,7 +385,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   console.log("_______doD3Stuff______");
   console.log("results : ");console.log(results);
 
-
+  // If existing, clean the visualisation space
+  d3.select("#vizSpotRelations").remove();
   // var testStringSpecial = "$-jhu_@n:.a/b/c d e f";
   // console.log("testStringSpecial : ");console.log(testStringSpecial);
   // var modifSpecial = changeSpecialCharacters(testStringSpecial);
@@ -428,9 +429,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           }
       }
     }
-    console.log("!!!!");
-    console.log("numberFacetsUnEmpty : ");
-    console.log(numberFacetsUnEmpty);
+    
+    // console.log("numberFacetsUnEmpty : ");
+    // console.log(numberFacetsUnEmpty);
 
     document.getElementById("elementHelp").style.visibility="hidden";
     document.getElementById("elementHelp").innerHTML="Help";
@@ -611,7 +612,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }
       cpt++;
     }
-    console.log("0000");
 
     var xAxises = [];
     var yAxises = [];
@@ -629,9 +629,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       )
       cpt++;
     }
-
-    console.log("dataBars : ");
-    console.log(dataBars);
 
     // Text of the bar chart
     for (var h=0; h < dataBars.length; h++){
@@ -656,6 +653,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               return 'text_'+dataBars[h][i].content;
             })            
             .attr("content",function (d){ return dataBars[h][i].content; })
+            .attr("facet",function(d){
+                return dataBars[h][i].facet;
+            })
             .attr("x",function(){ return xHere + widthRectangles[h]/2 ;})
             .attr("y", function(){ return 0; })
             .attr("dy", ".71em")
@@ -721,7 +721,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                   }
                 }
               })
-
               document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.";
               popOutDiv("infoPop");
               fadeOutDiv("infoPop");
@@ -734,36 +733,26 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                 for (var u in vm.$data.facets){
                   for (var v in vm.$data.facets[u] ){
                     if ( v == "keys"){
-                        // console.log("KEYS");
                       for (var w in vm.$data.facets[u][v]){
                         if ( nameClickedBar == vm.$data.facets[u][v][w]){
                           var nameOfFilter = u+'Filter';
-                          // console.log("INSIDE THE IF nameOfFilter : "+nameOfFilter);
-                          // console.log("nameOfFilter : ");console.log(nameOfFilter);
-
                           if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
-                             // console.log("####");
-                             // console.log("time to start facets filtering");
                             vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
-                            // console.log("vm.$data.filterQuery");console.log(vm.$data.filterQuery);
                             vm.$emit("bar-selected");
-                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+nameClickedBar;
+                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+vm.$data.filterQuery[ nameOfFilter ];
                             popOutDiv("infoPop");
                             fadeOutDiv("infoPop");
 
                             
                             vm.$options.methods.querySamples(this,false);
-                            // console.log("####");
                           } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
-                            // console.log("####");console.log("Resetting filter");
                             vm.$data.filterQuery[ nameOfFilter ] = '';
 
                             vm.$emit("bar-selected");
-                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                            document.getElementById("infoPop").innerHTML=" Reverting the filter of the results according to "+nameClickedBar;
                             popOutDiv("infoPop");
                             fadeOutDiv("infoPop");
                             vm.$options.methods.querySamples(this,false);
-                            // console.log("####");
                           } else {
                             console.log("hum... what the hell is happening ?");
                           }
@@ -774,8 +763,30 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                   }
                 }
             })
-            .attr("style", "fill:black; writing-mode: tb; glyph-orientation-vertical: 90")
+            .attr("style", "stroke:red;writing-mode: tb; glyph-orientation-vertical: 90")
             .text(function(){ return dataBars[h][i].content+' : '+dataBars[h][i].occurence;})
+            .style("stroke",function(d){
+                for (var i in results.request.params.filters ){
+                    var indexCut = results.request.params.filters[i].indexOf("Filter");
+                    var filter = results.request.params.filters[i].substring(0,indexCut);
+
+                    if ( d3.select(this).attr("facet").indexOf(filter) > -1 ){
+                        var indexCut = results.request.params.filters[i].indexOf("|");
+                        var valueFilter = results.request.params.filters[i].substring(indexCut+1,results.request.params.filters[i].length);
+                        if (valueFilter == d3.select(this).attr("content")){
+                            console.log("HEY YAH !");
+                            console.log("filter : "+filter);
+                            console.log("valueFilter : "+valueFilter);
+                            console.log("d3.select(this).attr('facet') : ");
+                            console.log(d3.select(this).attr("facet"));
+                            console.log("results.request.params.filters : ");
+                            console.log(results.request.params.filters);
+                            return "green";
+                        }
+                    }
+                }
+                return "black";
+            })
         ;
       }      
     }
@@ -835,13 +846,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         })
         .attr("x",function(d){return d.x;})
         .attr("y", function(d){ return height - margin.top - scalesY[h](d.occurence);} )
-        .attr("height", function(d) { 
-            console.log("____");
-            console.log( "within height of a rectangle: " );
-            console.log("d.content : "+d.content);
-            console.log("d.occurence : "+d.occurence);
-            console.log("scalesY[h](d.occurence) : ");console.log(scalesY[h](d.occurence));
-            console.log("____");
+        .attr("height", function(d) {
             return Math.max(0,scalesY[h](d.occurence)); 
         })
         .attr("opacity","0.5")
@@ -866,11 +871,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                       popOutDiv("infoPop");
                       fadeOutDiv("infoPop");
                       vm.$options.methods.querySamples(this,false);
-                    } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
+                    } else if ( vm.$data.filterQuery[ nameOfFilter ] == nameClickedBar ){
                       vm.$data.filterQuery[ nameOfFilter ] = '';
                       vm.$emit("bar-selected");
 
-                      document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                      document.getElementById("infoPop").innerHTML=" Reverting the filter of the results according to "+content;
                       popOutDiv("infoPop");
                       fadeOutDiv("infoPop");
                       vm.$options.methods.querySamples(this,false);
@@ -927,8 +932,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     // Nodes relationships here
     var svg;
-
-    d3.select("#vizSpotRelations").remove();
     svg = d3.select("#vizNodeLink").insert("svg")
       .attr("width", "100%")
       .attr("height", heightD3)
