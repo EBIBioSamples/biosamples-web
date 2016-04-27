@@ -137,8 +137,7 @@
 
             querySamples: function(e) {
                 log("Query Samples");
-                if (e !== undefined) {
-                    if (typeof e.preventDefault == 'function')
+                if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
                     e.preventDefault();
                 }
                 if (this.isQuerying) {
@@ -155,11 +154,15 @@
 
                 this.isQuerying = true;
 
+                console.log("what is this : ");console.log(this);
+
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                     .then(function(results) {
                         this.consumeResults(results);
                         // ----
-                        doD3Stuff(results,apiUrl,this);
+                        if ( typeof loadD3 === "undefined" || loadD3 ){
+                            doD3Stuff(results,apiUrl,this);
+                        }
                         // ----
                     })
                     .catch(function(data,status,response){
@@ -409,13 +412,25 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     console.log( "results.data.facet_counts : " );
     console.log( results.data.facet_counts );
     for (var u in results.data.facet_counts.facet_fields){
-      numberFacetsUnEmpty[u]=0;
-      for (var v=0; v < results.data.facet_counts.facet_fields[u].length;v++){
-        if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){ 
-          numberFacetsUnEmpty[u]++;
-        }
+        // console.log("results.data.facet_counts.facet_fields["+u+"]");
+        // console.log(results.data.facet_counts.facet_fields[u]);
+        // console.log("results.data.facet_counts.facet_fields[u][0] : ");
+        // console.log(results.data.facet_counts.facet_fields[u][0]);
+        // console.log("results.data.facet_counts.facet_fields[u][1] : ");
+        // console.log(results.data.facet_counts.facet_fields[u][1]);
+
+      if ( results.data.facet_counts.facet_fields[u][1] > 0 ){
+        numberFacetsUnEmpty[u]=0;
+          for (var v=0; v < results.data.facet_counts.facet_fields[u].length;v++){
+            if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){ 
+              numberFacetsUnEmpty[u]++;
+            }
+          }
       }
     }
+    console.log("!!!!");
+    console.log("numberFacetsUnEmpty : ");
+    console.log(numberFacetsUnEmpty);
 
     document.getElementById("elementHelp").style.visibility="hidden";
     document.getElementById("elementHelp").innerHTML="Help";
@@ -495,14 +510,15 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         $(this).css("background-color", "white");        
       });
 
+    console.log("numberFacetsUnEmpty : ");
+    console.log(numberFacetsUnEmpty);
+    console.log("numberFacetsUnEmpty['treatment_crt_ft'] : ");
+    console.log( numberFacetsUnEmpty['treatment_crt_ft'] )
 
     var dataBars = [];
 
     var barCharts=[];
     var cpt = 0;
-
-    console.log(" widthD3 : ");console.log(widthD3);
-    console.log(" heightD3 : ");console.log(heightD3);
 
     var height = heightD3/4;
     var width = widthTitle;
@@ -527,22 +543,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             .style("border-color","#5D8C83")
             .style("border-radius","10px")
         );
+      } else {
+        console.log("numberFacetsUnEmpty[u] == 0");console.log(u);
       }
       cpt++;
     }
 
     // Visual part of barChart
-    // To modify to use the data of barCharts
-    /*
-    var x = d3.scale.linear()
-      .domain([0, widthTitle])
-      .range([0, widthTitle]);
-
-    var y = d3.scale.linear()
-      .domain([0, heightD3])
-      .range([heightD3, 0]);
-    */
-    
     var x = d3.scale.linear()
       .domain([0, width])
       .range([0, width]);
@@ -558,7 +565,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       widthRectangles.push(10);
       cpt++;
     }
-    console.log("widthRectangles : ");console.log(widthRectangles);
     var maxOccurences =[];
     for (var u in results.data.facet_counts.facet_fields){
       maxOccurences.push(0);
@@ -593,7 +599,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     var cpt=0;
     console.log("results.data.facet_counts.facet_fields : ");console.log(results.data.facet_counts.facet_fields);
-    for (var u in results.data.facet_counts.facet_fields ){
+    //for (var u in results.data.facet_counts.facet_fields ){
+    for (var u in numberFacetsUnEmpty ){
       for (var v =0; v < results.data.facet_counts.facet_fields[u].length; v++ ){
         if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){
           dataBars[cpt].push({"content":results.data.facet_counts.facet_fields[u][v],
@@ -604,6 +611,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }
       cpt++;
     }
+    console.log("0000");
 
     var xAxises = [];
     var yAxises = [];
@@ -622,6 +630,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       cpt++;
     }
 
+    console.log("dataBars : ");
+    console.log(dataBars);
+
+    // Text of the bar chart
     for (var h=0; h < dataBars.length; h++){
       for (var i=0; i < dataBars[h].length;i++){
         var xHere=i*(widthRectangles[h]+5)+margin.left;
@@ -653,6 +665,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
 
+              // console.log("on mouseover text-d3");
+              // console.log("this.id : ");console.log(this.id);
+              // console.log("idToSelect : ");console.log(idToSelect);
+
               var content = d3.select('#bar_'+idToSelect).attr("content");
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
               var facet = d3.select('#bar_'+idToSelect).attr("facet");
@@ -679,8 +695,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
-              console.log("mousedown idToSelect : "+idToSelect);
-
+              
+              // Not the buggy part
               var content = d3.select('#bar_'+idToSelect).attr("content");
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
               var facet = d3.select('#bar_'+idToSelect).attr("facet");
@@ -711,52 +727,47 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               fadeOutDiv("infoPop");
             })
             .on("dblclick",function(d){
-              console.log("dblclick text");
-                console.log("this : ");console.log(this);
-                console.log( "vm.$data.filterQuery");console.log( vm.$data.filterQuery );
-                console.log("this.textContent : ");console.log(this.textContent);
+              console.log("dblclick text-d3");
                 var indexUnderscore = this.textContent.indexOf(":");
                 var nameClickedBar = this.textContent.substring(0, indexUnderscore-1);
-                console.log("nameClickedBar : ");console.log(nameClickedBar);
-                console.log("vm : ");console.log(vm);
 
                 for (var u in vm.$data.facets){
                   for (var v in vm.$data.facets[u] ){
                     if ( v == "keys"){
-                        console.log("KEYS");
+                        // console.log("KEYS");
                       for (var w in vm.$data.facets[u][v]){
                         if ( nameClickedBar == vm.$data.facets[u][v][w]){
-                            console.log("####");
                           var nameOfFilter = u+'Filter';
-                          console.log("INSIDE THE IF nameOfFilter : "+nameOfFilter);
-                          //console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
-                          console.log("nameOfFilter : ");console.log(nameOfFilter);
-                          //console.log( "vm.$data.filterQuery[ nameOfFilter ] : ");
-                          //console.log( vm.$data.filterQuery[ nameOfFilter ] );
+                          // console.log("INSIDE THE IF nameOfFilter : "+nameOfFilter);
+                          // console.log("nameOfFilter : ");console.log(nameOfFilter);
 
-                                  if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
-                                     console.log("time to start facets filtering");
-                                    vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
-                                    console.log("vm.$data.filterQuery");console.log(vm.$data.filterQuery);
-                                    vm.$emit("bar-selected");
-                                    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+nameClickedBar;
-                                    popOutDiv("infoPop");
-                                    fadeOutDiv("infoPop");
-                                    vm.$options.methods.querySamples(this,false);
-                                  } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
-                                    vm.$data.filterQuery[ nameOfFilter ] = '';
+                          if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
+                             // console.log("####");
+                             // console.log("time to start facets filtering");
+                            vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
+                            // console.log("vm.$data.filterQuery");console.log(vm.$data.filterQuery);
+                            vm.$emit("bar-selected");
+                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+nameClickedBar;
+                            popOutDiv("infoPop");
+                            fadeOutDiv("infoPop");
 
-                                    vm.$emit("bar-selected");
-                                    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
-                                    popOutDiv("infoPop");
-                                    fadeOutDiv("infoPop");
-                                    vm.$options.methods.querySamples(this,false);
-                                  } else {
-                                    console.log("hum... what the hell is happening ?");
-                                  }
+                            
+                            vm.$options.methods.querySamples(this,false);
+                            // console.log("####");
+                          } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
+                            // console.log("####");console.log("Resetting filter");
+                            vm.$data.filterQuery[ nameOfFilter ] = '';
 
+                            vm.$emit("bar-selected");
+                            document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
+                            popOutDiv("infoPop");
+                            fadeOutDiv("infoPop");
+                            vm.$options.methods.querySamples(this,false);
+                            // console.log("####");
+                          } else {
+                            console.log("hum... what the hell is happening ?");
+                          }
 
-                          console.log("####");
                         }
                       }
                     }
@@ -769,7 +780,12 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }      
     }
 
-    // part to do with barCharts 
+    // console.log("****");
+    // console.log("dataBars : ");console.log(dataBars);
+    // console.log("barCharts : ");console.log(barCharts);
+    // console.log("****");
+
+    // Rectangles of the barCharts
     for (var h=0; h < barCharts.length; h++){
       barCharts[h].selectAll(".bar")
         .data(dataBars[h])
@@ -778,6 +794,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .attr("id",function(d){
             var modifiedContent = changeSpecialCharacters(d.content);
             return 'bar_'+modifiedContent;
+        })
+        .attr("idUnaltered",function(d){
+            d.content;
+            return 'bar_'+d.content;
         })
         .attr("facet",function(d){ 
           return d.facet;
@@ -815,17 +835,19 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         })
         .attr("x",function(d){return d.x;})
         .attr("y", function(d){ return height - margin.top - scalesY[h](d.occurence);} )
-        .attr("height", function(d) { return Math.max(0,scalesY[h](d.occurence)); })
+        .attr("height", function(d) { 
+            console.log("____");
+            console.log( "within height of a rectangle: " );
+            console.log("d.content : "+d.content);
+            console.log("d.occurence : "+d.occurence);
+            console.log("scalesY[h](d.occurence) : ");console.log(scalesY[h](d.occurence));
+            console.log("____");
+            return Math.max(0,scalesY[h](d.occurence)); 
+        })
         .attr("opacity","0.5")
         .on("dblclick",function(d){
           console.log("dblclick rectangle");
           var content = d.content;
-          // console.log("vm.$data : ");
-          // console.log(vm.$data);
-          // console.log( "vm.$data.facets.content_type : ");
-          // console.log( vm.$data.facets.content_type );
-          // console.log( "vm.$data.facets.content_type.keys : ");
-          // console.log( vm.$data.facets.content_type.keys );
 
           var nameClickedBar = d.content;
 
@@ -833,42 +855,21 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             for (var v in vm.$data.facets[u] ){
               if ( v == "keys"){
                 for (var w in vm.$data.facets[u][v]){
-                    // console.log(" vm.$data.facets[u][v][w]");
-                    // console.log(vm.$data.facets[u][v][w]);
                   if ( nameClickedBar == vm.$data.facets[u][v][w]){
-                    // vm.data. filterQuery . 'facetName'Filter = nameClickedBar
-                    console.log("u : "+u);
-                    console.log("v : "+v);
-                    console.log("w : "+w);
-                    console.log("nameClickedBar == vm.$data.facets[u][v][w] == "+nameClickedBar);
                     var nameOfFilter = u+'Filter';
-                    //vm.$data.filterQuery[ nameOfFilter ] = vm.$data.facets[u][v][w];
-                    console.log("nameOfFilter : "+nameOfFilter);
-                    console.log( "vm.$data.filterQuery : "); 
-                    console.log( vm.$data.filterQuery);
-                    console.log( "vm.$data.filterQuery[ nameOfFilter ] : ");
-                    console.log( vm.$data.filterQuery[ nameOfFilter ] );
                     if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
                       console.log("time to filter");
-                      console.log("typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined'");
-                      console.log(typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined');
-                      console.log("vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar");
-                      console.log(vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar);
-
                       vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
 
                       vm.$emit("bar-selected");
-                      console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
                       document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
                       popOutDiv("infoPop");
                       fadeOutDiv("infoPop");
                       vm.$options.methods.querySamples(this,false);
                     } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
-                      console.log("vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar");
                       vm.$data.filterQuery[ nameOfFilter ] = '';
-
                       vm.$emit("bar-selected");
-                      console.log(" vm.$data.filterQuery  ");console.log(vm.$data.filterQuery);
+
                       document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
                       popOutDiv("infoPop");
                       fadeOutDiv("infoPop");
