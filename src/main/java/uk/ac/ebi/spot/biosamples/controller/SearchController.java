@@ -1,39 +1,33 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.solr.client.solrj.SolrQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.data.solr.core.SolrOperations;
-import org.springframework.data.solr.core.SolrTemplate;
-import org.springframework.data.solr.core.query.FacetOptions;
-import org.springframework.data.solr.core.query.FacetQuery;
-import org.springframework.data.solr.core.query.SimpleFacetQuery;
-import org.springframework.data.solr.core.query.SimpleStringCriteria;
-import org.springframework.data.solr.core.query.result.FacetFieldEntry;
-import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import uk.ac.ebi.spot.biosamples.model.Merged;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -45,14 +39,8 @@ import java.util.regex.Pattern;
 @Controller
 @RequestMapping("/api")
 public class SearchController {
+    private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	private Logger log = LoggerFactory.getLogger(this.getClass());
-
-    @Autowired
-    private SolrOperations mergedCoreSolrTemplate;
-
-//    @NotNull
-//    @Value("${solr.searchapi.server}")
     @Value("${solr.server}")
     private String solrServerUrl;
 
@@ -71,7 +59,7 @@ public class SearchController {
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(ignoredFacetsResource.getInputStream()));
             String line = br.readLine();
-            while ( line != null ) {
+            while (line != null) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.find()) {
                     ignoredFacets.add(matcher.group(1).trim());
@@ -79,7 +67,8 @@ public class SearchController {
                 line = br.readLine();
             }
             br.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             ignoredFacets.add("content_type");
         }
@@ -88,7 +77,6 @@ public class SearchController {
     @CrossOrigin
     @RequestMapping(value = "/search")
     public void find(
-//            SearchRequest searchRequest, //TODO Spring is not able to read correctly the filter fields
             @RequestParam("searchTerm") String searchTerm,
             @RequestParam(value = "useFuzzySearch", defaultValue = "false") boolean useFuzzySearch,
             @RequestParam(value = "start", defaultValue = "0") int start,
@@ -96,33 +84,26 @@ public class SearchController {
             @RequestParam(value = "filters[]", required = false, defaultValue = "") String[] filters,
             HttpServletResponse response) throws Exception {
 
-        SolrQuery query = new SolrQuery();
+        StringBuilder queryBuilder = new StringBuilder();
         boolean isGenericQuery = searchTerm.matches("\\**");
-//        String searchTerm = searchRequest.getSearchTerm();
-
-//        if (searchRequest.useFuzzySearch()) {
-//            searchTerm = searchRequest.getFuzzyfiedTerm();
-//        }
         if (isGenericQuery) {
             searchTerm = "*:*";
-        } else {
+        }
+        else {
             if (useFuzzySearch) {
-                searchTerm = searchTerm.replaceAll("(\\w+)","$0~");
+                searchTerm = searchTerm.replaceAll("(\\w+)", "$0~");
             }
         }
 
-        query.set("q", searchTerm);
-        query.set("wt", "json");
+        queryBuilder.append("q=").append(searchTerm);
+        queryBuilder.append("&wt=json");
 
         // Setup facets
-        query.setFacet(true);
-        query.addFacetField("content_type");
-        List<String> dynamicFacets = getMostUsedFacets(searchTerm,5);
-        dynamicFacets.forEach(query::addFacetField);
-        query.setFacetLimit(5);
+        queryBuilder.append("&facet=true");
+        queryBuilder.append("&facet.field=content_type");
 
         // Setup filters
-        for(String filter: filters) {
+        for (String filter : filters) {
             String[] baseFilter = filter.split("(Filter\\|)");
             if (baseFilter.length == 2) {
                 String filterKey = baseFilter[0];
@@ -134,71 +115,79 @@ public class SearchController {
                     default:
                         filterKey = String.format("%s_crt_ft", filterKey);
                 }
-                query.addFilterQuery(String.format("%s:\"%s\"", filterKey, filterValue));
+                queryBuilder.append("&fq=").append(String.format("%s:\"%s\"", filterKey, filterValue));
             }
         }
 
         // Setup result number
-//        query.setRows(searchRequest.getRows()).setStart(searchRequest.getStart());
-        query.setRows(rows).setStart(start);
+        queryBuilder.append("&rows=").append(rows);
+        queryBuilder.append("&start=").append(start);
 
         // Setup highlighting
         // Highlight is working only if searching for specific terms
         if (!isGenericQuery) {
-            query.setHighlight(true);
-            query.setHighlightFragsize(0);
-            query.addHighlightField("description");
-            query.setHighlightSimplePre("<span class='highlight'>").setHighlightSimplePost("</span>");
+            queryBuilder.append("&hl=true");
+            queryBuilder.append("&hl.fragsize=0");
+            queryBuilder.append("&hl.fl=description");
+            queryBuilder.append("&hl.simple.pre=<span+class='highlight'>").append("&hl.simple.post=</span>");
         }
+
+        // execute this query once to get most used facets...
+        List<String> dynamicFacets = getMostUsedFacets(queryBuilder.toString(), 5);
+        dynamicFacets.forEach(facet -> queryBuilder.append("&facet.field=").append(facet));
+        queryBuilder.append("&facet.limit=" + 10);
 
         // Forward query to SolR
-        String finalQuery = solrServerUrl + "merged/select?" + query.toString();
-        log.trace("finalQuery = "+finalQuery);
-        this.forwardSolrResponse(response, finalQuery);
-
+        this.streamSolrResponse(response.getOutputStream(), queryBuilder.toString());
     }
 
-    private void forwardSolrResponse(HttpServletResponse response, String query) throws Exception {
-
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet getRequest =  new HttpGet(query);
-
-
-        try (CloseableHttpResponse httpResponse = httpClient.execute(getRequest)) {
-            HttpEntity entity = httpResponse.getEntity();
-            entity.writeTo(response.getOutputStream());
-            EntityUtils.consume(entity);
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-            response.getOutputStream().println("Internal Server Error");
-
-
-        }
-    }
-
-    private List<String> getMostUsedFacets(String searchTerm, int facetLimit) {
-
+    private List<String> getMostUsedFacets(String query, int facetLimit) throws IOException {
         List<String> dynamicFacets = new ArrayList<>();
         facetLimit = ignoredFacets.size() - 1 + facetLimit;
 
-        FacetQuery facetQuery = new SimpleFacetQuery(new SimpleStringCriteria(searchTerm));
-        FacetOptions facetOptions = new FacetOptions();
-        facetOptions.addFacetOnField("crt_type_ft");
-        facetOptions.setFacetLimit(facetLimit);
-        facetQuery.setFacetOptions(facetOptions);
-        FacetPage<Merged> facetResults = mergedCoreSolrTemplate.queryForFacetPage(facetQuery,Merged.class);
+        StringBuilder facetQuery = new StringBuilder(query);
+        facetQuery.append("&facet.field=crt_type_ft");
+        facetQuery.append("&facet.limit=").append(facetLimit);
 
-        for (FacetFieldEntry e : facetResults.getFacetResultPage("crt_type_ft")) {
-            String facetName = e.getValue();
-            if ( ! ignoredFacets.contains(facetName) ) {
-                dynamicFacets.add(String.format("%s_ft", facetName));
+        final PipedInputStream in = new PipedInputStream();
+        final PipedOutputStream out = new PipedOutputStream(in);
+
+        new Thread(() -> {
+            try {
+                streamSolrResponse(out, facetQuery.toString());
             }
+            catch (IOException e) {
+                try {
+                    out.close();
+                }
+                catch (IOException e1) {
+                    // tried our best
+                }
+            }
+        }).start();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(in);
+        JsonNode facetNodes = jsonNode.get("facet_counts").get("facet_fields").get("crt_type_ft");
+        Iterator<JsonNode> facetNodeIt = facetNodes.elements();
+        while (facetNodeIt.hasNext()) {
+            String facetName = facetNodeIt.next().asText();
+            int facetCount = facetNodeIt.next().asInt();
+            log.debug("Dynamic facet '" + facetName + "' -> " + facetCount);
+            dynamicFacets.add(String.format("%s_ft", facetName));
         }
 
         return dynamicFacets;
-
     }
 
-
-
+    private void streamSolrResponse(OutputStream outputStream, String query) throws IOException {
+        String requestUrl = solrServerUrl + "merged/select?" + query;
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpGet getRequest = new HttpGet(requestUrl);
+        try (CloseableHttpResponse httpResponse = httpClient.execute(getRequest)) {
+            HttpEntity entity = httpResponse.getEntity();
+            entity.writeTo(outputStream);
+            EntityUtils.consume(entity);
+        }
+    }
 }

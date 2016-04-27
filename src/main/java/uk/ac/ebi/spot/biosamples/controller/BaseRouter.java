@@ -4,7 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import uk.ac.ebi.spot.biosamples.model.Breadcrumb;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +23,7 @@ public class BaseRouter {
 
     @RequestMapping("/search")
     public String search(Model model, String searchTerm, HttpServletRequest request) {
-        model.addAttribute("searchTerm",searchTerm);
+        model.addAttribute("searchTerm", searchTerm);
         return "search";
     }
 
@@ -42,11 +41,11 @@ public class BaseRouter {
     public String help() {
         return "help";
     }
+
     @RequestMapping("/help/{page}")
     public String helpInnerPage(@PathVariable("page") String innerPage) {
         return "help_" + innerPage;
     }
-
 
 
     @RequestMapping("/about")
