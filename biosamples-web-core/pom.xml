@@ -76,12 +76,6 @@
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 			<version>1.4.0-SNAPSHOT</version>
 		</dependency>
-		<!-- needed to have an executable and hostable war file -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
