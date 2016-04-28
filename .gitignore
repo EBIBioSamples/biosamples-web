@@ -1,0 +1,17 @@
+# Frontend
+**/*/node
+**/*/node_modules
+**/*/bower_components
+
+# Javascript/Stylesheets automatically generated
+**/*/src/main/resources/static/stylesheets/main_samelf.css
+**/*/src/main/resources/static/stylesheets/main_samelf.css.map
+**/*/src/main/resources/static/javascript/searchComponents.js
+**/*/src/main/resources/static/javascript/searchComponents.js.map
+
+# Properties and resources we don't want to share
+**/*/src/main/resources/application.properties
+**/*/src/main/resources/ignoredFacets.fields
+
+#logging
+**/*/logs
