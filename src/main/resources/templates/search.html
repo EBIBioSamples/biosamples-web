@@ -301,7 +301,7 @@
     }
 
   </style>  
-  <!-- end CSS-->    
+  <!-- end CSS-->
 </head>
 <body id="app">
 
@@ -333,99 +333,111 @@
     </nav>
 
     <!-- Example layout containers -->
+
     <section id="sectionTitle" >
         <h2>BioSample Database Search Interface</h2>
-
-            <div id="buttonRezInfo" style="border:solid;border-color:grey;  border-radius:1px;visibility:hidden;"> 
-                <h4 id="titleRezInfo" >
-                    Display result information
-                </h4>
-            </div>
-            <div id="sectionVizResult" 
-                style="visibility:hidden; height:0px;
-                 overflow: auto;" >
-            </div>
-
     </section>
 
-    <section class="container" v-show="queryTermPresent" v-cloak>
-        <div id="areaNodeLink">
-        <div id= "vizNodeLink"></div>
-        <div id="infoVizRelations">
-        <h3> Clicked element information </h3>
-            <div id="textData">Click on an element of the diagram to display its information </div>
-        </div>
-      </div>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
+    <li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>
+  </ul>
 
-        <div v-if="!queryHasResults">
-            <div class="row">
-                <h3>
-                    No results have been found for <i>{{queryTerm}}</i>
-                    <span class="small"><a href="#" v-on:click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
-                </h3>
+    <div class="tab-content">
+      <section id="sectionList" class="container tab-pane fade in active" v-show="queryTermPresent" v-cloak>
+
+          <div v-if="!queryHasResults">
+              <div class="row">
+                  <h3>
+                      No results have been found for <i>{{queryTerm}}</i>
+                      <span class="small"><a href="#" v-on:click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
+                  </h3>
+              </div>
+          </div>
+
+          <div v-else="">
+              <div class="row">
+                  <div class="col-md-4"></div>
+                  <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
+              </div>
+              <div v-else="">
+                  <div class="row">
+                      <div class="col-md-4"></div>
+                      <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
+                  </div>
+
+                  <div class="row">
+                      <div class="col-md-4">
+                          <div class="row">
+                              <div class="panel panel-default">
+                                  <div class="panel-heading">
+                                      <h3>Refine search results</h3>
+                                  </div>
+                                  <div class="panel-body">
+                                      <form>
+                                          <label for="fuzzy-search">Search for similar terms</label>
+                                          <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
+                                                 v-model="useFuzzy" v-on:change="querySamples" />
+                                      </form>
+
+                                      <component v-for="(key,facetObj) in facets"
+                                                 is="facet" v-bind:title="key | startCase"
+                                                 v-bind:keys="facetObj.keys"
+                                                 v-bind:values="facetObj.vals"
+                                                 v-bind:facet-id="key + 'Filter'">
+                                      </component>
+                                  </div>
+                                  <div class="panel-footer">
+                                      <div class="row">
+                                          <div class="col-md-6">
+                                              <component is="pagination"
+                                                         v-bind:total-results="resultsNumber"
+                                                         v-bind:displayed-results="samplesToRetrieve"
+                                                         style="float:right">
+                                              </component>
+                                          </div>
+                                          <div class="col-md-6">
+                                              <component is="items-dropdown">
+                                              </component>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-md-8">
+                          <component is="biosamples-list"
+                                     v-bind:elements="biosamples">
+                          </component>
+                      </div>
+                  </div>
+              </div>
+
+          </div>
+      </section>
+
+      <section id="sectionVisualisation" class='tab-pane fade'>
+          <div id="buttonRezInfo" style="border:solid;border-color:grey;  border-radius:1px;visibility:hidden;"> 
+              <h4 id="titleRezInfo" >
+                  Display result information
+              </h4>
+          </div>
+          <div id="sectionVizResult" 
+              style="visibility:hidden; height:0px;
+               overflow: auto;" >
+          </div>
+
+          <div id="areaNodeLink">
+            <div id= "vizNodeLink"></div>
+            <div id="infoVizRelations">
+              <h3> Clicked element information </h3>
+                <div id="textData">Click on an element of the diagram to display its information </div>
             </div>
-        </div>
+          </div>
+      </section>
 
-        <div v-else="">
-            <div class="row">
-                <div class="col-md-4"></div>
-                <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
-            </div>
-            <div v-else="">
-                <div class="row">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
-                </div>
+    </div>
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h3>Refine search results</h3>
-                                </div>
-                                <div class="panel-body">
-                                    <form>
-                                        <label for="fuzzy-search">Search for similar terms</label>
-                                        <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
-                                               v-model="useFuzzy" v-on:change="querySamples" />
-                                    </form>
-
-                                    <component v-for="(key,facetObj) in facets"
-                                               is="facet" v-bind:title="key | startCase"
-                                               v-bind:keys="facetObj.keys"
-                                               v-bind:values="facetObj.vals"
-                                               v-bind:facet-id="key + 'Filter'">
-                                    </component>
-                                </div>
-                                <div class="panel-footer">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <component is="pagination"
-                                                       v-bind:total-results="resultsNumber"
-                                                       v-bind:displayed-results="samplesToRetrieve"
-                                                       style="float:right">
-                                            </component>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <component is="items-dropdown">
-                                            </component>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <component is="biosamples-list"
-                                   v-bind:elements="biosamples">
-                        </component>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
     <div id="elementHelp"> Help </div>
     <div id="infoPop"> Temporary display of information </div>
 

@@ -773,13 +773,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                         var indexCut = results.request.params.filters[i].indexOf("|");
                         var valueFilter = results.request.params.filters[i].substring(indexCut+1,results.request.params.filters[i].length);
                         if (valueFilter == d3.select(this).attr("content")){
-                            console.log("HEY YAH !");
-                            console.log("filter : "+filter);
-                            console.log("valueFilter : "+valueFilter);
-                            console.log("d3.select(this).attr('facet') : ");
-                            console.log(d3.select(this).attr("facet"));
-                            console.log("results.request.params.filters : ");
-                            console.log(results.request.params.filters);
                             //d3.select(this).attr.color = "red";
                             return "red";
                         }
@@ -790,11 +783,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         ;
       }      
     }
-
-    // console.log("****");
-    // console.log("dataBars : ");console.log(dataBars);
-    // console.log("barCharts : ");console.log(barCharts);
-    // console.log("****");
 
     // Rectangles of the barCharts
     for (var h=0; h < barCharts.length; h++){
@@ -917,9 +905,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           fadeOutDiv("infoPop");
         })
         .style("fill",function(d){
-            console.log("fill bar-d3");
-            console.log("results.request.params.filters : ");
-            console.log( results.request.params.filters );
             for (var i in results.request.params.filters ){
                 var indexCut = results.request.params.filters[i].indexOf("Filter");
                 var filter = results.request.params.filters[i].substring(0,indexCut);
@@ -928,14 +913,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                     var indexCut = results.request.params.filters[i].indexOf("|");
                     var valueFilter = results.request.params.filters[i].substring(indexCut+1,results.request.params.filters[i].length);
                     if (valueFilter == d3.select(this).attr("content")){
-                        console.log("HEY YAH BAR !");
-                        console.log("filter : "+filter);
-                        console.log("valueFilter : "+valueFilter);
-                        console.log("d3.select(this).attr('facet') : ");
-                        console.log(d3.select(this).attr("facet"));
-                        console.log("results.request.params.filters : ");
-                        console.log(results.request.params.filters);
-                        // dark red
                         d3.select(this).attr("color","steelblue");
                         return "steelblue";
                     }
@@ -944,13 +921,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             d3.select(this).attr("color","#46b4af");
             return "#46b4af";
         })
-        // .append("text")
-        //   .attr("transform", "rotate(-90)")
-        //   .attr("y", 40)
-        //   .attr("dy", ".71em")
-        //   //.attr("opacity",1)
-        //   .style("text-anchor", "end")
-        //   .text(function(d){return d.content;})
         ;
     }
 
