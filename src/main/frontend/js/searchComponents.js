@@ -678,7 +678,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                 +"<hr/> "+ facet +" <hr/> "+  content+ " : " + occurence ;
               d3.selectAll(".text-d3").style("opacity",.5);
               d3.select(this).style("opacity",1);
-              d3.select('#bar_'+idToSelect).style("fill","green");
+              d3.select('#bar_'+idToSelect).style("fill","steelblue");
             })
             .on("mouseout",function(){
               document.getElementById("elementHelp").visibility="visible";
@@ -687,7 +687,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               +"<br/> • Double click to filter the results according to a facet. ";              
 
               d3.selectAll(".text-d3").style("opacity",1);
-              d3.selectAll(".bar").style("fill","steelblue");
+              //d3.selectAll(".bar-d3").style("fill","#46b4af");
+              d3.selectAll(".bar-d3").style("fill",function(d){
+                return d3.select(this).attr("color");
+              });
             })
             .on("mousedown",function(){
               console.log("mousedown text");
@@ -696,7 +699,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
               
-              // Not the buggy part
               var content = d3.select('#bar_'+idToSelect).attr("content");
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
               var facet = d3.select('#bar_'+idToSelect).attr("facet");
@@ -742,8 +744,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                             document.getElementById("infoPop").innerHTML=" Filtering the results according to "+vm.$data.filterQuery[ nameOfFilter ];
                             popOutDiv("infoPop");
                             fadeOutDiv("infoPop");
-
-                            
                             vm.$options.methods.querySamples(this,false);
                           } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
                             vm.$data.filterQuery[ nameOfFilter ] = '';
@@ -756,7 +756,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                           } else {
                             console.log("hum... what the hell is happening ?");
                           }
-
                         }
                       }
                     }
@@ -781,7 +780,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                             console.log(d3.select(this).attr("facet"));
                             console.log("results.request.params.filters : ");
                             console.log(results.request.params.filters);
-                            return "green";
+                            //d3.select(this).attr.color = "red";
+                            return "red";
                         }
                     }
                 }
@@ -798,10 +798,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     // Rectangles of the barCharts
     for (var h=0; h < barCharts.length; h++){
-      barCharts[h].selectAll(".bar")
+      barCharts[h].selectAll(".bar-d3")
         .data(dataBars[h])
         .enter().append("rect")
-        .attr("class", "bar")
+        .attr("class", "bar-d3")
         .attr("id",function(d){
             var modifiedContent = changeSpecialCharacters(d.content);
             return 'bar_'+modifiedContent;
@@ -821,28 +821,30 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         })
         // space is 5
         .attr("width", widthRectangles[h] )
-        .attr("fill", "steelblue" )
+        .attr("fill", "#46b4af" )
         .on("mouseover",function(d,i){
           document.getElementById("elementHelp").style.visibility="visible";
           document.getElementById("elementHelp").innerHTML=
             "Help"
             +"<hr/>"+ d.facet +" <hr/> "+d.content
             +", "+d.occurence;
-
           var modifiedContent = changeSpecialCharacters(d.content);
           var idToSelect = '#text_'+modifiedContent;
           d3.selectAll(".text-d3").style("opacity",.5);
           d3.select(idToSelect).style("opacity",1);
-          d3.select(this).style("fill","green");
+          d3.select(this).style("fill","steelblue");
         })
         .on("mouseout",function(d,i){
           document.getElementById("elementHelp").innerHTML = "Help "
           +"<hr/> • Click on a bar or a text to highlight the nodes with these values."
           +"<br/> • Double click to filter the results according to a facet. ";        
           document.getElementById("elementHelp").visibility="visible";
-
           d3.selectAll(".text-d3").style("opacity",1);
-          d3.select(this).style("fill","steelblue");
+          //d3.select(this).style("fill","#46b4af");
+          d3.selectAll(".bar-d3").style("fill",function(d){
+            return d3.select(this).attr("color");
+          });
+
         })
         .attr("x",function(d){return d.x;})
         .attr("y", function(d){ return height - margin.top - scalesY[h](d.occurence);} )
@@ -865,7 +867,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                     if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
                       console.log("time to filter");
                       vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
-
                       vm.$emit("bar-selected");
                       document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
                       popOutDiv("infoPop");
@@ -874,7 +875,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                     } else if ( vm.$data.filterQuery[ nameOfFilter ] == nameClickedBar ){
                       vm.$data.filterQuery[ nameOfFilter ] = '';
                       vm.$emit("bar-selected");
-
                       document.getElementById("infoPop").innerHTML=" Reverting the filter of the results according to "+content;
                       popOutDiv("infoPop");
                       fadeOutDiv("infoPop");
@@ -889,8 +889,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           }
         })
         .on("mousedown",function(d){
-          // Filter the data. We now want to highlight selection instead
-
+          // Filter the data. We now want to highlight selection
           d3.selectAll("circle").style("stroke","black");
           d3.selectAll(".ghost_circle").style("visibility","hidden");
           var content = d.content;
@@ -913,19 +912,45 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               }
             }
           });
-
           document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.";
           popOutDiv("infoPop");
           fadeOutDiv("infoPop");
-
         })
-        .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 40)
-          .attr("dy", ".71em")
-          //.attr("opacity",1)
-          .style("text-anchor", "end")
-          .text(function(d){return d.content;})
+        .style("fill",function(d){
+            console.log("fill bar-d3");
+            console.log("results.request.params.filters : ");
+            console.log( results.request.params.filters );
+            for (var i in results.request.params.filters ){
+                var indexCut = results.request.params.filters[i].indexOf("Filter");
+                var filter = results.request.params.filters[i].substring(0,indexCut);
+
+                if ( d3.select(this).attr("facet").indexOf(filter) > -1 ){
+                    var indexCut = results.request.params.filters[i].indexOf("|");
+                    var valueFilter = results.request.params.filters[i].substring(indexCut+1,results.request.params.filters[i].length);
+                    if (valueFilter == d3.select(this).attr("content")){
+                        console.log("HEY YAH BAR !");
+                        console.log("filter : "+filter);
+                        console.log("valueFilter : "+valueFilter);
+                        console.log("d3.select(this).attr('facet') : ");
+                        console.log(d3.select(this).attr("facet"));
+                        console.log("results.request.params.filters : ");
+                        console.log(results.request.params.filters);
+                        // dark red
+                        d3.select(this).attr("color","steelblue");
+                        return "steelblue";
+                    }
+                }
+            }
+            d3.select(this).attr("color","#46b4af");
+            return "#46b4af";
+        })
+        // .append("text")
+        //   .attr("transform", "rotate(-90)")
+        //   .attr("y", 40)
+        //   .attr("dy", ".71em")
+        //   //.attr("opacity",1)
+        //   .style("text-anchor", "end")
+        //   .text(function(d){return d.content;})
         ;
     }
 
@@ -1138,7 +1163,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .attr("border","solid").attr("border-radius","10px")
         .style("border","solid").style("border-radius","10px")
         .style("box-shadow","gray")
-        .style("background-color","green")
+        .style("background-color","#46b4af")
         .attr("fill", "#4D504F")
         .on("mouseover",function(d){
           d3.selectAll(".node").selectAll("text").style("font-size", "10px");

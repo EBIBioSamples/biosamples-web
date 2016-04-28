@@ -321,5 +321,5 @@ function fadeOutDiv(stringDiv){
 
 
 function changeSpecialCharacters( myid ) { 
-    return myid.replace( /(:|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
+    return myid.replace( /(:|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
 }
