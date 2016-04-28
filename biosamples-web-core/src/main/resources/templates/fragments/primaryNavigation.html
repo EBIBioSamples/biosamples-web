@@ -19,7 +19,8 @@
 
 */-->
 <th:block layout:fragment="navigation(customBase,customPage)">
-    <nav th:with="currentPage=${#strings.defaultString(customPage,'home')}">
+    <!--<nav th:with="currentPage=${#strings.defaultString(customPage,'home')}">-->
+    <nav th:with="currentPage=${customPage}">
         <ul class="grid_24" id="local-nav">
             <li class="first" th:classappend="${currentPage == 'home'} ? 'active'">
                 <a th:href="@{/}" href="/" title="Biosamples">Home</a>

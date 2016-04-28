@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date 18/03/2016
  */
 @Controller
-public class BaseRouter {
+public class NavigationController {
 
     @RequestMapping("/")
     public String index() {

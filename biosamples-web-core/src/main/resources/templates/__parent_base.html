@@ -4,10 +4,12 @@
 
     Thymeleaf template variables:
 
-    overrideTitle   = {true,false} - you can use this variable in combination with the title block to override the title-pattern
-    currentPage     = 'String' - define the current page inside the primary navigation. Check out fragments/primaryNavigation for info
-    currentHelpPage = 'String' - define the current page inside the help navigation. Check fragments/helpNavigation for infos
+    overrideTitle = {true,false} - you can use this variable in combination with the title block to override the title-pattern
+    currentPage = 'some strings' - define the current page inside the primary navigation. Check out fragments/primaryNavigation for info
+
 */-->
+
+
 
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -16,10 +18,10 @@
 <!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
 <!--[if gt IE 8]><!-->
 <html class="no-js"
-      lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="currentPage = 'help'">
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+    th:with="currentPage='home',overrideTitle=false">
 <!--<![endif]-->
 <head>
     <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
@@ -35,21 +37,10 @@
 
 <div id="wrapper" class="container_24">
 
-    <th:block th:include="fragments/header::header"></th:block>
+    <header th:replace="fragments/header::header"></header>
 
-    <div id="content" role="main" class="grid_24 clearfix">
-
-        <!--<th:block layout:fragment="content" th:remove="tag">-->
-
-        <!--</th:block>-->
-        <th:block layout:fragment="content"></th:block>
-
-        <aside class="grid_6 omega">
-            <h3>Help</h3>
-            <th:block layout:replace="fragments/helpNavigation :: helpNavigation(customHelpBaseUrl=${helpHomeUrl}, customHelpPage=${currentHelpPage})">
-
-            </th:block>
-        </aside>
+    <div id="content" role="main" class="grid_24 clearfix" layout:fragment="content">
+        Hello World
     </div>
 
     <footer th:replace="fragments/footer :: footer"></footer>
