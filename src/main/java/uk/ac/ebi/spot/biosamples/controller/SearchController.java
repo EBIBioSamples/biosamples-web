@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -129,7 +130,8 @@ public class SearchController {
             queryBuilder.append("&hl=true");
             queryBuilder.append("&hl.fragsize=0");
             queryBuilder.append("&hl.fl=description");
-            queryBuilder.append("&hl.simple.pre=<span+class='highlight'>").append("&hl.simple.post=</span>");
+            queryBuilder.append("&hl.simple.pre=").append(URLEncoder.encode("<spanclass='highlight'>", "UTF-8"));
+            queryBuilder.append("&hl.simple.post=").append(URLEncoder.encode("</span>", "UTF-8"));
         }
 
         // execute this query once to get most used facets...
@@ -168,7 +170,7 @@ public class SearchController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(in);
-        JsonNode facetNodes = jsonNode.get("facet_counts").get("facet_fields").get("crt_type_ft");
+        JsonNode facetNodes = jsonNode.get("facet_counts").get("facet_queries").get("facet_fields").get("crt_type_ft");
         Iterator<JsonNode> facetNodeIt = facetNodes.elements();
         while (facetNodeIt.hasNext()) {
             String facetName = facetNodeIt.next().asText();
