@@ -1,0 +1,42 @@
+body {
+    max-width: 1170px;
+    margin: 0 auto;
+}
+header {
+    padding: 2em;
+    background-color: #2f6fad;
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: white;
+}
+
+header > * {
+    margin-right: 1em;
+}
+
+main {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 1em;
+}
+
+footer {
+    background-color: #2f6fad;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 2em;
+}
+
+.biosample-search input {
+   width:100%;
+}
+
+.biosample-search input[type="text"] {
+    padding: 0.5em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
