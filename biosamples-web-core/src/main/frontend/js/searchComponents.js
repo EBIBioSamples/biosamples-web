@@ -387,14 +387,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
   // If existing, clean the visualisation space
   d3.select("#vizSpotRelations").remove();
-  // var testStringSpecial = "$-jhu_@n:.a/b/c d e f";
-  // console.log("testStringSpecial : ");console.log(testStringSpecial);
-  // var modifSpecial = changeSpecialCharacters(testStringSpecial);
-  // console.log("modifSpecial : ");console.log(modifSpecial);
-
 
   var fill = d3.scale.category20();
-  var widthTitle = $("#sectionTitle").width();
+  var widthTitle = window.innerWidth;
   var widthD3 = Math.floor( (70*widthTitle)/100 );
   var heightD3 = widthTitle/2;
 
@@ -413,13 +408,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     console.log( "results.data.facet_counts : " );
     console.log( results.data.facet_counts );
     for (var u in results.data.facet_counts.facet_fields){
-        // console.log("results.data.facet_counts.facet_fields["+u+"]");
-        // console.log(results.data.facet_counts.facet_fields[u]);
-        // console.log("results.data.facet_counts.facet_fields[u][0] : ");
-        // console.log(results.data.facet_counts.facet_fields[u][0]);
-        // console.log("results.data.facet_counts.facet_fields[u][1] : ");
-        // console.log(results.data.facet_counts.facet_fields[u][1]);
-
       if ( results.data.facet_counts.facet_fields[u][1] > 0 ){
         numberFacetsUnEmpty[u]=0;
           for (var v=0; v < results.data.facet_counts.facet_fields[u].length;v++){
@@ -460,7 +448,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
        +'<div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
       
       var cpt = 0;
-      var strResults = '<table id="table" > <tr> ';
+      var strResults = '<table id="table" style="width: 100%"; " > <tr>';
       
       for (var u in numberFacetsUnEmpty){
         if ( numberFacetsUnEmpty[u] > 0 ){
@@ -513,8 +501,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     console.log("numberFacetsUnEmpty : ");
     console.log(numberFacetsUnEmpty);
-    console.log("numberFacetsUnEmpty['treatment_crt_ft'] : ");
-    console.log( numberFacetsUnEmpty['treatment_crt_ft'] )
 
     var dataBars = [];
 
@@ -984,7 +970,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
         console.log("draw");
 
-        var width = Math.floor((70 * document.getElementById('sectionTitle').clientWidth)/100);
+         var width = Math.floor((70 * window.innerWidth)/100);
+        //var width = window.innerWidth;
         var height=heightD3;
 
         var force = d3.layout.force()
