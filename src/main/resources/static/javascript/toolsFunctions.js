@@ -10,6 +10,7 @@ function getRandomColor() {
   return color;
 }
 
+// TODO Incorporation of code from searchComponents
 function loadBars(width,height,margin,results,dataBars){
 
 }
@@ -45,7 +46,6 @@ function getURLsFromObject(objectToRead,prop){
 	        }
 	      }
 	    }
-
 	    // Either a single string URL, or an array of URL
 	    if ( !strIsSeveralUrls ){
 	      var indexExtensionImg = objectToRead[prop].indexOf( arrayImgTypes[i] );
@@ -82,15 +82,10 @@ function getURLsFromObject(objectToRead,prop){
 	return arrayUrls;
 }
 
-//function loadDataFromGET(results, nodeData, vm,server, nameToNodeIndex){
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	//console.log("!!!!! HUGE STUFF TO HAPPEN HERE 2 !!!!!");
-	//console.log("loadDataFromGET in src/main/resources/static/javascript/toolsFunctions");
+	console.log("!!!!! BIG STUFF TO HAPPEN HERE 6 !!!!!");
+	console.log("loadDataFromGET in src/main/frontend/js/toolsFunctions");
 
-	//console.log("results.data.response.docs.length : ");
-	//console.log(results.data.response.docs.length);
-
-	//console.log("apiUrl : ");console.log(apiUrl);
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
 	nodeData.color=[];
@@ -149,17 +144,17 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 			  }
 			  groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]].push(results.data.response.docs[i].accession);
 			} else {
-			  nodeData.nodes.push({ 
+			  nodeData.nodes.push({
 			  	"radius": 5,
-			  	"color" : getRandomColor(), 
-			  	"type":"sample", 
+			  	"color" : getRandomColor(),
+			  	"type":"sample",
 			  	"accession":results.data.response.docs[i].accession,
 			  	"name":results.data.response.docs[i].accession,
 			    "sample_grp_accessions":[],
 			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
 			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
 			  });
-			}			
+			}
 		}
 		nameToNodeIndex[results.data.response.docs[i].accession] = nodeData.nodes.length-1;
 	}
@@ -322,4 +317,198 @@ function fadeOutDiv(stringDiv){
 
 function changeSpecialCharacters( myid ) { 
     return myid.replace( /(:|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
+}
+
+
+function draw(svg,nodeData){
+
+	console.log("draw");
+
+	var width = Math.floor((70 * window.innerWidth)/100);
+	//var width = window.innerWidth;
+	var height=heightD3;
+
+	var force = d3.layout.force()
+	.gravity(.08)
+	.distance(50)
+	.charge(-100)
+	.size([width, height]);
+
+	var link = svg.selectAll(".link")
+	.data(nodeData.links)
+	.enter().append("line")
+	.attr("class", "link")
+	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+
+	//Add circles to the svgContainer
+	var node = svg.selectAll("node")
+	.data(nodeData.nodes)
+	.enter().append("g")
+	.attr("class","node")
+	.call(force.drag)
+	;
+
+	node.append("circle")
+	.attr("r", function (d) { return d.radius * 3; })
+	.attr("accession",function(d){return d.accession})
+	.attr("class","ghost_circle")
+	.attr("id",function(d){ return 'ghost_'+d.accession })
+	.attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
+	.attr("grp_sample_accessions",function(d){ return d.grp_sample_accessions})
+	.attr("responseDoc",function(d){return d.responseDoc})
+	.attr("type", function (d) { return d.type; })
+	.style("fill", function (d) {  return "grey"; })
+	.style("stroke","black")
+	.style("stroke-width",2)
+	.style("stroke-opacity",1)
+	.style("opacity", .7)
+	.style("visibility", "hidden")
+	;
+
+	node.append("circle")
+	.on("mousedown",function(d){
+	})
+	.on("mouseout",function(d){
+	})
+	.on("mouseover",function(d){
+	})
+	.attr("r", function (d) { return d.radius; })
+	.attr("accession",function(d){return d.accession})
+	.attr("id",function(d){ return 'circle_'+d.accession })
+	.attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
+	.attr("grp_sample_accessions",function(d){ return d.grp_sample_accessions})
+	.attr("responseDoc",function(d){return d.responseDoc})
+	.attr("type", function (d) { return d.type; })
+	.style("fill", function (d) {  return d.color; })
+	.style("stroke","black")
+	.style("stroke-width",2)
+	.style("stroke-opacity",1)
+	.style("opacity", .7)
+	  // Added part for dragging
+	  //.call(drag)
+	  //.style("fill", function(d) { return fill(d.group); })
+	  ;
+
+	  node
+	  .attr("accession",function(d){return d.accession})
+	  .attr("id",function(d){return 'node_'+d.accession})
+	  .attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
+	  .attr("grp_sample_accessions",function(d){ return d.grp_sample_accessions})
+	  .attr("responseDoc",function(d){return d.responseDoc})
+	  .attr("type", function (d) { return d.type; })
+	  .style("stroke-width",1)
+	  .style("fill", function(d) { 
+	  	if (typeof d.group !==  'undefined'){
+	  		if (typeof d.group.color !==  'undefined'){
+	  			return fill(d.group.color); 
+	  		} else {
+	  			return getRandomColor();
+	  		}
+	  	} else {
+	  		return getRandomColor();
+	  	}
+	  })
+	  .on("mousedown",function(d){
+	  	console.log('mousedown node d : ');console.log(d);
+	  	d3.selectAll("circle").style("stroke-width",2);
+	  	d3.select(this).selectAll("circle").style("stroke-width", 4);
+
+	  	d3.event.stopPropagation();          
+
+	  // Fill in the infoVizRelations according to data returned
+	  document.getElementById("textData").innerHTML='<p>';
+	  var URLs = [];
+	  for (var prop in d.responseDoc) {
+	    // skip loop if the property is from prototype
+	    if(!d.responseDoc.hasOwnProperty(prop)) continue;
+	    document.getElementById("textData").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
+	    URLs = getURLsFromObject(d.responseDoc,prop);
+	    if (URLs.length>0){
+	    	for (var k=0;k<URLs.length;k++){
+	    		document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
+	    		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
+	    	}
+	    }
+	}
+	document.getElementById("textData").innerHTML+='</p>';
+
+	  // var params = { searchTerm:""+d.accession };
+	  // console.log("params : ");console.log(params);
+	  // var rezClick = loadDataWithoutRefresh(vm,apiUrl, params);
+	})
+	.on("mouseup",function(d){
+	})
+	.on("mouseout",function(d){
+	  //document.getElementById("elementHelp").style.visibility="hidden";
+	  d3.selectAll("text").style("opacity",1);
+	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	  d3.selectAll(".node").selectAll("text").style("dx", 12);
+	  d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
+	  d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
+	  d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+	  //document.getElementById("elementHelp").style.visibility="hidden";
+	})
+	.on("mouseover",function(d){
+		document.getElementById("elementHelp").style.visibility="visible";
+		d3.select("#elementHelp").html("Help <hr/> "+d.accession);
+
+		var circleNode = d3.select(this).selectAll("circle");
+		var textNode = d3.select(this).select("text");
+
+		d3.selectAll(".node").selectAll("text").style("opacity",.25);
+	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	  textNode.style("opacity",1);
+	  circleNode.transition().duration(10).style("r", d.radius*3);
+	  textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
+	  //textNode.transition().duration(10).style("font-size", "20px");
+	})
+	;
+
+	node.append("text")
+	.attr("dx", 12)
+	.attr("dy", ".35em")
+	.attr("id",function(d){return 'text_'+d.accession})
+	.text( function (d) { return "["+d.accession+"]"; })
+	.attr("font-family", "sans-serif").attr("font-size", "10px")
+	.attr("border","solid").attr("border-radius","10px")
+	.style("border","solid").style("border-radius","10px")
+	.style("box-shadow","gray")
+	.style("background-color","#46b4af")
+	.attr("fill", "#4D504F")
+	.on("mouseover",function(d){
+		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	})
+	;
+
+	var hull = svg.append("path")
+	.attr("class", "hull");
+
+	force
+	.nodes(nodeData.nodes)
+	.links(nodeData.links)
+	.start();
+
+	// Force rules:
+	force.on("tick", function() {
+		link.attr("x1", function(d) {return d.source.x;})
+		.attr("y1", function(d) {return d.source.y; })
+		.attr("x2", function(d) {return d.target.x; })
+		.attr("y2", function(d) {return d.target.y; })
+		;
+
+	  // Check if within node there is a class node dragging
+	  // if so, translate by 0
+	  var isDragging = false;
+	  var accessionDragged = '';
+	  var elements = svg.selectAll('g');
+	  for (var i=0; i < elements[0].length; i++){
+	  	if ( elements[0][i].classList.length > 1 ){
+	  		isDragging = true;
+	  		accessionDragged = elements[0][i].accession;
+	  	}
+	  }
+	  node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	});
+
+	d3.select(self.frameElement).style("height", width - 150 + "px");
 }

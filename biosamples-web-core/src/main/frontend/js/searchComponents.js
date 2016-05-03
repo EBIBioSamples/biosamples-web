@@ -430,9 +430,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     d3.select("#sectionVizResult").on("mouseenter",function(){
       document.getElementById("elementHelp").style.visibility="visible";
-      document.getElementById("elementHelp").innerHTML = "Help "
-      +"<hr/> • Click on a bar or a text to highlight the nodes with these values."
-      +"<br/> • Double click to filter the results according to a facet. ";
+      document.getElementById("elementHelp").innerHTML = "Help <hr/> Click a node to display its information. <br/> Click twice to filter according to it.";
     })
 
     .on("mouseleave",function(){
@@ -846,6 +844,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                     var nameOfFilter = u+'Filter';
                     if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
                       console.log("time to filter");
+                      console.log("nameOfFilter : ");console.log(nameOfFilter);
+                      console.log("nameClickedBar : "+nameClickedBar);
                       vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
                       vm.$emit("bar-selected");
                       document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
@@ -931,7 +931,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       .style("border-radius","4px")
       .on("mouseenter",function(){
         document.getElementById("elementHelp").style.visibility="visible";
-        d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+        d3.select("#elementHelp").html("Help <hr/> Click a node to display its information. <br/> Click twice to filter according to it.");
       })
       .on("mouseleave",function(){
         document.getElementById("elementHelp").style.visibility="hidden";
@@ -958,16 +958,17 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       d3.select("#vizSpotRelations").attr("visibility","visible");
 
       var numFound = results.data.response.numFound;
-      if (numFound <= 500 ){
+      if (numFound <= 200 ){
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           draw(svg,nodeData);
       } else {
-          console.log('numFound > 500');
+          console.log('numFound > 200');
           // var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           // nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           // draw(svg,nodeData);
           loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex );
+          drawFacets(svg,nodeData,vm);
       }
     } else {
         console.log("results.data.response.docs.length==0");
