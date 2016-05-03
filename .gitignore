@@ -19,3 +19,4 @@ biosamples-web-core/src/main/resources/logback.xml
 
 .idea/
 *.iml
+*/target/

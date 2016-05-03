@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>biosamples-web-cbi/name>
+	<name>biosamples-web-cbi</name>
 	<description>CBI Flavored Interface for Biosamples</description>
 
 	<parent>
