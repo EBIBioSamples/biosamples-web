@@ -4,7 +4,7 @@
 
 	"assetsPath": "src/main/frontend/",
     
-    "publicPath": "src/main/resources/static/",
+    "publicPath": "target/classes/static/",
 
     "css": {
         "outputFolder": "stylesheets"
