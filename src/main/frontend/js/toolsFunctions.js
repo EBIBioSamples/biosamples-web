@@ -1,3 +1,5 @@
+//var Biosample   = require('./components/Biosample.js');
+
 //This is the file to work with for toolsFunctions
 function getRandomColor() {
   var letters = '0123456789ABCDEF'.split('');
@@ -8,14 +10,15 @@ function getRandomColor() {
   return color;
 }
 
-function loadBars(width,height,margin,results,dataBar1,dataBar2,dataBars){
+// TODO Incorporation of code from searchComponents
+function loadBars(width,height,margin,results,dataBars){
 
 }
 
 function getURLsFromObject(objectToRead,prop){
 	var arrayUrls = [];
 	var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
-	// Loop through the img file formats, and if found, get the url, then add its display in infoVizRelations
+	// Loop through the img file formats, and if found, get the url, then add its display in the text area
 	for (var i =0; i < arrayImgTypes.length;i++){
 	  if (typeof objectToRead[prop] == "string" ){
 	    // Loop through different kind of common separators, and turn the string into an array. Then you can use the code previously used to work with an array
@@ -43,7 +46,6 @@ function getURLsFromObject(objectToRead,prop){
 	        }
 	      }
 	    }
-
 	    // Either a single string URL, or an array of URL
 	    if ( !strIsSeveralUrls ){
 	      var indexExtensionImg = objectToRead[prop].indexOf( arrayImgTypes[i] );
@@ -80,12 +82,15 @@ function getURLsFromObject(objectToRead,prop){
 	return arrayUrls;
 }
 
-function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
-	console.log("loadDataFromGET 2");
+function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
+	console.log("!!!!! BIG STUFF TO HAPPEN HERE 4 !!!!!");
+	console.log("loadDataFromGET in src/main/frontend/js/toolsFunctions");
+
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
 	nodeData.color=[];
 	nodeData.accessions="";
+	var groupsReturned = {};
 
 	for (var i=0;i< results.data.response.docs.length;i++){
 		nodeData.accessions+=results.data.response.docs[i].accession+' ';
@@ -119,7 +124,7 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			  });
 			  groupsReturned[results.data.response.docs[i].Group_Name_crt]=[];
 			}
-			nameToNodeIndex[ results.data.response.docs[i].accession[0] ] = nodeData.nodes.length-1;
+			nameToNodeIndex[ results.data.response.docs[i].accession ] = nodeData.nodes.length-1;
 		} //sample
 		else {
 			if (typeof results.data.response.docs[i].sample_grp_accessions !== 'undefined'){
@@ -137,12 +142,12 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			  if ( typeof groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]] === 'undefined' ){
 			  	groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]]=[];
 			  }
-			  groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]].push(results.data.response.docs[i].accession[0]);
+			  groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]].push(results.data.response.docs[i].accession);
 			} else {
-			  nodeData.nodes.push({ 
+			  nodeData.nodes.push({
 			  	"radius": 5,
-			  	"color" : getRandomColor(), 
-			  	"type":"sample", 
+			  	"color" : getRandomColor(),
+			  	"type":"sample",
 			  	"accession":results.data.response.docs[i].accession,
 			  	"name":results.data.response.docs[i].accession,
 			    "sample_grp_accessions":[],
@@ -150,21 +155,19 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
 			  });
 			}
-
 		}
-		nameToNodeIndex[results.data.response.docs[i].accession[0]]=nodeData.nodes.length-1;
+		nameToNodeIndex[results.data.response.docs[i].accession] = nodeData.nodes.length-1;
 	}
 
 	var accessionToIndex={};
 	// Step 1: save from group to sample in nodes
 	for (var i=0; i < nodeData.nodes.length;i++){
 		//nodeData.nodes.push({"name":nodeData.stuff[i].accession[0]});
-		accessionToIndex[nodeData.nodes[i].accession[0]] = i;
+		accessionToIndex[nodeData.nodes[i].accession] = i;
 		nodeData.group[i]='';
 		nodeData.color[i]='';
 	}
 	// Step 2: for every element in the group to sample, create a link (do it just once)
-	console.log("Step 2 : groupsReturned : ");console.log(groupsReturned);
 	var indexCalculation=0;
 	for (var group in groupsReturned){
 		// TODO: GET request to get the information in global about the samples within the group
@@ -173,7 +176,6 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			indexCalculation++;
 			nodeData.nodes.push({
 				"radius": 10,
-				//"color" : getRandomColor(), 
 				"type":"groupViz",
 				"name":group,
 				"accession":group,
@@ -191,38 +193,38 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 			var indexNodeGroup = nameToNodeIndex[group];
 			nodeData.color[ indexNodeGroup ] = colorGroup;
 			nodeData.nodes[ indexNodeGroup ].color = colorGroup;
-			console.log("nodeData.nodes[ indexNodeGroup ].groupAttributes : ");console.log(nodeData.nodes[ indexNodeGroup ].groupAttributes);
-		}
-			// BUGGY, NORMALLY IN THE ELSE 1
-			console.log("nodeData.nodes[ nameToNodeIndex[group] ] : ");console.log(nodeData.nodes[ nameToNodeIndex[group] ]);
-			nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes = {};
-			console.log("nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes");console.log(nodeData.nodes[ nameToNodeIndex[group] ].groupAttributes);
+	
+			// => change this into a hash map
+			// .groupAttributesToValues [attribute] => [ [value,samples with this value] ]
+			// .groupValuesToSamples [attribute value] => samples with this value
+			nodeData.nodes[ nameToNodeIndex[group] ].groupAttributesToValues = {};
+			nodeData.nodes[ nameToNodeIndex[group] ].groupValuesToSamples = {};
 
-			console.log("groupsReturned[group] : ");console.log(groupsReturned[group]);
-			console.log("nodeData.nodes : ");console.log(nodeData.nodes);
-			
 			for (var i=0; i < groupsReturned[group].length; i ++){
-				console.log("---------");
-				console.log("group : ");console.log(group);
-				console.log("groupsReturned[group][i] : ");console.log(groupsReturned[group][i]);
-				console.log("nodeData.nodes[nameToNodeIndex[group]]");console.log(nodeData.nodes[nameToNodeIndex[group]]);
-
 				for (var attr in nodeData.nodes[nameToNodeIndex[group]].responseDoc){
-					// at index [attr given by sample], add +1
-					//var attrSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr] ];
+
 					var attrSample = attr;
-					console.log("attrSample : ");console.log(attrSample);
-					( typeof nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] === "undefined" ) ?
-					 nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] = 0  : nodeData.nodes[nameToNodeIndex[group]].groupAttributes[attrSample] += 1 ;
+					var valueSample = nodeData.nodes[nameToNodeIndex[group]].responseDoc[attr];
+
+					( typeof nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample] === "undefined" ) ?
+					nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample] = [ groupsReturned[group][i] ] 
+					: nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample].push(groupsReturned[group][i]);
+
+					nodeData.nodes[nameToNodeIndex[group]].groupAttributesToValues[attrSample] = [ valueSample, nodeData.nodes[nameToNodeIndex[group]].groupValuesToSamples[valueSample]  ] 
 				}
 			}
-			
 
+		}
 
+		// Probably here that we should decide what to get in the new get request
+		
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
+				//console.log( nameToNodeIndex[ groupsReturned[group][i]] );
+				//console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
+				//console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
 
@@ -240,11 +242,273 @@ function loadDataFromGET(results, nodeData,groupsReturned,nameToNodeIndex){
 	return [nodeData,groupsReturned,nameToNodeIndex];
 }
 
-function loadLinks(results){
-	return [];
-}
-
 function getSamplesFromGroup(apiUrl,group){
 
 }
 
+function loadDataWithoutRefresh(vm,apiUrl,parameters){	
+  var queryParams = vm.getQueryParameters();
+  queryParams.searchTerm = parameters.searchTerm;
+  console.log("************");
+  console.log("loadDataWithoutRefresh : ");
+  console.log("vm : ");console.log(vm);
+  console.log("apiUrl : ");console.log(apiUrl);
+  console.log("queryParams : ");console.log(queryParams);
+  console.log("************");
+
+  //var rezToReturn = vm.$http.get(server,queryParams)
+  var rezToReturn = vm.$http.get(apiUrl,queryParams)
+    .then(function(results){
+
+	  vm.currentQueryParams = queryParams;  
+
+	  var resultsInfo = results.data.response;
+	  var highLights = results.data.highlighting;
+	  var types = results.data.facet_counts.facet_fields.content_type;
+	  var organisms = results.data.facet_counts.facet_fields.organism_crt;
+	  var organs = results.data.facet_counts.facet_fields.organ_crt;
+	  var docs = resultsInfo.docs;
+	  var hlDocs = vm.associateHighlights(docs, highLights);
+	  
+	  return results;
+
+	})
+	.catch(function(data,status,response){
+	  console.log("data : ");console.log(data);
+	  console.log("status : ");console.log(status);
+	  console.log("response : ");console.log(response);
+	});
+	console.log("outside the get of loadDataWithoutRefresh");
+	console.log("rezToReturn : ");console.log(rezToReturn);
+	return rezToReturn;
+}
+
+function readFacets(facets) {
+    var obj = _.create({});
+    obj.keys = [];
+    obj.vals = [];
+    for (var i=0;i<facets.length; i = i+2) {
+        if (+facets[i+1] > 0) {
+            obj[facets[i]] = +facets[i+1];
+            obj.keys.push(facets[i]);
+            obj.vals.push(+facets[i+1]);
+        }
+    }
+    return obj;
+}
+
+function popOutDiv(stringDiv){
+	var stringID = '#'+stringDiv;
+	//clearTimeout(stringID);
+	var timeOutHandle = setTimeout(function() {
+	  $(stringID).fadeIn('fast');
+	}, 5); // <-- time in milliseconds
+}
+
+function fadeOutDiv(stringDiv){
+	
+	var stringID = '#'+stringDiv;
+	//clearTimeout(stringID);
+	setTimeout(function() {
+	  $(stringID).fadeOut('slow');
+	}, 3500); // <-- time in milliseconds	
+}
+
+
+function changeSpecialCharacters( myid ) { 
+    return myid.replace( /(:|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
+}
+
+
+function draw(svg,nodeData){
+
+	console.log("draw");
+
+	var width = Math.floor((70 * window.innerWidth)/100);
+	//var width = window.innerWidth;
+	var height=heightD3;
+
+	var force = d3.layout.force()
+	.gravity(.08)
+	.distance(50)
+	.charge(-100)
+	.size([width, height]);
+
+	var link = svg.selectAll(".link")
+	.data(nodeData.links)
+	.enter().append("line")
+	.attr("class", "link")
+	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+
+	//Add circles to the svgContainer
+	var node = svg.selectAll("node")
+	.data(nodeData.nodes)
+	.enter().append("g")
+	.attr("class","node")
+	.call(force.drag)
+	;
+
+	node.append("circle")
+	.attr("r", function (d) { return d.radius * 3; })
+	.attr("accession",function(d){return d.accession})
+	.attr("class","ghost_circle")
+	.attr("id",function(d){ return 'ghost_'+d.accession })
+	.attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
+	.attr("grp_sample_accessions",function(d){ return d.grp_sample_accessions})
+	.attr("responseDoc",function(d){return d.responseDoc})
+	.attr("type", function (d) { return d.type; })
+	.style("fill", function (d) {  return "grey"; })
+	.style("stroke","black")
+	.style("stroke-width",2)
+	.style("stroke-opacity",1)
+	.style("opacity", .7)
+	.style("visibility", "hidden")
+	;
+
+	node.append("circle")
+	.on("mousedown",function(d){
+	})
+	.on("mouseout",function(d){
+	})
+	.on("mouseover",function(d){
+	})
+	.attr("r", function (d) { return d.radius; })
+	.attr("accession",function(d){return d.accession})
+	.attr("id",function(d){ return 'circle_'+d.accession })
+	.attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
+	.attr("grp_sample_accessions",function(d){ return d.grp_sample_accessions})
+	.attr("responseDoc",function(d){return d.responseDoc})
+	.attr("type", function (d) { return d.type; })
+	.style("fill", function (d) {  return d.color; })
+	.style("stroke","black")
+	.style("stroke-width",2)
+	.style("stroke-opacity",1)
+	.style("opacity", .7)
+	  // Added part for dragging
+	  //.call(drag)
+	  //.style("fill", function(d) { return fill(d.group); })
+	  ;
+
+	  node
+	  .attr("accession",function(d){return d.accession})
+	  .attr("id",function(d){return 'node_'+d.accession})
+	  .attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
+	  .attr("grp_sample_accessions",function(d){ return d.grp_sample_accessions})
+	  .attr("responseDoc",function(d){return d.responseDoc})
+	  .attr("type", function (d) { return d.type; })
+	  .style("stroke-width",1)
+	  .style("fill", function(d) { 
+	  	if (typeof d.group !==  'undefined'){
+	  		if (typeof d.group.color !==  'undefined'){
+	  			return fill(d.group.color); 
+	  		} else {
+	  			return getRandomColor();
+	  		}
+	  	} else {
+	  		return getRandomColor();
+	  	}
+	  })
+	  .on("mousedown",function(d){
+	  	console.log('mousedown node d : ');console.log(d);
+	  	d3.selectAll("circle").style("stroke-width",2);
+	  	d3.select(this).selectAll("circle").style("stroke-width", 4);
+
+	  	d3.event.stopPropagation();          
+
+	  // Fill in the infoVizRelations according to data returned
+	  document.getElementById("textData").innerHTML='<p>';
+	  var URLs = [];
+	  for (var prop in d.responseDoc) {
+	    // skip loop if the property is from prototype
+	    if(!d.responseDoc.hasOwnProperty(prop)) continue;
+	    document.getElementById("textData").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
+	    URLs = getURLsFromObject(d.responseDoc,prop);
+	    if (URLs.length>0){
+	    	for (var k=0;k<URLs.length;k++){
+	    		document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
+	    		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
+	    	}
+	    }
+	}
+	document.getElementById("textData").innerHTML+='</p>';
+
+	  // var params = { searchTerm:""+d.accession };
+	  // console.log("params : ");console.log(params);
+	  // var rezClick = loadDataWithoutRefresh(vm,apiUrl, params);
+	})
+	.on("mouseup",function(d){
+	})
+	.on("mouseout",function(d){
+	  //document.getElementById("elementHelp").style.visibility="hidden";
+	  d3.selectAll("text").style("opacity",1);
+	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	  d3.selectAll(".node").selectAll("text").style("dx", 12);
+	  d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
+	  d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
+	  d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+	  //document.getElementById("elementHelp").style.visibility="hidden";
+	})
+	.on("mouseover",function(d){
+		document.getElementById("elementHelp").style.visibility="visible";
+		d3.select("#elementHelp").html("Help <hr/> "+d.accession);
+
+		var circleNode = d3.select(this).selectAll("circle");
+		var textNode = d3.select(this).select("text");
+
+		d3.selectAll(".node").selectAll("text").style("opacity",.25);
+	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	  textNode.style("opacity",1);
+	  circleNode.transition().duration(10).style("r", d.radius*3);
+	  textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
+	  //textNode.transition().duration(10).style("font-size", "20px");
+	})
+	;
+
+	node.append("text")
+	.attr("dx", 12)
+	.attr("dy", ".35em")
+	.attr("id",function(d){return 'text_'+d.accession})
+	.text( function (d) { return "["+d.accession+"]"; })
+	.attr("font-family", "sans-serif").attr("font-size", "10px")
+	.attr("border","solid").attr("border-radius","10px")
+	.style("border","solid").style("border-radius","10px")
+	.style("box-shadow","gray")
+	.style("background-color","#46b4af")
+	.attr("fill", "#4D504F")
+	.on("mouseover",function(d){
+		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	})
+	;
+
+	var hull = svg.append("path")
+	.attr("class", "hull");
+
+	force
+	.nodes(nodeData.nodes)
+	.links(nodeData.links)
+	.start();
+
+	// Force rules:
+	force.on("tick", function() {
+		link.attr("x1", function(d) {return d.source.x;})
+		.attr("y1", function(d) {return d.source.y; })
+		.attr("x2", function(d) {return d.target.x; })
+		.attr("y2", function(d) {return d.target.y; })
+		;
+
+	  // Check if within node there is a class node dragging
+	  // if so, translate by 0
+	  var isDragging = false;
+	  var accessionDragged = '';
+	  var elements = svg.selectAll('g');
+	  for (var i=0; i < elements[0].length; i++){
+	  	if ( elements[0][i].classList.length > 1 ){
+	  		isDragging = true;
+	  		accessionDragged = elements[0][i].accession;
+	  	}
+	  }
+	  node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	});
+
+	d3.select(self.frameElement).style("height", width - 150 + "px");
+}

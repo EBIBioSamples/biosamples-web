@@ -847,6 +847,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                       console.log("nameOfFilter : ");console.log(nameOfFilter);
                       console.log("nameClickedBar : "+nameClickedBar);
                       vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
+                      console.log("!!!! nameOfFilter : "+nameOfFilter);
+                      console.log ("nameClickedBar : "+nameClickedBar+" !!!!");
                       vm.$emit("bar-selected");
                       document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
                       popOutDiv("infoPop");
@@ -958,12 +960,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       d3.select("#vizSpotRelations").attr("visibility","visible");
 
       var numFound = results.data.response.numFound;
-      if (numFound <= 200 ){
+      var numberToDisplay = 200;
+      if (numFound <= numberToDisplay ){
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           draw(svg,nodeData);
       } else {
-          console.log('numFound > 200');
+          console.log('numFound > numberToDisplay');
           // var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           // nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           // draw(svg,nodeData);
