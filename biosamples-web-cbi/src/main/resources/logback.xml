@@ -3,7 +3,7 @@
 <configuration>
   	
 	<appender name="File" class="ch.qos.logback.core.FileAppender">
-		<File>logs/${HOSTNAME}/biosamples-web-ebisc.log</File>
+		<File>logs/${HOSTNAME}/biosamples-web-cbi.log</File>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>%d{dd MMM yyyy - HH:mm:ss.SSS} %-5level [%thread] %logger{36}: %msg%n</pattern>
 		</encoder>
