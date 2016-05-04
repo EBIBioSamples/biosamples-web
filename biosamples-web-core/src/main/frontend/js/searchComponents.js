@@ -847,8 +847,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                       console.log("nameOfFilter : ");console.log(nameOfFilter);
                       console.log("nameClickedBar : "+nameClickedBar);
                       vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
-                      console.log("!!!! nameOfFilter : "+nameOfFilter);
-                      console.log ("nameClickedBar : "+nameClickedBar+" !!!!");
                       vm.$emit("bar-selected");
                       document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
                       popOutDiv("infoPop");
