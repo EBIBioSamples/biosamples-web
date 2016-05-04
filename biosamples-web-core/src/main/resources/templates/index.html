@@ -264,6 +264,21 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 <div id="areaNodeLink">
     <div id= "vizNodeLink"></div>
     <div id="infoVizRelations">
+      <div id ="buttons-display">
+<!--
+        <div class="col-md-6">
+          <component is="pagination"
+            v-bind:total-results="resultsNumber"
+            v-bind:displayed-results="samplesToRetrieve"
+            style="float:right">
+          </component>
+        </div>
+        <div class="col-md-6">
+          <component is="items-dropdown">
+          </component>
+        </div>
+-->
+      </div>
       <h3> Clicked element information </h3>
       <div id="textData">Click on an element of the diagram to display its information </div>
   </div>
