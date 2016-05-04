@@ -68,7 +68,7 @@
 								<artifactItem>
 									<groupId>uk.ac.ebi.spot</groupId>
 									<artifactId>biosamples-web-core</artifactId>
-									<outputDirectory>target/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+									<outputDirectory>target/classes</outputDirectory>
 									<includes>static/**</includes>
 									<includes>templates/**.html</includes>
 								</artifactItem>
