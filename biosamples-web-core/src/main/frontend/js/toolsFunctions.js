@@ -83,8 +83,8 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	console.log("!!!!! BIG STUFF TO HAPPEN HERE 6 !!!!!");
-	console.log("loadDataFromGET in src/main/frontend/js/toolsFunctions");
+	console.log("!!!!! loadDataFromGET 1 !!!!!");
+	console.log("loadDataFromGET in src/main/ressources/static/javascript/toolsFunctions");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
@@ -324,8 +324,9 @@ function draw(svg,nodeData){
 
 	console.log("draw");
 
+	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
-	//var width = window.innerWidth;
+	var heightD3 = widthTitle/2;
 	var height=heightD3;
 
 	var force = d3.layout.force()
@@ -384,13 +385,11 @@ function draw(svg,nodeData){
 	.style("stroke-width",2)
 	.style("stroke-opacity",1)
 	.style("opacity", .7)
-	  // Added part for dragging
-	  //.call(drag)
-	  //.style("fill", function(d) { return fill(d.group); })
-	  ;
+	;
 
-	  node
+  	node
 	  .attr("accession",function(d){return d.accession})
+	  .attr("name",function(d){return d.accession})
 	  .attr("id",function(d){return 'node_'+d.accession})
 	  .attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
 	  .attr("grp_sample_accessions",function(d){ return d.grp_sample_accessions})
@@ -431,7 +430,6 @@ function draw(svg,nodeData){
 	    }
 	}
 	document.getElementById("textData").innerHTML+='</p>';
-
 	  // var params = { searchTerm:""+d.accession };
 	  // console.log("params : ");console.log(params);
 	  // var rezClick = loadDataWithoutRefresh(vm,apiUrl, params);
@@ -496,6 +494,320 @@ function draw(svg,nodeData){
 		.attr("y2", function(d) {return d.target.y; })
 		;
 
+	  // Check if within node there is a class node dragging
+	  // if so, translate by 0
+	  var isDragging = false;
+	  var accessionDragged = '';
+	  var elements = svg.selectAll('g');
+	  for (var i=0; i < elements[0].length; i++){
+	  	if ( elements[0][i].classList.length > 1 ){
+	  		isDragging = true;
+	  		accessionDragged = elements[0][i].accession;
+	  	}
+	  }
+	  node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	});
+
+	d3.select(self.frameElement).style("height", width - 150 + "px");
+}
+
+
+// This function is to load data according to the facets, when the number of nodes would be too high to directly display
+function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
+	console.log("!!!!! loadDataFromFacets 1 !!!!!");
+	console.log("loadDataFromFacets in src/main/ressources/static/javascript/toolsFunctions");
+
+	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
+	if (typeof nodeData === "undefined"){ nodeData = {}; }
+	nodeData.nodes=[];
+	nodeData.links=[];
+	nodeData.facets=[];
+	nodeData.accessions="";
+	var groupsReturned = {};
+	console.log("results");console.log(results);
+	console.log("results.data.facet_counts.facet_fields : ");
+	console.log(results.data.facet_counts.facet_fields);
+
+	var maxAndMinFacet = {};
+	var maxAndMinTotal = [];
+	var scaleFacet;
+	for (var i in results.data.facet_counts.facet_fields){
+		var currentMin,currentMax;
+		for (var j = 1; j<results.data.facet_counts.facet_fields[i].length; j=j+2 ){
+			if ( typeof currentMin === 'undefined' || currentMin > results.data.facet_counts.facet_fields[i][j] )
+				currentMin = results.data.facet_counts.facet_fields[i][j]
+			if ( typeof currentMax === 'undefined' || currentMax < results.data.facet_counts.facet_fields[i][j] )
+						currentMax = results.data.facet_counts.facet_fields[i][j]
+		}
+		maxAndMinFacet[i] = [ currentMin, currentMax ];
+		if ( maxAndMinTotal.length == 0 ){
+			maxAndMinTotal=[currentMin,currentMax];
+		} else{ 
+			if ( maxAndMinTotal[0] > currentMin )
+				maxAndMinTotal[0] = currentMin;
+			if ( maxAndMinTotal[1] < currentMax )
+				maxAndMinTotal[1] = currentMax;
+		}
+	}
+	scaleFacet = d3.scale.linear()
+		.domain( maxAndMinTotal )
+		.range([5,60]);
+
+	var cptDomain =0; 
+	for (var i in results.data.facet_counts.facet_fields){ cptDomain++ }
+	console.log("cptDomain : ");
+	console.log(cptDomain);
+	var color = d3.scale.category20()
+    	.domain(d3.range( cptDomain ));
+
+	// Calculate how to cut the space facets into nodes
+	var cptNodeToIndex = {};
+	var cptIndex = 0;
+	for (var i in results.data.facet_counts.facet_fields){
+		nodeData.facets.push(i);
+		var colorFacet = getRandomColor();
+		for (var j=0; j < results.data.facet_counts.facet_fields[i].length;j++){
+			if (j%2==0)
+			{
+				nodeData.nodes.push({
+					"radius": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
+					"r": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
+					"index":cptIndex,
+					"d":{cluster:results.data.facet_counts.facet_fields[i][0], radius: scaleFacet(results.data.facet_counts.facet_fields[i][j+1]) },
+					"color" : colorFacet,
+					"type":"nodeFacet",
+					"facet":i,
+					"cluster":results.data.facet_counts.facet_fields[i][0],
+					"name":results.data.facet_counts.facet_fields[i][j],
+					"value":results.data.facet_counts.facet_fields[i][j+1]
+				});
+				cptIndex++;
+			}
+		}
+	}
+	console.log("nodeData in loadDataFromFacets : ");console.log(nodeData);
+}
+
+function drawFacets(svg,nodeData,vm){
+
+	console.log("drawFacets TAGADA");
+
+	var widthTitle = window.innerWidth;
+	var width = Math.floor((70 * window.innerWidth)/100);
+	var heightD3 = widthTitle/2;
+	var height=heightD3;
+	// ----
+    var padding = 1.5; // separation between same-color circles
+    var clusterPadding = 6; // separation between different-color circles
+    var maxRadius = 12;
+	// The largest node for each cluster.
+	var clusters = [];
+	for (var i in nodeData.nodes){
+		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){
+			clusters.push(nodeData.nodes[i]);
+		}
+	}
+	console.log("clusters : ");console.log(clusters);
+
+	// var force = d3.layout.force()
+	// .gravity(.08)
+	// .distance(50)
+	// .charge(-100)
+	// .size([width, height]);
+
+	// Move d to be adjacent to the cluster node.
+	function cluster(alpha){
+		console.log("cluster function");
+	  return function(d) {
+	    var cluster = clusters[d.cluster],
+	        k = 1;
+
+	    // For cluster nodes, apply custom gravity.
+	    if (cluster === d) {
+	    	console.log("within cluster: cluster === d");
+	      cluster = {x: width / 2, y: height / 2, radius: -d.radius};
+	      k = .1 * Math.sqrt(d.radius);
+	    }
+
+	    var x = d.x - cluster.x,
+	        y = d.y - cluster.y,
+	        l = Math.sqrt(x * x + y * y),
+	        r = d.radius + cluster.radius;
+	    if (l != r) {
+	      l = (l - r) / l * alpha * k;
+	      d.x -= x *= l;
+	      d.y -= y *= l;
+	      cluster.x += x;
+	      cluster.y += y;
+	    }
+	  };
+	}
+
+	// ----
+	// Resolves collisions between d and all other circles.
+	function collide(alpha) {
+		console.log("collide function");
+	  var quadtree = d3.geom.quadtree(nodeData);
+	  return function(d) {
+	    var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
+	        nx1 = d.x - r,
+	        nx2 = d.x + r,
+	        ny1 = d.y - r,
+	        ny2 = d.y + r;
+	    quadtree.visit(function(quad, x1, y1, x2, y2) {
+	      if (quad.point && (quad.point !== d)) {
+	        var x = d.x - quad.point.x,
+	            y = d.y - quad.point.y,
+	            l = Math.sqrt(x * x + y * y),
+	            r = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+	        if (l < r) {
+	          l = (l - r) / l * alpha;
+	          d.x -= x *= l;
+	          d.y -= y *= l;
+	          quad.point.x += x;
+	          quad.point.y += y;
+	        }
+	      }
+	      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+	    });
+	  };
+	}
+
+	function tick(e) {
+		console.log("--tick--");
+		console.log('d3.selectAll(".node").select("circle") : ');
+		console.log(d3.selectAll(".node").select("circle"));
+	  	d3.selectAll(".node").select("circle")
+	      .each(cluster(10 * e.alpha * e.alpha))
+	      .each(collide(.5))
+	      .attr("cx", function(d) { console.log("d : ");console.log(d); return d.x; })
+	      .attr("cy", function(d) { return d.y; });
+
+	}
+
+	// var node = d3.range( nodeData.nodes.length ).map(function() {
+	//   var i = Math.floor(Math.random() * nodeData.facets.length),
+	//       r = Math.sqrt((i + 1) / nodeData.facets.length * -Math.log(Math.random())) * maxRadius,
+	//       d = {cluster: i, radius: r};
+	//   if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
+	//   return d;
+	// });
+	// console.log("node : ");console.log(node);
+
+	var force = d3.layout.force()
+	    .nodes(nodeData.nodes)
+	    .links(nodeData.links)
+	    .size([width, height])
+	    .gravity(0)
+	    .charge(0)
+	    .on("tick", tick)
+	    .start();
+
+	console.log("force : ");console.log(force);
+	// ----
+
+	// Works for now
+	//Add nodes to the svgContainer
+	var node = svg.selectAll("node")
+	.data(nodeData.nodes)
+	.enter().append("g")
+	.attr("class","node")
+	.call(force.drag)
+	;
+	console.log("node : ");console.log(node);
+
+	var links = svg.selectAll(".link")
+	.data(nodeData.links)
+	.enter().append("line")
+	.attr("class", "link")
+	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+
+	// force
+	// .nodes(nodeData.nodes)
+	// .links(nodeData.links)
+	// .start();
+
+	node
+	.attr("name", function (d) { return d.name; })
+	.attr("value", function (d) { return d.value; })
+	.attr("facet", function (d) { return d.facet; })
+	.attr("cluster", function (d) { return d.cluster; })
+	.attr("radius", function (d) { return d.radius; })
+	.attr("r", function (d) { return d.radius; })
+	//.attr("index", function (d) { return d.name; })
+	.attr("color", function (d) { return d.color; })
+	.style("stroke-width",1)
+	.style("fill", function (d) { return d.color; })
+	.on("mousedown",function(d){
+		d3.event.stopPropagation();
+		d3.selectAll("circle").style("stroke-width",2);
+  		d3.select(this).select("circle").style("stroke-width", 4);
+  		var newText = "<p>Facet: <br/>"+d.facet+"<hr/>"+"Name: <br/>"+d.name+" : "+d.value+"</p>";
+  		document.getElementById("textData").innerHTML=newText;
+
+	})
+	.on("mouseover",function(d){
+		console.log("d.name : "+d.name);
+		document.getElementById("elementHelp").style.visibility="visible";
+		d3.select("#elementHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
+	})
+	.on("mouseout",function(d){
+		d3.select("#elementHelp").html("Help <hr/> Click a node to display its information. <br/> Click twice to filter according to it.");
+	})
+	.on("dblclick",function(d){
+		console.log("dblclick nodeFacet");
+		console.log("this : ");console.log(this);
+		console.log("vm : ");console.log(vm);
+		var indexFilter = d.facet.indexOf( "_crt_ft" );
+		var nameFilter = d.facet;
+		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }
+		nameFilter+='Filter';
+        vm.$data.filterQuery[ nameFilter ] = d.name;
+        vm.$emit("bar-selected");
+	    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
+	    popOutDiv("infoPop");
+	    fadeOutDiv("infoPop");
+	    vm.$options.methods.querySamples(this,false);
+	})
+	;
+
+	node.append("circle")
+	.attr("r", function (d) { return d.radius; })
+	.attr("name", function (d) { return d.name; })
+	.attr("facet", function (d) { return d.facet; })
+	.attr("facet", function (d) { return d.facet; })
+	.attr("radius", function (d) { return d.radius; })
+	.attr("color", function (d) { return d.color; })
+	.style("fill", function (d) {  return d.color; })
+	.style("stroke","black")
+	.style("stroke-width",2)
+	.style("stroke-opacity",1)
+	.style("opacity", .7)
+	;
+
+	node.append("text")
+	.attr("dx", 12)
+	.attr("dy", ".35em")
+	.attr("id",function(d){return 'text_'+d.name})
+	.text( function (d) { return "["+d.name+"]"; })
+	.attr("font-family", "sans-serif").attr("font-size", "10px")
+	.attr("border","solid").attr("border-radius","10px")
+	.style("border","solid").style("border-radius","10px")
+	.style("box-shadow","gray")
+	.style("background-color","#46b4af")
+	.attr("fill", "#4D504F")
+	.on("mouseover",function(d){
+		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	})
+	;
+
+	// Force rules:
+	force.on("tick", function() {
+		links.attr("x1", function(d) {return d.source.x;})
+		.attr("y1", function(d) {return d.source.y; })
+		.attr("x2", function(d) {return d.target.x; })
+		.attr("y2", function(d) {return d.target.y; })
+		;
 	  // Check if within node there is a class node dragging
 	  // if so, translate by 0
 	  var isDragging = false;

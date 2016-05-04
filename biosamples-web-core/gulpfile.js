@@ -13,4 +13,5 @@ elixir(function(mix) {
         })
 	 	.sass('main_samelf.scss')
 	 	.browserify('searchComponents.js')
+	 	.scripts('toolsFunctions.js')
 });
