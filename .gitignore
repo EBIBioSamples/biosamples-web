@@ -12,6 +12,11 @@
 # Properties and resources we don't want to share
 **/*/src/main/resources/application.properties
 **/*/src/main/resources/ignoredFacets.fields
+biosamples-web-core/src/main/resources/logback.xml
 
 #logging
 **/*/logs
+
+.idea/
+*.iml
+*/target/

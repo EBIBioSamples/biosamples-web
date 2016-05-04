@@ -83,7 +83,7 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	console.log("!!!!! BIG STUFF TO HAPPEN HERE 5 !!!!!");
+	console.log("!!!!! BIG STUFF TO HAPPEN HERE 6 !!!!!");
 	console.log("loadDataFromGET in src/main/frontend/js/toolsFunctions");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }

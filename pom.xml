@@ -12,5 +12,6 @@
 		<module>biosamples-web-core</module>
 		<module>biosamples-web-emblebi</module>
 		<module>biosamples-web-ebisc</module>
+		<module>biosamples-web-cbi</module>
 	</modules>
 </project>
