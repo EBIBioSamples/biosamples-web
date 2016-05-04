@@ -83,7 +83,8 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	console.log("!!!!! loadDataFromGET !!!!!");
+	console.log("!!!!! loadDataFromGET 1 !!!!!");
+	console.log("loadDataFromGET in src/main/ressources/static/javascript/toolsFunctions");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
@@ -510,6 +511,7 @@ function draw(svg,nodeData){
 	d3.select(self.frameElement).style("height", width - 150 + "px");
 }
 
+
 // This function is to load data according to the facets, when the number of nodes would be too high to directly display
 function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	console.log("!!!!! loadDataFromFacets 1 !!!!!");
@@ -822,3 +824,4 @@ function drawFacets(svg,nodeData,vm){
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");
 }
+//# sourceMappingURL=toolsFunctions.js.map
