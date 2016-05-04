@@ -2,13 +2,18 @@
 
 <configuration>
   	
-	<appender name="File" class="ch.qos.logback.core.FileAppender">
-		<File>logs/${HOSTNAME}/biosamples-web-emblebi.log</File>
+	<appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${catalina.base}/logs/${tomcat.hostname}/biosamples-web-emblebi.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>${catalina.base}/logs/${tomcat.hostname}/biosamples-web-emblebi.log.%d</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>%d{dd MMM yyyy - HH:mm:ss.SSS} %-5level [%thread] %logger{36}: %msg%n</pattern>
 		</encoder>
 	</appender>
-
+	
 	<root level="INFO">
 		<appender-ref ref="File" />
 	</root>
