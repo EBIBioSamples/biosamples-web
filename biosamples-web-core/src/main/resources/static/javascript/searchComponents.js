@@ -31264,7 +31264,6 @@ function doD3Stuff(results, apiUrl) {
     }).call(d3.behavior.zoom().on("zoom", function (d) {
       svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
     })).append("g");
-    console.log(" ------- ");
 
     var groupsReturned = {};
     var nameToNodeIndex = {};

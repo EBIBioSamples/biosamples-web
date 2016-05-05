@@ -595,7 +595,7 @@ function drawFacets(svg,nodeData,vm){
 	var width = Math.floor((70 * window.innerWidth)/100);
 	var heightD3 = widthTitle/2;
 	var height=heightD3;
-	// ----
+
     var padding = 15; // separation between same-color circles
     var clusterPadding = 30; // separation between different-color circles
     var maxRadius = 50;
@@ -612,6 +612,12 @@ function drawFacets(svg,nodeData,vm){
 			if ( clusters[j].facet == nodeData.nodes[i].facet ){
 				nodeData.nodes[i].cluster = j;
 				nodeData.nodes[i].d.cluster = j;
+				// console.log("nodeData.nodes[i].index : ");console.log(nodeData.nodes[i].index);
+				// console.log(" clusters[j].facet == nodeData.nodes[i].facet &&  nodeData.nodes[i].index : "+nodeData.nodes[i].index);
+				var indexForID =  clusters[j].index ;
+				// console.log("indexForID : "+indexForID);
+				// console.log('d3.select("#text_"+indexForID) : ');console.log(d3.select("#text_"+indexForID));
+				d3.select("#text_"+indexForID).style("visibility", "visible");
 			}
 		}
 	}
@@ -645,7 +651,6 @@ function drawFacets(svg,nodeData,vm){
 	  };
 	}
 
-	// ----
 	// Resolves collisions between d and all other circles.
 	function collide(alpha) {
 	  var quadtree = d3.geom.quadtree(nodeData.nodes);
@@ -683,9 +688,6 @@ function drawFacets(svg,nodeData,vm){
 	    .charge(0)
 	    .start();
 
-	// ----
-
-	// Works for now
 	//Add nodes to the svgContainer
 	var node = svg.selectAll("node")
 	.data(nodeData.nodes)
@@ -708,14 +710,53 @@ function drawFacets(svg,nodeData,vm){
 	.attr("radius", function (d) { return d.radius; })
 	.attr("r", function (d) { return d.radius; })
 	.attr("color", function (d) { return d.color; })
+	.attr("id", function(d){
+		return 'node_'+d.index;
+	})
 	.style("stroke-width",1)
 	.style("fill", function (d) { return d.color; })
+	// .on("contextmenu",function(d){
+	// 	console.log("RIGHT CLICK ? YEAH");
+	// 	d3.event.preventDefault();
+	// })
 	.on("mousedown",function(d){
 		d3.event.stopPropagation();
 		d3.selectAll("circle").style("stroke-width",2);
-  		d3.select(this).select("circle").style("stroke-width", 4);
-  		var newText = "<p>Facet: <br/>"+d.facet+"<hr/>"+"Name: <br/>"+d.name+" : "+d.value+"</p>";
-  		document.getElementById("textData").innerHTML=newText;
+		d3.select(this).select("circle").style("stroke-width", 4);
+		var indexFilter = d.facet.indexOf( "_crt_ft" );
+		var nameFacet = d.facet;
+		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
+		var newText = "<p>Facet: <br/>"+nameFacet+"<hr/>"+"Name: <br/>"+d.name+" : "+d.value+"</p>";
+		document.getElementById("textData").innerHTML=newText;
+
+
+		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
+			console.log("d inside function for text visibility : ");console.log(d);
+			console.log("d2 inside function for text visibility : ");console.log(d2);
+			if ( d2.cluster == d.cluster ){
+				// Additional things to do
+				console.log(" d2.cluster == d.cluster ");
+				console.log("this : ");console.log(this);
+				d3.select(this)[0][0].textContent = '['+d2.name+']';
+				return "visible";
+			} else {
+				if ( clusters[d2.cluster].index == d2.index ){
+					console.log("this : ");console.log(this);			
+					var indexFilter = d2.facet.indexOf( "_crt_ft" );
+					var nameFacet = d2.facet;
+					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
+					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
+					return "visible";
+				} else {
+					console.log("this : ");console.log(this);
+					var indexFilter = d2.facet.indexOf( "_crt_ft" );
+					var nameFacet = d2.facet;
+					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
+					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
+					return "hidden";
+				}
+			}
+		});
 	})
 	.on("mouseover",function(d){
 		document.getElementById("elementHelp").style.visibility="visible";
@@ -758,10 +799,26 @@ function drawFacets(svg,nodeData,vm){
 	node.append("text")
 	.attr("dx", 12)
 	.attr("dy", ".35em")
-	.attr("id",function(d){return 'text_'+d.name})
-	.text( function (d) { return "["+d.name+"]"; })
+	.attr("id",function(d){ return 'text_'+d.index})
+	.attr("name",function(d){return d.name})
+	// .text( function (d) { return "["+d.name+"]"; })
+	.text( function (d) {
+		var indexFilter = d.facet.indexOf( "_crt_ft" );
+		var nameFacet = d.facet;
+		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
+		return "["+nameFacet+"]";
+	})
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
 	.attr("border","solid").attr("border-radius","10px")
+	.style("visibility", function(d){
+		// console.log("in text visibility d :");console.log(d);
+		// console.log("clusters[d.cluster] : ");console.log(clusters[d.cluster]);
+		if ( d.index == clusters[d.cluster].index ){
+			return "visible";
+		} else {
+			return "hidden";
+		}
+	})
 	.style("border","solid").style("border-radius","10px")
 	.style("box-shadow","gray")
 	.style("background-color","#46b4af")
@@ -777,8 +834,6 @@ function drawFacets(svg,nodeData,vm){
 	  	d3.selectAll(".node")
 	      .each(cluster(10 * e.alpha * e.alpha))
 	      .each(collide(.5))
-		  // .attr("cx", function(d) { return d.x; })
-		  // .attr("cy", function(d) { return d.y; });
 	});
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");

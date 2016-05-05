@@ -946,8 +946,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       ))
       .append("g")
       ;
-      console.log(" ------- ")
-
 
     var groupsReturned={};
     var nameToNodeIndex={};
