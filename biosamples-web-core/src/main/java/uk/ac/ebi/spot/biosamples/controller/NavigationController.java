@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 public class NavigationController {
 
     @RequestMapping("/")
-    public String index() {
+    public String index(Model model, String searchTerm) {
+        model.addAttribute("searchTerm", searchTerm);
         return "index";
     }
 

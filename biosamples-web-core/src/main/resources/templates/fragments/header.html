@@ -16,8 +16,10 @@
 </head>
 <body>
 <header th:fragment="header">
-    <img alt="Bootstrap Image Preview" th:src="@{/images/logo.png}" src="../static/images/logo.png" />
-    <span class="h1">BioSamples</span>
+    <a class="header__brand th:href="@{/}" href="/">
+        <img class="header__brand-logo" alt="Bootstrap Image Preview" th:src="@{/images/logo.png}" src="../static/images/logo.png" />
+        <span class="header__brand-title">BioSamples</span>
+    </a>
 </header>
 </body>
 </html>

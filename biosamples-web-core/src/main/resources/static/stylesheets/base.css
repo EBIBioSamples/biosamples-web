@@ -11,8 +11,18 @@ header {
     color: white;
 }
 
-header > * {
+.header__brand, .header__brand:hover {
+    color: white;
+    display:flex;
+    align-items: center;
+}
+
+.header__brand > * {
     margin-right: 1em;
+}
+
+.header__brand-title {
+    font-size: 36px;
 }
 
 main {

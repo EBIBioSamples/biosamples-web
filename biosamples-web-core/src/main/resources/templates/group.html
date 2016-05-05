@@ -1,0 +1,82 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="__parent_base"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'groups'">
+<head>
+    <title th:text="${group.accession}">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
+</head>
+<body>
+
+
+<div layout:fragment="content">
+
+    <!-- Biosamples specific content goes here -->
+    <div id="group_content">
+        <div class="detail_table">
+            <h4 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h4>
+
+            <table id="bs_results_tablesamplegroupdetail">
+                <tbody>
+                <!-- Common group attributes -->
+                <tr th:if="${#maps.containsKey(group.characteristics, 'group_name') and #arrays.length(group.characteristics.group_name) > 0}">
+                    <td class="col_title"><b>Group Name : </b></td>
+                    <td>
+                        <div th:each="name: ${group.characteristicsText.group_name}">
+                            <span th:text="${name}"></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Title :</b></td>
+                    <td th:text="${group.submissionTitle}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Identifier :</b></td>
+                    <td th:text="${group.submissionAccession}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Description :</b></td>
+                    <td th:text="${group.submissionDescription}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Release Date :</b></td>
+                    <td th:text="${group.releaseDate}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Last Updated :</b></td>
+                    <td th:text="${group.updateDate}"></td>
+                </tr>
+
+
+
+                <!-- Dedicated organism attribute -->
+                <tr th:if="${#maps.containsKey(group.characteristics, 'organism') and #arrays.length(group.characteristics.organism) > 0}" >
+                    <td class="col_title"><b>Organism : </b></td>
+                    <td>
+                        <div class="characteristic-mapping" th:each="organism: ${group.characteristics.get('organism')}">
+                            <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- start all characteristics -->
+                <tr th:each="characteristic: ${group.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'group_name'  or characteristic.key == 'group_title' or characteristic.key == 'group_description'}">
+                    <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
+                    <td th:if="${#maps.containsKey(group.characteristics,characteristic.key)}">
+                        <div class="characteristic-mapping" th:each="value: ${group.characteristics.get(characteristic.key)}">
+                            <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
+                        </div>
+                    </td>
+                </tr>
+                <!-- end all characteristics -->
+
+                </tbody>
+
+                <!-- Samples summary table goes here -->
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
