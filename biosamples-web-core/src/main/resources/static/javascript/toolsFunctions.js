@@ -277,8 +277,8 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 	  console.log("status : ");console.log(status);
 	  console.log("response : ");console.log(response);
 	});
-	console.log("outside the get of loadDataWithoutRefresh");
-	console.log("rezToReturn : ");console.log(rezToReturn);
+	// console.log("outside the get of loadDataWithoutRefresh");
+	// console.log("rezToReturn : ");console.log(rezToReturn);
 	return rezToReturn;
 }
 
@@ -596,8 +596,8 @@ function drawFacets(svg,nodeData,vm){
 	var heightD3 = widthTitle/2;
 	var height=heightD3;
 
-    var padding = 15; // separation between same-color circles
-    var clusterPadding = 30; // separation between different-color circles
+    var padding = 25; // separation between same-color circles
+    var clusterPadding = 50; // separation between different-color circles
     var maxRadius = 50;
 	// The largest node for each cluster.
 	var clusters = [];
@@ -716,7 +716,7 @@ function drawFacets(svg,nodeData,vm){
 	.style("stroke-width",1)
 	.style("fill", function (d) { return d.color; })
 	.on("contextmenu",function(d){
-		console.log("RIGHT CLICK ?");
+		// console.log("RIGHT CLICK ? YEAH");
 		d3.event.preventDefault();
 	})
 	.on("mousedown",function(d){
@@ -729,44 +729,26 @@ function drawFacets(svg,nodeData,vm){
 		var newText = "<p>Facet: <br/>"+nameFacet+"<hr/>"+"Name: <br/>"+d.name+" : "+d.value+"</p>";
 		document.getElementById("textData").innerHTML=newText;
 
-		console.log("====");
-		console.log("d : ");console.log(d);
-		console.log("----");
+
 		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
-			console.log("d inside function for text visibility : ");console.log(d);
-			console.log("d2 inside function for text visibility : ");console.log(d2);
+			// console.log("d inside function for text visibility : ");console.log(d);
+			// console.log("d2 inside function for text visibility : ");console.log(d2);
 			if ( d2.cluster == d.cluster ){
 				// Additional things to do
-				console.log(" d2.cluster == d.cluster ");
-				console.log("this : ");console.log(this);
-				// console.log("d3.select(this)[0][0] : ");
-				// console.log( d3.select(this)[0][0] );					
-				// console.log("d3.select(this)[0][0].textContent : ");
-				// console.log( d3.select(this)[0][0].textContent );
-				// this.attr("text",function(){return d2.name});
+				// console.log(" d2.cluster == d.cluster ");
+				// console.log("this : ");console.log(this);
 				d3.select(this)[0][0].textContent = '['+d2.name+']';
 				return "visible";
 			} else {
 				if ( clusters[d2.cluster].index == d2.index ){
-					// this.attr("text",function(){return d2.facet});
 					console.log("this : ");console.log(this);			
-				// console.log("d3.select(this)[0][0] : ");
-				// console.log( d3.select(this)[0][0] );					
-				// console.log("d3.select(this)[0][0].textContent : ");
-				// console.log( d3.select(this)[0][0].textContent );
 					var indexFilter = d2.facet.indexOf( "_crt_ft" );
 					var nameFacet = d2.facet;
 					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
 					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
-
 					return "visible";
 				} else {
-					// this.attr("text",function(){return d2.facet});
 					console.log("this : ");console.log(this);
-				// console.log("d3.select(this)[0][0] : ");
-				// console.log( d3.select(this)[0][0] );					
-				// console.log("d3.select(this)[0][0].textContent : ");
-				// console.log( d3.select(this)[0][0].textContent );
 					var indexFilter = d2.facet.indexOf( "_crt_ft" );
 					var nameFacet = d2.facet;
 					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
@@ -775,8 +757,6 @@ function drawFacets(svg,nodeData,vm){
 				}
 			}
 		});
-		console.log("====");
-
 	})
 	.on("mouseover",function(d){
 		document.getElementById("elementHelp").style.visibility="visible";
@@ -787,8 +767,8 @@ function drawFacets(svg,nodeData,vm){
 	})
 	.on("dblclick",function(d){
 		console.log("dblclick nodeFacet");
-		console.log("this : ");console.log(this);
-		console.log("vm : ");console.log(vm);
+		// console.log("this : ");console.log(this);
+		// console.log("vm : ");console.log(vm);
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFilter = d.facet;
 		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }

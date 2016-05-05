@@ -277,8 +277,8 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 	  console.log("status : ");console.log(status);
 	  console.log("response : ");console.log(response);
 	});
-	console.log("outside the get of loadDataWithoutRefresh");
-	console.log("rezToReturn : ");console.log(rezToReturn);
+	// console.log("outside the get of loadDataWithoutRefresh");
+	// console.log("rezToReturn : ");console.log(rezToReturn);
 	return rezToReturn;
 }
 
@@ -596,8 +596,8 @@ function drawFacets(svg,nodeData,vm){
 	var heightD3 = widthTitle/2;
 	var height=heightD3;
 
-    var padding = 15; // separation between same-color circles
-    var clusterPadding = 30; // separation between different-color circles
+    var padding = 25; // separation between same-color circles
+    var clusterPadding = 50; // separation between different-color circles
     var maxRadius = 50;
 	// The largest node for each cluster.
 	var clusters = [];
@@ -715,10 +715,10 @@ function drawFacets(svg,nodeData,vm){
 	})
 	.style("stroke-width",1)
 	.style("fill", function (d) { return d.color; })
-	// .on("contextmenu",function(d){
-	// 	console.log("RIGHT CLICK ? YEAH");
-	// 	d3.event.preventDefault();
-	// })
+	.on("contextmenu",function(d){
+		// console.log("RIGHT CLICK ? YEAH");
+		d3.event.preventDefault();
+	})
 	.on("mousedown",function(d){
 		d3.event.stopPropagation();
 		d3.selectAll("circle").style("stroke-width",2);
@@ -731,12 +731,12 @@ function drawFacets(svg,nodeData,vm){
 
 
 		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
-			console.log("d inside function for text visibility : ");console.log(d);
-			console.log("d2 inside function for text visibility : ");console.log(d2);
+			// console.log("d inside function for text visibility : ");console.log(d);
+			// console.log("d2 inside function for text visibility : ");console.log(d2);
 			if ( d2.cluster == d.cluster ){
 				// Additional things to do
-				console.log(" d2.cluster == d.cluster ");
-				console.log("this : ");console.log(this);
+				// console.log(" d2.cluster == d.cluster ");
+				// console.log("this : ");console.log(this);
 				d3.select(this)[0][0].textContent = '['+d2.name+']';
 				return "visible";
 			} else {
@@ -767,8 +767,8 @@ function drawFacets(svg,nodeData,vm){
 	})
 	.on("dblclick",function(d){
 		console.log("dblclick nodeFacet");
-		console.log("this : ");console.log(this);
-		console.log("vm : ");console.log(vm);
+		// console.log("this : ");console.log(this);
+		// console.log("vm : ");console.log(vm);
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFilter = d.facet;
 		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }
