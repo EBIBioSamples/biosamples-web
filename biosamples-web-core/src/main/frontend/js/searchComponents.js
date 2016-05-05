@@ -946,8 +946,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       ))
       .append("g")
       ;
-      console.log(" ------- ")
-
 
     var groupsReturned={};
     var nameToNodeIndex={};
@@ -958,7 +956,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       d3.select("#vizSpotRelations").attr("visibility","visible");
 
       var numFound = results.data.response.numFound;
-      var numberToDisplay = 200;
+      var numberToDisplay = 250;
       if (numFound <= numberToDisplay ){
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];

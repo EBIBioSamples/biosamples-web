@@ -838,3 +838,5 @@ function drawFacets(svg,nodeData,vm){
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");
 }
+
+//# sourceMappingURL=toolsFunctions.js.map
