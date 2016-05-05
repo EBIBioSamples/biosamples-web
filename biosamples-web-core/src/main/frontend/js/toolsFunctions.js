@@ -523,8 +523,8 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	nodeData.accessions="";
 	var groupsReturned = {};
 	console.log("results");console.log(results);
-	console.log("results.data.facet_counts.facet_fields : ");
-	console.log(results.data.facet_counts.facet_fields);
+	// console.log("results.data.facet_counts.facet_fields : ");
+	// console.log(results.data.facet_counts.facet_fields);
 
 	var maxAndMinFacet = {};
 	var maxAndMinTotal = [];
@@ -549,7 +549,7 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	}
 	scaleFacet = d3.scale.linear()
 		.domain( maxAndMinTotal )
-		.range([5,60]);
+		.range([5,50]);
 
 	var cptDomain =0; 
 	for (var i in results.data.facet_counts.facet_fields){ cptDomain++ }
@@ -565,13 +565,15 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 		nodeData.facets.push(i);
 		var colorFacet = getRandomColor();
 		for (var j=0; j < results.data.facet_counts.facet_fields[i].length;j++){
-			if (j%2==0)
+			if (j%2==0 && results.data.facet_counts.facet_fields[i][j+1] > 0 )
 			{
 				nodeData.nodes.push({
 					"radius": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
 					"r": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
 					"index":cptIndex,
-					"d":{cluster:results.data.facet_counts.facet_fields[i][0], radius: scaleFacet(results.data.facet_counts.facet_fields[i][j+1]) },
+					"d":{
+						cluster:results.data.facet_counts.facet_fields[i][0], 
+						radius: scaleFacet(results.data.facet_counts.facet_fields[i][j+1]) },
 					"color" : colorFacet,
 					"type":"nodeFacet",
 					"facet":i,
@@ -583,54 +585,56 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 			}
 		}
 	}
-	console.log("nodeData in loadDataFromFacets : ");console.log(nodeData);
 }
 
 function drawFacets(svg,nodeData,vm){
 
-	console.log("drawFacets TAGADA");
+	console.log("drawFacets");
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
 	var heightD3 = widthTitle/2;
 	var height=heightD3;
 	// ----
-    var padding = 1.5; // separation between same-color circles
-    var clusterPadding = 6; // separation between different-color circles
-    var maxRadius = 12;
+    var padding = 15; // separation between same-color circles
+    var clusterPadding = 30; // separation between different-color circles
+    var maxRadius = 50;
 	// The largest node for each cluster.
 	var clusters = [];
+	var cptClusters = 0;
 	for (var i in nodeData.nodes){
-		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){
+		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){	
 			clusters.push(nodeData.nodes[i]);
 		}
 	}
-	console.log("clusters : ");console.log(clusters);
-
-	// var force = d3.layout.force()
-	// .gravity(.08)
-	// .distance(50)
-	// .charge(-100)
-	// .size([width, height]);
+	for ( var i = 0 ; i < nodeData.nodes.length; i++){
+		for (var j = 0; j < clusters.length; j++ ){
+			if ( clusters[j].facet == nodeData.nodes[i].facet ){
+				nodeData.nodes[i].cluster = j;
+				nodeData.nodes[i].d.cluster = j;
+			}
+		}
+	}
 
 	// Move d to be adjacent to the cluster node.
 	function cluster(alpha){
-		console.log("cluster function");
 	  return function(d) {
-	    var cluster = clusters[d.cluster],
-	        k = 1;
+	    var cluster = clusters[d.cluster], k = 1;
+	    if (typeof cluster == 'undefined'){
+	    	console.log(" cluster undefined, d.cluster :  ");console.log(d.cluster);
+	    	console.log(" clusters :  ");console.log(clusters);
+	    }
 
 	    // For cluster nodes, apply custom gravity.
 	    if (cluster === d) {
-	    	console.log("within cluster: cluster === d");
 	      cluster = {x: width / 2, y: height / 2, radius: -d.radius};
 	      k = .1 * Math.sqrt(d.radius);
 	    }
-
 	    var x = d.x - cluster.x,
 	        y = d.y - cluster.y,
 	        l = Math.sqrt(x * x + y * y),
 	        r = d.radius + cluster.radius;
+
 	    if (l != r) {
 	      l = (l - r) / l * alpha * k;
 	      d.x -= x *= l;
@@ -644,14 +648,14 @@ function drawFacets(svg,nodeData,vm){
 	// ----
 	// Resolves collisions between d and all other circles.
 	function collide(alpha) {
-		console.log("collide function");
-	  var quadtree = d3.geom.quadtree(nodeData);
+	  var quadtree = d3.geom.quadtree(nodeData.nodes);
 	  return function(d) {
 	    var r = d.radius + maxRadius + Math.max(padding, clusterPadding),
 	        nx1 = d.x - r,
 	        nx2 = d.x + r,
 	        ny1 = d.y - r,
 	        ny2 = d.y + r;
+
 	    quadtree.visit(function(quad, x1, y1, x2, y2) {
 	      if (quad.point && (quad.point !== d)) {
 	        var x = d.x - quad.point.x,
@@ -671,37 +675,14 @@ function drawFacets(svg,nodeData,vm){
 	  };
 	}
 
-	function tick(e) {
-		console.log("--tick--");
-		console.log('d3.selectAll(".node").select("circle") : ');
-		console.log(d3.selectAll(".node").select("circle"));
-	  	d3.selectAll(".node").select("circle")
-	      .each(cluster(10 * e.alpha * e.alpha))
-	      .each(collide(.5))
-	      .attr("cx", function(d) { console.log("d : ");console.log(d); return d.x; })
-	      .attr("cy", function(d) { return d.y; });
-
-	}
-
-	// var node = d3.range( nodeData.nodes.length ).map(function() {
-	//   var i = Math.floor(Math.random() * nodeData.facets.length),
-	//       r = Math.sqrt((i + 1) / nodeData.facets.length * -Math.log(Math.random())) * maxRadius,
-	//       d = {cluster: i, radius: r};
-	//   if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
-	//   return d;
-	// });
-	// console.log("node : ");console.log(node);
-
 	var force = d3.layout.force()
-	    .nodes(nodeData.nodes)
+		.nodes(nodeData.nodes)
 	    .links(nodeData.links)
 	    .size([width, height])
 	    .gravity(0)
 	    .charge(0)
-	    .on("tick", tick)
 	    .start();
 
-	console.log("force : ");console.log(force);
 	// ----
 
 	// Works for now
@@ -712,18 +693,12 @@ function drawFacets(svg,nodeData,vm){
 	.attr("class","node")
 	.call(force.drag)
 	;
-	console.log("node : ");console.log(node);
 
 	var links = svg.selectAll(".link")
 	.data(nodeData.links)
 	.enter().append("line")
 	.attr("class", "link")
 	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
-
-	// force
-	// .nodes(nodeData.nodes)
-	// .links(nodeData.links)
-	// .start();
 
 	node
 	.attr("name", function (d) { return d.name; })
@@ -732,7 +707,6 @@ function drawFacets(svg,nodeData,vm){
 	.attr("cluster", function (d) { return d.cluster; })
 	.attr("radius", function (d) { return d.radius; })
 	.attr("r", function (d) { return d.radius; })
-	//.attr("index", function (d) { return d.name; })
 	.attr("color", function (d) { return d.color; })
 	.style("stroke-width",1)
 	.style("fill", function (d) { return d.color; })
@@ -742,10 +716,8 @@ function drawFacets(svg,nodeData,vm){
   		d3.select(this).select("circle").style("stroke-width", 4);
   		var newText = "<p>Facet: <br/>"+d.facet+"<hr/>"+"Name: <br/>"+d.name+" : "+d.value+"</p>";
   		document.getElementById("textData").innerHTML=newText;
-
 	})
 	.on("mouseover",function(d){
-		console.log("d.name : "+d.name);
 		document.getElementById("elementHelp").style.visibility="visible";
 		d3.select("#elementHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
 	})
@@ -772,7 +744,7 @@ function drawFacets(svg,nodeData,vm){
 	node.append("circle")
 	.attr("r", function (d) { return d.radius; })
 	.attr("name", function (d) { return d.name; })
-	.attr("facet", function (d) { return d.facet; })
+	.attr("index", function (d) { return d.index; })
 	.attr("facet", function (d) { return d.facet; })
 	.attr("radius", function (d) { return d.radius; })
 	.attr("color", function (d) { return d.color; })
@@ -800,24 +772,13 @@ function drawFacets(svg,nodeData,vm){
 	;
 
 	// Force rules:
-	force.on("tick", function() {
-		links.attr("x1", function(d) {return d.source.x;})
-		.attr("y1", function(d) {return d.source.y; })
-		.attr("x2", function(d) {return d.target.x; })
-		.attr("y2", function(d) {return d.target.y; })
-		;
-	  // Check if within node there is a class node dragging
-	  // if so, translate by 0
-	  var isDragging = false;
-	  var accessionDragged = '';
-	  var elements = svg.selectAll('g');
-	  for (var i=0; i < elements[0].length; i++){
-	  	if ( elements[0][i].classList.length > 1 ){
-	  		isDragging = true;
-	  		accessionDragged = elements[0][i].accession;
-	  	}
-	  }
-	  node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	force.on("tick", function(e) {
+	  	node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	  	d3.selectAll(".node")
+	      .each(cluster(10 * e.alpha * e.alpha))
+	      .each(collide(.5))
+		  // .attr("cx", function(d) { return d.x; })
+		  // .attr("cy", function(d) { return d.y; });
 	});
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");
