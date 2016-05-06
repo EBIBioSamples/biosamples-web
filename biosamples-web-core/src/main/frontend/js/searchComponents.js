@@ -159,11 +159,9 @@
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                     .then(function(results) {
                         this.consumeResults(results);
-                        // ----
                         if ( typeof loadD3 === "undefined" || loadD3 ){
                             doD3Stuff(results,apiUrl,this);
                         }
-                        // ----
                     })
                     .catch(function(data,status,response){
                         console.log("data");console.log(data);
@@ -305,6 +303,8 @@
                 });
 
                 this.$on('dd-item-chosen', function(item) {
+                    console.log("dd-item-chosen : ");
+                    console.log("item : ");console.log(item);
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
                     console.log("this : "); console.log(this);
@@ -441,12 +441,14 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
         console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) TRUE ");
 
-      document.getElementById("infoVizRelations").innerHTML= '<div id ="buttons-display">'
-       // +'<div class="col-md-6"><component is="pagination"v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve" style="float:right"> </component> </div>'
-       //  +'<div class="col-md-6"> <component is="items-dropdown"> </component> </div>'
-       +'</div>'
-       +' <h3>Clicked element information</h3>'
+      // document.getElementById("buttons-display").style.display="block";
+      document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
        +'<div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+           //  '<div id ="buttons-display">'
+           // +'<component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve" style="float:right"> </component>'
+           // +'<component is="items-dropdown"> </component>'
+           // +'</div>'
+       
       
       var cpt = 0;
       var strResults = '<table id="table" style="width: 100%"; " > <tr>';
@@ -470,13 +472,14 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       document.getElementById("sectionVizResult").style.height="0px";
     } else {
       console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) FALSE ");
-
-      document.getElementById("infoVizRelations").innerHTML= '<div id ="buttons-display">'
-       // +'<div class="col-md-6"><component is="pagination"v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve" style="float:right"> </component> </div>'
-       //  +'<div class="col-md-6"> <component is="items-dropdown"> </component> </div>'
-      +'</div>'
-      +' <h3>Clicked element information</h3>'
+      
+      // document.getElementById("buttons-display").style.display="block";
+      document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
       +' <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+            // '<div id ="buttons-display">'
+            // +'<component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve" style="float:right"> </component>'
+            // +'<component is="items-dropdown"> </component>'
+            // +'</div>'
 
       document.getElementById("sectionVizResult").innerHTML= ' <div id="tableResults"> <table  style="width:100%" <tr> <td>  </table> </div>';
       document.getElementById("sectionVizResult").style.height="0px";
@@ -728,9 +731,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             })
             .on("dblclick",function(d){
               console.log("dblclick text-d3");
-                var indexUnderscore = this.textContent.indexOf(":");
+                var indexUnderscore = this.textContent.lastIndexOf(":");
                 var nameClickedBar = this.textContent.substring(0, indexUnderscore-1);
-
                 for (var u in vm.$data.facets){
                   for (var v in vm.$data.facets[u] ){
                     if ( v == "keys"){
@@ -738,6 +740,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                         if ( nameClickedBar == vm.$data.facets[u][v][w]){
                           var nameOfFilter = u+'Filter';
                           if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
+                            console.log(" vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar : CASE 1 ");
                             vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
                             vm.$emit("bar-selected");
                             document.getElementById("infoPop").innerHTML=" Filtering the results according to "+vm.$data.filterQuery[ nameOfFilter ];
@@ -745,6 +748,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                             fadeOutDiv("infoPop");
                             vm.$options.methods.querySamples(this,false);
                           } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
+                            console.log("vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar : CASE 2 ");
                             vm.$data.filterQuery[ nameOfFilter ] = '';
 
                             vm.$emit("bar-selected");
@@ -753,7 +757,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                             fadeOutDiv("infoPop");
                             vm.$options.methods.querySamples(this,false);
                           } else {
-                            console.log("hum... what the hell is happening ?");
+                            console.log("hum... what the hell is happening ? CASE 3");
                           }
                         }
                       }

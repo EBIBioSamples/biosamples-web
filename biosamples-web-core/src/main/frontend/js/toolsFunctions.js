@@ -322,6 +322,7 @@ function changeSpecialCharacters( myid ) {
 function draw(svg,nodeData){
 
 	console.log("draw");
+	document.getElementById("buttons-display").style.display="block";
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -589,6 +590,9 @@ function drawFacets(svg,nodeData,vm){
 	console.log("drawFacets");
 
 	console.log("nodeData : ");console.log(nodeData);
+	document.getElementById("buttons-display").style.display="none";
+	console.log( 'document.getElementById("buttons-display").style.display : ');
+	console.log( document.getElementById("buttons-display").style.display );
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -685,14 +689,12 @@ function drawFacets(svg,nodeData,vm){
 				return "visible";
 			} else {
 				if ( clusters[d2.cluster].index == d2.index ){
-					console.log("this : ");console.log(this);			
 					var indexFilter = d2.facet.indexOf( "_crt_ft" );
 					var nameFacet = d2.facet;
 					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
 					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
 					return "visible";
 				} else {
-					console.log("this : ");console.log(this);
 					var indexFilter = d2.facet.indexOf( "_crt_ft" );
 					var nameFacet = d2.facet;
 					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
@@ -718,6 +720,12 @@ function drawFacets(svg,nodeData,vm){
 		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }
 		nameFilter+='Filter';
         vm.$data.filterQuery[ nameFilter ] = d.name;
+
+        // console.log("vm.$data : ");console.log(vm.$data);
+        console.log("vm.samplesToRetrieve : ");console.log(vm.samplesToRetrieve);
+		
+		vm.samplesToRetrieve = 100;
+
         vm.$emit("bar-selected");
 	    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
 	    popOutDiv("infoPop");
@@ -777,8 +785,8 @@ function drawFacets(svg,nodeData,vm){
 	  return function(d) {
 	    var cluster = clusters[d.cluster], k = 1;
 	    if (typeof cluster == 'undefined'){
-	    	console.log(" cluster undefined, d.cluster :  ");console.log(d.cluster);
-	    	console.log(" clusters :  ");console.log(clusters);
+			// console.log(" cluster undefined, d.cluster :  ");console.log(d.cluster);
+			// console.log(" clusters :  ");console.log(clusters);
 	    } else {
 		    // For cluster nodes, apply custom gravity.
 		    if (cluster === d) {
