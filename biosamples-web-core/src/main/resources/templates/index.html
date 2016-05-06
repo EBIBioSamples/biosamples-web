@@ -249,41 +249,38 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 </section>
 
 
-<section id="sectionVisualisation" class='tab-pane fade'>
-  <div id="buttonRezInfo" style="border:solid;border-color:grey;  border-radius:1px;visibility:hidden;"> 
+  <section id="sectionVisualisation" class='tab-pane fade'>
+
+    <div id="buttonRezInfo" style="border:solid;border-color:grey;  border-radius:1px;visibility:hidden;"> 
       <h4 id="titleRezInfo" >
-          Display result information
+        Display result information
       </h4>
-  </div>
-  <div id="sectionVizResult" 
-  style="visibility:hidden; height:0px;
-  overflow: auto;" >
-</div>
+    </div>
+    <div id="sectionVizResult" 
+    style="visibility:hidden; height:0px;
+    overflow: auto;" >
+    </div>
 
 
-<div id="areaNodeLink">
-    <div id= "vizNodeLink"></div>
-    <div id="infoVizRelations">
-      <div id ="buttons-display">
-<!--
-        <div class="col-md-6">
-          <component is="pagination"
-            v-bind:total-results="resultsNumber"
-            v-bind:displayed-results="samplesToRetrieve"
-            style="float:right">
-          </component>
+    <div id="areaNodeLink">
+      <div id= "vizNodeLink"></div>
+      <div id="infoVizRelations">
+        <div id ="buttons-display" style="display:none">
+          <p> <h4> Decide the number of elements fully loaded : </h4> <br/> 
+            <component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve" style="float:right"> </component>
+            <component is="items-dropdown"> </component>
+<!--             <h4 style="display:inline"> Display text of groups : </h4>  <input type="checkbox" onclick='showTextGroups(this)' /> <br/> -->
+            <h4 style="display:inline"> Display text of all samples : </h4>  <input type="checkbox" onclick='showTextSamples(this)' />
+          </p>
+          <hr/>
         </div>
-        <div class="col-md-6">
-          <component is="items-dropdown">
-          </component>
+        <div id="dynamicText">
+          <h3> Clicked element information </h3>
+          <div id="textData">Click on an element of the diagram to display its information </div>
         </div>
--->
       </div>
-      <h3> Clicked element information </h3>
-      <div id="textData">Click on an element of the diagram to display its information </div>
-  </div>
-</div>
-</section>
+    </div>
+  </section>
 </div>
 
 <div id="elementHelp"> Help </div>
