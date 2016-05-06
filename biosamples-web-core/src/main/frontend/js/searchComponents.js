@@ -658,10 +658,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
 
-              // console.log("on mouseover text-d3");
-              // console.log("this.id : ");console.log(this.id);
-              // console.log("idToSelect : ");console.log(idToSelect);
-
               var content = d3.select('#bar_'+idToSelect).attr("content");
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
               var facet = d3.select('#bar_'+idToSelect).attr("facet");

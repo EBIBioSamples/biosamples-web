@@ -318,6 +318,19 @@ function changeSpecialCharacters( myid ) {
     return myid.replace( /(:|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
 }
 
+function showTextSamples(boolValue) {
+	if ( boolValue.checked ){
+		d3.selectAll(".node").selectAll("text").style("visibility","visible");
+	} else {
+		d3.selectAll(".node").selectAll("text").style("visibility",function(d){
+			if (d.type == "group" || d.type == "groupViz"){
+				return "visible";
+			} else {
+				return "hidden";
+			}
+		});
+	}
+}
 
 function draw(svg,nodeData){
 
@@ -466,6 +479,13 @@ function draw(svg,nodeData){
 	.style("border","solid").style("border-radius","10px")
 	.style("box-shadow","gray")
 	.style("background-color","#46b4af")
+	.style("visibility", function(d){
+		if ( d.accession.indexOf("SAMEG") > -1 ){
+			return "visible";
+		} else {
+			return "hidden";
+		}
+	})
 	.attr("fill", "#4D504F")
 	.on("mouseover",function(d){
 		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
@@ -848,5 +868,4 @@ function drawFacets(svg,nodeData,vm){
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");
 }
-
 
