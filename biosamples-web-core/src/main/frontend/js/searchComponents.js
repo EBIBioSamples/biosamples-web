@@ -700,22 +700,31 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               var gotHighlighted = false;
               // Choice for now: The highlighting is done by looking through the returned elements.
               d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){
-                // Actually not necessary to get the stroke, but now we have the selection done
-                gotHighlighted = false;
-                var rez = d.responseDoc;
-                for (var u in d.responseDoc){
-                  var stringResponse = d.responseDoc[u]+'';
-                  if ( stringResponse.indexOf ( content ) > -1 ){
-                    d3.select(this).style("stroke-opacity","1");
-                    var idGhost = "#ghost_"+rez.accession ;
-                    d3.select(idGhost).style("visibility","visible");
-                    if (!gotHighlighted){ cptHighlighted++; gotHighlighted = true; }
-                  }
-                }
+                // console.log("d : ");console.log(d);
+                    // Actually not necessary to get the stroke, but now we have the selection done
+                    gotHighlighted = false;
+                    var rez = d.responseDoc;
+                    for (var u in d.responseDoc){
+                      var stringResponse = d.responseDoc[u]+'';
+                      if ( stringResponse.indexOf ( content ) > -1 ){
+                        d3.select(this).style("stroke-opacity","1");
+                        var idGhost = "#ghost_"+rez.accession ;
+                        d3.select(idGhost).style("visibility","visible");
+                        if (!gotHighlighted){ cptHighlighted++; gotHighlighted = true; }
+                      }
+                    }
               })
-              document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.";
-              popOutDiv("infoPop");
-              fadeOutDiv("infoPop");
+              if ( d3.select("#vizSpotRelations").select(".node")[0][0].attributes.type.value == "nodeFacet" ){
+                  document.getElementById("infoPop").innerHTML=" Double click to filter the results according to the facet "
+                    + content
+                    +".";
+                  popOutDiv("infoPop");
+                  fadeOutDiv("infoPop");
+              } else { 
+                  document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.<br/>Double click to filter the results according to it.";
+                  popOutDiv("infoPop");
+                  fadeOutDiv("infoPop");
+              }
             })
             .on("dblclick",function(d){
               console.log("dblclick text-d3");
@@ -892,9 +901,18 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               }
             }
           });
-          document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.";
-          popOutDiv("infoPop");
-          fadeOutDiv("infoPop");
+
+          if ( d3.select("#vizSpotRelations").select(".node")[0][0].attributes.type.value == "nodeFacet" ){
+              document.getElementById("infoPop").innerHTML=" Double click to filter the results according to the facet "
+                + content
+                +".";
+              popOutDiv("infoPop");
+              fadeOutDiv("infoPop");
+          } else { 
+              document.getElementById("infoPop").innerHTML=" Highlighting nodes according to "+content+" <br/> "+cptHighlighted+" element(s) matching.<br/>Double click to filter the results according to it.";
+              popOutDiv("infoPop");
+              fadeOutDiv("infoPop");
+          }
         })
         .style("fill",function(d){
             for (var i in results.request.params.filters ){
@@ -966,7 +984,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           // var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           // nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           // draw(svg,nodeData);
-          loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex );
+          nodeData = loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex );
           drawFacets(svg,nodeData,vm);
       }
     } else {
