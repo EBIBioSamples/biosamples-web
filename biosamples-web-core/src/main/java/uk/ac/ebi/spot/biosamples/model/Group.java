@@ -21,7 +21,7 @@ import java.util.TreeMap;
  * @date 10/02/16
  */
 @SolrDocument(solrCoreName = "groups")
-public class Group {
+public class Group implements ResultQueryDocument {
     // duplicated fields to disambiguate - no need to return
     @Id @Field("group_acc") @JsonIgnore String groupAccession;
     @Field("submission_description") @JsonIgnore String submissionDescription;
@@ -164,4 +164,9 @@ public class Group {
     public void setSubmissionUpdateDate(Date submissionUpdateDate) {
         this.submissionUpdateDate = submissionUpdateDate;
     }
+
+    public String getDocumentType() {
+        return "BioSampleGroup";
+    }
+
 }

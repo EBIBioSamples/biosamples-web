@@ -21,7 +21,7 @@ import java.util.TreeMap;
  * @date 10/02/16
  */
 @SolrDocument(solrCoreName = "samples")
-public class Sample {
+public class Sample implements ResultQueryDocument {
     // duplicated fields to disambiguate - no need to return
     @Id @Field("sample_acc") @JsonIgnore String sampleAccession;
     @Field("submission_description") @JsonIgnore String submissionDescription;
@@ -153,5 +153,9 @@ public class Sample {
 
     public void setXml(String xml) {
         this.xml = xml;
+    }
+
+    public String getDocumentType() {
+        return "BioSample";
     }
 }
