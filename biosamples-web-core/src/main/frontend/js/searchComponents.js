@@ -18,7 +18,8 @@
 
     // Required
     var _           = require("lodash");
-    var _mixins     = require('./utilities/_mixins.js');
+    var _mixins     = require("lodash-addons");
+    // var _mixins     = require("./utilities/_mixins.js");
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Biosample   = require('./components/BioSample.js');
@@ -269,7 +270,8 @@
             deserializeFilterQuery: function(serializedQuery) {
                 // let re = new RegExp("(\w+)Filter\|(\w+)");
                 let filtersObj = {};
-                _(serializedQuery).forEach(function(value) {
+                let filtersArray = serializedQuery.split(',');
+                _(filtersArray).forEach(function(value) {
                     // var tuple = re.exec(value);
                     // if (tuple.length == 2) {
                     //     self.filterQuery[tuple[0]] = tuple[1];
@@ -339,14 +341,19 @@
              */
             readLocationSearchAndQuerySamples: function() {
                 var historyState = History.getState();
-                var urlParam = historyState.data;
-                if (! _.isEmpty(urlParam) ) {
-                    this.populateDataWithUrlParameter(urlParam);
-                    this.querySamples();
-                    //vm.querySamples();
+                var urlParam;
+                if ( !_.isEmpty(historyState.data) ) {
+                   urlParam = historyState.data;
+                } else if ( !_.isEmpty(location.search) ) {
+                    urlParam = _.fromQueryString(location.search.substring(1));
+                    //TODO In this case the string is not properly read (filters is not read as an array)
                 } else {
-                    console.log("No parameters");
+                    console.log("No Parameters");
+                    return;
                 }
+
+                this.populateDataWithUrlParameter(urlParam);
+                this.querySamples();
             },
 
             /**
@@ -358,11 +365,11 @@
                 if ( !_.isEmpty( this.currentQueryParams ) ) {
                     if ( _.isEqual( this.currentQueryParams, this.previousQueryParams ) ) {
                         log("Replacing history","History");
-                        History.replaceState(this.currentQueryParams, 'test', _.toQueryString(this.currentQueryParams));
+                        History.replaceState(this.currentQueryParams, null, "?" + _.toQueryString(this.currentQueryParams));
                     } else {
                         log("Push new history state","History");
                         this.previousQueryParams = this.currentQueryParams;
-                        History.pushState(this.currentQueryParams, 'test', _.toQueryString(this.currentQueryParams));
+                        History.pushState(this.currentQueryParams, null, "?" + _.toQueryString(this.currentQueryParams));
                     }
                 }
             }
