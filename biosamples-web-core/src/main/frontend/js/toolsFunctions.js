@@ -315,7 +315,7 @@ function fadeOutDiv(stringDiv){
 
 
 function changeSpecialCharacters( myid ) { 
-    return myid.replace( /(:|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
+    return myid.replace( /(:|\!|\?|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
 }
 
 function showTextSamples(boolValue) {
@@ -628,7 +628,7 @@ function drawFacets(svg,nodeData,vm){
 	console.log("nodeData.nodes : ");console.log(nodeData.nodes);
 	for (var i in nodeData.nodes){
 		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){	
-			console.log("push "+nodeData.nodes[i].name);
+			// console.log("push "+nodeData.nodes[i].name);
 			clusters.push(nodeData.nodes[i]);
 		}
 	}
@@ -733,8 +733,6 @@ function drawFacets(svg,nodeData,vm){
 	})
 	.on("dblclick",function(d){
 		console.log("dblclick nodeFacet");
-		// console.log("this : ");console.log(this);
-		// console.log("vm : ");console.log(vm);
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFilter = d.facet;
 		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }

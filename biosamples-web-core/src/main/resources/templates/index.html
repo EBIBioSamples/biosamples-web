@@ -57,6 +57,17 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
       stroke-linejoin: round;
     }
 
+    .reverter{
+      border:solid;
+      border-color:black; 
+      border-radius:2px;
+      background-color: #4dabac;
+      color: white;
+      text-align: center;
+      stroke: white;
+      stroke-width: 32px;
+    }
+
     #areaNodeLink{
       position:relative;
       width:100%;
@@ -148,9 +159,7 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
     table {
         border: 4px solid grey;
     }
-
-  </style>  
-
+  </style>
 
     <script th:inline="javascript">
     /*<![CDATA[*/
@@ -162,14 +171,12 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 <body id="app">
     <main layout:fragment="content">
 
-        <div th:replace="fragments/searchForm :: searchInput" th:remove="tag">
-
-        </div>
+        <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
 
         <div v-bind:class="{loading: isQuerying}"></div>
-
-        <br/>
-        <br/>
+        <br/><br/>
+        <div id="displayRemainingFilters"></div>
+        <!-- <br/><br/> -->
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
             <li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>
@@ -206,13 +213,13 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
                                           <h3>Refine search results</h3>
                                       </div>
                                       <div class="panel-body">
-                                          <form>
-                                              <label for="fuzzy-search">Search for similar terms</label>
-                                              <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
-                                              v-model="useFuzzy" v-on:change="querySamples" />
-                                          </form>
+                                        <form>
+                                            <label for="fuzzy-search">Search for similar terms</label>
+                                            <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
+                                            v-model="useFuzzy" v-on:change="querySamples" />
+                                        </form>
 
-                                          <component v-for="(key,facetObj) in facets"
+                                        <component v-for="(key,facetObj) in facets"
                                           is="facet" v-bind:title="key | startCase"
                                           v-bind:keys="facetObj.keys"
                                           v-bind:values="facetObj.vals"
@@ -221,8 +228,8 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
                                   </div>
                                   <div class="panel-footer">
                                       <div class="row">
-                                          <div class="col-md-6">
-                                              <component is="pagination"
+                                        <div class="col-md-6">
+                                            <component is="pagination"
                                               v-bind:total-results="resultsNumber"
                                               v-bind:displayed-results="samplesToRetrieve"
                                               style="float:right">

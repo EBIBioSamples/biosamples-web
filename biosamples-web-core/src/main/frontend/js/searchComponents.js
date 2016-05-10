@@ -158,6 +158,99 @@
 
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                     .then(function(results) {
+
+                        // Display the filters in filterEmergencyDisplay 
+                        // if we have both filters and empty results
+                        var displayRemainingFilters = false;
+                        // remainingfilters[ facet ] = [filter,...]
+                        var remainingfilters = {};
+                        console.log("Before d3 results : ");console.log(results);
+                        function infoDisplayFilters (results){
+                            var needToDisplay = false; var arrayFilters = [];
+                            if ( results.data.response.docs.length == 0 ){
+                                for (var i in results.request.params.filters){
+                                    var indexPipe = results.request.params.filters[i].indexOf("|");
+                                    console.log("results.request.params.filters[i].length : ");
+                                    console.log(results.request.params.filters[i].length);
+                                    console.log("indexPipe : ");
+                                    console.log(indexPipe);
+                                    if ( indexPipe != results.request.params.filters[i].length-1 ){
+                                        arrayFilters.push(results.request.params.filters[i]);
+                                        needToDisplay = true;
+                                    } else {
+                                        console.log('indexPipe == results.request.params.filters[i].length-1');
+                                        console.log('results.request.params.filters[i] : ');
+                                        console.log(results.request.params.filters[i]);
+                                    }
+                                }
+                            }
+                            return [needToDisplay,arrayFilters];
+                        }
+                        // function dynamicFacets(facet,value){
+                        function dynamicFilter(facet,value){
+                            console.log("----");
+                            console.log("dynamicFilters");
+                            console.log("facet : "+facet);console.log("value : "+value);
+                            console.log("----");
+                            vm.$data.filterQuery[ facet ] = '';
+                            vm.$emit("bar-selected");
+                        }
+                        displayRemainingFilters = infoDisplayFilters(results);
+                        console.log("displayRemainingFilters : ");
+                        console.log(displayRemainingFilters);
+                        if ( displayRemainingFilters[0]){
+                            document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/> <ul id='tableRevertFilters' style='width:100%'>");
+                            console.log("created the table normally ?");
+                            for (var i in displayRemainingFilters[1]){
+                                var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
+                                var indexToCutFacet = facet.indexOf("Filter");
+                                facet = facet.substring(0,indexToCutFacet);
+                                var value = displayRemainingFilters[1][i].substring(indexToCut+1, displayRemainingFilters[1][i].length);
+                                // Create buttons
+                                var divReverter = 'buttonFilter_'+facet;
+                                var stringColumn = '<li><div class="reverter" id="'+ divReverter +'">'+ value +'</div></li>';
+                                console.log("stringColumn : ");console.log(stringColumn);
+                                document.getElementById("tableRevertFilters").innerHTML+= stringColumn;
+                                d3.select("#"+divReverter).on("mouseover",function(d){
+                                    console.log("d3.select('#'+divReverter) : ");console.log(d3.select('#'+divReverter));
+                                    d3.select('#'+divReverter).style("fill","black");
+                                });
+                                d3.select("#"+divReverter).on("mouseout",function(d){
+                                    console.log("d3.select('#'+divReverter) : ");console.log(d3.select('#'+divReverter));
+                                    d3.select('#'+divReverter).style("fill","white");
+                                });
+                            }
+                            document.getElementById("displayRemainingFilters").innerHTML+="</li>";
+                            $('div.reverter').click(function(e){
+                                console.log('click on div.reverter');
+                                console.log("e : ");console.log(e);
+                                console.log("e.toElement.id : ");console.log(e.toElement.id);
+                                var indexPipe =  e.toElement.id.indexOf("_");
+                                facet = e.toElement.id.substring(indexPipe+1, e.toElement.id.length);
+                                console.log("facet : "+facet);
+                                console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
+                                vm.$data.filterQuery[facet+'Filter'] = "";
+                                vm.$emit("bar-selected");
+                            })                            
+
+                            d3.selectAll('.reverter').on("mouseover",function(d){
+                                d3.selectAll('.reverter').style("background-color","#4dabac");
+                                d3.selectAll('.reverter').style("color","white");
+                                d3.select('#'+this.id).style("background-color","white");
+                                d3.select('#'+this.id).style("color","#4dabac");
+                            });
+                            d3.selectAll('.reverter').on("mouseout",function(d){
+                                d3.selectAll('.reverter').style("background-color","#4dabac");
+                                d3.selectAll('.reverter').style("color","white");
+                            });
+                        } else {
+                            console.log("%%%%");
+                            console.log('d3.select("#displayRemainingFilters").selectAll("*") : ');
+                            console.log(d3.select("#displayRemainingFilters").selectAll("*"));
+                            console.log("%%%%");
+                            d3.select("#displayRemainingFilters").selectAll("*").remove();
+                        }
+
                         this.consumeResults(results);
                         if ( typeof loadD3 === "undefined" || loadD3 ){
                             doD3Stuff(results,apiUrl,this);
@@ -396,6 +489,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   document.getElementById("infoVizRelations").style.height = heightD3+'px';  
   if (results.data.response.docs.length == 0  ){
     document.getElementById("infoVizRelations").style.visibility='hidden';
+    // Add display of the filters if there are existing filters ? 
+    // No, do it for both the sections, and do it under the search bar
+            
   } else {
     document.getElementById("infoVizRelations").style.visibility='visible';
   }
@@ -417,9 +513,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           }
       }
     }
-    
-    // console.log("numberFacetsUnEmpty : ");
-    // console.log(numberFacetsUnEmpty);
 
     document.getElementById("elementHelp").style.visibility="hidden";
     document.getElementById("elementHelp").innerHTML="Help";
@@ -440,16 +533,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
         console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) TRUE ");
-
-      // document.getElementById("buttons-display").style.display="block";
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
        +'<div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
-           //  '<div id ="buttons-display">'
-           // +'<component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve" style="float:right"> </component>'
-           // +'<component is="items-dropdown"> </component>'
-           // +'</div>'
-       
-      
+             
       var cpt = 0;
       var strResults = '<table id="table" style="width: 100%"; " > <tr>';
       
@@ -472,14 +558,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       document.getElementById("sectionVizResult").style.height="0px";
     } else {
       console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) FALSE ");
-      
-      // document.getElementById("buttons-display").style.display="block";
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
       +' <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
-            // '<div id ="buttons-display">'
-            // +'<component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve" style="float:right"> </component>'
-            // +'<component is="items-dropdown"> </component>'
-            // +'</div>'
 
       document.getElementById("sectionVizResult").innerHTML= ' <div id="tableResults"> <table  style="width:100%" <tr> <td>  </table> </div>';
       document.getElementById("sectionVizResult").style.height="0px";
@@ -552,7 +632,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       .domain([0, height])
       .range([height, 0]);
 
-
     var widthRectangles = [];
     var cpt =0;
     for (var u in numberFacetsUnEmpty){
@@ -576,24 +655,21 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     var cpt=0;
     for (var u in numberFacetsUnEmpty){
       dataBars.push([]);
-      scalesX.push( 
+      scalesX.push(
         d3.scale.ordinal()
-        .domain(dataBars[cpt].map(function(d){ console.log("d.content : "+d.content); return d.content;}))
+        .domain(dataBars[cpt].map(function(d){ return d.content; }))
         .range([margin.left, width - margin.right - margin.left])
-        //.range([margin.left, widthTitle - margin.right - margin.left])
       );
 
       scalesY.push( 
         d3.scale.linear().domain([0, maxOccurences[cpt] ])
         .range([ margin.bottom , height -margin.top ])
-        //.range([ margin.bottom , heightD3 -margin.top ])
       );
       cpt++;
     }
 
     var cpt=0;
     console.log("results.data.facet_counts.facet_fields : ");console.log(results.data.facet_counts.facet_fields);
-    //for (var u in results.data.facet_counts.facet_fields ){
     for (var u in numberFacetsUnEmpty ){
       for (var v =0; v < results.data.facet_counts.facet_fields[u].length; v++ ){
         if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){
@@ -676,7 +752,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               +"<br/> • Double click to filter the results according to a facet. ";              
 
               d3.selectAll(".text-d3").style("opacity",1);
-              //d3.selectAll(".bar-d3").style("fill","#46b4af");
               d3.selectAll(".bar-d3").style("fill",function(d){
                 return d3.select(this).attr("color");
               });
@@ -699,7 +774,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               var gotHighlighted = false;
               // Choice for now: The highlighting is done by looking through the returned elements.
               d3.select("#vizSpotRelations").selectAll(".node").select("circle").style("stroke", function(d){
-                // console.log("d : ");console.log(d);
                     // Actually not necessary to get the stroke, but now we have the selection done
                     gotHighlighted = false;
                     var rez = d.responseDoc;
@@ -831,7 +905,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           d3.selectAll(".bar-d3").style("fill",function(d){
             return d3.select(this).attr("color");
           });
-
         })
         .attr("x",function(d){return d.x;})
         .attr("y", function(d){ return height - margin.top - scalesY[h](d.occurence);} )
@@ -842,7 +915,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .on("dblclick",function(d){
           console.log("dblclick rectangle");
           var content = d.content;
-
           var nameClickedBar = d.content;
 
           for (var u in vm.$data.facets){

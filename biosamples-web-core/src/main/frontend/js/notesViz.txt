@@ -399,10 +399,24 @@ node.attr( "transform", function(d) { //console.log("d : ");console.log(d);
 v-on:keyup="querySamples | debounce 500"/>
 
 
-/////
+///// beans => dev 
 solr.server                         http://beans.ebi.ac.uk:8989/solr/
-
 solr.searchapi.server               http://beans.ebi.ac.uk:8989/solr/merged/select?
 spring.data.rest.base-path          /api
 spring.data.rest.default-page-size  50
 spring.thymeleaf.mode               LEGACYHTML5
+
+///// cocoa => cbi
+http://cocoa.ebi.ac.uk:9089
+
+
+//// Save URL
+console.log(" ---- ");
+console.log("window.location.pathname : ");
+console.log(window.location.pathname);
+console.log("window.location.href : ");
+console.log(window.location.href);
+console.log("document.URL : ");
+console.log(document.URL);
+console.log(" ---- ");
+
