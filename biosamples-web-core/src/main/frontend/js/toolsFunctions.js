@@ -867,3 +867,65 @@ function drawFacets(svg,nodeData,vm){
 	d3.select(self.frameElement).style("height", width - 150 + "px");
 }
 
+function displayRevertingFilters( results,vm ){
+	console.log("-- displayRevertingFilters --");
+	// Display the filters in filterEmergencyDisplay 
+	// if we have both filters and empty results
+	var displayRemainingFilters = false;
+	// remainingfilters[ facet ] = [filter,...]
+	var remainingfilters = {};
+	function infoDisplayFilters (results){
+	    var needToDisplay = false; var arrayFilters = [];
+	    if ( results.data.response.docs.length == 0 ){
+	        for (var i in results.request.params.filters){
+	            var indexPipe = results.request.params.filters[i].indexOf("|");
+	            if ( indexPipe != results.request.params.filters[i].length-1 ){
+	                arrayFilters.push(results.request.params.filters[i]);
+	                needToDisplay = true;
+	            } 
+	        }
+	    }
+	    return [needToDisplay,arrayFilters];
+	}
+
+	displayRemainingFilters = infoDisplayFilters(results);
+
+	if ( displayRemainingFilters[0]){
+	    document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/> <ul id='tableRevertFilters' style='width:100%'>");
+	    for (var i in displayRemainingFilters[1]){
+	        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
+	        var indexToCutFacet = facet.indexOf("Filter");
+	        facet = facet.substring(0,indexToCutFacet);
+	        var value = displayRemainingFilters[1][i].substring(indexToCut+1, displayRemainingFilters[1][i].length);
+	        // Create buttons
+	        var divReverter = 'buttonFilter_'+facet;
+	        var stringColumn = '<li><div class="reverter" id="'+ divReverter +'">'+facet+' | '+ value +'</div></li>';
+	        document.getElementById("tableRevertFilters").innerHTML+= stringColumn;
+	        d3.select("#"+divReverter).on("mouseover",function(d){
+	            d3.select('#'+divReverter).style("fill","black");
+	        });
+	        d3.select("#"+divReverter).on("mouseout",function(d){
+	            d3.select('#'+divReverter).style("fill","white");
+	        });
+	    }
+	    document.getElementById("displayRemainingFilters").innerHTML+="</li>";
+	    $('div.reverter').click(function(e){
+	        var indexPipe =  e.toElement.id.indexOf("_");
+	        facet = e.toElement.id.substring(indexPipe+1, e.toElement.id.length);
+	        vm.$data.filterQuery[facet+'Filter'] = "";
+	        vm.$emit("bar-selected");
+	    })                            
+	    d3.selectAll('.reverter').on("mouseover",function(d){
+	        d3.selectAll('.reverter').style("background-color","#4dabac");
+	        d3.selectAll('.reverter').style("color","white");
+	        d3.select('#'+this.id).style("background-color","white");
+	        d3.select('#'+this.id).style("color","#4dabac");
+	    });
+	    d3.selectAll('.reverter').on("mouseout",function(d){
+	        d3.selectAll('.reverter').style("background-color","#4dabac");
+	        d3.selectAll('.reverter').style("color","white");
+	    });
+	} else {
+	    d3.select("#displayRemainingFilters").selectAll("*").remove();
+	}
+}

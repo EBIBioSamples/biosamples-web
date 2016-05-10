@@ -407,7 +407,8 @@ spring.data.rest.default-page-size  50
 spring.thymeleaf.mode               LEGACYHTML5
 
 ///// cocoa => cbi
-http://cocoa.ebi.ac.uk:9089
+solr.server                         http://cocoa.ebi.ac.uk:9089/solr/
+solr.searchapi.server               http://cocoa.ebi.ac.uk:9089/solr/merged/select?
 
 
 //// Save URL

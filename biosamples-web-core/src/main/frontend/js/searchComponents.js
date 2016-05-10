@@ -154,102 +154,10 @@
 
                 this.isQuerying = true;
 
-                console.log("what is this : ");console.log(this);
-
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                     .then(function(results) {
 
-                        // Display the filters in filterEmergencyDisplay 
-                        // if we have both filters and empty results
-                        var displayRemainingFilters = false;
-                        // remainingfilters[ facet ] = [filter,...]
-                        var remainingfilters = {};
-                        console.log("Before d3 results : ");console.log(results);
-                        function infoDisplayFilters (results){
-                            var needToDisplay = false; var arrayFilters = [];
-                            if ( results.data.response.docs.length == 0 ){
-                                for (var i in results.request.params.filters){
-                                    var indexPipe = results.request.params.filters[i].indexOf("|");
-                                    console.log("results.request.params.filters[i].length : ");
-                                    console.log(results.request.params.filters[i].length);
-                                    console.log("indexPipe : ");
-                                    console.log(indexPipe);
-                                    if ( indexPipe != results.request.params.filters[i].length-1 ){
-                                        arrayFilters.push(results.request.params.filters[i]);
-                                        needToDisplay = true;
-                                    } else {
-                                        console.log('indexPipe == results.request.params.filters[i].length-1');
-                                        console.log('results.request.params.filters[i] : ');
-                                        console.log(results.request.params.filters[i]);
-                                    }
-                                }
-                            }
-                            return [needToDisplay,arrayFilters];
-                        }
-                        // function dynamicFacets(facet,value){
-                        function dynamicFilter(facet,value){
-                            console.log("----");
-                            console.log("dynamicFilters");
-                            console.log("facet : "+facet);console.log("value : "+value);
-                            console.log("----");
-                            vm.$data.filterQuery[ facet ] = '';
-                            vm.$emit("bar-selected");
-                        }
-                        displayRemainingFilters = infoDisplayFilters(results);
-                        console.log("displayRemainingFilters : ");
-                        console.log(displayRemainingFilters);
-                        if ( displayRemainingFilters[0]){
-                            document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/> <ul id='tableRevertFilters' style='width:100%'>");
-                            console.log("created the table normally ?");
-                            for (var i in displayRemainingFilters[1]){
-                                var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
-                                var indexToCutFacet = facet.indexOf("Filter");
-                                facet = facet.substring(0,indexToCutFacet);
-                                var value = displayRemainingFilters[1][i].substring(indexToCut+1, displayRemainingFilters[1][i].length);
-                                // Create buttons
-                                var divReverter = 'buttonFilter_'+facet;
-                                var stringColumn = '<li><div class="reverter" id="'+ divReverter +'">'+ value +'</div></li>';
-                                console.log("stringColumn : ");console.log(stringColumn);
-                                document.getElementById("tableRevertFilters").innerHTML+= stringColumn;
-                                d3.select("#"+divReverter).on("mouseover",function(d){
-                                    console.log("d3.select('#'+divReverter) : ");console.log(d3.select('#'+divReverter));
-                                    d3.select('#'+divReverter).style("fill","black");
-                                });
-                                d3.select("#"+divReverter).on("mouseout",function(d){
-                                    console.log("d3.select('#'+divReverter) : ");console.log(d3.select('#'+divReverter));
-                                    d3.select('#'+divReverter).style("fill","white");
-                                });
-                            }
-                            document.getElementById("displayRemainingFilters").innerHTML+="</li>";
-                            $('div.reverter').click(function(e){
-                                console.log('click on div.reverter');
-                                console.log("e : ");console.log(e);
-                                console.log("e.toElement.id : ");console.log(e.toElement.id);
-                                var indexPipe =  e.toElement.id.indexOf("_");
-                                facet = e.toElement.id.substring(indexPipe+1, e.toElement.id.length);
-                                console.log("facet : "+facet);
-                                console.log("vm.$data.filterQuery : ");console.log(vm.$data.filterQuery);
-                                vm.$data.filterQuery[facet+'Filter'] = "";
-                                vm.$emit("bar-selected");
-                            })                            
-
-                            d3.selectAll('.reverter').on("mouseover",function(d){
-                                d3.selectAll('.reverter').style("background-color","#4dabac");
-                                d3.selectAll('.reverter').style("color","white");
-                                d3.select('#'+this.id).style("background-color","white");
-                                d3.select('#'+this.id).style("color","#4dabac");
-                            });
-                            d3.selectAll('.reverter').on("mouseout",function(d){
-                                d3.selectAll('.reverter').style("background-color","#4dabac");
-                                d3.selectAll('.reverter').style("color","white");
-                            });
-                        } else {
-                            console.log("%%%%");
-                            console.log('d3.select("#displayRemainingFilters").selectAll("*") : ');
-                            console.log(d3.select("#displayRemainingFilters").selectAll("*"));
-                            console.log("%%%%");
-                            d3.select("#displayRemainingFilters").selectAll("*").remove();
-                        }
+                        displayRevertingFilters(results,this);
 
                         this.consumeResults(results);
                         if ( typeof loadD3 === "undefined" || loadD3 ){
