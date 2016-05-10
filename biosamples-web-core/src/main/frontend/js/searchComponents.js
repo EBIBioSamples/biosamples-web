@@ -405,8 +405,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   if (results.data.response.docs.length == 0  ){
     document.getElementById("infoVizRelations").style.visibility='hidden';
     // Add display of the filters if there are existing filters ? 
-    // No, do it for both the sections, and do it under the search bar
-            
+    // No, do it for both the sections, and do it under the search bar            
   } else {
     document.getElementById("infoVizRelations").style.visibility='visible';
   }
@@ -965,12 +964,12 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       if (numFound <= numberToDisplay ){
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
+          d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";          
           draw(svg,nodeData);
       } else {
           console.log('numFound > numberToDisplay');
-          // var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
-          // nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
-          // draw(svg,nodeData);
+          // d3.select("#saveButton")[0][0].textContent=document.URL;
+          d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";
           nodeData = loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex );
           drawFacets(svg,nodeData,vm);
       }

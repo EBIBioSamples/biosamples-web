@@ -332,6 +332,23 @@ function showTextSamples(boolValue) {
 	}
 }
 
+function saveURL(e){
+	console.log("---- saveURL ----");
+	console.log("e : ");console.log(e);
+	console.log(" ---- ");
+	console.log("window.location.pathname : ");
+	console.log(window.location.pathname);
+	console.log("window.location.href : ");
+	console.log(window.location.href);
+	console.log("document.URL : ");
+	console.log(document.URL);
+	console.log(" ---- ");
+	d3.select("#saveButton")[0][0].textContent=document.URL;
+	d3.select("#saveButton").style("overflow-x ","visible");
+	console.log('d3.select("#saveButton")[0][0].textContent : ');
+	console.log(d3.select("#saveButton")[0][0].textContent);
+}
+
 function draw(svg,nodeData){
 
 	console.log("draw");
