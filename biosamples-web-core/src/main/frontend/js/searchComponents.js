@@ -403,11 +403,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
   document.getElementById("infoVizRelations").style.height = heightD3+'px';  
   if (results.data.response.docs.length == 0  ){
-    document.getElementById("infoVizRelations").style.visibility='hidden';
+    // document.getElementById("infoVizRelations").style.visibility='hidden';
+    document.getElementById("infoVizRelations").style.display="none";
     // Add display of the filters if there are existing filters ? 
     // No, do it for both the sections, and do it under the search bar            
   } else {
-    document.getElementById("infoVizRelations").style.visibility='visible';
+    // document.getElementById("infoVizRelations").style.visibility='visible';
+    document.getElementById("infoVizRelations").style.display="block";
   }
 
   var margin = {top: 10, right: 10, bottom: 10, left: 10};
@@ -433,15 +435,15 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").innerHTML="Display result information";
-    document.getElementById("sectionVizResult").style.visibility="hidden";
+    document.getElementById("sectionVizResult").style.display="none";
 
     d3.select("#sectionVizResult").on("mouseenter",function(){
       document.getElementById("elementHelp").style.visibility="visible";
       document.getElementById("elementHelp").innerHTML = "Help <hr/> Click on a bar to display its information. <br/> Click twice to filter according to it.";
     })
     .on("mouseleave",function(){
-      document.getElementById("elementHelp").style.visibility="hidden";
-      d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+        document.getElementById("elementHelp").style.visibility="hidden";
+        d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
     })
 
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
@@ -468,26 +470,23 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }
       strResults += '</tr> </table>';
       document.getElementById("sectionVizResult").innerHTML= strResults;
-      document.getElementById("sectionVizResult").style.height="0px";
     } else {
       console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) FALSE ");
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
       +' <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
 
       document.getElementById("sectionVizResult").innerHTML= ' <div id="tableResults"> <table  style="width:100%" <tr> <td>  </table> </div>';
-      document.getElementById("sectionVizResult").style.height="0px";
     }
     
     document.getElementById("buttonRezInfo").onclick = function(){
-      if ( document.getElementById("sectionVizResult").style.visibility == "hidden" ){
-        document.getElementById("sectionVizResult").style.visibility="visible";
+      if ( document.getElementById("sectionVizResult").style.display == "none" ){        
+        document.getElementById("sectionVizResult").style.display="block";
         document.getElementById("titleRezInfo").innerHTML="Hide the result information ";
-        var heightBars = $('#resultsViz0').height();
-        document.getElementById("sectionVizResult").style.height= (heightBars+100)+ "px";
+        var heightBars = $('#table').height();
+        document.getElementById("sectionVizResult").style.height= (heightBars+10)+ "px";
       } else {
-        document.getElementById("sectionVizResult").style.visibility="hidden";
         document.getElementById("titleRezInfo").innerHTML="Display the result information ";
-        document.getElementById("sectionVizResult").style.height="0px";
+        document.getElementById("sectionVizResult").style.display="none";
       }
     };
 
@@ -974,11 +973,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         console.log("results.data.response.docs.length==0");
         d3.select("#vizSpotRelations").attr("visibility","hidden");
         d3.select("#vizSpotRelations").selectAll("*").remove();
-        document.getElementById("infoVizRelations").style.visibility="hidden";
+        document.getElementById("infoVizRelations").style.display="none";
         document.getElementById("buttonRezInfo").style.visibility="hidden";
-        document.getElementById("infoVizRelations").style.height="0px";
         document.getElementById("vizSpotRelations").style.height="0px";
     }
-
   }
 }

@@ -84,7 +84,8 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
         border-color:black; 
         border-radius:4px;
         background-color: rgba(200, 200, 200, 0.5); 
-        visibility: hidden;
+        /*visibility: hidden;*/
+        display:none;
         overflow:scroll;
         overflow-x:visible;
     }
@@ -264,8 +265,8 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
         Display result information
       </h4>
     </div>
-    <div id="sectionVizResult" 
-    style="visibility:hidden; height:0px;
+    <div id="sectionVizResult"
+    style="display:none; 
     overflow: auto;" >
     </div>
 
