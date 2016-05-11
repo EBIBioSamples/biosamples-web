@@ -429,7 +429,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     }
 
     document.getElementById("elementHelp").style.visibility="hidden";
-    document.getElementById("elementHelp").innerHTML="Help";
+    // d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information");
     
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").innerHTML="Display result information";
@@ -437,12 +437,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     d3.select("#sectionVizResult").on("mouseenter",function(){
       document.getElementById("elementHelp").style.visibility="visible";
-      document.getElementById("elementHelp").innerHTML = "Help <hr/> Click a node to display its information. <br/> Click twice to filter according to it.";
+      document.getElementById("elementHelp").innerHTML = "Help <hr/> Click on a bar to display its information. <br/> Click twice to filter according to it.";
     })
-
     .on("mouseleave",function(){
       document.getElementById("elementHelp").style.visibility="hidden";
-      document.getElementById("elementHelp").innerHTML = "Help ";
+      d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
     })
 
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
@@ -652,8 +651,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
               var facet = d3.select('#bar_'+idToSelect).attr("facet");
 
-              document.getElementById("elementHelp").innerHTML=
-                "Help"
+              document.getElementById("elementHelp").innerHTML= "Help"
                 +"<hr/> "+ facet +" <hr/> "+  content+ " : " + occurence ;
               d3.selectAll(".text-d3").style("opacity",.5);
               d3.select(this).style("opacity",1);
@@ -935,11 +933,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       .style("border-radius","4px")
       .on("mouseenter",function(){
         document.getElementById("elementHelp").style.visibility="visible";
-        d3.select("#elementHelp").html("Help <hr/> Click a node to display its information. <br/> Click twice to filter according to it.");
+        d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger <br/> Click a node to display its information. <br/> ");
       })
       .on("mouseleave",function(){
         document.getElementById("elementHelp").style.visibility="hidden";
-        d3.select("#elementHelp").html("Help");
+        d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click a node to display its information. <br/> ")
       })
       .call(d3.behavior.zoom().on("zoom", (function (d) {
           svg.attr("transform", 
@@ -968,7 +966,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           draw(svg,nodeData);
       } else {
           console.log('numFound > numberToDisplay');
-          // d3.select("#saveButton")[0][0].textContent=document.URL;
           d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";
           nodeData = loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex );
           drawFacets(svg,nodeData,vm);

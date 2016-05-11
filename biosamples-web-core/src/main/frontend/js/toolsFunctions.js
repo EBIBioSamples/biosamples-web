@@ -454,21 +454,15 @@ function draw(svg,nodeData){
 	    }
 	}
 	document.getElementById("textData").innerHTML+='</p>';
-	  // var params = { searchTerm:""+d.accession };
-	  // console.log("params : ");console.log(params);
-	  // var rezClick = loadDataWithoutRefresh(vm,apiUrl, params);
 	})
 	.on("mouseup",function(d){
 	})
 	.on("mouseout",function(d){
-	  //document.getElementById("elementHelp").style.visibility="hidden";
 	  d3.selectAll("text").style("opacity",1);
-	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
 	  d3.selectAll(".node").selectAll("text").style("dx", 12);
 	  d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
 	  d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
 	  d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
-	  //document.getElementById("elementHelp").style.visibility="hidden";
 	})
 	.on("mouseover",function(d){
 		document.getElementById("elementHelp").style.visibility="visible";
@@ -478,11 +472,9 @@ function draw(svg,nodeData){
 		var textNode = d3.select(this).select("text");
 
 		d3.selectAll(".node").selectAll("text").style("opacity",.25);
-	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
-	  textNode.style("opacity",1);
-	  circleNode.transition().duration(10).style("r", d.radius*3);
-	  textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
-	  //textNode.transition().duration(10).style("font-size", "20px");
+	  	textNode.style("opacity",1);
+	  	circleNode.transition().duration(10).style("r", d.radius*3);
+	  	textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
 	})
 	;
 
@@ -630,6 +622,7 @@ function drawFacets(svg,nodeData,vm){
 	document.getElementById("buttons-display").style.display="none";
 	console.log( 'document.getElementById("buttons-display").style.display : ');
 	console.log( document.getElementById("buttons-display").style.display );
+	d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -746,7 +739,7 @@ function drawFacets(svg,nodeData,vm){
 		d3.select("#elementHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
 	})
 	.on("mouseout",function(d){
-		d3.select("#elementHelp").html("Help <hr/> Click a node to display its information. <br/> Click twice to filter according to it.");
+		d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 	})
 	.on("dblclick",function(d){
 		console.log("dblclick nodeFacet");
@@ -755,12 +748,6 @@ function drawFacets(svg,nodeData,vm){
 		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }
 		nameFilter+='Filter';
         vm.$data.filterQuery[ nameFilter ] = d.name;
-
-        // console.log("vm.$data : ");console.log(vm.$data);
-        console.log("vm.samplesToRetrieve : ");console.log(vm.samplesToRetrieve);
-		
-		vm.samplesToRetrieve = 100;
-
         vm.$emit("bar-selected");
 	    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
 	    popOutDiv("infoPop");
