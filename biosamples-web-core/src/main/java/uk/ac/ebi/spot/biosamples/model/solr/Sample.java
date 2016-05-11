@@ -1,38 +1,42 @@
-package uk.ac.ebi.spot.biosamples.model;
+package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
+
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
-import uk.ac.ebi.spot.biosamples.model.mapping.CharacteristicMappingsSerializer;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
- * Created by lucacherubin on 2016/04/11.
+ * Javadocs go here!
+ *
+ * @author Tony Burdett
+ * @date 10/02/16
  */
-@org.springframework.data.solr.core.mapping.SolrDocument(solrCoreName = "merged")
-public class Merged {
-
+@SolrDocument(solrCoreName = "samples")
+public class Sample implements ResultQueryDocument {
     // duplicated fields to disambiguate - no need to return
-    @Id
-    @Field("sample_acc") @JsonIgnore
-    String sampleAccession;
+    @Id @Field("sample_acc") @JsonIgnore String sampleAccession;
     @Field("submission_description") @JsonIgnore String submissionDescription;
 
     // core fields
     @Field String accession;
     @Field String description;
 
-    @Field("sample_update_date") @DateTimeFormat
-    Date updateDate;
+    @Field("sample_update_date") @DateTimeFormat Date updateDate;
     @Field("sample_release_date") @DateTimeFormat Date releaseDate;
 
     // collection of all characteristics as key/list of value pairs
-    @JsonIgnore @Field("*_crt")
-    Map<String, List<String>> characteristicsText;
+    @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
 
     // TODO - if this becomes a read/write API, we will also need a JsonDeserializer
     @JsonSerialize(using = CharacteristicMappingsSerializer.class)
@@ -153,5 +157,7 @@ public class Merged {
         this.xml = xml;
     }
 
-
+    public String getDocumentType() {
+        return "BioSample";
+    }
 }

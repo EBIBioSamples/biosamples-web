@@ -4,7 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.solr.repository.Query;
 import org.springframework.data.solr.repository.SolrCrudRepository;
-import uk.ac.ebi.spot.biosamples.model.Group;
+
+import uk.ac.ebi.spot.biosamples.model.solr.Group;
 
 /**
  * Javadocs go here!

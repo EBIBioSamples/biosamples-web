@@ -1,12 +1,14 @@
-package uk.ac.ebi.spot.biosamples.model;
+package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
+
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
-import uk.ac.ebi.spot.biosamples.model.mapping.CharacteristicMappingsSerializer;
 
 import java.util.Collections;
 import java.util.Date;
