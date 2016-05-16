@@ -84,7 +84,8 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
         border-color:black; 
         border-radius:4px;
         background-color: rgba(200, 200, 200, 0.5); 
-        visibility: hidden;
+        /*visibility: hidden;*/
+        display:none;
         overflow:scroll;
         overflow-x:visible;
     }
@@ -130,31 +131,36 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
       width: 31px;
       height: 31px;
     }
+    ::-webkit-scrollbar{
+      overflow-x: scroll;
+      overflow-y: scroll;
+    }
     ::-webkit-scrollbar-thumb {
-      background: #000000;
-      border: 6px solid #ffffff;
-      border-radius: 7px;
+    border: 6px solid #BBB;
+    border-radius: 5px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #3bcf88;
+      /*background: #3bcf88;*/
     }
     ::-webkit-scrollbar-thumb:active {
-      background: #000000;
+      /*background: #000000;*/
     }
     ::-webkit-scrollbar-track {
-      background: #a9a9a9;
+      /*background: #a9a9a9;*/
+      background: #eee;
       border: 72px none #ffffff;
       border-radius: 84px;
     }
-    ::-webkit-scrollbar-track:hover {
+/*    ::-webkit-scrollbar-track:hover {
       background: #5e5e5e;
     }
     ::-webkit-scrollbar-track:active {
       background: #c0c0c0;
     }
-    ::-webkit-scrollbar-corner {
+*/
+/*    ::-webkit-scrollbar-corner {
       background: transparent;
-    }
+    }*/
 
     table {
         border: 4px solid grey;
@@ -264,8 +270,8 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
         Display result information
       </h4>
     </div>
-    <div id="sectionVizResult" 
-    style="visibility:hidden; height:0px;
+    <div id="sectionVizResult"
+    style="display:none; 
     overflow: auto;" >
     </div>
 
@@ -273,13 +279,30 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
     <div id="areaNodeLink">
       <div id= "vizNodeLink"></div>
       <div id="infoVizRelations">
-        <div id ="buttons-display" style="display:none">
-          <p> <h4> Decide the number of elements fully loaded : </h4> <br/> 
-            <component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve" style="float:right"> </component>
-            <component is="items-dropdown"> </component>
-<!--             <h4 style="display:inline"> Display text of groups : </h4>  <input type="checkbox" onclick='showTextGroups(this)' /> <br/> -->
-            <h4 style="display:inline"> Display text of all samples : </h4>  <input type="checkbox" onclick='showTextSamples(this)' />
-          </p>
+        <div id="numberMatches">  </div>
+        <div id="vizRepresentation"> <h4> Change the display of the results according to : </h4> <br/>
+          <div id="representationButton" name="representationButton" active="false" value="Sample" style="height:34px;border-width:1px;margin-right:15%; margin-left:15%;border-radius:5px;border-color:black;  background-color:white;  text-align:center; padding: 6px 12px; font-size: 14px; width:70%;">Sample</div><br>
+        </div>
+        <div id ="buttons-display" style="display:none;">
+          <h4> Decide the number of elements fully loaded : </h4>
+            <li style="list-style:none;">
+              <ul>
+                <component is="items-dropdown"> </component>
+              </ul>
+              <ul>
+                <component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve">
+                </component>
+                <!-- style="float:right" -->
+              </ul>
+              <ul>          
+                <h4 style="display:inline"> Display text of all samples </h4>  <input type="checkbox" onclick='showTextSamples(this)' />
+              </ul>
+              <ul>
+                <div id="saveButton" onclick='saveURL(this)' style=" border-width:1px; border-radius:5px;border-color:black;background-color: white; margin-right:15%; margin-left:15%; width:70%; text-align:center; overflow:scroll; overflow-y:hidden; padding: 6px 12px;"> <p> Get the URL to find back the current filters <p/> </div>
+              </ul>
+<!--             <br/>
+            <h4 style="display:inline"> Save in the clipboard the current filters </h4> -->
+            </li>
           <hr/>
         </div>
         <div id="dynamicText">
@@ -301,8 +324,7 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 <th:block layout:fragment="custom-endpage-scripts">
 <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js}" src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
 <script th:src="@{/javascript/searchComponents.js}" src="../static/javascript/searchComponents.js"></script>
-<script th:src="@{/javascript/toolsFunctions.js}">
-</script>
+<script th:src="@{/javascript/toolsFunctions.js}"></script>
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </th:block>
 

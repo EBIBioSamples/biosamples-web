@@ -277,8 +277,6 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 	  console.log("status : ");console.log(status);
 	  console.log("response : ");console.log(response);
 	});
-	// console.log("outside the get of loadDataWithoutRefresh");
-	// console.log("rezToReturn : ");console.log(rezToReturn);
 	return rezToReturn;
 }
 
@@ -332,9 +330,26 @@ function showTextSamples(boolValue) {
 	}
 }
 
+function saveURL(e){
+	console.log("---- saveURL ----");
+	console.log("e : ");console.log(e);
+	console.log(" ---- ");
+	console.log("window.location.pathname : ");
+	console.log(window.location.pathname);
+	console.log("window.location.href : ");
+	console.log(window.location.href);
+	console.log("document.URL : ");
+	console.log(document.URL);
+	console.log(" ---- ");
+	d3.select("#saveButton")[0][0].textContent=document.URL;
+	d3.select("#saveButton").style("overflow-x ","visible");
+	console.log('d3.select("#saveButton")[0][0].textContent : ');
+	console.log(d3.select("#saveButton")[0][0].textContent);
+}
+
 function draw(svg,nodeData){
 
-	console.log("draw");
+	console.log("function draw");
 	document.getElementById("buttons-display").style.display="block";
 
 	var widthTitle = window.innerWidth;
@@ -419,7 +434,7 @@ function draw(svg,nodeData){
 	  	d3.selectAll("circle").style("stroke-width",2);
 	  	d3.select(this).selectAll("circle").style("stroke-width", 4);
 
-	  	d3.event.stopPropagation();          
+		d3.event.stopPropagation();
 
 	  // Fill in the infoVizRelations according to data returned
 	  document.getElementById("textData").innerHTML='<p>';
@@ -427,7 +442,8 @@ function draw(svg,nodeData){
 	  for (var prop in d.responseDoc) {
 	    // skip loop if the property is from prototype
 	    if(!d.responseDoc.hasOwnProperty(prop)) continue;
-	    document.getElementById("textData").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
+	    // d3.select("#textData").style("text-align","center");
+	    document.getElementById("textData").innerHTML+="<b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"<br/>";
 	    URLs = getURLsFromObject(d.responseDoc,prop);
 	    if (URLs.length>0){
 	    	for (var k=0;k<URLs.length;k++){
@@ -437,21 +453,15 @@ function draw(svg,nodeData){
 	    }
 	}
 	document.getElementById("textData").innerHTML+='</p>';
-	  // var params = { searchTerm:""+d.accession };
-	  // console.log("params : ");console.log(params);
-	  // var rezClick = loadDataWithoutRefresh(vm,apiUrl, params);
 	})
 	.on("mouseup",function(d){
 	})
 	.on("mouseout",function(d){
-	  //document.getElementById("elementHelp").style.visibility="hidden";
 	  d3.selectAll("text").style("opacity",1);
-	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
 	  d3.selectAll(".node").selectAll("text").style("dx", 12);
 	  d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
 	  d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
 	  d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
-	  //document.getElementById("elementHelp").style.visibility="hidden";
 	})
 	.on("mouseover",function(d){
 		document.getElementById("elementHelp").style.visibility="visible";
@@ -461,11 +471,9 @@ function draw(svg,nodeData){
 		var textNode = d3.select(this).select("text");
 
 		d3.selectAll(".node").selectAll("text").style("opacity",.25);
-	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
-	  textNode.style("opacity",1);
-	  circleNode.transition().duration(10).style("r", d.radius*3);
-	  textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
-	  //textNode.transition().duration(10).style("font-size", "20px");
+	  	textNode.style("opacity",1);
+	  	circleNode.transition().duration(10).style("r", d.radius*3);
+	  	textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
 	})
 	;
 
@@ -538,8 +546,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	nodeData.accessions="";
 	var groupsReturned = {};
 	console.log("results");console.log(results);
-	// console.log("results.data.facet_counts.facet_fields : ");
-	// console.log(results.data.facet_counts.facet_fields);
 
 	var maxAndMinFacet = {};
 	var maxAndMinTotal = [];
@@ -601,18 +607,15 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 		}
 	}
 
-	// console.log("$$$$ clusters : ");console.log(clusters);console.log("$$$$")
-	// nodeData.clusters = clusters;
 	return nodeData;
 }
 
 function drawFacets(svg,nodeData,vm){
-	console.log("drawFacets");
+	console.log("function drawFacets");
 
 	console.log("nodeData : ");console.log(nodeData);
 	document.getElementById("buttons-display").style.display="none";
-	console.log( 'document.getElementById("buttons-display").style.display : ');
-	console.log( document.getElementById("buttons-display").style.display );
+	d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -627,8 +630,7 @@ function drawFacets(svg,nodeData,vm){
 	var cptClusters = 0;
 	console.log("nodeData.nodes : ");console.log(nodeData.nodes);
 	for (var i in nodeData.nodes){
-		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){	
-			// console.log("push "+nodeData.nodes[i].name);
+		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){
 			clusters.push(nodeData.nodes[i]);
 		}
 	}
@@ -637,11 +639,7 @@ function drawFacets(svg,nodeData,vm){
 			if ( clusters[j].facet == nodeData.nodes[i].facet ){
 				nodeData.nodes[i].cluster = j;
 				nodeData.nodes[i].d.cluster = j;
-				// console.log("nodeData.nodes[i].index : ");console.log(nodeData.nodes[i].index);
-				// console.log(" clusters[j].facet == nodeData.nodes[i].facet &&  nodeData.nodes[i].index : "+nodeData.nodes[i].index);
 				var indexForID =  clusters[j].index ;
-				// console.log("indexForID : "+indexForID);
-				// console.log('d3.select("#text_"+indexForID) : ');console.log(d3.select("#text_"+indexForID));
 				d3.select("#text_"+indexForID).style("visibility", "visible");
 			}
 		}
@@ -694,17 +692,11 @@ function drawFacets(svg,nodeData,vm){
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFacet = d.facet;
 		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
-		var newText = "<p>Facet: <br/>"+nameFacet+"<hr/>"+"Name: <br/>"+d.name+" : "+d.value+"</p>";
+		var newText = "<p> <b>Facet : </b>"+nameFacet+"<hr/>"+"<b> Name : </b>"+d.name+" : "+d.value+"</p>";
 		document.getElementById("textData").innerHTML=newText;
 
-
 		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
-			// console.log("d inside function for text visibility : ");console.log(d);
-			// console.log("d2 inside function for text visibility : ");console.log(d2);
 			if ( d2.cluster == d.cluster ){
-				// Additional things to do
-				// console.log(" d2.cluster == d.cluster ");
-				// console.log("this : ");console.log(this);
 				d3.select(this)[0][0].textContent = '['+d2.name+']';
 				return "visible";
 			} else {
@@ -729,7 +721,7 @@ function drawFacets(svg,nodeData,vm){
 		d3.select("#elementHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
 	})
 	.on("mouseout",function(d){
-		d3.select("#elementHelp").html("Help <hr/> Click a node to display its information. <br/> Click twice to filter according to it.");
+		d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 	})
 	.on("dblclick",function(d){
 		console.log("dblclick nodeFacet");
@@ -737,20 +729,13 @@ function drawFacets(svg,nodeData,vm){
 		var nameFilter = d.facet;
 		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }
 		nameFilter+='Filter';
-        vm.$data.filterQuery[ nameFilter ] = d.name;
-
-        // console.log("vm.$data : ");console.log(vm.$data);
-        console.log("vm.samplesToRetrieve : ");console.log(vm.samplesToRetrieve);
-		
-		vm.samplesToRetrieve = 100;
-
-        vm.$emit("bar-selected");
-	    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
-	    popOutDiv("infoPop");
-	    fadeOutDiv("infoPop");
-	    vm.$options.methods.querySamples(this,false);
-	})
-	;
+		vm.$data.filterQuery[ nameFilter ] = d.name;
+		vm.$emit("bar-selected");
+		document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
+		popOutDiv("infoPop");
+		fadeOutDiv("infoPop");
+		vm.$options.methods.querySamples(this,false);
+	});
 
 	node.append("circle")
 	.attr("r", function (d) { return d.radius; })
@@ -781,8 +766,6 @@ function drawFacets(svg,nodeData,vm){
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
 	.attr("border","solid").attr("border-radius","10px")
 	.style("visibility", function(d){
-		// console.log("in text visibility d :");console.log(d);
-		// console.log("clusters[d.cluster] : ");console.log(clusters[d.cluster]);
 		if ( d.index == clusters[d.cluster].index ){
 			return "visible";
 		} else {
@@ -803,8 +786,7 @@ function drawFacets(svg,nodeData,vm){
 	  return function(d) {
 	    var cluster = clusters[d.cluster], k = 1;
 	    if (typeof cluster == 'undefined'){
-			// console.log(" cluster undefined, d.cluster :  ");console.log(d.cluster);
-			// console.log(" clusters :  ");console.log(clusters);
+			console.log(" cluster undefined ");
 	    } else {
 		    // For cluster nodes, apply custom gravity.
 		    if (cluster === d) {
