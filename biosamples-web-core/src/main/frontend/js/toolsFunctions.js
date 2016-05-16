@@ -349,7 +349,7 @@ function saveURL(e){
 
 function draw(svg,nodeData){
 
-	console.log("draw");
+	console.log("function draw");
 	document.getElementById("buttons-display").style.display="block";
 
 	var widthTitle = window.innerWidth;
@@ -434,7 +434,7 @@ function draw(svg,nodeData){
 	  	d3.selectAll("circle").style("stroke-width",2);
 	  	d3.select(this).selectAll("circle").style("stroke-width", 4);
 
-	  	d3.event.stopPropagation();          
+		d3.event.stopPropagation();
 
 	  // Fill in the infoVizRelations according to data returned
 	  document.getElementById("textData").innerHTML='<p>';
@@ -442,7 +442,8 @@ function draw(svg,nodeData){
 	  for (var prop in d.responseDoc) {
 	    // skip loop if the property is from prototype
 	    if(!d.responseDoc.hasOwnProperty(prop)) continue;
-	    document.getElementById("textData").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
+	    // d3.select("#textData").style("text-align","center");
+	    document.getElementById("textData").innerHTML+="<b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"<br/>";
 	    URLs = getURLsFromObject(d.responseDoc,prop);
 	    if (URLs.length>0){
 	    	for (var k=0;k<URLs.length;k++){
@@ -610,12 +611,10 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 }
 
 function drawFacets(svg,nodeData,vm){
-	console.log("drawFacets");
+	console.log("function drawFacets");
 
 	console.log("nodeData : ");console.log(nodeData);
 	document.getElementById("buttons-display").style.display="none";
-	console.log( 'document.getElementById("buttons-display").style.display : ');
-	console.log( document.getElementById("buttons-display").style.display );
 	d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 
 	var widthTitle = window.innerWidth;
@@ -693,7 +692,7 @@ function drawFacets(svg,nodeData,vm){
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFacet = d.facet;
 		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
-		var newText = "<p>Facet: <br/>"+nameFacet+"<hr/>"+"Name: <br/>"+d.name+" : "+d.value+"</p>";
+		var newText = "<p> <b>Facet : </b>"+nameFacet+"<hr/>"+"<b> Name : </b>"+d.name+" : "+d.value+"</p>";
 		document.getElementById("textData").innerHTML=newText;
 
 		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){

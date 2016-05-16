@@ -138,6 +138,9 @@
 
             querySamples: function(e) {
                 log("Query Samples");
+                console.log("this : ");console.log(this);
+                console.log("this.$http : ");console.log(this.$http);
+                // console.log("e : ");console.log(e);
                 if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
                     e.preventDefault();
                 }
@@ -157,9 +160,7 @@
 
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                     .then(function(results) {
-
                         displayRevertingFilters(results,this);
-
                         this.consumeResults(results);
                         if ( typeof loadD3 === "undefined" || loadD3 ){
                             doD3Stuff(results,apiUrl,this);
@@ -324,6 +325,13 @@
                   this.querySamples(d,loadD3);
                 });
 
+                this.$on('displayChanged', function(d,loadD3) {
+                  console.log(" on displayChanged");
+                  // If we desire to have an event happening without reloading d3
+                  // we need to pass false as a second argument 
+                  this.querySamples(d,loadD3);
+                });
+
                 this.$on('facet-selected', function(key, value) {
                     console.log(" on facet-selected");
                     if (value === "") {
@@ -405,8 +413,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   if (results.data.response.docs.length == 0  ){
     // document.getElementById("infoVizRelations").style.visibility='hidden';
     document.getElementById("infoVizRelations").style.display="none";
-    // Add display of the filters if there are existing filters ? 
-    // No, do it for both the sections, and do it under the search bar            
+    // Add display of the filters if there are existing filters ?
+    // No, do it for both the sections, and do it under the search bar
   } else {
     // document.getElementById("infoVizRelations").style.visibility='visible';
     document.getElementById("infoVizRelations").style.display="block";
@@ -415,7 +423,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   var margin = {top: 10, right: 10, bottom: 10, left: 10};
 
   if (typeof results !== 'undefined'){
-
     var numberFacetsUnEmpty = {};
     console.log( "results.data.facet_counts : " );
     console.log( results.data.facet_counts );
@@ -430,9 +437,28 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }
     }
 
-    document.getElementById("elementHelp").style.visibility="hidden";
-    // d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information");
-    
+    // Create elements which will call functions with the arguments necessary
+    document.getElementById("representationButton").onclick = function()
+    {
+        // Change to Sample if equal to Facet, and vice-versa
+        if ( d3.select('#representationButton').attr('value') == "Facet" ){
+            console.log("**** Change to Facet ");            
+            // d3.select('#representationButton').innerHTML="Sample";
+            d3.select('#representationButton').text("Sample");
+            d3.select('#representationButton').attr('value',"Sample");
+            vm.$data.valueDisplay = "Facet";
+            vm.$emit("displayChanged");
+        } else {
+            console.log("**** Change to Sample ");            
+            // d3.select('#representationButton').innerHTML="Facet";
+            d3.select('#representationButton').text("Facet");
+            d3.select('#representationButton').attr('value',"Facet");
+            vm.$data.valueDisplay = "Sample";
+            vm.$emit("displayChanged");
+        }
+    }
+
+    document.getElementById("elementHelp").style.visibility="hidden";        
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").innerHTML="Display result information";
     document.getElementById("sectionVizResult").style.display="none";
@@ -497,9 +523,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       function(){
         $(this).css("background-color", "white");        
       });
-
-    console.log("numberFacetsUnEmpty : ");
-    console.log(numberFacetsUnEmpty);
 
     var dataBars = [];
 
@@ -581,7 +604,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     }
 
     var cpt=0;
-    console.log("results.data.facet_counts.facet_fields : ");console.log(results.data.facet_counts.facet_fields);
+    // console.log("results.data.facet_counts.facet_fields : ");console.log(results.data.facet_counts.facet_fields);
     for (var u in numberFacetsUnEmpty ){
       for (var v =0; v < results.data.facet_counts.facet_fields[u].length; v++ ){
         if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){
@@ -835,9 +858,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                   if ( nameClickedBar == vm.$data.facets[u][v][w]){
                     var nameOfFilter = u+'Filter';
                     if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
-                      console.log("time to filter");
-                      console.log("nameOfFilter : ");console.log(nameOfFilter);
-                      console.log("nameClickedBar : "+nameClickedBar);
+                      // console.log("time to filter");
+                      // console.log("nameOfFilter : ");console.log(nameOfFilter);
+                      // console.log("nameClickedBar : "+nameClickedBar);
                       vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
                       vm.$emit("bar-selected");
                       document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
@@ -953,24 +976,26 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     var nodeData ={ "stuff":[], "nodes":[],"links":[],"group":[],"color":[] };
 
     if (results.data.response.docs.length>0){
-      console.log("results.data.response.docs.length>0");
+      // console.log("results.data.response.docs.length>0");
       d3.select("#vizSpotRelations").attr("visibility","visible");
-
       var numFound = results.data.response.numFound;
-      var numberToDisplay = 250;
-      if (numFound <= numberToDisplay ){
+      if ( typeof vm.$data.valueDisplay == 'undefined'){
+        // console.log("^^^^ typeof vm.$data.valueDisplay == 'undefined' ^^^^");
+        vm.$data.valueDisplay = "Facet";
+      }
+      var valueDisplay = vm.$data.valueDisplay;
+      if (valueDisplay == "Sample" ){
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";          
           draw(svg,nodeData);
       } else {
-          console.log('numFound > numberToDisplay');
           d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";
           nodeData = loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex );
           drawFacets(svg,nodeData,vm);
       }
     } else {
-        console.log("results.data.response.docs.length==0");
+        console.log("No results from the current query.");
         d3.select("#vizSpotRelations").attr("visibility","hidden");
         d3.select("#vizSpotRelations").selectAll("*").remove();
         document.getElementById("infoVizRelations").style.display="none";
