@@ -1,4 +1,4 @@
-package uk.ac.ebi.spot.biosamples.model.mapping;
+package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;

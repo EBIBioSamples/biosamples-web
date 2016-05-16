@@ -25,7 +25,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import uk.ac.ebi.spot.biosamples.model.Merged;
+
+import uk.ac.ebi.spot.biosamples.model.solr.Merged;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;

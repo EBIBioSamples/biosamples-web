@@ -7,9 +7,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import uk.ac.ebi.spot.biosamples.model.Group;
-import uk.ac.ebi.spot.biosamples.model.ResultQuery;
-import uk.ac.ebi.spot.biosamples.model.Sample;
+
+import uk.ac.ebi.spot.biosamples.model.solr.Group;
+import uk.ac.ebi.spot.biosamples.model.solr.Sample;
+import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 

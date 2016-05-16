@@ -1,4 +1,4 @@
-package uk.ac.ebi.spot.biosamples.model;
+package uk.ac.ebi.spot.biosamples.model.xml;
 
 /**
  * Created by lucacherubin on 01/03/2016.

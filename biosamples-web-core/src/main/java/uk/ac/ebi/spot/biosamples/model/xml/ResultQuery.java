@@ -1,4 +1,4 @@
-package uk.ac.ebi.spot.biosamples.model;
+package uk.ac.ebi.spot.biosamples.model.xml;
 
 import org.jdom2.*;
 import org.jdom2.output.Format;
