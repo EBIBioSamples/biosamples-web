@@ -508,8 +508,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       if ( document.getElementById("sectionVizResult").style.display == "none" ){        
         document.getElementById("sectionVizResult").style.display="block";
         document.getElementById("titleRezInfo").innerHTML="Hide the result information ";
-        var heightBars = $('#table').height();
-        document.getElementById("sectionVizResult").style.height= (heightBars+10)+ "px";
+        var heightBars = $('#table').height(); var heightButton = $('#buttonRezInfo').height();
+        document.getElementById("sectionVizResult").style.height= (heightBars+heightButton)+ "px";
       } else {
         document.getElementById("titleRezInfo").innerHTML="Display the result information ";
         document.getElementById("sectionVizResult").style.display="none";

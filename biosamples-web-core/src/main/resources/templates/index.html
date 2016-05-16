@@ -147,6 +147,7 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
     }
     ::-webkit-scrollbar-track {
       /*background: #a9a9a9;*/
+      background: #eee;
       border: 72px none #ffffff;
       border-radius: 84px;
     }
@@ -280,8 +281,7 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
       <div id="infoVizRelations">
         <div id="numberMatches">  </div>
         <div id="vizRepresentation"> <h4> Change the display of the results according to : </h4> <br/>
-          <div id="representationButton" name="representationButton" active="false" value="Sample" style="height:34px;border-width:1px;margin-right:15%; margin-left:15%;border-radius:5px;border-color:black;    color: #fff;
-          background-color: #4dabac; text-align:center; padding: 6px 12px; font-size: 14px; width:70%;">Sample</div><br>
+          <div id="representationButton" name="representationButton" active="false" value="Sample" style="height:34px;border-width:1px;margin-right:15%; margin-left:15%;border-radius:5px;border-color:black;  background-color:white;  text-align:center; padding: 6px 12px; font-size: 14px; width:70%;">Sample</div><br>
         </div>
         <div id ="buttons-display" style="display:none;">
           <h4> Decide the number of elements fully loaded : </h4>
@@ -298,7 +298,7 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
                 <h4 style="display:inline"> Display text of all samples </h4>  <input type="checkbox" onclick='showTextSamples(this)' />
               </ul>
               <ul>
-                <div id="saveButton" onclick='saveURL(this)' style=" border-width:1px; border-radius:5px;border-color:black;background-color: white; width:200px; text-align:center; overflow:scroll; overflow-y:hidden;"> <p style="margin:10px"> Get the URL to find back the current filters <p/> </div>
+                <div id="saveButton" onclick='saveURL(this)' style=" border-width:1px; border-radius:5px;border-color:black;background-color: white; margin-right:15%; margin-left:15%; width:70%; text-align:center; overflow:scroll; overflow-y:hidden; padding: 6px 12px;"> <p> Get the URL to find back the current filters <p/> </div>
               </ul>
 <!--             <br/>
             <h4 style="display:inline"> Save in the clipboard the current filters </h4> -->
