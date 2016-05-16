@@ -881,7 +881,8 @@ function displayRevertingFilters( results,vm ){
 	        var value = displayRemainingFilters[1][i].substring(indexToCut+1, displayRemainingFilters[1][i].length);
 	        // Create buttons
 	        var divReverter = 'buttonFilter_'+facet;
-	        var stringColumn = '<li><div class="reverter" id="'+ divReverter +'">'+facet+' | '+ value +'</div></li>';
+	        var stringColumn = '<li><div class="reverter" id="'+ divReverter +'">'+facet+' | '+ value +'<img src="cross.svg.png" style="height:100%;"> </div></li>';
+
 	        document.getElementById("tableRevertFilters").innerHTML+= stringColumn;
 	        d3.select("#"+divReverter).on("mouseover",function(d){
 	            d3.select('#'+divReverter).style("fill","black");
