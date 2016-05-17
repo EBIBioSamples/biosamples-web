@@ -867,21 +867,45 @@ function displayRevertingFilters( results,vm ){
 	            } 
 	        }
 	    }
+	    // New version with display of filters all the time
+	    else {
+	        for (var i in results.request.params.filters){
+	            var indexPipe = results.request.params.filters[i].indexOf("|");
+	            if ( indexPipe != results.request.params.filters[i].length-1 ){
+	                arrayFilters.push(results.request.params.filters[i]);
+	                needToDisplay = false;
+	            } 
+	        }
+	    }
 	    return [needToDisplay,arrayFilters];
 	}
 
 	displayRemainingFilters = infoDisplayFilters(results);
+	console.log("displayRemainingFilters : ");console.log(displayRemainingFilters);
+	d3.select("#displayRemainingFilters").selectAll("*").remove();
 
 	if ( displayRemainingFilters[0]){
-	    document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/> <ul id='tableRevertFilters' style='width:100%'>");
+	    document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/> <ul id='tableRevertFilters' style='list-style-type: none; width:100%;display:table-row;'>");
 	    for (var i in displayRemainingFilters[1]){
 	        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
 	        var indexToCutFacet = facet.indexOf("Filter");
 	        facet = facet.substring(0,indexToCutFacet);
 	        var value = displayRemainingFilters[1][i].substring(indexToCut+1, displayRemainingFilters[1][i].length);
 	        // Create buttons
+	        console.log('document.getElementsByTagName("script") : ');
+	        console.log( document.getElementsByTagName("script") );
 	        var divReverter = 'buttonFilter_'+facet;
-	        var stringColumn = '<li><div class="reverter" id="'+ divReverter +'">'+facet+' | '+ value +'</div></li>';
+	        var badgeFacet,badgeValue;
+	        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
+	        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
+	        console.log("facet: "+facet+" value: "+value);
+	        console.log("badgeFacet: "+badgeFacet+" badgeValue: "+badgeValue);
+	        // var stringColumn = '<li style="display:table-cell;"><div  class="reverter" id="'+ divReverter +'">'+facet+' | '+ value 
+			var stringColumn = '<li style="display:table-cell;"><div facet='+facet+' value='+value+' class="reverter" id="'+ divReverter +'">'
+	        	+'<img src="https://img.shields.io/badge/'+badgeFacet+'-'+badgeValue+'-orange.svg?style=flat">'
+	        	+'<img src="images/cross.png" style="height:30px;">'
+	        	+'</div></li>';
+
 	        document.getElementById("tableRevertFilters").innerHTML+= stringColumn;
 	        d3.select("#"+divReverter).on("mouseover",function(d){
 	            d3.select('#'+divReverter).style("fill","black");
@@ -890,24 +914,67 @@ function displayRevertingFilters( results,vm ){
 	            d3.select('#'+divReverter).style("fill","white");
 	        });
 	    }
-	    document.getElementById("displayRemainingFilters").innerHTML+="</li>";
-	    $('div.reverter').click(function(e){
-	        var indexPipe =  e.toElement.id.indexOf("_");
-	        facet = e.toElement.id.substring(indexPipe+1, e.toElement.id.length);
-	        vm.$data.filterQuery[facet+'Filter'] = "";
-	        vm.$emit("bar-selected");
-	    })                            
-	    d3.selectAll('.reverter').on("mouseover",function(d){
-	        d3.selectAll('.reverter').style("background-color","#4dabac");
-	        d3.selectAll('.reverter').style("color","white");
-	        d3.select('#'+this.id).style("background-color","white");
-	        d3.select('#'+this.id).style("color","#4dabac");
-	    });
-	    d3.selectAll('.reverter').on("mouseout",function(d){
-	        d3.selectAll('.reverter').style("background-color","#4dabac");
-	        d3.selectAll('.reverter').style("color","white");
-	    });
-	} else {
-	    d3.select("#displayRemainingFilters").selectAll("*").remove();
+	    document.getElementById("displayRemainingFilters").innerHTML+="</ul><br/>";
+	} // New version of the code with filters displayed also when the results are not empty
+	else {
+    	d3.select("#displayRemainingFilters").selectAll("*").remove();
+		if ( displayRemainingFilters[1].length>0 ){    
+		    document.getElementById("displayRemainingFilters").innerHTML=("<p>Current filters: <br/> <ul id='tableRevertFilters' style='list-style-type: none; width:100%;display:table-row;'>");
+		    for (var i in displayRemainingFilters[1]){
+		        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
+		        var indexToCutFacet = facet.indexOf("Filter");
+		        facet = facet.substring(0,indexToCutFacet);
+		        var value = displayRemainingFilters[1][i].substring(indexToCut+1, displayRemainingFilters[1][i].length);
+		        // Create buttons
+				// console.log('document.getElementsByTagName("script") : ');
+				// console.log( document.getElementsByTagName("script") );
+		        var divReverter = 'buttonFilter_'+facet;
+		        var badgeFacet,badgeValue;
+		        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
+		        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
+		        console.log("facet: "+facet+" value: "+value);
+		        console.log("badgeFacet: "+badgeFacet+" badgeValue: "+badgeValue);
+		        // var stringColumn = '<li style="display:table-cell;"><div  class="reverter" id="'+ divReverter +'">'+facet+' | '+ value 
+				var stringColumn = '<li style="display:table-cell;"><div facet='+facet+' value='+value+' class="reverter" id="'+ divReverter +'">'
+					+'<img src="https://img.shields.io/badge/'+badgeFacet+'-'+badgeValue+'-orange.svg?style=flat">'
+		        	+'<img src="images/cross.png" style="height:30px;">'
+		        	+'</div></li>';
+
+		        document.getElementById("tableRevertFilters").innerHTML+= stringColumn;
+		        d3.select("#"+divReverter).on("mouseover",function(d){
+		            d3.select('#'+divReverter).style("fill","black");
+		        });
+		        d3.select("#"+divReverter).on("mouseout",function(d){
+		            d3.select('#'+divReverter).style("fill","white");
+		        });
+		    }
+		    document.getElementById("displayRemainingFilters").innerHTML+="</ul><br/>";
+		} else {
+			d3.select("#displayRemainingFilters").selectAll("*").remove();
+		}
 	}
+
+    $('div.reverter').click(function(e){
+    	console.log("d3.select(this): ");console.log(d3.select(this));
+    	console.log("d3.select(this).attr('facet'): ");console.log(d3.select(this).attr('facet'));
+        // var indexPipe =  e.toElement.id.indexOf("_");
+        // facet = e.toElement.id.substring(indexPipe+1, e.toElement.id.length);
+        facet = d3.select(this).attr('facet');
+        console.log("facet: "+facet);
+        console.log("Before erase: "); console.log(vm.$data.filterQuery[facet+'Filter']);
+        vm.$data.filterQuery[facet+'Filter'] = "";
+        console.log("After erase: "); console.log(vm.$data.filterQuery[facet+'Filter']);
+        vm.$emit("bar-selected");
+    });
+
+    d3.selectAll('.reverter').on("mouseover",function(d){
+        d3.selectAll('.reverter').style("background-color","#cccccc");
+        d3.selectAll('.reverter').style("color","white");
+        d3.select('#'+this.id).style("background-color","white");
+        d3.select('#'+this.id).style("color","#4dabac");
+    });
+    d3.selectAll('.reverter').on("mouseout",function(d){
+        d3.selectAll('.reverter').style("background-color","#cccccc");
+        d3.selectAll('.reverter').style("color","white");
+    });
 }
