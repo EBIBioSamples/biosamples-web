@@ -61,7 +61,7 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
       border:solid;
       border-color:black; 
       border-radius:2px;
-      background-color: #4dabac;
+      background-color: #cccccc;
       color: white;
       text-align: center;
       stroke: white;
@@ -181,7 +181,13 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 
         <div v-bind:class="{loading: isQuerying}"></div>
         <br/><br/>
-        <div id="displayRemainingFilters"></div>
+<!--         <div id="displayRemainingFilters" v-if="logic">
+          <div v-for="element in filterQuery">
+            <component is="badge" :key="$key" :value="element" :color="labelColors[$index % labelColors.length]"> </component>
+            <img>  </img>
+          </div>
+        </div> -->
+        <div id="displayRemainingFilters" ></div>
         <!-- <br/><br/> -->
         <ul class="nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
