@@ -134,8 +134,10 @@ public class HttpSolrDispatcher {
                 while (facetNodeIt.hasNext()) {
                     String facetName = facetNodeIt.next().asText();
                     int facetCount = facetNodeIt.next().asInt();
-                    getLog().debug("Dynamic facet '" + facetName + "' -> " + facetCount);
-                    dynamicFacets.add(String.format("%s_ft", facetName));
+                    if (!ignoredFacets.contains(facetName)) {
+                        getLog().debug("Dynamic facet '" + facetName + "' -> " + facetCount);
+                        dynamicFacets.add(String.format("%s_ft", facetName));
+                    }
                 }
                 return dynamicFacets.toArray(new String[dynamicFacets.size()]);
             });
