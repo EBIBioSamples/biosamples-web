@@ -47,7 +47,6 @@ public class NavigationController {
         return "help_" + innerPage;
     }
 
-
     @RequestMapping("/about")
     public String about() {
         return "about";
