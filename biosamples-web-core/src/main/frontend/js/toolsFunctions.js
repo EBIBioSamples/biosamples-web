@@ -940,8 +940,8 @@ function displayRevertingFilters( results,vm ){
 		        	+'<img src="images/cross.png" style="height:30px;">'
 		        	+'</div></li>';
 
-		        document.getElementById("tableRevertFilters").innerHTML+= stringColumn;
-		        d3.select("#"+divReverter).on("mouseover",function(d){
+				document.getElementById("tableRevertFilters").innerHTML+= stringColumn;
+				d3.select("#"+divReverter).on("mouseover",function(d){
 		            d3.select('#'+divReverter).style("fill","black");
 		        });
 		        d3.select("#"+divReverter).on("mouseout",function(d){

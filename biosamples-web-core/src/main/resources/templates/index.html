@@ -81,9 +81,10 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
         border-radius:4px;
         background-color: rgba(200, 200, 200, 0.5); 
         /*visibility: hidden;*/
+        /*white-space: nowrap;*/
         display:none;
-        overflow:scroll;
-        overflow-x:visible;
+/*        overflow:scroll;
+        overflow-x:visible;*/
     }
     #vizSpotRelations{
         background-color: #ffffff;
@@ -126,9 +127,13 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
       width: 31px;
       height: 31px;
     }
-    ::-webkit-scrollbar{
+/*    ::-webkit-scrollbar{
       overflow-x: scroll;
       overflow-y: scroll;
+    }*/
+    ::-webkit-scrollbar{
+      overflow-x: scroll;
+      overflow-y: auto;
     }
     ::-webkit-scrollbar-thumb {
     border: 6px solid #BBB;
