@@ -443,7 +443,16 @@ function draw(svg,nodeData){
 	    // skip loop if the property is from prototype
 	    if(!d.responseDoc.hasOwnProperty(prop)) continue;
 	    // d3.select("#textData").style("text-align","center");
-	    document.getElementById("textData").innerHTML+="<b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"<br/>";
+	    // Should we calculate connections onclick or on loading ?
+	    document.getElementById("textData").innerHTML+="<div class='textAttribute' id="+prop+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";	    
+
+        // d3.selectAll(".").on("mouseover",function(d){
+        //     d3.select('#'+divReverter).style("fill","black");
+        // });
+        // d3.select("#"+divReverter).on("mouseout",function(d){
+        //     d3.select('#'+divReverter).style("fill","white");
+        // });
+
 	    URLs = getURLsFromObject(d.responseDoc,prop);
 	    if (URLs.length>0){
 	    	for (var k=0;k<URLs.length;k++){
