@@ -27,25 +27,38 @@ public class HttpSolrQuery implements Cloneable {
     HttpSolrQuery(String solrBaseUrl, String solrSearchCoreName) {
         this.queryStringBuilder = new StringBuilder();
         queryStringBuilder.append(solrBaseUrl);
-        if (!queryStringBuilder.toString().endsWith("/")) queryStringBuilder.append("/");
+        if (!queryStringBuilder.toString().endsWith("/")) { queryStringBuilder.append("/"); }
         queryStringBuilder.append(solrSearchCoreName);
         queryStringBuilder.append("/");
     }
 
     public HttpSolrQuery searchFor(String term) {
-        if (capturedTerm) throw new HttpSolrQueryBuildingException("Invalid query - search term already added");
+        if (capturedTerm) { throw new HttpSolrQueryBuildingException("Invalid query - search term already added"); }
         queryStringBuilder.append("select?");
-        queryStringBuilder.append("q=").append(term);
-        capturedTerm = true;
-        return this;
+        try {
+            queryStringBuilder.append("q=").append(URLEncoder.encode(term, "UTF-8"));
+            capturedTerm = true;
+            return this;
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new HttpSolrQueryBuildingException("Failed to set search term", e);
+        }
     }
 
     public HttpSolrQuery searchFor(String field, String term) {
-        if (capturedTerm) throw new HttpSolrQueryBuildingException("Invalid query - search term already added");
+        if (capturedTerm) { throw new HttpSolrQueryBuildingException("Invalid query - search term already added"); }
         queryStringBuilder.append("select?");
-        queryStringBuilder.append("q=").append(field).append(":").append(term);
-        capturedTerm = true;
-        return this;
+        try {
+            queryStringBuilder.append("q=")
+                    .append(URLEncoder.encode(field, "UTF-8"))
+                    .append(":")
+                    .append(URLEncoder.encode(term, "UTF-8"));
+            capturedTerm = true;
+            return this;
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new HttpSolrQueryBuildingException("Failed to set search term", e);
+        }
     }
 
     public HttpSolrQuery withContentType(CONTENT_TYPE contentType) {
@@ -66,38 +79,44 @@ public class HttpSolrQuery implements Cloneable {
         }
 
         for (String ff : facetFields) {
-            queryStringBuilder.append("&facet.field=").append(ff);
+            try {
+                queryStringBuilder.append("&facet.field=").append(URLEncoder.encode(ff, "UTF-8"));
+            }
+            catch (UnsupportedEncodingException e) {
+                throw new HttpSolrQueryBuildingException("Failed to set facet arguments", e);
+            }
         }
         return this;
     }
 
     public HttpSolrQuery withFacetOn(int facetLimit, String... facetFields) {
-        if (!facetsEnabled) {
-            queryStringBuilder.append("&facet=true");
-            facetsEnabled = true;
-        }
-
-        for (String ff : facetFields) {
-            queryStringBuilder.append("&facet.field=").append(ff);
-        }
-
-        return withFacetLimit(facetLimit);
+        return withFacetOn(facetFields).withFacetLimit(facetLimit);
     }
 
     public HttpSolrQuery withFacetLimit(int facetLimit) {
-        if (facetLimitEnabled) throw new HttpSolrQueryBuildingException("Facet limit has already been set");
+        if (facetLimitEnabled) { throw new HttpSolrQueryBuildingException("Facet limit has already been set"); }
         queryStringBuilder.append("&facet.limit=").append(facetLimit);
         facetLimitEnabled = true;
         return this;
     }
 
     public HttpSolrQuery withFilterOn(String filterField, String filterValue) {
-        queryStringBuilder.append("&fq=").append(filterField).append(":").append(filterValue);
+        try {
+            queryStringBuilder.append("&fq=")
+                    .append(URLEncoder.encode(filterField, "UTF-8"))
+                    .append(":")
+                    .append(URLEncoder.encode(filterValue, "UTF-8"));
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new HttpSolrQueryBuildingException("Failed to set filter arguments", e);
+        }
         return this;
     }
 
     public HttpSolrQuery withPage(int start, int rows) {
-        if (!capturedTerm) throw new HttpSolrQueryBuildingException("Please add search term before adding configuration");
+        if (!capturedTerm) {
+            throw new HttpSolrQueryBuildingException("Please add search term before adding configuration");
+        }
         queryStringBuilder.append("&start=").append(start);
         queryStringBuilder.append("&rows=").append(rows);
         return this;
@@ -135,7 +154,7 @@ public class HttpSolrQuery implements Cloneable {
     }
 
     @Override public HttpSolrQuery clone() throws CloneNotSupportedException {
-        HttpSolrQuery clone = (HttpSolrQuery)super.clone();
+        HttpSolrQuery clone = (HttpSolrQuery) super.clone();
         clone.queryStringBuilder = new StringBuilder();
         clone.queryStringBuilder.append(queryStringBuilder.toString());
         return clone;
