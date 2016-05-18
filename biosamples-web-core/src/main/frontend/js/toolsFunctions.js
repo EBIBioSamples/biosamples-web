@@ -896,8 +896,8 @@ function displayRevertingFilters( results,vm ){
 	        console.log( document.getElementsByTagName("script") );
 	        var divReverter = 'buttonFilter_'+facet;
 	        var badgeFacet,badgeValue;
-	        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
-	        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
+	        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20"); badgeFacet = badgeFacet.replace(/\?/g, "%3F");
+	        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20"); badgeValue = badgeValue.replace(/\?/g, "%3F");
 	        console.log("facet: "+facet+" value: "+value);
 	        console.log("badgeFacet: "+badgeFacet+" badgeValue: "+badgeValue);
 	        // var stringColumn = '<li style="display:table-cell;"><div  class="reverter" id="'+ divReverter +'">'+facet+' | '+ value 
