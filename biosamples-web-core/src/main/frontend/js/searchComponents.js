@@ -436,6 +436,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     }
 
     // Create elements which will call functions with the arguments necessary
+    console.log('document.getElementById("representationButton") : ');
+    console.log(document.getElementById("representationButton"));
     document.getElementById("representationButton").onclick = function()
     {
         // Change to Sample if equal to Facet, and vice-versa
