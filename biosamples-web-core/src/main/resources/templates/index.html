@@ -76,7 +76,9 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
     #saveButton{
       border-width:1px; border-radius:5px; border-color:black; background-color: white; margin-right:30%; width:70%; text-align:center; overflow:scroll; overflow-y:hidden; padding: 6px 12px;
     }
-
+    #representationButton{
+      height:34px;border-width:1px;margin-right:15%; margin-left:15%;border-radius:5px;border-color:black;  background-color:white;  text-align:center; padding: 6px 12px; font-size: 14px; width:70%;
+    }
     #infoPop{
         position:fixed; top:20%; right:30%; left:30%; width:40%; text-align: center; background: black; color:white;
         stroke: steelblue; stroke-width: 32px; border: 4px solid grey;
@@ -225,7 +227,7 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
       <div id="infoVizRelations">
         <div id="numberMatches">  </div>
         <div id="vizRepresentation"> <h4> Switch the display of the results according to : </h4> <br/>
-          <div id="representationButton" name="representationButton" active="false" value="Sample" style="height:34px;border-width:1px;margin-right:15%; margin-left:15%;border-radius:5px;border-color:black;  background-color:white;  text-align:center; padding: 6px 12px; font-size: 14px; width:70%;">Sample</div><br>
+          <div id="representationButton" name="representationButton" active="false" value="Sample">Sample</div><br>
         </div>
         <div id ="buttons-display" style="display:none;">
           <h4> Decide the number of elements fully loaded : </h4>
