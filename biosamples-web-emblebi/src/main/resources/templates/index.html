@@ -1,0 +1,332 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+layout:decorator="__parent_base"
+xmlns:layout="http://www.w3.org/1999/xhtml"
+th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
+<head>
+    <title>Search</title>
+    <link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>
+
+    <style type="text/css">
+    /* You have the option of setting a maximum width for your page, and making sure everything is centered */
+    /* body { max-width: 1600px; margin: 0 auto; } */
+    .node circle {
+      fill: #000;
+      opacity:0.8;
+    }
+    .node text {
+    stroke:#333;
+    cursos:pointer;
+    }
+    .node {
+      font: 10px sans-serif;
+    }
+    .link {
+      stroke: #aaa;
+      stroke-width: 1.5px;
+      opacity:.6;
+    }
+    .text-d3{
+      border:solid;  
+      border-radius:10px;
+      background-color:green;
+      font-family:arial;
+      font-size:10px;
+    }
+    .text-d3:hover{
+        fill:black;
+    }
+
+    .axis {
+      font: 10px sans-serif;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+    .x.axis path {
+      display: none;
+    }    
+
+    .hull {
+      fill: steelblue;
+      stroke: steelblue;
+      stroke-width: 32px;
+      stroke-linejoin: round;
+    }
+
+    .reverter{
+      border:solid;
+      border-color:black; 
+      border-radius:2px;
+      background-color: #4dabac;
+      color: white;
+      text-align: center;
+      stroke: white;
+      stroke-width: 32px;
+    }
+
+    #areaNodeLink{
+      position:relative;
+      width:100%;
+    }
+
+    #vizNodeLink{
+        float: left;
+        width:70%;
+    }
+    #infoVizRelations{
+        float: left;
+        width:30%;
+        border:solid;
+        border-color:black; 
+        border-radius:4px;
+        background-color: rgba(200, 200, 200, 0.5); 
+        /*visibility: hidden;*/
+        display:none;
+        overflow:scroll;
+        overflow-x:visible;
+    }
+
+    #vizSpotRelations{
+        background-color: #ffffff;
+    }
+
+    #elementHelp{
+        position:fixed; 
+        top:4%; 
+        right:2%;
+        width:300px;
+        text-align: center;
+        background: grey;
+        color:white;
+        stroke: steelblue;
+        stroke-width: 32px;
+        border: 4px solid grey;
+        visibility: hidden;
+    }
+
+    #infoPop{
+        position:fixed; 
+        top:20%; 
+        right:30%;
+        left:30%;
+        width:40%;
+        text-align: center;
+        background: black;
+        color:white;
+        stroke: steelblue;
+        stroke-width: 32px;
+        border: 4px solid grey;
+        display:none
+    }
+
+    ::-webkit-scrollbar {
+      width: 15px;
+      height: 15px;
+    }
+    ::-webkit-scrollbar-button {
+      width: 31px;
+      height: 31px;
+    }
+    ::-webkit-scrollbar{
+      overflow-x: scroll;
+      overflow-y: scroll;
+    }
+    ::-webkit-scrollbar-thumb {
+    border: 6px solid #BBB;
+    border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      /*background: #3bcf88;*/
+    }
+    ::-webkit-scrollbar-thumb:active {
+      /*background: #000000;*/
+    }
+    ::-webkit-scrollbar-track {
+      /*background: #a9a9a9;*/
+      background: #eee;
+      border: 72px none #ffffff;
+      border-radius: 84px;
+    }
+/*    ::-webkit-scrollbar-track:hover {
+      background: #5e5e5e;
+    }
+    ::-webkit-scrollbar-track:active {
+      background: #c0c0c0;
+    }
+*/
+/*    ::-webkit-scrollbar-corner {
+      background: transparent;
+    }*/
+
+    table {
+        border: 4px solid grey;
+    }
+  </style>
+
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+    window.apiUrl = [[${apiUrl}]];
+    window.baseUrl = [[${baseUrl}]];
+    /*]]>*/
+    </script>
+</head>
+<body id="app">
+    <main layout:fragment="content">
+
+        <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
+
+        <div v-bind:class="{loading: isQuerying}"></div>
+        <br/><br/>
+        <div id="displayRemainingFilters"></div>
+        <!-- <br/><br/> -->
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
+            <li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>
+        </ul>
+
+        <div class="tab-content">
+          <section id="sectionList" class="container tab-pane fade in active" v-show="queryTermPresent" v-cloak>
+
+              <div v-if="!queryHasResults">
+                  <div class="row">
+                      <h3>
+                          No results have been found for <i>{{queryTerm}}</i>
+                          <span class="small"><a href="#" v-on:click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
+                      </h3>
+                  </div>
+              </div>
+
+              <div v-else="">
+                  <div class="row">
+                      <div class="col-md-4"></div>
+                      <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
+                  </div>
+                  <div v-else="">
+<!--                       <div class="row">
+                          <div class="col-md-4"></div>
+                          <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
+                      </div> -->
+
+                      <div class="row">
+                          <div class="col-md-4">
+                              <div class="row">
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading">
+                                          <h3>Refine search results</h3>
+                                      </div>
+                                      <div class="panel-body">
+                                        <form>
+                                            <label for="fuzzy-search">Search for similar terms</label>
+                                            <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
+                                            v-model="useFuzzy" v-on:change="querySamples" />
+                                        </form>
+
+                                        <component v-for="(key,facetObj) in facets"
+                                          is="facet" v-bind:title="key | startCase"
+                                          v-bind:keys="facetObj.keys"
+                                          v-bind:values="facetObj.vals"
+                                          v-bind:facet-id="key + 'Filter'">
+                                      </component>
+                                  </div>
+                                  <div class="panel-footer">
+                                      <div class="row">
+                                        <div class="col-md-6">
+                                            <component is="pagination"
+                                              v-bind:total-results="resultsNumber"
+                                              v-bind:displayed-results="samplesToRetrieve"
+                                              style="float:right">
+                                          </component>
+                                      </div>
+                                      <div class="col-md-6">
+                                          <component is="items-dropdown"
+                                                     v-bind:items-per-page="samplesToRetrieve">
+                                          </component>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-8">
+                      <component is="biosamples-list"
+                      v-bind:elements="biosamples">
+                  </component>
+              </div>
+          </div>
+      </div>
+
+  </div>
+</section>
+
+
+  <section id="sectionVisualisation" class='tab-pane fade'>
+
+    <div id="buttonRezInfo" style="border:solid;border-color:grey;  border-radius:1px;visibility:hidden;"> 
+      <h4 id="titleRezInfo" >
+        Display result information
+      </h4>
+    </div>
+    <div id="sectionVizResult"
+    style="display:none; 
+    overflow: auto;" >
+    </div>
+
+
+    <div id="areaNodeLink">
+      <div id= "vizNodeLink"></div>
+      <div id="infoVizRelations">
+        <div id="numberMatches">  </div>
+        <div id="vizRepresentation"> <h4> Change the display of the results according to : </h4> <br/>
+          <div id="representationButton" name="representationButton" active="false" value="Sample" style="height:34px;border-width:1px;margin-right:15%; margin-left:15%;border-radius:5px;border-color:black;  background-color:white;  text-align:center; padding: 6px 12px; font-size: 14px; width:70%;">Sample</div><br>
+        </div>
+        <div id ="buttons-display" style="display:none;">
+          <h4> Decide the number of elements fully loaded : </h4>
+            <li style="list-style:none;">
+              <ul>
+                <component is="items-dropdown"> </component>
+              </ul>
+              <ul>
+                <component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve">
+                </component>
+                <!-- style="float:right" -->
+              </ul>
+              <ul>          
+                <h4 style="display:inline"> Display text of all samples </h4>  <input type="checkbox" onclick='showTextSamples(this)' />
+              </ul>
+              <ul>
+                <div id="saveButton" onclick='saveURL(this)' style=" border-width:1px; border-radius:5px;border-color:black;background-color: white; margin-right:15%; margin-left:15%; width:70%; text-align:center; overflow:scroll; overflow-y:hidden; padding: 6px 12px;"> <p> Get the URL to find back the current filters <p/> </div>
+              </ul>
+<!--             <br/>
+            <h4 style="display:inline"> Save in the clipboard the current filters </h4> -->
+            </li>
+          <hr/>
+        </div>
+        <div id="dynamicText">
+          <h3> Clicked element information </h3>
+          <div id="textData">Click on an element of the diagram to display its information </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="elementHelp"> Help </div>
+<div id="infoPop"> Temporary display of information </div>
+
+
+
+</main>
+
+<th:block layout:fragment="custom-endpage-scripts">
+<script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js}" src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
+<script th:src="@{/javascript/searchComponents.js}" src="../static/javascript/searchComponents.js"></script>
+<script th:src="@{/javascript/toolsFunctions.js}"></script>
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</th:block>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<!--*/
+
+    Thymeleaf templates variables:
+
+    WARN: variables setup here are gonna be available for all pages unless the variable is overridden by the child page
+    - baseUrl: the base url for the navigation, could be removed probably in future
+    - currentPage: the current page, usually overwritten by the specific child page
+
+*/-->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <title>Whatever</title>
+</head>
+<body>
+<header th:fragment="header">
+    <a class="header__brand th:href="@{/}" href="/">
+        <img class="header__brand-logo" alt="Bootstrap Image Preview" th:src="@{/images/logo.png}" src="../static/images/logo.png" />
+        <span class="header__brand-title">BioSamples</span>
+    </a>
+</header>
+</body>
+</html>
