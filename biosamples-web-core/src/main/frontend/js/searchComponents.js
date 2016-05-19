@@ -407,7 +407,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   var widthD3 = Math.floor( (70*widthTitle)/100 );
   var heightD3 = widthTitle/2;
 
-  document.getElementById("infoVizRelations").style.height = heightD3+'px';  
+  document.getElementById("infoVizRelations").style.height = heightD3+'px';
   if (results.data.response.docs.length == 0  ){
     // document.getElementById("infoVizRelations").style.visibility='hidden';
     document.getElementById("infoVizRelations").style.display="none";
