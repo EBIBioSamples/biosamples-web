@@ -2,16 +2,15 @@ package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
-
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
-import org.springframework.format.annotation.DateTimeFormat;
+import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,15 +24,16 @@ import java.util.TreeMap;
 @SolrDocument(solrCoreName = "samples")
 public class Sample implements ResultQueryDocument {
     // duplicated fields to disambiguate - no need to return
-    @Id @Field("sample_acc") @JsonIgnore String sampleAccession;
-    @Field("submission_description") @JsonIgnore String submissionDescription;
+    private final DateTimeFormatter solrDateFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS]'Z'");
 
-    // core fields
-    @Field String accession;
-    @Field String description;
+    @Id @Field(value = "accession") String accession;
 
-    @Field("sample_update_date") @DateTimeFormat Date updateDate;
-    @Field("sample_release_date") @DateTimeFormat Date releaseDate;
+    @Field(value = "description") String description;
+
+    @Field(value = "updatedate")
+    String updateDate;
+    @Field(value = "releasedate") String releaseDate;
 
     // collection of all characteristics as key/list of value pairs
     @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
@@ -49,7 +49,6 @@ public class Sample implements ResultQueryDocument {
     // submission metadata
     @Field("submission_acc") String submissionAccession;
     @Field("submission_title") String submissionTitle;
-    @Field("submission_update_date") @DateTimeFormat Date submissionUpdateDate;
 
     public String getSubmissionAccession() {
         return submissionAccession;
@@ -59,36 +58,12 @@ public class Sample implements ResultQueryDocument {
         this.submissionAccession = submissionAccession;
     }
 
-    public String getSubmissionDescription() {
-        return submissionDescription;
-    }
-
-    public void setSubmissionDescription(String submissionDescription) {
-        this.submissionDescription = submissionDescription;
-    }
-
     public String getSubmissionTitle() {
         return submissionTitle;
     }
 
     public void setSubmissionTitle(String submissionTitle) {
         this.submissionTitle = submissionTitle;
-    }
-
-    public Date getSubmissionUpdateDate() {
-        return submissionUpdateDate;
-    }
-
-    public void setSubmissionUpdateDate(Date submissionUpdateDate) {
-        this.submissionUpdateDate = submissionUpdateDate;
-    }
-
-    public String getSampleAccession() {
-        return sampleAccession;
-    }
-
-    public void setSampleAccession(String sampleAccession) {
-        this.sampleAccession = sampleAccession;
     }
 
     public String getAccession() {
@@ -107,19 +82,19 @@ public class Sample implements ResultQueryDocument {
         this.description = description;
     }
 
-    public Date getReleaseDate() {
-        return releaseDate;
+    public LocalDate getReleaseDate() throws ParseException {
+        return LocalDate.from(solrDateFormatter.parse(releaseDate));
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public LocalDate getUpdateDate() throws ParseException {
+        return LocalDate.from(solrDateFormatter.parse(updateDate));
     }
 
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 

@@ -15,7 +15,7 @@
 	</div>
 	<div class="panel-body" v-html="description | excerpt"></div>
 	<div class="panel-footer">
-		<span class="small">Released on: <span v-text="date"></span></span>
-		<span style="float: right">Accession: <span class="label label-info" v-html="accession"></span></span>
+		<span class="small">Last update date: <span v-text="date | solrDate"></span></span>
+		<!--<span style="float: right">Accession: <span class="label label-info" v-html="accession"></span></span>-->
 	</div>
 </div>
