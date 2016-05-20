@@ -25,7 +25,7 @@ import java.util.TreeMap;
 public class Sample implements ResultQueryDocument {
     // duplicated fields to disambiguate - no need to return
     private final DateTimeFormatter solrDateFormatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss[.SSS]'Z'");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Id @Field(value = "accession") String accession;
 
