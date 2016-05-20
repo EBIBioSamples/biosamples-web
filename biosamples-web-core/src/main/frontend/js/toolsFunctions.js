@@ -962,14 +962,14 @@ function displayRevertingFilters( results,vm ){
         vm.$emit("bar-selected");
     });
 
-    d3.selectAll('.crossDelete').on("mouseover",function(d){
-        d3.selectAll('.crossDelete').style("background-color","white");
-        d3.selectAll('.crossDelete').style("color","black");
-        d3.select('#'+this.id).style("background-color","black");
-        d3.select('#'+this.id).style("color","white");
-    });
-    d3.selectAll('.crossDelete').on("mouseout",function(d){
-        d3.selectAll('.crossDelete').style("background-color","white");
-        d3.selectAll('.crossDelete').style("color","black");
-    });
+    // d3.selectAll('.crossDelete').on("mouseover",function(d){
+    //     d3.selectAll('.crossDelete').style("background-color","white");
+    //     d3.selectAll('.crossDelete').style("color","black");
+    //     d3.select('#'+this.id).style("background-color","black");
+    //     d3.select('#'+this.id).style("color","white");
+    // });
+    // d3.selectAll('.crossDelete').on("mouseout",function(d){
+    //     d3.selectAll('.crossDelete').style("background-color","white");
+    //     d3.selectAll('.crossDelete').style("color","black");
+    // });
 }
