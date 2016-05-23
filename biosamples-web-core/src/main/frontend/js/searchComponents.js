@@ -391,7 +391,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   console.log("results : ");console.log(results);
 
   // If existing, clean the visualisation space
-  d3.select("#vizSpotRelations").selectAll('*').remove();
+  d3.select("#vizSpotRelations").remove();
 
   var fill = d3.scale.category20();
   var widthTitle = window.innerWidth;
