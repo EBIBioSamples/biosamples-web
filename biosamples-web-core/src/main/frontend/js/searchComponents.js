@@ -297,21 +297,14 @@
              */
             registerEventHandlers: function() {
                 this.$on('page-changed', function(newPage) {
-
                     console.log(" on page-changed");
-
                     this.pageNumber = newPage;
                     this.querySamples();
                 });
 
                 this.$on('dd-item-chosen', function(item) {
-                    console.log("dd-item-chosen : ");
-                    console.log("item : ");console.log(item);
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
-                    console.log("this : "); console.log(this);
-                    console.log('this.samplesToRetrieve : ');
-                    console.log(this.samplesToRetrieve);
                     this.pageNumber = 1;
                     this.querySamples();
                 });
@@ -398,7 +391,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   console.log("results : ");console.log(results);
 
   // If existing, clean the visualisation space
-  d3.select("#vizSpotRelations").remove();
+  d3.select("#vizSpotRelations").selectAll('*').remove();
 
   var fill = d3.scale.category20();
   var widthTitle = window.innerWidth;
@@ -460,13 +453,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         var posLeft = e.pageX + 20;
         var posY = e.pageY - $("#elementHelp").height()/2 ;
         var widthTail = $("#elementHelp").width();
-        // d3.select("#elementHelp").attr("class","arrow_box");
         if ( posLeft + widthTail >= widthWindow ){
-          console.log("$$$$ posLeft + widthTail >= widthWindow $$$$");
           posLeft= e.pageX - $("#elementHelp").width;
-          // posLeft= e.pageX - $("#elementHelp").width*2 -20;
           posY = e.pageY+20;
-          // d3.select("#elementHelp").attr("class","arrow_box_up");
         }
         $('#elementHelp').css({
             left:  posLeft,
@@ -480,12 +469,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     d3.select("#sectionVizResult").on("mouseenter",function(){
       document.getElementById("elementHelp").style.visibility="visible";
-      // document.getElementById("textHelp").innerHTML = "Help <hr/> Click on a bar to display its information. <br/> Click twice to filter according to it.";
       document.getElementById("textHelp").innerHTML = "Click on a bar to display its information. <br/> Click twice to filter according to it.";
     })
     .on("mouseleave",function(){
         document.getElementById("elementHelp").style.visibility="hidden";
-        // d3.select("#textHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
         d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
     })
     d3.select("#questionSwitch").on("mouseover",function(){
@@ -499,7 +486,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     })
     .on("mouseleave",function(){
         document.getElementById("elementHelp").style.visibility="hidden";
-        // d3.select("#textHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
         d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
     })
 

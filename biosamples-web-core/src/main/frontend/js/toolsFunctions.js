@@ -216,17 +216,12 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		}
 
 		// Probably here that we should decide what to get in the new get request
-		
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
-				//console.log( nameToNodeIndex[ groupsReturned[group][i]] );
-				//console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
-				//console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
-
 				nodeData.links.push({
 					"source": nameToNodeIndex[ groupsReturned[group][i] ],
 					"target": nameToNodeIndex[ group ],
@@ -248,12 +243,6 @@ function getSamplesFromGroup(apiUrl,group){
 function loadDataWithoutRefresh(vm,apiUrl,parameters){	
   var queryParams = vm.getQueryParameters();
   queryParams.searchTerm = parameters.searchTerm;
-  console.log("************");
-  console.log("loadDataWithoutRefresh : ");
-  console.log("vm : ");console.log(vm);
-  console.log("apiUrl : ");console.log(apiUrl);
-  console.log("queryParams : ");console.log(queryParams);
-  console.log("************");
 
   //var rezToReturn = vm.$http.get(server,queryParams)
   var rezToReturn = vm.$http.get(apiUrl,queryParams)
@@ -270,7 +259,6 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 	  var hlDocs = vm.associateHighlights(docs, highLights);
 	  
 	  return results;
-
 	})
 	.catch(function(data,status,response){
 	  console.log("data : ");console.log(data);
@@ -331,25 +319,12 @@ function showTextSamples(boolValue) {
 }
 
 function saveURL(e){
-	console.log("---- saveURL ----");
-	console.log("e : ");console.log(e);
-	console.log(" ---- ");
-	console.log("window.location.pathname : ");
-	console.log(window.location.pathname);
-	console.log("window.location.href : ");
-	console.log(window.location.href);
-	console.log("document.URL : ");
-	console.log(document.URL);
-	console.log(" ---- ");
 	d3.select("#saveButton")[0][0].textContent=document.URL;
 	d3.select("#saveButton").style("overflow-x ","visible");
-	console.log('d3.select("#saveButton")[0][0].textContent : ');
-	console.log(d3.select("#saveButton")[0][0].textContent);
 }
 
 function draw(svg,nodeData){
 
-	console.log("function draw");
 	document.getElementById("buttons-display").style.display="block";
 
 	var widthTitle = window.innerWidth;
@@ -445,13 +420,6 @@ function draw(svg,nodeData){
 	    // d3.select("#textData").style("text-align","center");
 	    // Should we calculate connections onclick or on loading ?
 	    document.getElementById("textData").innerHTML+="<div class='textAttribute' id="+prop+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";	    
-
-        // d3.selectAll(".").on("mouseover",function(d){
-        //     d3.select('#'+divReverter).style("fill","black");
-        // });
-        // d3.select("#"+divReverter).on("mouseout",function(d){
-        //     d3.select('#'+divReverter).style("fill","white");
-        // });
 
 	    URLs = getURLsFromObject(d.responseDoc,prop);
 	    if (URLs.length>0){
@@ -556,7 +524,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	nodeData.facets=[];
 	nodeData.accessions="";
 	var groupsReturned = {};
-	console.log("results");console.log(results);
 
 	var maxAndMinFacet = {};
 	var maxAndMinTotal = [];
@@ -585,8 +552,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 
 	var cptDomain =0; 
 	for (var i in results.data.facet_counts.facet_fields){ cptDomain++ }
-	console.log("cptDomain : ");
-	console.log(cptDomain);
 	var color = d3.scale.category20()
     	.domain(d3.range( cptDomain ));
 
@@ -624,7 +589,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 function drawFacets(svg,nodeData,vm){
 	console.log("function drawFacets");
 
-	console.log("nodeData : ");console.log(nodeData);
 	document.getElementById("buttons-display").style.display="none";
 	// d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 	d3.select("#textHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
@@ -640,7 +604,6 @@ function drawFacets(svg,nodeData,vm){
 	// The largest node for each cluster.
 	var clusters = [];
 	var cptClusters = 0;
-	console.log("nodeData.nodes : ");console.log(nodeData.nodes);
 	for (var i in nodeData.nodes){
 		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){
 			clusters.push(nodeData.nodes[i]);
@@ -799,9 +762,7 @@ function drawFacets(svg,nodeData,vm){
 	function cluster(alpha){
 	  return function(d) {
 	    var cluster = clusters[d.cluster], k = 1;
-	    if (typeof cluster == 'undefined'){
-			console.log(" cluster undefined ");
-	    } else {
+	    if (typeof cluster !== 'undefined'){
 		    // For cluster nodes, apply custom gravity.
 		    if (cluster === d) {
 		      cluster = {x: width / 2, y: height / 2, radius: -d.radius};
@@ -895,7 +856,6 @@ function displayRevertingFilters( results,vm ){
 	}
 
 	displayRemainingFilters = infoDisplayFilters(results);
-	console.log("displayRemainingFilters : ");console.log(displayRemainingFilters);
 	d3.select("#displayRemainingFilters").selectAll("*").remove();
 
 	if ( displayRemainingFilters[0]){
@@ -912,8 +872,6 @@ function displayRevertingFilters( results,vm ){
 		        var badgeFacet,badgeValue;
 		        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
 		        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
-		        console.log("facet: "+facet+" value: "+value);
-		        console.log("badgeFacet: "+badgeFacet+" badgeValue: "+badgeValue);
 				var stringColumn = '<div style="display:inline" facet='+facet+' value='+value+' class="reverter" id="'+ divReverter +'">'
 					+'<img style="display:inline" src="https://img.shields.io/badge/'+badgeFacet+'-'+badgeValue+'-orange.svg?style=flat">'
 					+'<p style="display:inline" facet='+facet+' value='+value+' class="crossDelete">&#10006;</p>'
@@ -939,8 +897,6 @@ function displayRevertingFilters( results,vm ){
 		        var badgeFacet,badgeValue;
 		        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
 		        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
-		        console.log("facet: "+facet+" value: "+value);
-		        console.log("badgeFacet: "+badgeFacet+" badgeValue: "+badgeValue);
 				var stringColumn = '<div style="display:inline" facet='+facet+' value='+value+' class="reverter" id="'+ divReverter +'">'
 					+'<img style="display:inline" src="https://img.shields.io/badge/'+badgeFacet+'-'+badgeValue+'-orange.svg?style=flat">'
 					+'<p style="display:inline" facet='+facet+' value='+value+' class="crossDelete">&#10006;</p>'
@@ -956,14 +912,8 @@ function displayRevertingFilters( results,vm ){
 
     // $('div.crossDelete').click(function(e){
 	$('.crossDelete').click(function(e){
-    	console.log("$('.crossDelete').click");
-    	console.log("d3.select(this): ");console.log(d3.select(this));
-    	console.log("d3.select(this).attr('facet'): ");console.log(d3.select(this).attr('facet'));
         facet = d3.select(this).attr('facet');
-        console.log("facet: "+facet);
-        console.log("Before erase: "); console.log(vm.$data.filterQuery[facet+'Filter']);
         vm.$data.filterQuery[facet+'Filter'] = "";
-        console.log("After erase: "); console.log(vm.$data.filterQuery[facet+'Filter']);
         vm.$emit("bar-selected");
     });
 
