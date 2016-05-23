@@ -16,6 +16,7 @@ biosamples-web-core/src/main/resources/logback.xml
 
 #logging
 **/*/logs
+logs/
 
 .idea/
 *.iml
