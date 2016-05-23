@@ -65,10 +65,12 @@ public class HttpSolrQuery implements Cloneable {
         queryStringBuilder.append("&wt=");
         if (contentType.equals(CONTENT_TYPE.JSON)) {
             queryStringBuilder.append("json");
-        }
-        else {
+        } else if (contentType.equals(CONTENT_TYPE.XML)) {
             queryStringBuilder.append("xml");
+        } else {
+        	throw new IllegalArgumentException("ContentType must be a valid constant");
         }
+        	
         return this;
     }
 
@@ -148,12 +150,13 @@ public class HttpSolrQuery implements Cloneable {
         return queryStringBuilder.toString();
     }
 
-    public enum CONTENT_TYPE {
+    public static enum CONTENT_TYPE {
         JSON,
         XML
     }
 
-    @Override public HttpSolrQuery clone() throws CloneNotSupportedException {
+    @Override 
+    public HttpSolrQuery clone() throws CloneNotSupportedException {
         HttpSolrQuery clone = (HttpSolrQuery) super.clone();
         clone.queryStringBuilder = new StringBuilder();
         clone.queryStringBuilder.append(queryStringBuilder.toString());
