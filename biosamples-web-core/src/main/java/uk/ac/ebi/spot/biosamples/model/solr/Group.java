@@ -10,6 +10,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -24,16 +26,15 @@ import java.util.TreeMap;
  */
 @SolrDocument(solrCoreName = "groups")
 public class Group implements ResultQueryDocument {
-    // duplicated fields to disambiguate - no need to return
-    @Id @Field("group_acc") @JsonIgnore String groupAccession;
-    @Field("submission_description") @JsonIgnore String submissionDescription;
 
-    // core fields
-    @Field String accession;
+    private final DateTimeFormatter solrDateFormatter =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    // duplicated fields to disambiguate - no need to return
+    @Id String accession;
     @Field String description;
 
-    @Field("group_update_date") @DateTimeFormat Date updateDate;
-    @Field("group_release_date") @DateTimeFormat Date releaseDate;
+    @Field(value = "updatedate") String updateDate;
+    @Field(value = "releasedate") String releaseDate;
 
     // collection of all characteristics as key/list of value pairs
     @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
@@ -49,23 +50,6 @@ public class Group implements ResultQueryDocument {
     // submission metadata
     @Field("submission_acc") String submissionAccession;
     @Field("submission_title") String submissionTitle;
-    @Field("submission_update_date") @DateTimeFormat Date submissionUpdateDate;
-
-    public String getGroupAccession() {
-        return groupAccession;
-    }
-
-    public void setGroupAccession(String groupAccession) {
-        this.groupAccession = groupAccession;
-    }
-
-    public String getSubmissionDescription() {
-        return submissionDescription;
-    }
-
-    public void setSubmissionDescription(String submissionDescription) {
-        this.submissionDescription = submissionDescription;
-    }
 
     public String getAccession() {
         return accession;
@@ -83,19 +67,19 @@ public class Group implements ResultQueryDocument {
         this.description = description;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public LocalDate getUpdateDate() {
+        return LocalDate.from(solrDateFormatter.parse(this.updateDate));
     }
 
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 
-    public Date getReleaseDate() {
-        return releaseDate;
+    public LocalDate getReleaseDate() {
+        return LocalDate.from(solrDateFormatter.parse(this.releaseDate));
     }
 
-    public void setReleaseDate(Date releaseDate) {
+    public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
@@ -157,14 +141,6 @@ public class Group implements ResultQueryDocument {
 
     public void setSubmissionTitle(String submissionTitle) {
         this.submissionTitle = submissionTitle;
-    }
-
-    public Date getSubmissionUpdateDate() {
-        return submissionUpdateDate;
-    }
-
-    public void setSubmissionUpdateDate(Date submissionUpdateDate) {
-        this.submissionUpdateDate = submissionUpdateDate;
     }
 
     public String getDocumentType() {

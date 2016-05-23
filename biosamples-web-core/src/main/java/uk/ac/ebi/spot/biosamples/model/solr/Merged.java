@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.solr.core.mapping.SolrDocument;
-import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -16,27 +13,26 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 10/02/16
+ * Created by lucacherubin on 2016/04/11.
  */
-@SolrDocument(solrCoreName = "samples")
-public class Sample implements ResultQueryDocument {
-    // duplicated fields to disambiguate - no need to return
+@org.springframework.data.solr.core.mapping.SolrDocument(solrCoreName = "merged")
+public class Merged {
+
     private final DateTimeFormatter solrDateFormatter =
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-    @Id @Field(value = "accession") String accession;
+    // duplicated fields to disambiguate - no need to return
+    @Id
+    @Field String accession;
 
     @Field(value = "description") String description;
 
-    @Field(value = "updatedate")
-    String updateDate;
+    @Field(value = "updatedate") String updateDate;
+
     @Field(value = "releasedate") String releaseDate;
 
     // collection of all characteristics as key/list of value pairs
-    @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
+    @JsonIgnore @Field("*_crt")
+    Map<String, List<String>> characteristicsText;
 
     // TODO - if this becomes a read/write API, we will also need a JsonDeserializer
     @JsonSerialize(using = CharacteristicMappingsSerializer.class)
@@ -49,14 +45,6 @@ public class Sample implements ResultQueryDocument {
     // submission metadata
     @Field("submission_acc") String submissionAccession;
     @Field("submission_title") String submissionTitle;
-
-    public String getSubmissionAccession() {
-        return submissionAccession;
-    }
-
-    public void setSubmissionAccession(String submissionAccession) {
-        this.submissionAccession = submissionAccession;
-    }
 
     public String getSubmissionTitle() {
         return submissionTitle;
@@ -82,16 +70,16 @@ public class Sample implements ResultQueryDocument {
         this.description = description;
     }
 
-    public LocalDate getReleaseDate() throws ParseException {
-        return LocalDate.from(solrDateFormatter.parse(releaseDate));
+    public LocalDate getReleaseDate() {
+        return LocalDate.from(solrDateFormatter.parse(this.releaseDate));
     }
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
-    public LocalDate getUpdateDate() throws ParseException {
-        return LocalDate.from(solrDateFormatter.parse(updateDate));
+    public LocalDate getUpdateDate() {
+        return LocalDate.from(solrDateFormatter.parse(this.updateDate));
     }
 
     public void setUpdateDate(String updateDate) {
@@ -132,7 +120,5 @@ public class Sample implements ResultQueryDocument {
         this.xml = xml;
     }
 
-    public String getDocumentType() {
-        return "BioSample";
-    }
+
 }

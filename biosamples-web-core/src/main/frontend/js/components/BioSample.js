@@ -16,7 +16,7 @@
          * List of keys in the SolR Document we want to use to summarize the document
          * @param summaryFields
          */
-		var summaryFields      = ['accession','name','description','update_date','content_type'];
+		var summaryFields      = ['accession','name','description','updatedate','content_type'];
 		var summaryLabels      = ['organism_crt','organ_crt'];
 
 		
