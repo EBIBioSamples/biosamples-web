@@ -10,10 +10,7 @@ import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Javadocs go here!
@@ -49,6 +46,9 @@ public class Sample implements ResultQueryDocument {
     // submission metadata
     @Field("submission_acc") String submissionAccession;
     @Field("submission_title") String submissionTitle;
+
+    @Field("sample_grp_accessions")
+    List<String> groups;
 
     public String getSubmissionAccession() {
         return submissionAccession;
@@ -122,6 +122,14 @@ public class Sample implements ResultQueryDocument {
 
     public void setCharacteristics(Map<String, List<String>> characteristics) {
         this.characteristics = characteristics;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
     }
 
     public String getXml() {

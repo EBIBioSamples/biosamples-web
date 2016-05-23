@@ -82,9 +82,12 @@
             </tr>
             <tr>
                 <td class="col_title"><b>Groups :</b></td>
-                <td>
-                    <!--<a href="../group/SAMEG39304"><id>SAMEG39304</id></a>-->
-                </td>
+                <td th:if="${#lists.isEmpty(sample.groups)}">None</td>
+                <td th:if="${not #lists.isEmpty(sample.groups)}">
+                    <p th:each="group : ${sample.groups}">
+                        <a th:text="${group}" th:href="${'../group/' + group}"></a>
+                    </p>
+                <td/>
             </tr>
             </tbody>
         </table>
