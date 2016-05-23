@@ -421,3 +421,25 @@ console.log("document.URL : ");
 console.log(document.URL);
 console.log(" ---- ");
 
+
+//// Div #tail that follows the mouse without getting out of the screen
+// CSS
+#elementHelp {
+    position: absolute;
+    float: right;
+    width:auto;
+}
+// Javascript
+$(document).bind('mousemove', function(e){
+    var widthWindow = $(window).width();
+    var posX = e.pageX + 20;
+    var posY = e.pageY;
+    var widthTail = $("#elementHelp").width();
+    if ( posX + widthTail >= widthWindow ){
+      posX-=2*widthTail;
+    }
+    $('#elementHelp').css({
+       left:  posX,
+       top:   posY
+    });
+});

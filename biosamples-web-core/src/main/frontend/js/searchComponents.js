@@ -367,7 +367,7 @@
              * Save or update the history state if a query has been made
              * @method saveHistoryState
              */
-            saveHistoryState: function() {
+            saveHistoryState: function(){
                 log("Saving history","History");
                 if ( !_.isEmpty( this.currentQueryParams ) ) {
                     if ( _.isEqual( this.currentQueryParams, this.previousQueryParams ) ) {
@@ -380,9 +380,7 @@
                     }
                 }
             }
-
         }
-
     });
 })(window);
 
@@ -435,22 +433,20 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }
     }
 
-    // Create elements which will call functions with the arguments necessary
-    console.log('document.getElementById("representationButton") : ');
-    console.log(document.getElementById("representationButton"));
+    // Create elements which will call functions with the arguments necessary1
     document.getElementById("representationButton").onclick = function()
     {
         // Change to Sample if equal to Facet, and vice-versa
-        if ( d3.select('#representationButton').attr('value') == "Facet" ){
-            console.log("**** Change to Facet ");            
-            // d3.select('#representationButton').innerHTML="Sample";
+        if ( d3.select('#representationButton').attr('value') == 'Facet' ){
+            console.log(" d3.select('#representationButton').attr('value') == 'Facet' ");
+            console.log("**** Change to Facet ");
             d3.select('#representationButton').text("Sample");
             d3.select('#representationButton').attr('value',"Sample");
             vm.$data.valueDisplay = "Facet";
             vm.$emit("displayChanged");
         } else {
-            console.log("**** Change to Sample ");            
-            // d3.select('#representationButton').innerHTML="Facet";
+            console.log(" d3.select('#representationButton').attr('value') == 'Sample' ");
+            console.log("**** Change to Sample ");
             d3.select('#representationButton').text("Facet");
             d3.select('#representationButton').attr('value',"Facet");
             vm.$data.valueDisplay = "Sample";
@@ -458,25 +454,60 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         }
     }
 
-    document.getElementById("elementHelp").style.visibility="hidden";        
+
+    $(document).bind('mousemove', function(e){
+        var widthWindow = $(window).width();
+        var posLeft = e.pageX + 20;
+        var posY = e.pageY - $("#elementHelp").height()/2 ;
+        var widthTail = $("#elementHelp").width();
+        // d3.select("#elementHelp").attr("class","arrow_box");
+        if ( posLeft + widthTail >= widthWindow ){
+          console.log("$$$$ posLeft + widthTail >= widthWindow $$$$");
+          posLeft= e.pageX - $("#elementHelp").width;
+          // posLeft= e.pageX - $("#elementHelp").width*2 -20;
+          posY = e.pageY+20;
+          // d3.select("#elementHelp").attr("class","arrow_box_up");
+        }
+        $('#elementHelp').css({
+            left:  posLeft,
+            top:   posY
+        });
+    });
+    document.getElementById("elementHelp").style.visibility="hidden";
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").innerHTML="Display result information";
     document.getElementById("sectionVizResult").style.display="none";
 
     d3.select("#sectionVizResult").on("mouseenter",function(){
       document.getElementById("elementHelp").style.visibility="visible";
-      document.getElementById("elementHelp").innerHTML = "Help <hr/> Click on a bar to display its information. <br/> Click twice to filter according to it.";
+      // document.getElementById("textHelp").innerHTML = "Help <hr/> Click on a bar to display its information. <br/> Click twice to filter according to it.";
+      document.getElementById("textHelp").innerHTML = "Click on a bar to display its information. <br/> Click twice to filter according to it.";
     })
     .on("mouseleave",function(){
         document.getElementById("elementHelp").style.visibility="hidden";
-        d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+        // d3.select("#textHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+        d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
     })
+    d3.select("#questionSwitch").on("mouseover",function(){
+        console.log("onmouseover");
+      document.getElementById("elementHelp").style.visibility="visible";
+      if ( d3.select("#representationButton").attr("value")=="Sample"){
+            document.getElementById("textHelp").innerHTML = "Currently the nodes shows you the keywords that resulted from your search.<hr/> If you click on the button, it will show you samples that matched your search.";
+        } else {
+            document.getElementById("textHelp").innerHTML = "Currently the nodes shows you the samples that resulted from your search.<hr/> If you click on the button, it will show you the keywords that matched your search.";
+        }
+    })
+    .on("mouseleave",function(){
+        document.getElementById("elementHelp").style.visibility="hidden";
+        // d3.select("#textHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+        d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+    })
+
 
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
       console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) TRUE ");
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
         +'<div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
-             
       var cpt = 0;
       var strResults = '<table id="table" style="width: 100%"; " > <tr>';
       
@@ -543,7 +574,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               return margin.left+margin.right + (5+10)* (numberFacetsUnEmpty[u]);
             })
             .attr("height", height)
-            //.attr("height", heightD3)
             .attr("id","resultsViz"+cpt+"")
             .attr("class","bar")
             .style("stroke", "black")
@@ -604,7 +634,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     }
 
     var cpt=0;
-    // console.log("results.data.facet_counts.facet_fields : ");console.log(results.data.facet_counts.facet_fields);
     for (var u in numberFacetsUnEmpty ){
       for (var v =0; v < results.data.facet_counts.facet_fields[u].length; v++ ){
         if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){
@@ -668,22 +697,22 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               document.getElementById("elementHelp").style.visibility="visible";
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
-
               var content = d3.select('#bar_'+idToSelect).attr("content");
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
               var facet = d3.select('#bar_'+idToSelect).attr("facet");
 
-              document.getElementById("elementHelp").innerHTML= "Help"
-                +"<hr/> "+ facet +" <hr/> "+  content+ " : " + occurence ;
+              // document.getElementById("textHelp").innerHTML= "Help"+"<hr/> "+ facet +" <hr/> "+  content+ " : " + occurence ;
+              document.getElementById("textHelp").innerHTML= facet +" <hr/> "+  content+ " : " + occurence ;
               d3.selectAll(".text-d3").style("opacity",.5);
               d3.select(this).style("opacity",1);
               d3.select('#bar_'+idToSelect).style("fill","steelblue");
             })
             .on("mouseout",function(){
               document.getElementById("elementHelp").visibility="visible";
-              document.getElementById("elementHelp").innerHTML = "Help "
-              +"<hr/> • Click on a bar or a text to highlight the nodes with these values."
-              +"<br/> • Double click to filter the results according to a facet. ";              
+              // document.getElementById("textHelp").innerHTML = "Help "
+              document.getElementById("textHelp").innerHTML = ""
+              +"Click on a bar or a text to highlight the nodes with these values."
+              +"<hr/> Double click to filter the results according to a facet. ";              
 
               d3.selectAll(".text-d3").style("opacity",1);
               d3.selectAll(".bar-d3").style("fill",function(d){
@@ -693,10 +722,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             .on("mousedown",function(){
               console.log("mousedown text");
               d3.selectAll("circle").style("stroke","black");
-
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
-              
               var content = d3.select('#bar_'+idToSelect).attr("content");
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
               var facet = d3.select('#bar_'+idToSelect).attr("facet");
@@ -775,12 +802,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                 for (var i in results.request.params.filters ){
                     var indexCut = results.request.params.filters[i].indexOf("Filter");
                     var filter = results.request.params.filters[i].substring(0,indexCut);
-
                     if ( d3.select(this).attr("facet").indexOf(filter) > -1 ){
                         var indexCut = results.request.params.filters[i].indexOf("|");
                         var valueFilter = results.request.params.filters[i].substring(indexCut+1,results.request.params.filters[i].length);
                         if (valueFilter == d3.select(this).attr("content")){
-                            //d3.select(this).attr.color = "red";
                             return "red";
                         }
                     }
@@ -819,9 +844,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .attr("fill", "#46b4af" )
         .on("mouseover",function(d,i){
           document.getElementById("elementHelp").style.visibility="visible";
-          document.getElementById("elementHelp").innerHTML=
-            "Help"
-            +"<hr/>"+ d.facet +" <hr/> "+d.content
+          document.getElementById("textHelp").innerHTML=
+            // "Help"+"<hr/>"+ d.facet +" <hr/> "+d.content
+            d.facet +" <hr/> "+d.content
             +", "+d.occurence;
           var modifiedContent = changeSpecialCharacters(d.content);
           var idToSelect = '#text_'+modifiedContent;
@@ -830,12 +855,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           d3.select(this).style("fill","steelblue");
         })
         .on("mouseout",function(d,i){
-          document.getElementById("elementHelp").innerHTML = "Help "
-          +"<hr/> • Click on a bar or a text to highlight the nodes with these values."
-          +"<br/> • Double click to filter the results according to a facet. ";        
+          document.getElementById("textHelp").innerHTML = 
+          // "Help "
+          // +"<hr/> Click on a bar or a text to highlight the nodes with these values."
+          "Click on a bar or a text to highlight the nodes with these values."
+          +"<hr/>Double click to filter the results according to a facet. ";          
           document.getElementById("elementHelp").visibility="visible";
           d3.selectAll(".text-d3").style("opacity",1);
-          //d3.select(this).style("fill","#46b4af");
           d3.selectAll(".bar-d3").style("fill",function(d){
             return d3.select(this).attr("color");
           });
@@ -850,7 +876,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           console.log("dblclick rectangle");
           var content = d.content;
           var nameClickedBar = d.content;
-
           for (var u in vm.$data.facets){
             for (var v in vm.$data.facets[u] ){
               if ( v == "keys"){
@@ -858,9 +883,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                   if ( nameClickedBar == vm.$data.facets[u][v][w]){
                     var nameOfFilter = u+'Filter';
                     if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
-                      // console.log("time to filter");
-                      // console.log("nameOfFilter : ");console.log(nameOfFilter);
-                      // console.log("nameClickedBar : "+nameClickedBar);
                       vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
                       vm.$emit("bar-selected");
                       document.getElementById("infoPop").innerHTML=" Filtering the results according to "+content;
@@ -940,7 +962,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         ;
     }
 
-
     // Nodes relationships here
     var svg;
     svg = d3.select("#vizNodeLink").insert("svg")
@@ -955,11 +976,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       .style("border-radius","4px")
       .on("mouseenter",function(){
         document.getElementById("elementHelp").style.visibility="visible";
-        d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger <br/> Click a node to display its information. <br/> ");
+        // d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger <br/> Click a node to display its information. <br/> ");
+        d3.select("#textHelp").html("Hover over a node to make it bigger <br/> Click a node to display its information. <br/> ");
       })
       .on("mouseleave",function(){
         document.getElementById("elementHelp").style.visibility="hidden";
-        d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click a node to display its information. <br/> ")
+        // d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click a node to display its information. <br/> ")
+        d3.select("#textHelp").html(" Hover over a node to make it bigger. <br/> Click a node to display its information. <br/> ")
       })
       .call(d3.behavior.zoom().on("zoom", (function (d) {
           svg.attr("transform", 

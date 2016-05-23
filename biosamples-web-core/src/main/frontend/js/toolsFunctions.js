@@ -470,11 +470,13 @@ function draw(svg,nodeData){
 	  d3.selectAll(".node").selectAll("text").style("dx", 12);
 	  d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
 	  d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
-	  d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+	  // d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+	  d3.select("#textHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
 	})
 	.on("mouseover",function(d){
 		document.getElementById("elementHelp").style.visibility="visible";
-		d3.select("#elementHelp").html("Help <hr/> "+d.accession);
+		// d3.select("#elementHelp").html("Help <hr/> "+d.accession);
+		d3.select("#textHelp").html("Help <hr/> "+d.accession);
 
 		var circleNode = d3.select(this).selectAll("circle");
 		var textNode = d3.select(this).select("text");
@@ -624,7 +626,8 @@ function drawFacets(svg,nodeData,vm){
 
 	console.log("nodeData : ");console.log(nodeData);
 	document.getElementById("buttons-display").style.display="none";
-	d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+	// d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+	d3.select("#textHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -727,10 +730,12 @@ function drawFacets(svg,nodeData,vm){
 	})
 	.on("mouseover",function(d){
 		document.getElementById("elementHelp").style.visibility="visible";
-		d3.select("#elementHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
+		// d3.select("#elementHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
+		d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
 	})
 	.on("mouseout",function(d){
-		d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+		// d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+		d3.select("#textHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 	})
 	.on("dblclick",function(d){
 		console.log("dblclick nodeFacet");
@@ -896,7 +901,7 @@ function displayRevertingFilters( results,vm ){
 	if ( displayRemainingFilters[0]){
     	d3.select("#displayRemainingFilters").selectAll("*").remove();
 		if ( displayRemainingFilters[1].length>0 ){
-		    document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/><div id='revertFilters'></div>");
+			document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/><div id='revertFilters'></div>");
 		    for (var i in displayRemainingFilters[1]){
 		        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
 		        var indexToCutFacet = facet.indexOf("Filter");
@@ -923,7 +928,7 @@ function displayRevertingFilters( results,vm ){
 	else {
     	d3.select("#displayRemainingFilters").selectAll("*").remove();
 		if ( displayRemainingFilters[1].length>0 ){
-		    document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/><div id='revertFilters'></div>");
+			document.getElementById("displayRemainingFilters").innerHTML=("<p>Current filters:<br/><div id='revertFilters'></div>");
 		    for (var i in displayRemainingFilters[1]){
 		        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
 		        var indexToCutFacet = facet.indexOf("Filter");
