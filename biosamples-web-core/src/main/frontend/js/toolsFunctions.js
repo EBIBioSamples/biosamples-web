@@ -83,7 +83,7 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	console.log("!!!!! loadDataFromGET !!!!!");
+	console.log("!!!!!loadDataFromGET !!!!!");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
@@ -216,17 +216,12 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		}
 
 		// Probably here that we should decide what to get in the new get request
-		
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
-				//console.log( nameToNodeIndex[ groupsReturned[group][i]] );
-				//console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
-				//console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
-
 				nodeData.links.push({
 					"source": nameToNodeIndex[ groupsReturned[group][i] ],
 					"target": nameToNodeIndex[ group ],
@@ -248,12 +243,6 @@ function getSamplesFromGroup(apiUrl,group){
 function loadDataWithoutRefresh(vm,apiUrl,parameters){	
   var queryParams = vm.getQueryParameters();
   queryParams.searchTerm = parameters.searchTerm;
-  console.log("************");
-  console.log("loadDataWithoutRefresh : ");
-  console.log("vm : ");console.log(vm);
-  console.log("apiUrl : ");console.log(apiUrl);
-  console.log("queryParams : ");console.log(queryParams);
-  console.log("************");
 
   //var rezToReturn = vm.$http.get(server,queryParams)
   var rezToReturn = vm.$http.get(apiUrl,queryParams)
@@ -270,7 +259,6 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 	  var hlDocs = vm.associateHighlights(docs, highLights);
 	  
 	  return results;
-
 	})
 	.catch(function(data,status,response){
 	  console.log("data : ");console.log(data);
@@ -331,25 +319,12 @@ function showTextSamples(boolValue) {
 }
 
 function saveURL(e){
-	console.log("---- saveURL ----");
-	console.log("e : ");console.log(e);
-	console.log(" ---- ");
-	console.log("window.location.pathname : ");
-	console.log(window.location.pathname);
-	console.log("window.location.href : ");
-	console.log(window.location.href);
-	console.log("document.URL : ");
-	console.log(document.URL);
-	console.log(" ---- ");
 	d3.select("#saveButton")[0][0].textContent=document.URL;
 	d3.select("#saveButton").style("overflow-x ","visible");
-	console.log('d3.select("#saveButton")[0][0].textContent : ');
-	console.log(d3.select("#saveButton")[0][0].textContent);
 }
 
 function draw(svg,nodeData){
 
-	console.log("function draw");
 	document.getElementById("buttons-display").style.display="block";
 
 	var widthTitle = window.innerWidth;
@@ -411,6 +386,8 @@ function draw(svg,nodeData){
 
   	node
 	  .attr("accession",function(d){return d.accession})
+	  .attr("isThereSelected",function(d){ return 'false';})
+	  .attr("theOneSelected",function(d){return 'false'})
 	  .attr("name",function(d){return d.accession})
 	  .attr("id",function(d){return 'node_'+d.accession})
 	  .attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
@@ -430,12 +407,14 @@ function draw(svg,nodeData){
 	  	}
 	  })
 	  .on("mousedown",function(d){
-	  	console.log('mousedown node d : ');console.log(d);
+		console.log('mousedown node d : ');console.log(d);
+		d3.selectAll(".node").attr("isThereSelected",'true');
+		d3.select("this").attr("theOneSelected",'true');
+
 	  	d3.selectAll("circle").style("stroke-width",2);
 	  	d3.select(this).selectAll("circle").style("stroke-width", 4);
 
 		d3.event.stopPropagation();
-
 	  // Fill in the infoVizRelations according to data returned
 	  document.getElementById("textData").innerHTML='<p>';
 	  var URLs = [];
@@ -446,13 +425,6 @@ function draw(svg,nodeData){
 	    // Should we calculate connections onclick or on loading ?
 	    document.getElementById("textData").innerHTML+="<div class='textAttribute' id="+prop+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";	    
 
-        // d3.selectAll(".").on("mouseover",function(d){
-        //     d3.select('#'+divReverter).style("fill","black");
-        // });
-        // d3.select("#"+divReverter).on("mouseout",function(d){
-        //     d3.select('#'+divReverter).style("fill","white");
-        // });
-
 	    URLs = getURLsFromObject(d.responseDoc,prop);
 	    if (URLs.length>0){
 	    	for (var k=0;k<URLs.length;k++){
@@ -460,29 +432,35 @@ function draw(svg,nodeData){
 	    		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
 	    	}
 	    }
-	}
-	document.getElementById("textData").innerHTML+='</p>';
+	  }
+	  document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
+		d3.selectAll(".node").attr("isThereSelected",'false');
+		d3.select("this").attr("theOneSelected",'false');
 	})
 	.on("mouseout",function(d){
-	  d3.selectAll("text").style("opacity",1);
-	  d3.selectAll(".node").selectAll("text").style("dx", 12);
-	  d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
-	  d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
-	  d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+		if ( d3.select(".node").attr("isThereSelected") == "false" ){
+			d3.selectAll("text").style("opacity",1);
+		  	d3.selectAll(".node").selectAll("text").style("dx", 12);
+		  	d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
+		  	d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
+			d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+		}
 	})
 	.on("mouseover",function(d){
-		document.getElementById("elementHelp").style.visibility="visible";
-		d3.select("#elementHelp").html("Help <hr/> "+d.accession);
+		if ( d3.select(this).attr("isThereSelected") == 'false' ){
+			var allNodes = d3.selectAll(".node");
+			document.getElementById("elementHelp").style.visibility="visible";
+			d3.select("#textHelp").html(""+d.accession);
+			var circleNode = d3.select(this).selectAll("circle");
+			var textNode = d3.select(this).select("text");
 
-		var circleNode = d3.select(this).selectAll("circle");
-		var textNode = d3.select(this).select("text");
-
-		d3.selectAll(".node").selectAll("text").style("opacity",.25);
-	  	textNode.style("opacity",1);
-	  	circleNode.transition().duration(10).style("r", d.radius*3);
-	  	textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
+			d3.selectAll(".node").selectAll("text").style("opacity",.25);
+			textNode.style("opacity",1);
+			circleNode.transition().duration(10).style("r", d.radius*3);
+			textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
+		} 
 	})
 	;
 
@@ -544,7 +522,7 @@ function draw(svg,nodeData){
 
 // This function is to load data according to the facets, when the number of nodes would be too high to directly display
 function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
-	console.log("!!!!! loadDataFromFacets 1 !!!!!");
+	console.log("!!!!!loadDataFromFacets 1 !!!!!");
 	console.log("loadDataFromFacets in src/main/ressources/static/javascript/toolsFunctions");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
@@ -554,7 +532,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	nodeData.facets=[];
 	nodeData.accessions="";
 	var groupsReturned = {};
-	console.log("results");console.log(results);
 
 	var maxAndMinFacet = {};
 	var maxAndMinTotal = [];
@@ -583,8 +560,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 
 	var cptDomain =0; 
 	for (var i in results.data.facet_counts.facet_fields){ cptDomain++ }
-	console.log("cptDomain : ");
-	console.log(cptDomain);
 	var color = d3.scale.category20()
     	.domain(d3.range( cptDomain ));
 
@@ -608,6 +583,7 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 					"type":"nodeFacet",
 					"facet":i,
 					"cluster":results.data.facet_counts.facet_fields[i][0],
+					"readableContent":vm.$options.filters.excerpt(results.data.facet_counts.facet_fields[i][j],200),
 					"name":results.data.facet_counts.facet_fields[i][j],
 					"value":results.data.facet_counts.facet_fields[i][j+1]
 				});
@@ -622,9 +598,8 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 function drawFacets(svg,nodeData,vm){
 	console.log("function drawFacets");
 
-	console.log("nodeData : ");console.log(nodeData);
 	document.getElementById("buttons-display").style.display="none";
-	d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+	d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -637,7 +612,6 @@ function drawFacets(svg,nodeData,vm){
 	// The largest node for each cluster.
 	var clusters = [];
 	var cptClusters = 0;
-	console.log("nodeData.nodes : ");console.log(nodeData.nodes);
 	for (var i in nodeData.nodes){
 		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){
 			clusters.push(nodeData.nodes[i]);
@@ -678,6 +652,10 @@ function drawFacets(svg,nodeData,vm){
 
 	node
 	.attr("name", function (d) { return d.name; })
+	.attr("readableContent", function (d) { return d.readableContent; })
+	.attr("class", function (d) { return "node"; })
+	.attr("isThereSelected",function(d){ return 'false';})
+	.attr("theOneSelected",function(d){return 'false'})
 	.attr("value", function (d) { return d.value; })
 	.attr("facet", function (d) { return d.facet; })
 	.attr("cluster", function (d) { return d.cluster; })
@@ -695,6 +673,8 @@ function drawFacets(svg,nodeData,vm){
 		d3.event.preventDefault();
 	})
 	.on("mousedown",function(d){
+		d3.selectAll(".node").attr("isThereSelected",'true');
+		d3.select(this).attr("theOneSelected",'true');
 		d3.event.stopPropagation();
 		d3.selectAll("circle").style("stroke-width",2);
 		d3.select(this).select("circle").style("stroke-width", 4);
@@ -706,7 +686,9 @@ function drawFacets(svg,nodeData,vm){
 
 		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
 			if ( d2.cluster == d.cluster ){
-				d3.select(this)[0][0].textContent = '['+d2.name+']';
+				// d3.select(this)[0][0].textContent = '['+d2.name+']';
+				// console.log("d2.readableContent: ");console.log(d2.readableContent);
+				d3.select(this)[0][0].textContent = '['+d2.readableContent+']';
 				return "visible";
 			} else {
 				if ( clusters[d2.cluster].index == d2.index ){
@@ -725,12 +707,22 @@ function drawFacets(svg,nodeData,vm){
 			}
 		});
 	})
+	.on("mouseup",function(d){
+		d3.selectAll(".node").attr("isThereSelected",'false');
+		d3.select(this).attr("theOneSelected",'false');
+	})
 	.on("mouseover",function(d){
 		document.getElementById("elementHelp").style.visibility="visible";
-		d3.select("#elementHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
+		if ( d3.select(".node").attr("isThereSelected")=="false" ){
+			console.log("There is no selected people ");
+			// d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
+			d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.readableContent+"<hr/>"+d.value+" elements");
+		}
 	})
 	.on("mouseout",function(d){
-		d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+		if ( d3.select(".node").attr("isThereSelected")=='false' ){
+			d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+		}
 	})
 	.on("dblclick",function(d){
 		console.log("dblclick nodeFacet");
@@ -769,7 +761,8 @@ function drawFacets(svg,nodeData,vm){
 	.text( function (d) {
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFacet = d.facet;
-		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
+		// var nameFacet = d.readableContent;
+		if ( indexFilter > -1 ){ nameFacet = nameFacet.substr(0,indexFilter); }
 		return "["+nameFacet+"]";
 	})
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
@@ -794,9 +787,7 @@ function drawFacets(svg,nodeData,vm){
 	function cluster(alpha){
 	  return function(d) {
 	    var cluster = clusters[d.cluster], k = 1;
-	    if (typeof cluster == 'undefined'){
-			console.log(" cluster undefined ");
-	    } else {
+	    if (typeof cluster !== 'undefined'){
 		    // For cluster nodes, apply custom gravity.
 		    if (cluster === d) {
 		      cluster = {x: width / 2, y: height / 2, radius: -d.radius};
@@ -890,13 +881,12 @@ function displayRevertingFilters( results,vm ){
 	}
 
 	displayRemainingFilters = infoDisplayFilters(results);
-	console.log("displayRemainingFilters : ");console.log(displayRemainingFilters);
 	d3.select("#displayRemainingFilters").selectAll("*").remove();
 
 	if ( displayRemainingFilters[0]){
     	d3.select("#displayRemainingFilters").selectAll("*").remove();
 		if ( displayRemainingFilters[1].length>0 ){
-		    document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/><div id='revertFilters'></div>");
+			document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/><div id='revertFilters'></div>");
 		    for (var i in displayRemainingFilters[1]){
 		        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
 		        var indexToCutFacet = facet.indexOf("Filter");
@@ -907,8 +897,6 @@ function displayRevertingFilters( results,vm ){
 		        var badgeFacet,badgeValue;
 		        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
 		        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
-		        console.log("facet: "+facet+" value: "+value);
-		        console.log("badgeFacet: "+badgeFacet+" badgeValue: "+badgeValue);
 				var stringColumn = '<div style="display:inline" facet='+facet+' value='+value+' class="reverter" id="'+ divReverter +'">'
 					+'<img style="display:inline" src="https://img.shields.io/badge/'+badgeFacet+'-'+badgeValue+'-orange.svg?style=flat">'
 					+'<p style="display:inline" facet='+facet+' value='+value+' class="crossDelete">&#10006;</p>'
@@ -923,7 +911,7 @@ function displayRevertingFilters( results,vm ){
 	else {
     	d3.select("#displayRemainingFilters").selectAll("*").remove();
 		if ( displayRemainingFilters[1].length>0 ){
-		    document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/><div id='revertFilters'></div>");
+			document.getElementById("displayRemainingFilters").innerHTML=("<p>Current filters:<br/><div id='revertFilters'></div>");
 		    for (var i in displayRemainingFilters[1]){
 		        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
 		        var indexToCutFacet = facet.indexOf("Filter");
@@ -934,8 +922,6 @@ function displayRevertingFilters( results,vm ){
 		        var badgeFacet,badgeValue;
 		        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
 		        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
-		        console.log("facet: "+facet+" value: "+value);
-		        console.log("badgeFacet: "+badgeFacet+" badgeValue: "+badgeValue);
 				var stringColumn = '<div style="display:inline" facet='+facet+' value='+value+' class="reverter" id="'+ divReverter +'">'
 					+'<img style="display:inline" src="https://img.shields.io/badge/'+badgeFacet+'-'+badgeValue+'-orange.svg?style=flat">'
 					+'<p style="display:inline" facet='+facet+' value='+value+' class="crossDelete">&#10006;</p>'
@@ -951,25 +937,21 @@ function displayRevertingFilters( results,vm ){
 
     // $('div.crossDelete').click(function(e){
 	$('.crossDelete').click(function(e){
-    	console.log("$('.crossDelete').click");
-    	console.log("d3.select(this): ");console.log(d3.select(this));
-    	console.log("d3.select(this).attr('facet'): ");console.log(d3.select(this).attr('facet'));
         facet = d3.select(this).attr('facet');
-        console.log("facet: "+facet);
-        console.log("Before erase: "); console.log(vm.$data.filterQuery[facet+'Filter']);
         vm.$data.filterQuery[facet+'Filter'] = "";
-        console.log("After erase: "); console.log(vm.$data.filterQuery[facet+'Filter']);
         vm.$emit("bar-selected");
     });
 
-    // d3.selectAll('.crossDelete').on("mouseover",function(d){
-    //     d3.selectAll('.crossDelete').style("background-color","white");
-    //     d3.selectAll('.crossDelete').style("color","black");
-    //     d3.select('#'+this.id).style("background-color","black");
-    //     d3.select('#'+this.id).style("color","white");
-    // });
-    // d3.selectAll('.crossDelete').on("mouseout",function(d){
-    //     d3.selectAll('.crossDelete').style("background-color","white");
-    //     d3.selectAll('.crossDelete').style("color","black");
-    // });
+    d3.selectAll('.crossDelete').on("mouseover",function(d){
+        d3.selectAll('.crossDelete').style("background-color","white");
+        d3.selectAll('.crossDelete').style("color","black");
+        if ( this.id.length > 0 ){
+            d3.select('#'+this.id).style("background-color","black");
+            d3.select('#'+this.id).style("color","white");
+        }
+    });
+    d3.selectAll('.crossDelete').on("mouseout",function(d){
+        d3.selectAll('.crossDelete').style("background-color","white");
+        d3.selectAll('.crossDelete').style("color","black");
+    });
 }
