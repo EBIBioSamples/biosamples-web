@@ -501,8 +501,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
     })
 
-
-    if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
+    // if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
+    if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 ) ) {        
       console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) TRUE ");
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
         +'<div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
@@ -532,7 +532,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
       document.getElementById("sectionVizResult").innerHTML= ' <div id="tableResults"> <table  style="width:100%" <tr> <td>  </table> </div>';
     }
-    
+
     document.getElementById("buttonRezInfo").onclick = function(){
       if ( document.getElementById("sectionVizResult").style.display == "none" ){        
         document.getElementById("sectionVizResult").style.display="block";
@@ -1008,7 +1008,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     var nodeData ={ "stuff":[], "nodes":[],"links":[],"group":[],"color":[] };
 
     if (results.data.response.docs.length>0){
-      // console.log("results.data.response.docs.length>0");
       d3.select("#vizSpotRelations").attr("visibility","visible");
       var numFound = results.data.response.numFound;
       if ( typeof vm.$data.valueDisplay == 'undefined'){

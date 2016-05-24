@@ -407,7 +407,6 @@ function draw(svg,nodeData){
 	  	}
 	  })
 	  .on("mousedown",function(d){
-	  	console.log("---- mousedown ----");
 		console.log('mousedown node d : ');console.log(d);
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select("this").attr("theOneSelected",'true');
@@ -437,7 +436,6 @@ function draw(svg,nodeData){
 	  document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
-		console.log("---- mouseup ----");
 		d3.selectAll(".node").attr("isThereSelected",'false');
 		d3.select("this").attr("theOneSelected",'false');
 	})
@@ -447,14 +445,11 @@ function draw(svg,nodeData){
 		  	d3.selectAll(".node").selectAll("text").style("dx", 12);
 		  	d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
 		  	d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
-			console.log('mouseout d3.select(".node").attr("isThereSelected") == "false"');
 			d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
 		}
 	})
 	.on("mouseover",function(d){
 		if ( d3.select(this).attr("isThereSelected") == 'false' ){
-			console.log('d3.selectAll("node[theOneSelected=true]"): ' );
-			console.log( d3.selectAll("node[theOneSelected='true']") );
 			var allNodes = d3.selectAll(".node");
 			document.getElementById("elementHelp").style.visibility="visible";
 			d3.select("#textHelp").html(""+d.accession);
@@ -466,14 +461,6 @@ function draw(svg,nodeData){
 			circleNode.transition().duration(10).style("r", d.radius*3);
 			textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
 		} 
-		// else {
-		// 	console.log("$$$$");
-		// 	console.log('d3.selectAll("node[theOneSelected=true]"): ');
-		// 	console.log(d3.selectAll("node[theOneSelected=true]"));
-		// 	console.log('d3.select("[theOneSelected=true]"): ');
-		// 	console.log(d3.select("[theOneSelected=true]"));
-		// 	console.log("$$$$");
-		// }
 	})
 	;
 
@@ -719,8 +706,6 @@ function drawFacets(svg,nodeData,vm){
 				}
 			}
 		});
-		console.log('d3.select(".node").attr("isThereSelected"): ');
-		console.log(d3.select(".node").attr("isThereSelected"));		
 	})
 	.on("mouseup",function(d){
 		d3.selectAll(".node").attr("isThereSelected",'false');
@@ -778,7 +763,6 @@ function drawFacets(svg,nodeData,vm){
 		var nameFacet = d.facet;
 		// var nameFacet = d.readableContent;
 		if ( indexFilter > -1 ){ nameFacet = nameFacet.substr(0,indexFilter); }
-		console.log("****");console.log("nameFacet : ");console.log(nameFacet);console.log("****");
 		return "["+nameFacet+"]";
 	})
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
@@ -961,8 +945,10 @@ function displayRevertingFilters( results,vm ){
     d3.selectAll('.crossDelete').on("mouseover",function(d){
         d3.selectAll('.crossDelete').style("background-color","white");
         d3.selectAll('.crossDelete').style("color","black");
-        d3.select('#'+this.id).style("background-color","black");
-        d3.select('#'+this.id).style("color","white");
+        if ( this.id.length > 0 ){
+            d3.select('#'+this.id).style("background-color","black");
+            d3.select('#'+this.id).style("color","white");
+        }
     });
     d3.selectAll('.crossDelete').on("mouseout",function(d){
         d3.selectAll('.crossDelete').style("background-color","white");
