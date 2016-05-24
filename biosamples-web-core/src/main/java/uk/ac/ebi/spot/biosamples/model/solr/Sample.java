@@ -2,7 +2,10 @@ package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.collections.list.TreeList;
 import org.apache.solr.client.solrj.beans.Field;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
@@ -49,6 +52,9 @@ public class Sample implements ResultQueryDocument {
 
     @Field("sample_grp_accessions")
     List<String> groups;
+
+    @Field("external_references_json")
+    String databases_json;
 
     public String getSubmissionAccession() {
         return submissionAccession;
@@ -130,6 +136,19 @@ public class Sample implements ResultQueryDocument {
 
     public void setGroups(List<String> groups) {
         this.groups = groups;
+    }
+
+    public Map<String, String> getDatabases_json() {
+        JSONArray jsonArray = new JSONArray(databases_json);
+        Map<String, String>  map = new HashMap<>();
+        for(int i = 0; i<jsonArray.length(); i++) {
+            map.put((String) jsonArray.getJSONObject(i).get("Acc"), (String) jsonArray.getJSONObject(i).get("URL"));
+        }
+        return map;
+    }
+
+    public void setDatabases_json(String databases_json) {
+        this.databases_json = databases_json;
     }
 
     public String getXml() {
