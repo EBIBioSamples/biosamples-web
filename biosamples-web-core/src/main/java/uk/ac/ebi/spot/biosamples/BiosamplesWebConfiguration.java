@@ -28,18 +28,7 @@ public class BiosamplesWebConfiguration {
     private String solrServerUrl;
 
     @Bean
-//    @Scope("prototype")
     public SolrServer solrServer() {
         return new HttpSolrServer(solrServerUrl);
     }
-
-    @Bean
-    public SolrOperations mergedCoreSolrTemplate() throws Exception {
-        HttpSolrServer httpSolrServer = new HttpSolrServer(solrServerUrl);
-        return new SolrTemplate(httpSolrServer,"merged");
-//        return new SolrTemplate(solrServer(),"merged"); // Use this ONLY if you set solrServer @Scope annotation to prototype
-    }
-
-
-
 }

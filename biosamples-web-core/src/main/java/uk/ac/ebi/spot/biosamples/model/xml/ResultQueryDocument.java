@@ -5,7 +5,7 @@ package uk.ac.ebi.spot.biosamples.model.xml;
  */
 public interface ResultQueryDocument {
 
-    String getDocumentType();
+    public String getDocumentType();
 
-    String getAccession();
+    public String getAccession();
 }

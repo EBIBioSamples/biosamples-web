@@ -954,4 +954,5 @@ function displayRevertingFilters( results,vm ){
         d3.selectAll('.crossDelete').style("background-color","white");
         d3.selectAll('.crossDelete').style("color","black");
     });
+
 }

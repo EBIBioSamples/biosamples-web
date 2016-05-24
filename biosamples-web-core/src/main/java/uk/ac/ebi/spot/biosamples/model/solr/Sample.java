@@ -2,16 +2,15 @@ package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
-
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
-import org.springframework.format.annotation.DateTimeFormat;
+import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,140 +23,128 @@ import java.util.TreeMap;
  */
 @SolrDocument(solrCoreName = "samples")
 public class Sample implements ResultQueryDocument {
-    // duplicated fields to disambiguate - no need to return
-    @Id @Field("sample_acc") @JsonIgnore String sampleAccession;
-    @Field("submission_description") @JsonIgnore String submissionDescription;
+	// duplicated fields to disambiguate - no need to return
+	private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    // core fields
-    @Field String accession;
-    @Field String description;
+	@Id
+	@Field(value = "accession")
+	private String accession;
 
-    @Field("sample_update_date") @DateTimeFormat Date updateDate;
-    @Field("sample_release_date") @DateTimeFormat Date releaseDate;
+	@Field(value = "description")
+	private String description;
 
-    // collection of all characteristics as key/list of value pairs
-    @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
+	@Field(value = "updatedate")
+	private String updateDate;
+	@Field(value = "releasedate")
+	private String releaseDate;
 
-    // TODO - if this becomes a read/write API, we will also need a JsonDeserializer
-    @JsonSerialize(using = CharacteristicMappingsSerializer.class)
-    @Field("*_crt_json")
-    Map<String, List<String>> characteristics;
+	// collection of all characteristics as key/list of value pairs
+	@JsonIgnore
+	@Field("*_crt")
+	private Map<String, List<String>> characteristicsText;
 
-    // XML payload for this sample - don't return in REST API
-    @Field("xmlAPI") @JsonIgnore String xml;
+	// TODO - if this becomes a read/write API, we will also need a
+	// JsonDeserializer
+	@JsonSerialize(using = CharacteristicMappingsSerializer.class)
+	@Field("*_crt_json")
+	private Map<String, List<String>> characteristics;
 
-    // submission metadata
-    @Field("submission_acc") String submissionAccession;
-    @Field("submission_title") String submissionTitle;
-    @Field("submission_update_date") @DateTimeFormat Date submissionUpdateDate;
+	// XML payload for this sample - don't return in REST API
+	@Field("xmlAPI")
+	@JsonIgnore
+	private String xml;
 
-    public String getSubmissionAccession() {
-        return submissionAccession;
-    }
+	// submission metadata
+	@Field("submission_acc")
+	private String submissionAccession;
+	@Field("submission_title")
+	private String submissionTitle;
 
-    public void setSubmissionAccession(String submissionAccession) {
-        this.submissionAccession = submissionAccession;
-    }
+	public String getSubmissionAccession() {
+		return submissionAccession;
+	}
 
-    public String getSubmissionDescription() {
-        return submissionDescription;
-    }
+	public void setSubmissionAccession(String submissionAccession) {
+		this.submissionAccession = submissionAccession;
+	}
 
-    public void setSubmissionDescription(String submissionDescription) {
-        this.submissionDescription = submissionDescription;
-    }
+	public String getSubmissionTitle() {
+		return submissionTitle;
+	}
 
-    public String getSubmissionTitle() {
-        return submissionTitle;
-    }
+	public void setSubmissionTitle(String submissionTitle) {
+		this.submissionTitle = submissionTitle;
+	}
 
-    public void setSubmissionTitle(String submissionTitle) {
-        this.submissionTitle = submissionTitle;
-    }
+	public String getAccession() {
+		return accession;
+	}
 
-    public Date getSubmissionUpdateDate() {
-        return submissionUpdateDate;
-    }
+	public void setAccession(String accession) {
+		this.accession = accession;
+	}
 
-    public void setSubmissionUpdateDate(Date submissionUpdateDate) {
-        this.submissionUpdateDate = submissionUpdateDate;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public String getSampleAccession() {
-        return sampleAccession;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setSampleAccession(String sampleAccession) {
-        this.sampleAccession = sampleAccession;
-    }
+	public LocalDate getReleaseDate() throws ParseException {
+		return LocalDate.from(solrDateFormatter.parse(releaseDate));
+	}
 
-    public String getAccession() {
-        return accession;
-    }
+	public void setReleaseDate(String releaseDate) {
+		this.releaseDate = releaseDate;
+	}
 
-    public void setAccession(String accession) {
-        this.accession = accession;
-    }
+	public LocalDate getUpdateDate() throws ParseException {
+		return LocalDate.from(solrDateFormatter.parse(updateDate));
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public Map<String, List<String>> getCharacteristicsText() {
+		// create a sorted, unmodifiable clone of this map (sorted by natural
+		// key order)
+		TreeMap<String, List<String>> result = new TreeMap<>();
+		for (String key : characteristicsText.keySet()) {
+			result.put(key.replace("_crt", ""), characteristicsText.get(key));
+		}
+		return Collections.unmodifiableMap(result);
+	}
 
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
+	public void setCharacteristicsText(Map<String, List<String>> characteristicsText) {
+		this.characteristicsText = characteristicsText;
+	}
 
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
-    }
+	public Map<String, List<String>> getCharacteristics() {
+		// create a sorted, unmodifiable clone of this map (sorted by natural
+		// key order)
+		TreeMap<String, List<String>> result = new TreeMap<>();
+		for (String key : characteristics.keySet()) {
+			result.put(key.replace("_crt_json", ""), characteristics.get(key));
+		}
+		return Collections.unmodifiableMap(result);
+	}
 
-    public Date getUpdateDate() {
-        return updateDate;
-    }
+	public void setCharacteristics(Map<String, List<String>> characteristics) {
+		this.characteristics = characteristics;
+	}
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
+	public String getXml() {
+		return xml;
+	}
 
-    public Map<String, List<String>> getCharacteristicsText() {
-        // create a sorted, unmodifiable clone of this map (sorted by natural key order)
-        TreeMap<String, List<String>> result = new TreeMap<>();
-        for (String key : characteristicsText.keySet()) {
-            result.put(key.replace("_crt", ""), characteristicsText.get(key));
-        }
-        return Collections.unmodifiableMap(result);
-    }
+	public void setXml(String xml) {
+		this.xml = xml;
+	}
 
-    public void setCharacteristicsText(Map<String, List<String>> characteristicsText) {
-        this.characteristicsText = characteristicsText;
-    }
-
-    public Map<String, List<String>> getCharacteristics() {
-        // create a sorted, unmodifiable clone of this map (sorted by natural key order)
-        TreeMap<String, List<String>> result = new TreeMap<>();
-        for (String key : characteristics.keySet()) {
-            result.put(key.replace("_crt_json", ""), characteristics.get(key));
-        }
-        return Collections.unmodifiableMap(result);
-    }
-
-    public void setCharacteristics(Map<String, List<String>> characteristics) {
-        this.characteristics = characteristics;
-    }
-
-    public String getXml() {
-        return xml;
-    }
-
-    public void setXml(String xml) {
-        this.xml = xml;
-    }
-
-    public String getDocumentType() {
-        return "BioSample";
-    }
+	public String getDocumentType() {
+		return "BioSample";
+	}
 }

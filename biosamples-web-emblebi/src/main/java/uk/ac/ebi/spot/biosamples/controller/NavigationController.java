@@ -23,7 +23,7 @@ public class NavigationController {
 
     @RequestMapping("/search")
     public String search(Model model, String searchTerm, HttpServletRequest request) {
-        model.addAttribute("searchTerm",searchTerm);
+        model.addAttribute("searchTerm", searchTerm);
         return "search";
     }
 
@@ -41,12 +41,11 @@ public class NavigationController {
     public String help() {
         return "help";
     }
+
     @RequestMapping("/help/{page}")
     public String helpInnerPage(@PathVariable("page") String innerPage) {
         return "help_" + innerPage;
     }
-
-
 
     @RequestMapping("/about")
     public String about() {

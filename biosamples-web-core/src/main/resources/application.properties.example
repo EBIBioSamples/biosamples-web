@@ -1,5 +1,5 @@
 solr.server                         http://HOSTNAME:PORT/solr/
-solr.searchapi.server               http://HOSTNAME:PORT/solr/CORE/select?
+solr.server.search.core-name        CORE
 spring.data.rest.base-path          /api
 spring.data.rest.default-page-size  50
 spring.thymeleaf.mode               LEGACYHTML5

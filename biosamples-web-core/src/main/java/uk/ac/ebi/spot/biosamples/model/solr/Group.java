@@ -10,6 +10,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -24,151 +26,135 @@ import java.util.TreeMap;
  */
 @SolrDocument(solrCoreName = "groups")
 public class Group implements ResultQueryDocument {
-    // duplicated fields to disambiguate - no need to return
-    @Id @Field("group_acc") @JsonIgnore String groupAccession;
-    @Field("submission_description") @JsonIgnore String submissionDescription;
 
-    // core fields
-    @Field String accession;
-    @Field String description;
+	private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	// duplicated fields to disambiguate - no need to return
+	@Id
+	private String accession;
+	@Field
+	private String description;
 
-    @Field("group_update_date") @DateTimeFormat Date updateDate;
-    @Field("group_release_date") @DateTimeFormat Date releaseDate;
+	@Field(value = "updatedate")
+	private String updateDate;
+	@Field(value = "releasedate")
+	private String releaseDate;
 
-    // collection of all characteristics as key/list of value pairs
-    @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
+	// collection of all characteristics as key/list of value pairs
+	@JsonIgnore
+	@Field("*_crt")
+	private Map<String, List<String>> characteristicsText;
 
-    // TODO - if this becomes a read/write API, we will also need a JsonDeserializer
-    @JsonSerialize(using = CharacteristicMappingsSerializer.class)
-    @Field("*_crt_json")
-    Map<String, List<String>> characteristics;
+	// TODO - if this becomes a read/write API, we will also need a
+	// JsonDeserializer
+	@JsonSerialize(using = CharacteristicMappingsSerializer.class)
+	@Field("*_crt_json")
+	private Map<String, List<String>> characteristics;
 
-    // XML payload for this sample - don't return in REST API
-    @Field("xmlAPI") @JsonIgnore String xml;
+	// XML payload for this sample - don't return in REST API
+	@Field("xmlAPI")
+	@JsonIgnore
+	private String xml;
 
-    // submission metadata
-    @Field("submission_acc") String submissionAccession;
-    @Field("submission_title") String submissionTitle;
-    @Field("submission_update_date") @DateTimeFormat Date submissionUpdateDate;
+	// submission metadata
+	@Field("submission_acc")
+	private String submissionAccession;
+	@Field("submission_title")
+	private String submissionTitle;
 
-    public String getGroupAccession() {
-        return groupAccession;
-    }
+	public String getAccession() {
+		return accession;
+	}
 
-    public void setGroupAccession(String groupAccession) {
-        this.groupAccession = groupAccession;
-    }
+	public void setAccession(String accession) {
+		this.accession = accession;
+	}
 
-    public String getSubmissionDescription() {
-        return submissionDescription;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setSubmissionDescription(String submissionDescription) {
-        this.submissionDescription = submissionDescription;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getAccession() {
-        return accession;
-    }
+	public LocalDate getUpdateDate() {
+		return LocalDate.from(solrDateFormatter.parse(this.updateDate));
+	}
 
-    public void setAccession(String accession) {
-        this.accession = accession;
-    }
+	public void setUpdateDate(String updateDate) {
+		this.updateDate = updateDate;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public LocalDate getReleaseDate() {
+		return LocalDate.from(solrDateFormatter.parse(this.releaseDate));
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setReleaseDate(String releaseDate) {
+		this.releaseDate = releaseDate;
+	}
 
-    public Date getUpdateDate() {
-        return updateDate;
-    }
+	public Map<String, List<String>> getCharacteristicsText() {
+		// create a sorted, unmodifiable clone of this map (sorted by natural
+		// key order)
+		TreeMap<String, List<String>> result = new TreeMap<>();
+		if (characteristicsText != null) {
+			for (String key : characteristicsText.keySet()) {
+				result.put(key.replace("_crt", ""), characteristicsText.get(key));
+			}
+			return Collections.unmodifiableMap(result);
+		} else {
+			return null;
+		}
+	}
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
+	public void setCharacteristicsText(Map<String, List<String>> characteristicsText) {
+		this.characteristicsText = characteristicsText;
+	}
 
-    public Date getReleaseDate() {
-        return releaseDate;
-    }
+	public Map<String, List<String>> getCharacteristics() {
+		// create a sorted, unmodifiable clone of this map (sorted by natural
+		// key order)
+		TreeMap<String, List<String>> result = new TreeMap<>();
+		if (characteristics != null) {
+			for (String key : characteristics.keySet()) {
+				result.put(key.replace("_crt_json", ""), characteristics.get(key));
+			}
+			return Collections.unmodifiableMap(result);
+		} else {
+			return null;
+		}
+	}
 
-    public void setReleaseDate(Date releaseDate) {
-        this.releaseDate = releaseDate;
-    }
+	public void setCharacteristics(Map<String, List<String>> characteristics) {
+		this.characteristics = characteristics;
+	}
 
-    public Map<String, List<String>> getCharacteristicsText() {
-        // create a sorted, unmodifiable clone of this map (sorted by natural key order)
-        TreeMap<String, List<String>> result = new TreeMap<>();
-        if (characteristicsText != null) {
-            for (String key : characteristicsText.keySet()) {
-                result.put(key.replace("_crt", ""), characteristicsText.get(key));
-            }
-            return Collections.unmodifiableMap(result);
-        }
-        else {
-            return null;
-        }
-    }
+	public String getXml() {
+		return xml;
+	}
 
-    public void setCharacteristicsText(Map<String, List<String>> characteristicsText) {
-        this.characteristicsText = characteristicsText;
-    }
+	public void setXml(String xml) {
+		this.xml = xml;
+	}
 
-    public Map<String, List<String>> getCharacteristics() {
-        // create a sorted, unmodifiable clone of this map (sorted by natural key order)
-        TreeMap<String, List<String>> result = new TreeMap<>();
-        if (characteristics != null) {
-            for (String key : characteristics.keySet()) {
-                result.put(key.replace("_crt_json", ""), characteristics.get(key));
-            }
-            return Collections.unmodifiableMap(result);
-        }
-        else {
-            return null;
-        }
-    }
+	public String getSubmissionAccession() {
+		return submissionAccession;
+	}
 
-    public void setCharacteristics(Map<String, List<String>> characteristics) {
-        this.characteristics = characteristics;
-    }
+	public void setSubmissionAccession(String submissionAccession) {
+		this.submissionAccession = submissionAccession;
+	}
 
-    public String getXml() {
-        return xml;
-    }
+	public String getSubmissionTitle() {
+		return submissionTitle;
+	}
 
-    public void setXml(String xml) {
-        this.xml = xml;
-    }
+	public void setSubmissionTitle(String submissionTitle) {
+		this.submissionTitle = submissionTitle;
+	}
 
-    public String getSubmissionAccession() {
-        return submissionAccession;
-    }
-
-    public void setSubmissionAccession(String submissionAccession) {
-        this.submissionAccession = submissionAccession;
-    }
-
-    public String getSubmissionTitle() {
-        return submissionTitle;
-    }
-
-    public void setSubmissionTitle(String submissionTitle) {
-        this.submissionTitle = submissionTitle;
-    }
-
-    public Date getSubmissionUpdateDate() {
-        return submissionUpdateDate;
-    }
-
-    public void setSubmissionUpdateDate(Date submissionUpdateDate) {
-        this.submissionUpdateDate = submissionUpdateDate;
-    }
-
-    public String getDocumentType() {
-        return "BioSampleGroup";
-    }
+	public String getDocumentType() {
+		return "BioSampleGroup";
+	}
 
 }

@@ -1,3 +1,4 @@
+
 /**
  * The `SearchComponent` class is the main class for the search interface containing all
  * the javascript logic to interact with the interface
@@ -18,8 +19,8 @@
 
     // Required
     var _           = require("lodash");
-    var _mixins     = require("lodash-addons");
-    // var _mixins     = require("./utilities/_mixins.js");
+    var _mixins     = require("./utilities/lodash-addons");
+    
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Biosample   = require('./components/BioSample.js');
@@ -42,6 +43,7 @@
     // Filters & Components
     Vue.filter('excerpt',require('./filters/excerptFilter.js'));
     Vue.filter('startCase', require('./filters/startCaseFilter.js'));
+    Vue.filter('solrDate',require('./filters/dateFormatFilter.js'));
     Vue.component('badge', require('./components/badge/Badge.js'));
 
     /**
@@ -67,7 +69,7 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            searchTerm: 'Liver',
+            searchTerm: '',
             queryTerm:'',
             filterTerm: '',
             useFuzzy: false,
@@ -271,30 +273,28 @@
                 return filterArray;
             },
 
-            deserializeFilterQuery: function(serializedQuery) {
+            deserializeFilterQuery: function(filtersArray) {
                 // let re = new RegExp("(\w+)Filter\|(\w+)");
                 let filtersObj = {};
-                let filtersArray = serializedQuery.split(',');
-                _(filtersArray).forEach(function(value) {
+                _(filtersArray).forEach(function (value) {
                     // var tuple = re.exec(value);
                     // if (tuple.length == 2) {
                     //     self.filterQuery[tuple[0]] = tuple[1];
                     // }
                     let [filterKey,filterValue] = value.split("Filter|");
                     if (!_.isEmpty(filterKey)) {
-                        filtersObj[filterKey] = filterValue;
+                        filtersObj[`${filterKey}Filter`] = filterValue;
                     }
                 });
                 return filtersObj;
             },
 
             populateDataWithUrlParameter: function(urlParams) {
-                this.searchTerm = urlParams.searchTerm;
-                this.samplesToRetrieve = _.toInteger(urlParams.rows);
-                this.pageNumber= _.toInteger(urlParams.start)/this.samplesToRetrieve + 1;
-
-                this.useFuzzy = urlParams.useFuzzySearch === "true";
-                this.filterQuery = this.deserializeFilterQuery(urlParams.filters);
+                this.searchTerm = _.getString(urlParams.searchTerm,'');
+                this.samplesToRetrieve = _.getFinite(urlParams.rows,10);
+                this.pageNumber= _.getFinite(urlParams.start/this.samplesToRetrieve + 1,1);
+                this.useFuzzy = _.getBoolean(urlParams.useFuzzySearch === "true",false);
+                this.filterQuery = _.getObject(this.deserializeFilterQuery(urlParams.filters),{});
             },
 
             /**
@@ -386,7 +386,7 @@
 
 function log(value,context) {
     if (context) {
-        console.log( context + " - " + value);
+        console.log(`[${context}] ${value}`);
     } else {
         console.log(value);
     }
