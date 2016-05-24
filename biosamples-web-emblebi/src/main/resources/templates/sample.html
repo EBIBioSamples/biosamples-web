@@ -85,6 +85,9 @@
                 <td th:if="${#maps.isEmpty(sample.databases_json)}">None</td>
                 <td th:if="${not #maps.isEmpty(sample.databases_json)}">
                     <p th:each="database : ${sample.databases_json}">
+                        <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none">
+                            <img th:src="@{/images/dblinks/hipsci_small_logo.png}">
+                        </a>
                         <a th:text="${database.key}" th:href="${database.value}"></a>
                     </p>
                 </td>
