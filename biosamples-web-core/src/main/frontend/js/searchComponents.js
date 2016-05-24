@@ -183,9 +183,6 @@
                     return;
                 }
 
-                console.log('this.$options.filters.excerpt("tagada",3): ');
-                console.log( this.$options.filters.excerpt("tagada",3) );
-
                 var highLights       = results.data.highlighting;
                 var dynamicFacets    = results.data.facet_counts.facet_fields;
                 var dynamicFacetsKey = _.keys(dynamicFacets);
@@ -195,9 +192,9 @@
                 _.forEach(dynamicFacetsKey, function(key) {
                     let readableKey = key.replace('_crt_ft','');
                     readableKey = vm.$options.filters.excerpt(readableKey,200);
-                    for (var i in dynamicFacets[key]){
-                        dynamicFacets[key][i] = vm.$options.filters.excerpt(dynamicFacets[key][i],200)
-                    }
+                    // for (var i in dynamicFacets[key]){
+                    //     dynamicFacets[key][i] = vm.$options.filters.excerpt(dynamicFacets[key][i],200);
+                    // }
                     vm.facets[readableKey] = readFacets(dynamicFacets[key]);
                 });
 
@@ -476,15 +473,18 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     document.getElementById("titleRezInfo").innerHTML="Display result information";
     document.getElementById("sectionVizResult").style.display="none";
 
+    console.log('typeof d3.select(".node"): ');console.log( typeof d3.select(".node"));
+    console.log('d3.select(".node")[0][0] == null : ');console.log(d3.select(".node")[0][0] == null);
+
     d3.select("#sectionVizResult").on("mouseenter",function(){
       document.getElementById("elementHelp").style.visibility="visible";
-      if ( d3.select(".node").attr("isThereSelected") == "false" ){
+      if ( d3.select(".node")[0][0] == null || d3.select(".node").attr("isThereSelected") == "false" ){
           document.getElementById("textHelp").innerHTML = "Click on a bar to display its information. <br/> Click twice to filter according to it.";
       }
     })
     .on("mouseleave",function(){
         document.getElementById("elementHelp").style.visibility="hidden";
-        if ( d3.select(".node").attr("isThereSelected") == "false" ){
+        if ( d3.select(".node")[0][0] == null ||  d3.select(".node").attr("isThereSelected") == "false" ){
             d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
         }
     })
@@ -636,6 +636,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       for (var v =0; v < results.data.facet_counts.facet_fields[u].length; v++ ){
         if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){
           dataBars[cpt].push({"content":results.data.facet_counts.facet_fields[u][v],
+            "readableContent":vm.$options.filters.excerpt(results.data.facet_counts.facet_fields[u][v],200),
            "occurence":0 , "x":Math.floor(v/2) * (widthRectangles[cpt] + 5) +margin.left,
            "index":Math.floor(v/2), "facet":u,  }) ;
           dataBars[cpt][ dataBars[cpt].length -1 ].occurence=results.data.facet_counts.facet_fields[u][v+1];
@@ -675,7 +676,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             })
             .attr("occurence",function(d){
               dataBars[h][i].occurence;
-            })            
+            })
+            .attr("readableContent",function(d){
+              dataBars[h][i].readableContent;
+            })
+            .text(function(){ return dataBars[h][i].readableContent+' : '+dataBars[h][i].occurence;})
             .attr("id", function (d){
                 var modifiedContent = changeSpecialCharacters(dataBars[h][i].content);
               return 'text_'+modifiedContent;
@@ -686,6 +691,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             .attr("content",function (d){ return dataBars[h][i].content; })
             .attr("facet",function(d){
                 return dataBars[h][i].facet;
+            })
+            .attr("readableContent",function(d){
+                return dataBars[h][i].readableContent;
             })
             .attr("x",function(){ return xHere + widthRectangles[h]/2 ;})
             .attr("y", function(){ return 0; })
@@ -795,7 +803,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                 }
             })
             .attr("style", "stroke:red;writing-mode: tb; glyph-orientation-vertical: 90")
-            .text(function(){ return dataBars[h][i].content+' : '+dataBars[h][i].occurence;})
             .style("stroke",function(d){
                 for (var i in results.request.params.filters ){
                     var indexCut = results.request.params.filters[i].indexOf("Filter");

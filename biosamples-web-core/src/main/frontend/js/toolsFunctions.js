@@ -596,6 +596,7 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 					"type":"nodeFacet",
 					"facet":i,
 					"cluster":results.data.facet_counts.facet_fields[i][0],
+					"readableContent":vm.$options.filters.excerpt(results.data.facet_counts.facet_fields[i][j],200),
 					"name":results.data.facet_counts.facet_fields[i][j],
 					"value":results.data.facet_counts.facet_fields[i][j+1]
 				});
@@ -664,6 +665,7 @@ function drawFacets(svg,nodeData,vm){
 
 	node
 	.attr("name", function (d) { return d.name; })
+	.attr("readableContent", function (d) { return d.readableContent; })
 	.attr("class", function (d) { return "node"; })
 	.attr("isThereSelected",function(d){ return 'false';})
 	.attr("theOneSelected",function(d){return 'false'})
@@ -697,7 +699,9 @@ function drawFacets(svg,nodeData,vm){
 
 		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
 			if ( d2.cluster == d.cluster ){
-				d3.select(this)[0][0].textContent = '['+d2.name+']';
+				// d3.select(this)[0][0].textContent = '['+d2.name+']';
+				// console.log("d2.readableContent: ");console.log(d2.readableContent);
+				d3.select(this)[0][0].textContent = '['+d2.readableContent+']';
 				return "visible";
 			} else {
 				if ( clusters[d2.cluster].index == d2.index ){
@@ -726,7 +730,8 @@ function drawFacets(svg,nodeData,vm){
 		document.getElementById("elementHelp").style.visibility="visible";
 		if ( d3.select(".node").attr("isThereSelected")=="false" ){
 			console.log("There is no selected people ");
-			d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
+			// d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
+			d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.readableContent+"<hr/>"+d.value+" elements");
 		}
 	})
 	.on("mouseout",function(d){
@@ -771,7 +776,9 @@ function drawFacets(svg,nodeData,vm){
 	.text( function (d) {
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFacet = d.facet;
-		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
+		// var nameFacet = d.readableContent;
+		if ( indexFilter > -1 ){ nameFacet = nameFacet.substr(0,indexFilter); }
+		console.log("****");console.log("nameFacet : ");console.log(nameFacet);console.log("****");
 		return "["+nameFacet+"]";
 	})
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
