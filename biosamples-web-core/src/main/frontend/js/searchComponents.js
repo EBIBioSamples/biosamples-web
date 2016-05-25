@@ -44,6 +44,11 @@
     Vue.filter('excerpt',require('./filters/excerptFilter.js'));
     Vue.filter('startCase', require('./filters/startCaseFilter.js'));
     Vue.filter('solrDate',require('./filters/dateFormatFilter.js'));
+    Vue.transition('flash', {
+        enterClass: 'bounceInRight',
+        leaveClass: 'fadeOutUp'
+    });
+    Vue.component('alert', require('./components/alert/alert.vue'));
     Vue.component('badge', require('./components/badge/Badge.js'));
 
     /**
@@ -64,6 +69,15 @@
             }
         }
         return obj;
+    }
+
+    function getErrorBadge(statusCode,responseMessage) {
+        debugger;
+        let alert = document.createElement("component");
+        alert.setAttribute("is","alert");
+        alert.setAttribute("type","danger");
+        alert.textContent = "An error occured while querying biosamples";
+        return alert;
     }
 
     var vm = new Vue({
@@ -90,14 +104,19 @@
                 // organs: {}
             },
             previousQueryParams: {},
-            currentQueryParams: {}
+            currentQueryParams: {},
+            alerts: []
         },
         computed: {
-            queryTermPresent: function() {
+
+            queryTermPresent() {
                 return !_.isEmpty(this.queryTerm);
             },
-            queryHasResults: function() {
+            queryHasResults() {
                 return this.resultsNumber > 0;
+            },
+            hasAlerts() {
+                return this.alerts.length > 0;
             }
         },
 
@@ -138,8 +157,8 @@
 
             querySamples: function(e) {
                 log("Query Samples");
-                console.log("this : ");console.log(this);
-                console.log("this.$http : ");console.log(this.$http);
+                log("this : ");console.log(this);
+                log("this.$http : ");console.log(this.$http);
                 // console.log("e : ");console.log(e);
                 if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
                     e.preventDefault();
@@ -166,10 +185,13 @@
                             doD3Stuff(results,apiUrl,this);
                         }
                     })
-                    .catch(function(data,status,response){
-                        console.log("data");console.log(data);
-                        console.log("status");console.log(status);
-                        console.log("response");console.log(response);
+                    .catch(function(data){
+                        console.log(data);
+                        this.alerts.push({
+                            type: 'danger',
+                            timeout: 5000,
+                            message: `Something went wrong!\nError code: ${data.status} - ${data.statusText}`
+                        });
                     })
                     .then(function() {
                         this.isQuerying = false;
@@ -295,6 +317,10 @@
                 this.pageNumber= _.getFinite(urlParams.start/this.samplesToRetrieve + 1,1);
                 this.useFuzzy = _.getBoolean(urlParams.useFuzzySearch === "true",false);
                 this.filterQuery = _.getObject(this.deserializeFilterQuery(urlParams.filters),{});
+            },
+            
+            removeAlert(item) {
+                this.alerts.$remove(item);
             },
 
             /**

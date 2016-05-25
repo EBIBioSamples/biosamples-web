@@ -5,16 +5,15 @@ $highlight-color:  #9CFF0D;
 @import "custom_bootstrap.scss";
 // endbower
 @import 'components/side_panel';
+@import 'components/loading';
+@import 'components/alerts';
 @import 'mixins/flexbox-mixins';
 @import 'grid/flexbox';
-@import 'components/loading';
 
 
 // personal:scss
 
-[v-cloak] {
-  display: none;
-}
+
 
 .pagination {
   margin: 0;
