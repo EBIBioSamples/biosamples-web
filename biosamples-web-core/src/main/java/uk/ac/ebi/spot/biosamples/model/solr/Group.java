@@ -8,12 +8,10 @@ import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -50,6 +48,8 @@ public class Group implements ResultQueryDocument {
     // submission metadata
     @Field("submission_acc") String submissionAccession;
     @Field("submission_title") String submissionTitle;
+
+    @Field("number_of_samples") String numberOfSamples;
 
     public String getAccession() {
         return accession;
@@ -145,6 +145,14 @@ public class Group implements ResultQueryDocument {
 
     public String getDocumentType() {
         return "BioSampleGroup";
+    }
+
+    public String getNumberOfSamples() {
+        return numberOfSamples;
+    }
+
+    public void setNumberOfSamples(String numberOfSamples) {
+        this.numberOfSamples = numberOfSamples;
     }
 
 }
