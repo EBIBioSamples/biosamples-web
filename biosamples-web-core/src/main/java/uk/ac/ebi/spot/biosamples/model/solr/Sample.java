@@ -50,11 +50,9 @@ public class Sample implements ResultQueryDocument {
     @Field("submission_acc") String submissionAccession;
     @Field("submission_title") String submissionTitle;
 
-    @Field("sample_grp_accessions")
-    List<String> groups;
+    @Field("sample_grp_accessions") List<String> groups;
 
-    @Field("external_references_json")
-    String databases_json;
+    @Field("external_references_json") String databases = "[]";
 
     public String getSubmissionAccession() {
         return submissionAccession;
@@ -138,8 +136,8 @@ public class Sample implements ResultQueryDocument {
         this.groups = groups;
     }
 
-    public Map<String, String> getDatabases_json() {
-        JSONArray jsonArray = new JSONArray(databases_json);
+    public Map<String, String> getDatabases() {
+        JSONArray jsonArray = new JSONArray(databases);
         Map<String, String>  map = new HashMap<>();
         for(int i = 0; i<jsonArray.length(); i++) {
             map.put((String) jsonArray.getJSONObject(i).get("Acc"), (String) jsonArray.getJSONObject(i).get("URL"));
@@ -147,8 +145,8 @@ public class Sample implements ResultQueryDocument {
         return map;
     }
 
-    public void setDatabases_json(String databases_json) {
-        this.databases_json = databases_json;
+    public void setDatabases(String databases) {
+        this.databases = databases;
     }
 
     public String getXml() {

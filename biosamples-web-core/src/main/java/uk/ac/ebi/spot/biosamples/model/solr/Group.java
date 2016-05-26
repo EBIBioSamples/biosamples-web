@@ -3,18 +3,17 @@ package uk.ac.ebi.spot.biosamples.model.solr;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import org.json.JSONArray;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
 
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Javadocs go here!
@@ -50,6 +49,8 @@ public class Group implements ResultQueryDocument {
     @Field("submission_title") String submissionTitle;
 
     @Field("number_of_samples") String numberOfSamples;
+
+    @Field("external_references_json") String databases = "[]";
 
     public String getAccession() {
         return accession;
@@ -155,4 +156,16 @@ public class Group implements ResultQueryDocument {
         this.numberOfSamples = numberOfSamples;
     }
 
+    public Map<String, String> getDatabases() {
+        JSONArray jsonArray = new JSONArray(databases);
+        Map<String, String>  map = new HashMap<>();
+        for(int i = 0; i < jsonArray.length(); i++) {
+            map.put((String) jsonArray.getJSONObject(i).get("Acc"), (String) jsonArray.getJSONObject(i).get("URL"));
+        }
+        return map;
+    }
+
+    public void setDatabases(String databases) {
+        this.databases = databases;
+    }
 }

@@ -82,9 +82,9 @@
             </tr>
             <tr>
                 <td class="col_title"><b>Databases :</b></td>
-                <td th:if="${#maps.isEmpty(sample.databases_json)}">None</td>
-                <td th:if="${not #maps.isEmpty(sample.databases_json)}">
-                    <p th:each="database : ${sample.databases_json}">
+                <td th:if="${#maps.isEmpty(sample.databases)}">None</td>
+                <td th:if="${not #maps.isEmpty(sample.databases)}">
+                    <p th:each="database : ${sample.databases}">
                         <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none">
                             <img th:src="@{/images/dblinks/hipsci_small_logo.png}">
                         </a>
