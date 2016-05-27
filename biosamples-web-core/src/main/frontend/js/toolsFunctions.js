@@ -84,6 +84,19 @@ function getURLsFromObject(objectToRead,prop){
 
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 	console.log("!!!!!loadDataFromGET !!!!!");
+	console.log("results.data.response.docs : ");console.log( results.data.response.docs );
+	// for (var i in results.data.response.docs){
+	// 	// console.log("results.data.response.docs[i] : ");console.log(results.data.response.docs[i]);
+	// 	for (var j in results.data.response.docs[i]){
+	// 		console.log("j : ");console.log(j);
+	// 		console.log("results.data.response.docs[i][j] : ");console.log(results.data.response.docs[i][j]);
+	// 	}
+	// }
+	console.log('d3.select("#vizSpotRelations") : ');
+	console.log(d3.select("#vizSpotRelations"));
+	// console.log("force : ");
+	// console.log(force);
+	console.log("!!!!!!");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
@@ -127,7 +140,7 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		} //sample
 		else {
 			if (typeof results.data.response.docs[i].sample_grp_accessions !== 'undefined'){
-			  nodeData.nodes.push({ 	
+			  nodeData.nodes.push({
 			  	"radius": 5, 
 			  	"color" : getRandomColor(), 
 			  	"type":"sample", 
@@ -222,15 +235,23 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
+				console.log("**** nodeData.nodes ****");
+				console.log("[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");
+				console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
+				console.log("****");
 				nodeData.links.push({
+					"id":"link_"+nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].accession+"_"+nodeData.nodes[ nameToNodeIndex[ group] ].accession,
 					"source": nameToNodeIndex[ groupsReturned[group][i] ],
 					"target": nameToNodeIndex[ group ],
+					"nodeSource": nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ],
+					"nodeTarget": nodeData.nodes[ nameToNodeIndex[ group] ] ,
 					"weight": Math.sqrt(groupsReturned[group].length)
 				})
 			}
 		}
 	}
 
+	console.log("groupsReturned : ");console.log(groupsReturned);
 	console.log("nodeData : ");console.log(nodeData);
 	console.log("===========================");
 	return [nodeData,groupsReturned,nameToNodeIndex];
@@ -323,6 +344,47 @@ function saveURL(e){
 	d3.select("#saveButton").style("overflow-x ","visible");
 }
 
+function linkPerAttributes(e){
+	console.log("linkPerAttributes");
+	// console.log("d3.select(e)[0][0] : ");console.log(d3.select(e)[0][0]);
+	// console.log("d3.select(e)[0][0].attributes : ");console.log(d3.select(e)[0][0].attributes);
+	// console.log('(d3.selectAll(".node") : ');console.log(d3.selectAll(".node"));
+	var d3Node = d3.select("#vizSpotRelations");
+	var attributeClicked = d3.select(e)[0][0].attributes.id.value.replace(/[^A-Za-z0-9]/g,"") , valueClicked = d3.select(e)[0][0].attributes.value.value.replace(/[^A-Za-z0-9]/g,"");
+	console.log("----");
+	console.log("attributeClicked : ");console.log(attributeClicked);
+	console.log("valueClicked : ");console.log(valueClicked);
+	console.log("----");
+
+
+
+	var force = d3.layout.force();
+	var node = d3Node.selectAll(".node"),
+		link = d3Node.selectAll(".link"),
+		responseDocs = d3Node.selectAll(".node").select("responseDoc");
+
+
+	// console.log("node : ");console.log(node);
+	// console.log("node[0][0].attributes : ");console.log( node[0][0].attributes );
+	// console.log("node[0][0].attributes.responseDoc : ");console.log( node[0][0].attributes.responseDoc );
+	// console.log("link : ");console.log(link);
+	// console.log("responseDocs : ");console.log(responseDocs);
+
+	// for ( var i in node[0]){
+	// 	// console.log("node[0][i].attributes : ");console.log(node[0][i].attributes);
+	// 	for (var j in node[0][i].attributes){
+	// 		console.log("----");
+	// 		// console.log('node[0][i].attributes[j]');console.log( node[0][i].attributes[j]);
+	// 		// console.log('node[0][i].attributes[j]+""');console.log(node[0][i].attributes[j]+"");
+	// 		for ( var k in node[0][i].attributes[j]){
+	// 			console.log("k : ");console.log( k );
+	// 			console.log("node[0][i].attributes[j][k] : ");console.log(node[0][i].attributes[j][k]);
+	// 		}
+	// 		console.log("----");
+	// 	}
+	// }
+}
+
 function draw(svg,nodeData){
 
 	document.getElementById("buttons-display").style.display="block";
@@ -334,14 +396,19 @@ function draw(svg,nodeData){
 
 	var force = d3.layout.force()
 	.gravity(.08)
-	.distance(50)
-	.charge(-100)
+	.distance(40)
+	.charge(-90)
 	.size([width, height]);
 
 	var link = svg.selectAll(".link")
 	.data(nodeData.links)
 	.enter().append("line")
 	.attr("class", "link")
+	.attr("id",function(d){return d.id;})
+	.attr("source",function(d){return d.source;})
+	.attr("target",function(d){return d.target;})
+	.attr("nodeSource",function(d){ return d.nodeSource; })
+	.attr("nodeTarget",function(d){ return d.nodeTarget; })
 	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
 	//Add circles to the svgContainer
@@ -359,13 +426,10 @@ function draw(svg,nodeData){
 	.attr("id",function(d){ return 'ghost_'+d.accession })
 	.attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
 	.attr("grp_sample_accessions",function(d){ return d.grp_sample_accessions})
-	.attr("responseDoc",function(d){return d.responseDoc})
 	.attr("type", function (d) { return d.type; })
 	.style("fill", function (d) {  return "grey"; })
-	.style("stroke","black")
-	.style("stroke-width",2)
-	.style("stroke-opacity",1)
-	.style("opacity", .7)
+	.style("stroke","black") .style("stroke-width",2)
+	.style("stroke-opacity",1) .style("opacity", .7)
 	.style("visibility", "hidden")
 	;
 
@@ -378,16 +442,25 @@ function draw(svg,nodeData){
 	.attr("responseDoc",function(d){return d.responseDoc})
 	.attr("type", function (d) { return d.type; })
 	.style("fill", function (d) {  return d.color; })
-	.style("stroke","black")
-	.style("stroke-width",2)
-	.style("stroke-opacity",1)
-	.style("opacity", .7)
+	.style("stroke","black") .style("stroke-width",2)
+	.style("stroke-opacity",1) .style("opacity", .7)
 	;
 
   	node
 	  .attr("accession",function(d){return d.accession})
+	  .attr("id",function(d){return d.accession})
 	  .attr("isThereSelected",function(d){ return 'false';})
 	  .attr("theOneSelected",function(d){return 'false'})
+	  .attr("responseDoc",function(d){ 
+	  	for ( var i in d.responseDoc){
+			// Need to remove special characters to put them in a dom apparently
+	  		var attr = i+'' ; attr = attr.replace(/[^A-Za-z0-9]/g,"");
+	  		var value = d.responseDoc[i]+''; value = value.replace(/[^A-Za-z0-9]/g,"");
+	  		d3.select(this).attr( attr , value );
+	  	}
+	  	// console.log("d3.select(this)[0][0].attributes : ");console.log(d3.select(this)[0][0].attributes);
+	  	return d.responseDoc
+	  })
 	  .attr("name",function(d){return d.accession})
 	  .attr("id",function(d){return 'node_'+d.accession})
 	  .attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
@@ -410,30 +483,55 @@ function draw(svg,nodeData){
 		console.log('mousedown node d : ');console.log(d);
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select("this").attr("theOneSelected",'true');
+		console.log("$$$$");
+		// var force = d3.layout.force()
+		// .gravity(.08)
+		// .distance(40)
+		// .charge(-90)
+		// .size([width, height]);
+		console.log('d3.select("#vizSpotRelations") : ');console.log( d3.select("#vizSpotRelations") );
+		// console.log('d3.select("#vizSpotRelations").layout.force() : ');console.log( d3.select("#vizSpotRelations").layout.force() );
 
-	  	d3.selectAll("circle").style("stroke-width",2);
-	  	d3.select(this).selectAll("circle").style("stroke-width", 4);
+		removeNode( nodeData, d.accession );
+		// nodeData.nodes.splice(0,2);
+		force
+		.nodes(nodeData.nodes)
+		.links(nodeData.links)
+		.start()
+		;
+		// var nodes = force.nodes(),
+		// 	links = force.links();
+
+		// update(force,nodes,links);
+		console.log("nodeData : ");console.log( nodeData );
+		console.log("force : ");console.log(force);
+		// console.log("groupsReturned : ");console.log(groupsReturned);
+		console.log("$$$$");
+
+		d3.selectAll("circle").style("stroke-width",2);
+		d3.select(this).selectAll("circle").style("stroke-width", 4);
 
 		d3.event.stopPropagation();
-	  // Fill in the infoVizRelations according to data returned
-	  document.getElementById("textData").innerHTML='<p>';
-	  var URLs = [];
-	  for (var prop in d.responseDoc) {
-	    // skip loop if the property is from prototype
-	    if(!d.responseDoc.hasOwnProperty(prop)) continue;
-	    // d3.select("#textData").style("text-align","center");
-	    // Should we calculate connections onclick or on loading ?
-	    document.getElementById("textData").innerHTML+="<div class='textAttribute' id="+prop+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";	    
+		// Fill in the infoVizRelations according to data returned
+		document.getElementById("textData").innerHTML='<p>';
+		var URLs = [];
+		for (var prop in d.responseDoc) {
+		  // skip loop if the property is from prototype
+		  if(!d.responseDoc.hasOwnProperty(prop)) continue;
+		  // d3.select("#textData").style("text-align","center");
+		  // Should we calculate connections onclick or on loading ?
+		  document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
+		  + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
 
-	    URLs = getURLsFromObject(d.responseDoc,prop);
-	    if (URLs.length>0){
-	    	for (var k=0;k<URLs.length;k++){
-	    		document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
-	    		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
-	    	}
-	    }
-	  }
-	  document.getElementById("textData").innerHTML+='</p>';
+		  URLs = getURLsFromObject(d.responseDoc,prop);
+		  if (URLs.length>0){
+		  	for (var k=0;k<URLs.length;k++){
+				document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
+				document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
+		   	}
+		  }
+		}
+	  	document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
 		d3.selectAll(".node").attr("isThereSelected",'false');
@@ -443,9 +541,9 @@ function draw(svg,nodeData){
 		if ( d3.select(".node").attr("isThereSelected") == "false" ){
 			d3.selectAll("text").style("opacity",1);
 		  	d3.selectAll(".node").selectAll("text").style("dx", 12);
-		  	d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
-		  	d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
-			d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+		  	// d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
+		  	// d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
+			d3.select("#textHelp").html("Click on a node to display its information.");
 		}
 	})
 	.on("mouseover",function(d){
@@ -458,8 +556,8 @@ function draw(svg,nodeData){
 
 			d3.selectAll(".node").selectAll("text").style("opacity",.25);
 			textNode.style("opacity",1);
-			circleNode.transition().duration(10).style("r", d.radius*3);
-			textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
+			// circleNode.transition().duration(10).style("r", d.radius*3);
+			// textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
 		} 
 	})
 	;
@@ -599,7 +697,7 @@ function drawFacets(svg,nodeData,vm){
 	console.log("function drawFacets");
 
 	document.getElementById("buttons-display").style.display="none";
-	d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+	d3.select("#textHelp").html("Click on a node to display its information, and click twice to filter according to it.");
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -630,11 +728,11 @@ function drawFacets(svg,nodeData,vm){
 
 	var force = d3.layout.force()
 		.nodes(nodeData.nodes)
-	    .links(nodeData.links)
-	    .size([width, height])
-	    .gravity(0)
-	    .charge(0)
-	    .start();
+		.links(nodeData.links)
+		.size([width, height])
+		.gravity(0)
+		.charge(0)
+		.start();
 
 	//Add nodes to the svgContainer
 	var node = svg.selectAll("node")
@@ -721,7 +819,7 @@ function drawFacets(svg,nodeData,vm){
 	})
 	.on("mouseout",function(d){
 		if ( d3.select(".node").attr("isThereSelected")=='false' ){
-			d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+			d3.select("#textHelp").html("Click on a node to display its information, and click twice to filter according to it.");
 		}
 	})
 	.on("dblclick",function(d){
@@ -850,9 +948,7 @@ function drawFacets(svg,nodeData,vm){
 }
 
 function displayRevertingFilters( results,vm ){
-	console.log("-- displayRevertingFilters --");
-	// Display the filters in filterEmergencyDisplay 
-	// if we have both filters and empty results
+	// Display the filters in filterEmergencyDisplay if we have both filters and empty results
 	var displayRemainingFilters = false;
 	// remainingfilters[ facet ] = [filter,...]
 	var remainingfilters = {};
@@ -955,4 +1051,98 @@ function displayRevertingFilters( results,vm ){
         d3.selectAll('.crossDelete').style("color","black");
     });
 
+}
+
+// var update = function (force,nodes,links) {
+// 	console.log("update");
+// 	var vis = d3.select("#vizSpotRelations");
+// 	var link = vis.selectAll("line")
+// 		.data(links, function (d) {
+// 			return d.source.id + "-" + d.target.id;
+// 		});
+
+//     link.enter().append("line")
+//             .attr("id", function (d) {
+//                 return d.source.id + "-" + d.target.id;
+//             })
+//             .attr("stroke-width", function (d) {
+//                 return d.value / 10;
+//             })
+//     link.append("title")
+//             .text(function (d) {
+//                 return d.value;
+//             });
+//     link.exit().remove();
+
+//     var node = vis.selectAll("g.node")
+//             .data(nodes, function (d) {
+//                 return d.id;
+//             });
+
+//     var nodeEnter = node.enter().append("g")
+//             .attr("class", "node")
+//             .call(force.drag);
+
+//     nodeEnter.append("svg:circle")
+//             .attr("r", 12)
+//             .attr("id", function (d) {
+//                 return "Node;" + d.id;
+//             })
+//             .attr("fill", function(d) { return color(d.id); });
+
+//     nodeEnter.append("svg:text")
+//             .attr("class", "node")
+//             .text(function (d) {
+//                 return d.id;
+//             });
+
+//     node.exit().remove();
+
+//     // Restart the force layout.
+// 	var widthTitle = window.innerWidth;
+// 	var width = Math.floor((70 * window.innerWidth)/100);
+// 	var heightD3 = widthTitle/2;
+// 	var height=heightD3;
+
+//     var w = width, h = height;
+//     force
+// 	    .gravity(.01)
+// 	    .charge(-80000)
+// 	    .friction(0)
+// 	    .linkDistance( function(d) { return d.value * 10 } )
+// 	    .size([w, h])
+// 	    .start();
+// };
+
+function removeNode(nodeData,nodeAccession){
+	console.log("removeNode");
+	d3.select( "#node_"+nodeAccession ).remove();
+	var indexToCut;
+	for (var i =0; i <nodeData.nodes.length;i++){
+		if ( nodeData.nodes[i].accession == nodeAccession ){
+			indexToCut = i;
+		}
+	}
+	var linksToCut = [];
+	var accesionsSourceToCut = [];
+	var accesionsTargetToCut = [];
+	for (var i = 0; i < nodeData.links.length; i++){
+		if ( nodeData.links[i].source.accession == nodeAccession || nodeData.links[i].target.accession == nodeAccession ){
+			accesionsSourceToCut.push( nodeData.links[i].source.accession );
+			accesionsTargetToCut.push( nodeData.links[i].target.accession );
+			linksToCut.push(i);
+		}
+	}
+	nodeData.nodes.splice(indexToCut,indexToCut);
+
+	// id of link is #link_source_target
+	for (var i =0; i < accesionsSourceToCut.length;i++){
+		d3.select( "#link_"+accesionsSourceToCut[i]+"_"+accesionsTargetToCut[i]).remove();
+	}
+
+	var i = linksToCut.length-1; 
+	while(i >= 0){
+		nodeData.links.splice(linksToCut[i],1);
+		i--;
+	}
 }

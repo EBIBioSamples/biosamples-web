@@ -200,8 +200,6 @@
                     vm.facets[readableKey] = readFacets(dynamicFacets[key]);
                 });
 
-                console.log("vm.facets : ");console.log(vm.facets);
-
                 var docs        = resultsInfo.docs;
                 var hlDocs      = this.associateHighlights(docs,highLights);
 
@@ -419,8 +417,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
   if (typeof results !== 'undefined'){
     var numberFacetsUnEmpty = {};
-    console.log( "results.data.facet_counts : " );
-    console.log( results.data.facet_counts );
+    // console.log( "results.data.facet_counts : " ); console.log( results.data.facet_counts );
     for (var u in results.data.facet_counts.facet_fields){
       if ( results.data.facet_counts.facet_fields[u][1] > 0 ){
         numberFacetsUnEmpty[u]=0;
@@ -473,13 +470,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     document.getElementById("titleRezInfo").innerHTML="Display result information";
     document.getElementById("sectionVizResult").style.display="none";
 
-    console.log('typeof d3.select(".node"): ');console.log( typeof d3.select(".node"));
-    console.log('d3.select(".node")[0][0] == null : ');console.log(d3.select(".node")[0][0] == null);
-
     d3.select("#sectionVizResult").on("mouseenter",function(){
       document.getElementById("elementHelp").style.visibility="visible";
       if ( d3.select(".node")[0][0] == null || d3.select(".node").attr("isThereSelected") == "false" ){
-          document.getElementById("textHelp").innerHTML = "Click on a bar to display its information. <br/> Click twice to filter according to it.";
+          document.getElementById("textHelp").innerHTML = "Click on a bar to display its information. <hr/> Double click to filter the results according to the facet.";
       }
     })
     .on("mouseleave",function(){
@@ -501,9 +495,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
     })
 
-    // if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) ) {
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 ) ) {        
-      console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) TRUE ");
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
         +'<div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
       var cpt = 0;
@@ -526,7 +518,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       strResults += '</tr> </table>';
       document.getElementById("sectionVizResult").innerHTML= strResults;
     } else {
-      console.log(" ! (Object.keys(numberFacetsUnEmpty).length === 0 && JSON.stringify(obj) === JSON.stringify({})) FALSE ");
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
       +' <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
 
@@ -1015,6 +1006,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         vm.$data.valueDisplay = "Facet";
       }
       var valueDisplay = vm.$data.valueDisplay;
+      // console.log("FORCE : ");console.log(force);
       if (valueDisplay == "Sample" ){
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
