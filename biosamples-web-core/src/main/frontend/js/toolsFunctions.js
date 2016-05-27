@@ -483,30 +483,21 @@ function draw(svg,nodeData){
 		console.log('mousedown node d : ');console.log(d);
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select("this").attr("theOneSelected",'true');
-		console.log("$$$$");
+
+		console.log('d3.select("#vizSpotRelations") : ');console.log( d3.select("#vizSpotRelations") );
+		console.log("witdh: "+width+" height: "+height);
 		// var force = d3.layout.force()
 		// .gravity(.08)
 		// .distance(40)
 		// .charge(-90)
 		// .size([width, height]);
-		console.log('d3.select("#vizSpotRelations") : ');console.log( d3.select("#vizSpotRelations") );
+
 		// console.log('d3.select("#vizSpotRelations").layout.force() : ');console.log( d3.select("#vizSpotRelations").layout.force() );
-
-		removeNode( nodeData, d.accession );
-		// nodeData.nodes.splice(0,2);
-		force
-		.nodes(nodeData.nodes)
-		.links(nodeData.links)
-		.start()
-		;
-		// var nodes = force.nodes(),
-		// 	links = force.links();
-
+		removeNode( nodeData, d.accession, force );
 		// update(force,nodes,links);
 		console.log("nodeData : ");console.log( nodeData );
 		console.log("force : ");console.log(force);
 		// console.log("groupsReturned : ");console.log(groupsReturned);
-		console.log("$$$$");
 
 		d3.selectAll("circle").style("stroke-width",2);
 		d3.select(this).selectAll("circle").style("stroke-width", 4);
@@ -1114,7 +1105,7 @@ function displayRevertingFilters( results,vm ){
 // 	    .start();
 // };
 
-function removeNode(nodeData,nodeAccession){
+function removeNode(nodeData,nodeAccession, force){
 	console.log("removeNode");
 	d3.select( "#node_"+nodeAccession ).remove();
 	var indexToCut;
@@ -1133,7 +1124,7 @@ function removeNode(nodeData,nodeAccession){
 			linksToCut.push(i);
 		}
 	}
-	nodeData.nodes.splice(indexToCut,indexToCut);
+	nodeData.nodes.splice(indexToCut,1);
 
 	// id of link is #link_source_target
 	for (var i =0; i < accesionsSourceToCut.length;i++){
@@ -1145,4 +1136,10 @@ function removeNode(nodeData,nodeAccession){
 		nodeData.links.splice(linksToCut[i],1);
 		i--;
 	}
+
+	force
+	.nodes(nodeData.nodes)
+	.links(nodeData.links)
+	.start()
+	;
 }
