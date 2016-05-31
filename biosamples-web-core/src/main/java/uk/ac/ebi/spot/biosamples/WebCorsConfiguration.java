@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * Created by lucacherubin on 2016/05/31.
  */
 @Configuration
-@EnableWebMvc
 public class WebCorsConfiguration extends WebMvcConfigurerAdapter {
 
     @Override

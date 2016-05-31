@@ -83,7 +83,7 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	console.log("!!!!! loadDataFromGET !!!!!");
+	console.log("!!!!!loadDataFromGET !!!!!");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
@@ -216,17 +216,12 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		}
 
 		// Probably here that we should decide what to get in the new get request
-		
 		for (var i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
-				//console.log( nameToNodeIndex[ groupsReturned[group][i]] );
-				//console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
-				//console.log(nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ]);
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
-
 				nodeData.links.push({
 					"source": nameToNodeIndex[ groupsReturned[group][i] ],
 					"target": nameToNodeIndex[ group ],
@@ -248,12 +243,6 @@ function getSamplesFromGroup(apiUrl,group){
 function loadDataWithoutRefresh(vm,apiUrl,parameters){	
   var queryParams = vm.getQueryParameters();
   queryParams.searchTerm = parameters.searchTerm;
-  console.log("************");
-  console.log("loadDataWithoutRefresh : ");
-  console.log("vm : ");console.log(vm);
-  console.log("apiUrl : ");console.log(apiUrl);
-  console.log("queryParams : ");console.log(queryParams);
-  console.log("************");
 
   //var rezToReturn = vm.$http.get(server,queryParams)
   var rezToReturn = vm.$http.get(apiUrl,queryParams)
@@ -270,15 +259,12 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 	  var hlDocs = vm.associateHighlights(docs, highLights);
 	  
 	  return results;
-
 	})
 	.catch(function(data,status,response){
 	  console.log("data : ");console.log(data);
 	  console.log("status : ");console.log(status);
 	  console.log("response : ");console.log(response);
 	});
-	// console.log("outside the get of loadDataWithoutRefresh");
-	// console.log("rezToReturn : ");console.log(rezToReturn);
 	return rezToReturn;
 }
 
@@ -315,13 +301,31 @@ function fadeOutDiv(stringDiv){
 
 
 function changeSpecialCharacters( myid ) { 
-    return myid.replace( /(:|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
+    return myid.replace( /(:|\!|\?|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
 }
 
+function showTextSamples(boolValue) {
+	if ( boolValue.checked ){
+		d3.selectAll(".node").selectAll("text").style("visibility","visible");
+	} else {
+		d3.selectAll(".node").selectAll("text").style("visibility",function(d){
+			if (d.type == "group" || d.type == "groupViz"){
+				return "visible";
+			} else {
+				return "hidden";
+			}
+		});
+	}
+}
+
+function saveURL(e){
+	d3.select("#saveButton")[0][0].textContent=document.URL;
+	d3.select("#saveButton").style("overflow-x ","visible");
+}
 
 function draw(svg,nodeData){
 
-	console.log("draw");
+	document.getElementById("buttons-display").style.display="block";
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -366,12 +370,6 @@ function draw(svg,nodeData){
 	;
 
 	node.append("circle")
-	.on("mousedown",function(d){
-	})
-	.on("mouseout",function(d){
-	})
-	.on("mouseover",function(d){
-	})
 	.attr("r", function (d) { return d.radius; })
 	.attr("accession",function(d){return d.accession})
 	.attr("id",function(d){ return 'circle_'+d.accession })
@@ -388,6 +386,8 @@ function draw(svg,nodeData){
 
   	node
 	  .attr("accession",function(d){return d.accession})
+	  .attr("isThereSelected",function(d){ return 'false';})
+	  .attr("theOneSelected",function(d){return 'false'})
 	  .attr("name",function(d){return d.accession})
 	  .attr("id",function(d){return 'node_'+d.accession})
 	  .attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
@@ -407,19 +407,24 @@ function draw(svg,nodeData){
 	  	}
 	  })
 	  .on("mousedown",function(d){
-	  	console.log('mousedown node d : ');console.log(d);
+		console.log('mousedown node d : ');console.log(d);
+		d3.selectAll(".node").attr("isThereSelected",'true');
+		d3.select("this").attr("theOneSelected",'true');
+
 	  	d3.selectAll("circle").style("stroke-width",2);
 	  	d3.select(this).selectAll("circle").style("stroke-width", 4);
 
-	  	d3.event.stopPropagation();          
-
+		d3.event.stopPropagation();
 	  // Fill in the infoVizRelations according to data returned
 	  document.getElementById("textData").innerHTML='<p>';
 	  var URLs = [];
 	  for (var prop in d.responseDoc) {
 	    // skip loop if the property is from prototype
 	    if(!d.responseDoc.hasOwnProperty(prop)) continue;
-	    document.getElementById("textData").innerHTML+=""+prop + " = " + d.responseDoc[prop]+"" +"<hr/>";
+	    // d3.select("#textData").style("text-align","center");
+	    // Should we calculate connections onclick or on loading ?
+	    document.getElementById("textData").innerHTML+="<div class='textAttribute' id="+prop+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";	    
+
 	    URLs = getURLsFromObject(d.responseDoc,prop);
 	    if (URLs.length>0){
 	    	for (var k=0;k<URLs.length;k++){
@@ -427,37 +432,35 @@ function draw(svg,nodeData){
 	    		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
 	    	}
 	    }
-	}
-	document.getElementById("textData").innerHTML+='</p>';
-	  // var params = { searchTerm:""+d.accession };
-	  // console.log("params : ");console.log(params);
-	  // var rezClick = loadDataWithoutRefresh(vm,apiUrl, params);
+	  }
+	  document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
+		d3.selectAll(".node").attr("isThereSelected",'false');
+		d3.select("this").attr("theOneSelected",'false');
 	})
 	.on("mouseout",function(d){
-	  //document.getElementById("elementHelp").style.visibility="hidden";
-	  d3.selectAll("text").style("opacity",1);
-	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
-	  d3.selectAll(".node").selectAll("text").style("dx", 12);
-	  d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
-	  d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
-	  d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click on a node to display its information.");
-	  //document.getElementById("elementHelp").style.visibility="hidden";
+		if ( d3.select(".node").attr("isThereSelected") == "false" ){
+			d3.selectAll("text").style("opacity",1);
+		  	d3.selectAll(".node").selectAll("text").style("dx", 12);
+		  	d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
+		  	d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
+			d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+		}
 	})
 	.on("mouseover",function(d){
-		document.getElementById("elementHelp").style.visibility="visible";
-		d3.select("#elementHelp").html("Help <hr/> "+d.accession);
+		if ( d3.select(this).attr("isThereSelected") == 'false' ){
+			var allNodes = d3.selectAll(".node");
+			document.getElementById("elementHelp").style.visibility="visible";
+			d3.select("#textHelp").html(""+d.accession);
+			var circleNode = d3.select(this).selectAll("circle");
+			var textNode = d3.select(this).select("text");
 
-		var circleNode = d3.select(this).selectAll("circle");
-		var textNode = d3.select(this).select("text");
-
-		d3.selectAll(".node").selectAll("text").style("opacity",.25);
-	  //d3.selectAll(".node").selectAll("text").style("font-size", "10px");
-	  textNode.style("opacity",1);
-	  circleNode.transition().duration(10).style("r", d.radius*3);
-	  textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
-	  //textNode.transition().duration(10).style("font-size", "20px");
+			d3.selectAll(".node").selectAll("text").style("opacity",.25);
+			textNode.style("opacity",1);
+			circleNode.transition().duration(10).style("r", d.radius*3);
+			textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
+		} 
 	})
 	;
 
@@ -471,6 +474,13 @@ function draw(svg,nodeData){
 	.style("border","solid").style("border-radius","10px")
 	.style("box-shadow","gray")
 	.style("background-color","#46b4af")
+	.style("visibility", function(d){
+		if ( d.accession.indexOf("SAMEG") > -1 ){
+			return "visible";
+		} else {
+			return "hidden";
+		}
+	})
 	.attr("fill", "#4D504F")
 	.on("mouseover",function(d){
 		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
@@ -512,7 +522,7 @@ function draw(svg,nodeData){
 
 // This function is to load data according to the facets, when the number of nodes would be too high to directly display
 function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
-	console.log("!!!!! loadDataFromFacets 1 !!!!!");
+	console.log("!!!!!loadDataFromFacets 1 !!!!!");
 	console.log("loadDataFromFacets in src/main/ressources/static/javascript/toolsFunctions");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
@@ -522,9 +532,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	nodeData.facets=[];
 	nodeData.accessions="";
 	var groupsReturned = {};
-	console.log("results");console.log(results);
-	// console.log("results.data.facet_counts.facet_fields : ");
-	// console.log(results.data.facet_counts.facet_fields);
 
 	var maxAndMinFacet = {};
 	var maxAndMinTotal = [];
@@ -553,8 +560,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 
 	var cptDomain =0; 
 	for (var i in results.data.facet_counts.facet_fields){ cptDomain++ }
-	console.log("cptDomain : ");
-	console.log(cptDomain);
 	var color = d3.scale.category20()
     	.domain(d3.range( cptDomain ));
 
@@ -578,6 +583,7 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 					"type":"nodeFacet",
 					"facet":i,
 					"cluster":results.data.facet_counts.facet_fields[i][0],
+					"readableContent":vm.$options.filters.excerpt(results.data.facet_counts.facet_fields[i][j],200),
 					"name":results.data.facet_counts.facet_fields[i][j],
 					"value":results.data.facet_counts.facet_fields[i][j+1]
 				});
@@ -585,11 +591,15 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 			}
 		}
 	}
+
+	return nodeData;
 }
 
 function drawFacets(svg,nodeData,vm){
+	console.log("function drawFacets");
 
-	console.log("drawFacets");
+	document.getElementById("buttons-display").style.display="none";
+	d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -603,7 +613,7 @@ function drawFacets(svg,nodeData,vm){
 	var clusters = [];
 	var cptClusters = 0;
 	for (var i in nodeData.nodes){
-		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){	
+		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){
 			clusters.push(nodeData.nodes[i]);
 		}
 	}
@@ -612,42 +622,190 @@ function drawFacets(svg,nodeData,vm){
 			if ( clusters[j].facet == nodeData.nodes[i].facet ){
 				nodeData.nodes[i].cluster = j;
 				nodeData.nodes[i].d.cluster = j;
-				// console.log("nodeData.nodes[i].index : ");console.log(nodeData.nodes[i].index);
-				// console.log(" clusters[j].facet == nodeData.nodes[i].facet &&  nodeData.nodes[i].index : "+nodeData.nodes[i].index);
 				var indexForID =  clusters[j].index ;
-				// console.log("indexForID : "+indexForID);
-				// console.log('d3.select("#text_"+indexForID) : ');console.log(d3.select("#text_"+indexForID));
 				d3.select("#text_"+indexForID).style("visibility", "visible");
 			}
 		}
 	}
 
-	// Move d to be adjacent to the cluster node.
+	var force = d3.layout.force()
+		.nodes(nodeData.nodes)
+	    .links(nodeData.links)
+	    .size([width, height])
+	    .gravity(0)
+	    .charge(0)
+	    .start();
+
+	//Add nodes to the svgContainer
+	var node = svg.selectAll("node")
+	.data(nodeData.nodes)
+	.enter().append("g")
+	.attr("class","node")
+	.call(force.drag)
+	;
+
+	var links = svg.selectAll(".link")
+	.data(nodeData.links)
+	.enter().append("line")
+	.attr("class", "link")
+	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+
+	node
+	.attr("name", function (d) { return d.name; })
+	.attr("readableContent", function (d) { return d.readableContent; })
+	.attr("class", function (d) { return "node"; })
+	.attr("isThereSelected",function(d){ return 'false';})
+	.attr("theOneSelected",function(d){return 'false'})
+	.attr("value", function (d) { return d.value; })
+	.attr("facet", function (d) { return d.facet; })
+	.attr("cluster", function (d) { return d.cluster; })
+	.attr("radius", function (d) { return d.radius; })
+	.attr("r", function (d) { return d.radius; })
+	.attr("color", function (d) { return d.color; })
+	.attr("type",function(d){return d.type;})
+	.attr("id", function(d){
+		return 'node_'+d.index;
+	})
+	.style("stroke-width",1)
+	.style("fill", function (d) { return d.color; })
+	.on("contextmenu",function(d){
+		// console.log("RIGHT CLICK ? YEAH");
+		d3.event.preventDefault();
+	})
+	.on("mousedown",function(d){
+		d3.selectAll(".node").attr("isThereSelected",'true');
+		d3.select(this).attr("theOneSelected",'true');
+		d3.event.stopPropagation();
+		d3.selectAll("circle").style("stroke-width",2);
+		d3.select(this).select("circle").style("stroke-width", 4);
+		var indexFilter = d.facet.indexOf( "_crt_ft" );
+		var nameFacet = d.facet;
+		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
+		var newText = "<p> <b>Facet : </b>"+nameFacet+"<hr/>"+"<b> Name : </b>"+d.name+" : "+d.value+"</p>";
+		document.getElementById("textData").innerHTML=newText;
+
+		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
+			if ( d2.cluster == d.cluster ){
+				// d3.select(this)[0][0].textContent = '['+d2.name+']';
+				// console.log("d2.readableContent: ");console.log(d2.readableContent);
+				d3.select(this)[0][0].textContent = '['+d2.readableContent+']';
+				return "visible";
+			} else {
+				if ( clusters[d2.cluster].index == d2.index ){
+					var indexFilter = d2.facet.indexOf( "_crt_ft" );
+					var nameFacet = d2.facet;
+					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
+					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
+					return "visible";
+				} else {
+					var indexFilter = d2.facet.indexOf( "_crt_ft" );
+					var nameFacet = d2.facet;
+					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
+					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
+					return "hidden";
+				}
+			}
+		});
+	})
+	.on("mouseup",function(d){
+		d3.selectAll(".node").attr("isThereSelected",'false');
+		d3.select(this).attr("theOneSelected",'false');
+	})
+	.on("mouseover",function(d){
+		document.getElementById("elementHelp").style.visibility="visible";
+		if ( d3.select(".node").attr("isThereSelected")=="false" ){
+			console.log("There is no selected people ");
+			// d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
+			d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.readableContent+"<hr/>"+d.value+" elements");
+		}
+	})
+	.on("mouseout",function(d){
+		if ( d3.select(".node").attr("isThereSelected")=='false' ){
+			d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information, and click twice to filter according to it.");
+		}
+	})
+	.on("dblclick",function(d){
+		console.log("dblclick nodeFacet");
+		var indexFilter = d.facet.indexOf( "_crt_ft" );
+		var nameFilter = d.facet;
+		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }
+		nameFilter+='Filter';
+		vm.$data.filterQuery[ nameFilter ] = d.name;
+		vm.$emit("bar-selected");
+		document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
+		popOutDiv("infoPop");
+		fadeOutDiv("infoPop");
+		vm.$options.methods.querySamples(this,false);
+	});
+
+	node.append("circle")
+	.attr("r", function (d) { return d.radius; })
+	.attr("name", function (d) { return d.name; })
+	.attr("index", function (d) { return d.index; })
+	.attr("facet", function (d) { return d.facet; })
+	.attr("radius", function (d) { return d.radius; })
+	.attr("color", function (d) { return d.color; })
+	.style("fill", function (d) {  return d.color; })
+	.style("stroke","black")
+	.style("stroke-width",2)
+	.style("stroke-opacity",1)
+	.style("opacity", .7)
+	;
+
+	node.append("text")
+	.attr("dx", 12)
+	.attr("dy", ".35em")
+	.attr("id",function(d){ return 'text_'+d.index})
+	.attr("name",function(d){return d.name})
+	// .text( function (d) { return "["+d.name+"]"; })
+	.text( function (d) {
+		var indexFilter = d.facet.indexOf( "_crt_ft" );
+		var nameFacet = d.facet;
+		// var nameFacet = d.readableContent;
+		if ( indexFilter > -1 ){ nameFacet = nameFacet.substr(0,indexFilter); }
+		return "["+nameFacet+"]";
+	})
+	.attr("font-family", "sans-serif").attr("font-size", "10px")
+	.attr("border","solid").attr("border-radius","10px")
+	.style("visibility", function(d){
+		if ( d.index == clusters[d.cluster].index ){
+			return "visible";
+		} else {
+			return "hidden";
+		}
+	})
+	.style("border","solid").style("border-radius","10px")
+	.style("box-shadow","gray")
+	.style("background-color","#46b4af")
+	.attr("fill", "#4D504F")
+	.on("mouseover",function(d){
+		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	})
+	;
+
+	// Moved to be adjacent to the cluster node.
 	function cluster(alpha){
 	  return function(d) {
 	    var cluster = clusters[d.cluster], k = 1;
-	    if (typeof cluster == 'undefined'){
-	    	console.log(" cluster undefined, d.cluster :  ");console.log(d.cluster);
-	    	console.log(" clusters :  ");console.log(clusters);
-	    }
+	    if (typeof cluster !== 'undefined'){
+		    // For cluster nodes, apply custom gravity.
+		    if (cluster === d) {
+		      cluster = {x: width / 2, y: height / 2, radius: -d.radius};
+		      k = .1 * Math.sqrt(d.radius);
+		    }
+		    var x = d.x - cluster.x,
+		        y = d.y - cluster.y,
+		        l = Math.sqrt(x * x + y * y),
+		        r = d.radius + cluster.radius;
 
-	    // For cluster nodes, apply custom gravity.
-	    if (cluster === d) {
-	      cluster = {x: width / 2, y: height / 2, radius: -d.radius};
-	      k = .1 * Math.sqrt(d.radius);
-	    }
-	    var x = d.x - cluster.x,
-	        y = d.y - cluster.y,
-	        l = Math.sqrt(x * x + y * y),
-	        r = d.radius + cluster.radius;
-
-	    if (l != r) {
-	      l = (l - r) / l * alpha * k;
-	      d.x -= x *= l;
-	      d.y -= y *= l;
-	      cluster.x += x;
-	      cluster.y += y;
-	    }
+		    if (l != r) {
+		      l = (l - r) / l * alpha * k;
+		      d.x -= x *= l;
+		      d.y -= y *= l;
+		      cluster.x += x;
+		      cluster.y += y;
+		    }
+		}
 	  };
 	}
 
@@ -680,154 +838,6 @@ function drawFacets(svg,nodeData,vm){
 	  };
 	}
 
-	var force = d3.layout.force()
-		.nodes(nodeData.nodes)
-	    .links(nodeData.links)
-	    .size([width, height])
-	    .gravity(0)
-	    .charge(0)
-	    .start();
-
-	//Add nodes to the svgContainer
-	var node = svg.selectAll("node")
-	.data(nodeData.nodes)
-	.enter().append("g")
-	.attr("class","node")
-	.call(force.drag)
-	;
-
-	var links = svg.selectAll(".link")
-	.data(nodeData.links)
-	.enter().append("line")
-	.attr("class", "link")
-	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
-
-	node
-	.attr("name", function (d) { return d.name; })
-	.attr("value", function (d) { return d.value; })
-	.attr("facet", function (d) { return d.facet; })
-	.attr("cluster", function (d) { return d.cluster; })
-	.attr("radius", function (d) { return d.radius; })
-	.attr("r", function (d) { return d.radius; })
-	.attr("color", function (d) { return d.color; })
-	.attr("id", function(d){
-		return 'node_'+d.index;
-	})
-	.style("stroke-width",1)
-	.style("fill", function (d) { return d.color; })
-	.on("contextmenu",function(d){
-		// console.log("RIGHT CLICK ? YEAH");
-		d3.event.preventDefault();
-	})
-	.on("mousedown",function(d){
-		d3.event.stopPropagation();
-		d3.selectAll("circle").style("stroke-width",2);
-		d3.select(this).select("circle").style("stroke-width", 4);
-		var indexFilter = d.facet.indexOf( "_crt_ft" );
-		var nameFacet = d.facet;
-		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
-		var newText = "<p>Facet: <br/>"+nameFacet+"<hr/>"+"Name: <br/>"+d.name+" : "+d.value+"</p>";
-		document.getElementById("textData").innerHTML=newText;
-
-
-		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
-			// console.log("d inside function for text visibility : ");console.log(d);
-			// console.log("d2 inside function for text visibility : ");console.log(d2);
-			if ( d2.cluster == d.cluster ){
-				// Additional things to do
-				// console.log(" d2.cluster == d.cluster ");
-				// console.log("this : ");console.log(this);
-				d3.select(this)[0][0].textContent = '['+d2.name+']';
-				return "visible";
-			} else {
-				if ( clusters[d2.cluster].index == d2.index ){
-					console.log("this : ");console.log(this);			
-					var indexFilter = d2.facet.indexOf( "_crt_ft" );
-					var nameFacet = d2.facet;
-					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
-					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
-					return "visible";
-				} else {
-					console.log("this : ");console.log(this);
-					var indexFilter = d2.facet.indexOf( "_crt_ft" );
-					var nameFacet = d2.facet;
-					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
-					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
-					return "hidden";
-				}
-			}
-		});
-	})
-	.on("mouseover",function(d){
-		document.getElementById("elementHelp").style.visibility="visible";
-		d3.select("#elementHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.name+"<hr/>"+d.value+" elements");
-	})
-	.on("mouseout",function(d){
-		d3.select("#elementHelp").html("Help <hr/> Click a node to display its information. <br/> Click twice to filter according to it.");
-	})
-	.on("dblclick",function(d){
-		console.log("dblclick nodeFacet");
-		// console.log("this : ");console.log(this);
-		// console.log("vm : ");console.log(vm);
-		var indexFilter = d.facet.indexOf( "_crt_ft" );
-		var nameFilter = d.facet;
-		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }
-		nameFilter+='Filter';
-        vm.$data.filterQuery[ nameFilter ] = d.name;
-        vm.$emit("bar-selected");
-	    document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
-	    popOutDiv("infoPop");
-	    fadeOutDiv("infoPop");
-	    vm.$options.methods.querySamples(this,false);
-	})
-	;
-
-	node.append("circle")
-	.attr("r", function (d) { return d.radius; })
-	.attr("name", function (d) { return d.name; })
-	.attr("index", function (d) { return d.index; })
-	.attr("facet", function (d) { return d.facet; })
-	.attr("radius", function (d) { return d.radius; })
-	.attr("color", function (d) { return d.color; })
-	.style("fill", function (d) {  return d.color; })
-	.style("stroke","black")
-	.style("stroke-width",2)
-	.style("stroke-opacity",1)
-	.style("opacity", .7)
-	;
-
-	node.append("text")
-	.attr("dx", 12)
-	.attr("dy", ".35em")
-	.attr("id",function(d){ return 'text_'+d.index})
-	.attr("name",function(d){return d.name})
-	// .text( function (d) { return "["+d.name+"]"; })
-	.text( function (d) {
-		var indexFilter = d.facet.indexOf( "_crt_ft" );
-		var nameFacet = d.facet;
-		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
-		return "["+nameFacet+"]";
-	})
-	.attr("font-family", "sans-serif").attr("font-size", "10px")
-	.attr("border","solid").attr("border-radius","10px")
-	.style("visibility", function(d){
-		// console.log("in text visibility d :");console.log(d);
-		// console.log("clusters[d.cluster] : ");console.log(clusters[d.cluster]);
-		if ( d.index == clusters[d.cluster].index ){
-			return "visible";
-		} else {
-			return "hidden";
-		}
-	})
-	.style("border","solid").style("border-radius","10px")
-	.style("box-shadow","gray")
-	.style("background-color","#46b4af")
-	.attr("fill", "#4D504F")
-	.on("mouseover",function(d){
-		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
-	})
-	;
-
 	// Force rules:
 	force.on("tick", function(e) {
 	  	node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -839,4 +849,110 @@ function drawFacets(svg,nodeData,vm){
 	d3.select(self.frameElement).style("height", width - 150 + "px");
 }
 
+function displayRevertingFilters( results,vm ){
+	console.log("-- displayRevertingFilters --");
+	// Display the filters in filterEmergencyDisplay 
+	// if we have both filters and empty results
+	var displayRemainingFilters = false;
+	// remainingfilters[ facet ] = [filter,...]
+	var remainingfilters = {};
+	function infoDisplayFilters (results){
+	    var needToDisplay = false; var arrayFilters = [];
+	    if ( results.data.response.docs.length == 0 ){
+	        for (var i in results.request.params.filters){
+	            var indexPipe = results.request.params.filters[i].indexOf("|");
+	            if ( indexPipe != results.request.params.filters[i].length-1 ){
+	                arrayFilters.push(results.request.params.filters[i]);
+	                needToDisplay = true;
+	            } 
+	        }
+	    }
+	    // New version with display of filters all the time
+	    else {
+	        for (var i in results.request.params.filters){
+	            var indexPipe = results.request.params.filters[i].indexOf("|");
+	            if ( indexPipe != results.request.params.filters[i].length-1 ){
+	                arrayFilters.push(results.request.params.filters[i]);
+	                needToDisplay = false;
+	            } 
+	        }
+	    }
+	    return [needToDisplay,arrayFilters];
+	}
+
+	displayRemainingFilters = infoDisplayFilters(results);
+	d3.select("#displayRemainingFilters").selectAll("*").remove();
+
+	if ( displayRemainingFilters[0]){
+    	d3.select("#displayRemainingFilters").selectAll("*").remove();
+		if ( displayRemainingFilters[1].length>0 ){
+			document.getElementById("displayRemainingFilters").innerHTML=("<p>Empty results from your query might be due to the following filters:<br/><div id='revertFilters'></div>");
+		    for (var i in displayRemainingFilters[1]){
+		        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
+		        var indexToCutFacet = facet.indexOf("Filter");
+		        facet = facet.substring(0,indexToCutFacet);
+		        var value = displayRemainingFilters[1][i].substring(indexToCut+1, displayRemainingFilters[1][i].length);
+		        // Create buttons
+		        var divReverter = 'buttonFilter_'+facet;
+		        var badgeFacet,badgeValue;
+		        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
+		        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
+				var stringColumn = '<div style="display:inline" facet='+facet+' value='+value+' class="reverter" id="'+ divReverter +'">'
+					+'<img style="display:inline" src="https://img.shields.io/badge/'+badgeFacet+'-'+badgeValue+'-orange.svg?style=flat">'
+					+'<p style="display:inline" facet='+facet+' value='+value+' class="crossDelete">&#10006;</p>'
+					+'</div>';
+				document.getElementById("revertFilters").innerHTML+= stringColumn;
+		    }
+		    document.getElementById("displayRemainingFilters").innerHTML+="<br/>";
+		} else {
+			d3.select("#displayRemainingFilters").selectAll("*").remove();
+		}
+	} // New version of the code with filters displayed also when the results are not empty
+	else {
+    	d3.select("#displayRemainingFilters").selectAll("*").remove();
+		if ( displayRemainingFilters[1].length>0 ){
+			document.getElementById("displayRemainingFilters").innerHTML=("<p>Current filters:<br/><div id='revertFilters'></div>");
+		    for (var i in displayRemainingFilters[1]){
+		        var indexToCut =  displayRemainingFilters[1][i].indexOf("|"); var facet = displayRemainingFilters[1][i].substring(0, indexToCut);
+		        var indexToCutFacet = facet.indexOf("Filter");
+		        facet = facet.substring(0,indexToCutFacet);
+		        var value = displayRemainingFilters[1][i].substring(indexToCut+1, displayRemainingFilters[1][i].length);
+		        // Create buttons
+		        var divReverter = 'buttonFilter_'+facet;
+		        var badgeFacet,badgeValue;
+		        badgeFacet = facet.replace(/-/g, "--"); badgeFacet = badgeFacet.replace(/_/g, "__"); badgeFacet = badgeFacet.replace(/\ /g, "%20");
+		        badgeValue = value.replace(/-/g, "--"); badgeValue = badgeValue.replace(/_/g, "__"); badgeValue = badgeValue.replace(/\ /g, "%20");
+				var stringColumn = '<div style="display:inline" facet='+facet+' value='+value+' class="reverter" id="'+ divReverter +'">'
+					+'<img style="display:inline" src="https://img.shields.io/badge/'+badgeFacet+'-'+badgeValue+'-orange.svg?style=flat">'
+					+'<p style="display:inline" facet='+facet+' value='+value+' class="crossDelete">&#10006;</p>'
+					+'</div>';
+
+				document.getElementById("revertFilters").innerHTML+= stringColumn;
+		    }
+		    document.getElementById("displayRemainingFilters").innerHTML+="<br/>";
+		} else {
+			d3.select("#displayRemainingFilters").selectAll("*").remove();
+		}
+	}
+
+    // $('div.crossDelete').click(function(e){
+	$('.crossDelete').click(function(e){
+        facet = d3.select(this).attr('facet');
+        vm.$data.filterQuery[facet+'Filter'] = "";
+        vm.$emit("bar-selected");
+    });
+
+    d3.selectAll('.crossDelete').on("mouseover",function(d){
+        d3.selectAll('.crossDelete').style("background-color","white");
+        d3.selectAll('.crossDelete').style("color","black");
+        if ( this.id.length > 0 ){
+            d3.select('#'+this.id).style("background-color","black");
+            d3.select('#'+this.id).style("color","white");
+        }
+    });
+    d3.selectAll('.crossDelete').on("mouseout",function(d){
+        d3.selectAll('.crossDelete').style("background-color","white");
+        d3.selectAll('.crossDelete').style("color","black");
+    });
+}
 //# sourceMappingURL=toolsFunctions.js.map
