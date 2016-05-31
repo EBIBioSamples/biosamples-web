@@ -22,6 +22,7 @@ import java.util.Map;
  * Created by lucacherubin on 2016/05/05.
  */
 @Controller
+@CrossOrigin(methods = RequestMethod.GET)
 public class LegacyApiController {
     @Autowired
     private GroupRepository groupRepository;
@@ -42,6 +43,7 @@ public class LegacyApiController {
 
     }
 
+
     @RequestMapping(value = "xml/sample/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String legacySampleXmlQueryRedirect(@PathVariable String query){
         Map<String,String> paramMap = getCustomQueryParam(query);
@@ -53,6 +55,7 @@ public class LegacyApiController {
                 Integer.parseInt(paramMap.get("page")));
 
     }
+
     @RequestMapping(value = "xml/groupsamples/{accession}/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String legacySampleInGroupXmlQueryRedirect(@PathVariable String accession, @PathVariable String query){
         Map<String,String> paramMap = getCustomQueryParam(query);

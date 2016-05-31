@@ -31,4 +31,5 @@ public class BiosamplesWebConfiguration {
     public SolrServer solrServer() {
         return new HttpSolrServer(solrServerUrl);
     }
+
 }

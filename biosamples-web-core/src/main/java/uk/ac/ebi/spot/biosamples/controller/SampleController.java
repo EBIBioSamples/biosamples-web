@@ -25,6 +25,7 @@ import java.util.Map;
  * @date 12/02/16
  */
 @Controller
+@CrossOrigin(methods = RequestMethod.GET)
 public class SampleController {
     @Autowired private SampleRepository sampleRepository;
 

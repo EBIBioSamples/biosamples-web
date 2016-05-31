@@ -22,6 +22,7 @@ import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
  * @date 25/02/16
  */
 @Controller
+@CrossOrigin(methods = RequestMethod.GET)
 public class GroupController {
     @Autowired private GroupRepository groupRepository;
 
@@ -54,6 +55,7 @@ public class GroupController {
             return group.getXml();
         }
     }
+
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
