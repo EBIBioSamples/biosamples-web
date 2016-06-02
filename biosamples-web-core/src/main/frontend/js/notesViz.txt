@@ -443,3 +443,24 @@ $(document).bind('mousemove', function(e){
        top:   posY
     });
 });
+
+
+
+//// First idea for the add function
+  // Bad idea, you need the node in nodeData in order for the force to take it into account
+  // var cptDraw = nodeData.nodes.length -1;
+  // while( cptDraw>=0 ){
+  //  if ( d3.select("#node_"+nodeData.nodes[cptDraw].accession )[0][0] !== null ){
+  //    nodeData.nodes.splice(cptDraw,1);
+  //  }
+  //  cptDraw--;
+  // }
+  // var cptDraw = nodeData.links.length -1;
+  // while( cptDraw>=0 ){
+  //  console.log('d3.select("#link_"+nodeData.links[cptDraw].nodeSource.accession)[0][0]+"_"+d3.select("#link_"+nodeData.links[cptDraw].nodeTarget.accession)[0][0] : ');
+  //  console.log(d3.select("#link_"+nodeData.links[cptDraw].nodeSource.accession)[0][0]+"_"+d3.select("#link_"+nodeData.links[cptDraw].nodeTarget.accession)[0][0]);
+  //  if ( d3.select("#link_"+nodeData.links[cptDraw].nodeSource.accession)[0][0]+"_"+d3.select("#link_"+nodeData.links[cptDraw].nodeTarget.accession)[0][0] !== null ){
+  //    nodeData.links.splice(cptDraw,1);
+  //  }
+  //  cptDraw--;
+  // }
