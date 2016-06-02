@@ -26,10 +26,8 @@ import java.util.TreeMap;
  */
 @SolrDocument(solrCoreName = "groups")
 public class Group implements ResultQueryDocument {
+    private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    private final DateTimeFormatter solrDateFormatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    // duplicated fields to disambiguate - no need to return
     @Id @Field String accession;
     @Field String description;
 
@@ -68,7 +66,7 @@ public class Group implements ResultQueryDocument {
     }
 
     public LocalDate getUpdateDate() {
-        return LocalDate.from(solrDateFormatter.parse(this.updateDate));
+        return updateDate == null ? null : LocalDate.from(solrDateFormatter.parse(this.updateDate));
     }
 
     public void setUpdateDate(String updateDate) {
@@ -76,7 +74,7 @@ public class Group implements ResultQueryDocument {
     }
 
     public LocalDate getReleaseDate() {
-        return LocalDate.from(solrDateFormatter.parse(this.releaseDate));
+        return releaseDate == null ? null : LocalDate.from(solrDateFormatter.parse(this.releaseDate));
     }
 
     public void setReleaseDate(String releaseDate) {

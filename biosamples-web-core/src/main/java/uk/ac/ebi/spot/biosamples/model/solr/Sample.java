@@ -24,16 +24,12 @@ import java.util.TreeMap;
  */
 @SolrDocument(solrCoreName = "samples")
 public class Sample implements ResultQueryDocument {
-    // duplicated fields to disambiguate - no need to return
-    private final DateTimeFormatter solrDateFormatter =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Id @Field String accession;
-
     @Field String description;
 
-    @Field(value = "updatedate")
-    String updateDate;
+    @Field(value = "updatedate") String updateDate;
     @Field(value = "releasedate") String releaseDate;
 
     // collection of all characteristics as key/list of value pairs
@@ -84,7 +80,7 @@ public class Sample implements ResultQueryDocument {
     }
 
     public LocalDate getReleaseDate() throws ParseException {
-        return LocalDate.from(solrDateFormatter.parse(releaseDate));
+        return releaseDate == null ? null : LocalDate.from(solrDateFormatter.parse(releaseDate));
     }
 
     public void setReleaseDate(String releaseDate) {
@@ -92,7 +88,7 @@ public class Sample implements ResultQueryDocument {
     }
 
     public LocalDate getUpdateDate() throws ParseException {
-        return LocalDate.from(solrDateFormatter.parse(updateDate));
+        return updateDate == null ? null : LocalDate.from(solrDateFormatter.parse(updateDate));
     }
 
     public void setUpdateDate(String updateDate) {
