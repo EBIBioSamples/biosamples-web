@@ -236,18 +236,7 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
 				nodeData.color[ nameToNodeIndex[ groupsReturned[group][i]] ] = colorGroup;
 				nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].color = colorGroup;
-				console.log("**** nodeData.nodes ****");
-				console.log("[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");
-				console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
-				console.log("****");
-				// console.log("nodeData.links : ");console.log(nodeData.links);
-				// console.log("nameToNodeIndex[ groupsReturned[group][i] ] : ");console.log(nameToNodeIndex[ groupsReturned[group][i] ]);
-				// console.log("nameToNodeIndex[ group ] : ");console.log(nameToNodeIndex[ group ]);
-				// console.log("nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ] : ");console.log(nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]);
-				// console.log("nodeData.nodes[ nameToNodeIndex[ group] ] : ");console.log(nodeData.nodes[ nameToNodeIndex[ group] ]);
-				// console.log('"link_"+nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].accession+"_"+nodeData.nodes[ nameToNodeIndex[ group] ].accession : ');
-				// console.log("link_"+nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].accession+"_"+nodeData.nodes[ nameToNodeIndex[ group] ].accession);
-				// console.log("nameToNodeIndex : ");console.log(nameToNodeIndex);
+
 				var id, source, target, nodeSource, nodeTarget, weight;
 				id = "link_"+nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].accession+"_"+nodeData.nodes[ nameToNodeIndex[ group] ].accession;
 				source = nameToNodeIndex[ groupsReturned[group][i] ]; target = nameToNodeIndex[ group ];
@@ -262,25 +251,17 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 					"nodeTarget": nodeTarget ,
 					"weight": weight,
 				};
-				// console.log("link : ");console.log(link);
-				// nodeData.links.push( link );
 				linksToPush.push( link );
-				// console.log("right after push nodeData.links : ");console.log(nodeData.links);
 			}
 		}
 	}
-	console.log("linksToPush : ");console.log(linksToPush);
 	nodeData.links = linksToPush;
-	console.log("groupsReturned : ");console.log(groupsReturned);
 	console.log("nodeData : ");console.log(nodeData);
 	console.log("===========================");
 	return [nodeData,groupsReturned,nameToNodeIndex];
 }
 
-function getSamplesFromGroup(apiUrl,group){
-
-}
-
+// Technically works, but so far never has been useful
 function loadDataWithoutRefresh(vm,apiUrl,parameters){	
   var queryParams = vm.getQueryParameters();
   queryParams.searchTerm = parameters.searchTerm;
@@ -362,26 +343,6 @@ function showTextSamples(boolValue) {
 function saveURL(e){
 	d3.select("#saveButton")[0][0].textContent=document.URL;
 	d3.select("#saveButton").style("overflow-x ","visible");
-}
-
-function linkPerAttributes(e){
-	console.log("linkPerAttributes");
-	// console.log("d3.select(e)[0][0] : ");console.log(d3.select(e)[0][0]);
-	// console.log("d3.select(e)[0][0].attributes : ");console.log(d3.select(e)[0][0].attributes);
-	// console.log('(d3.selectAll(".node") : ');console.log(d3.selectAll(".node"));
-	var d3Node = d3.select("#vizSpotRelations");
-	var attributeClicked = d3.select(e)[0][0].attributes.id.value.replace(/[^A-Za-z0-9]/g,"") , valueClicked = d3.select(e)[0][0].attributes.value.value.replace(/[^A-Za-z0-9]/g,"");
-	console.log("----");
-	console.log("attributeClicked : ");console.log(attributeClicked);
-	console.log("valueClicked : ");console.log(valueClicked);
-	console.log("----");
-
-
-
-	var force = d3.layout.force();
-	var node = d3Node.selectAll(".node"),
-		link = d3Node.selectAll(".link"),
-		responseDocs = d3Node.selectAll(".node").select("responseDoc");
 }
 
 function draw(svg,nodeData,vm){
@@ -484,14 +445,9 @@ function draw(svg,nodeData,vm){
 		console.log('mousedown node d : ');console.log(d);
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select("this").attr("theOneSelected",'true');
-
 		console.log('d3.select("#vizSpotRelations") : ');console.log( d3.select("#vizSpotRelations") );
-
-		// console.log("groupsReturned : ");console.log(groupsReturned);
-
 		d3.selectAll("circle").style("stroke-width",2);
 		d3.select(this).selectAll("circle").style("stroke-width", 4);
-
 		d3.event.stopPropagation();
 		// Fill in the infoVizRelations according to data returned
 		document.getElementById("textData").innerHTML='<p>';
@@ -501,7 +457,8 @@ function draw(svg,nodeData,vm){
 		  if(!d.responseDoc.hasOwnProperty(prop)) continue;
 		  // d3.select("#textData").style("text-align","center");
 		  // Should we calculate connections onclick or on loading ?
-		  document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
+		  // document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
+		  document.getElementById("textData").innerHTML+="<div class='textAttribute'"
 		  + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
 
 		  URLs = getURLsFromObject(d.responseDoc,prop);
@@ -513,17 +470,14 @@ function draw(svg,nodeData,vm){
 		  }
 		}
 	  	document.getElementById("textData").innerHTML+='</p>';
-	  	console.log("this : ");console.log(this);
-	  	console.log("vm : ");console.log(vm);
-	  	console.log("@@@@");
+
 	  	var loadedStuff = loadNode(d.accession,vm);
 	  	console.log("loadedStuff : ");console.log(loadedStuff);
+
 		// Exemples to try functions to add and remove elements
 		// removeNode( nodeData, d.accession, force );
-		// addNode( nodeData,"tagadaTest",force,svg );
-		console.log("nodeData : ");console.log( nodeData );
-		console.log("force : ");console.log(force);
-		console.log("force.nodes() : ");console.log(force.nodes());	  	
+		// addNode( nodeData,"tagadaTest",force );
+
 	})
 	.on("mouseup",function(d){
 		d3.selectAll(".node").attr("isThereSelected",'false');
@@ -577,8 +531,8 @@ function draw(svg,nodeData,vm){
 	})
 	;
 
-	var hull = svg.append("path")
-	.attr("class", "hull");
+	// var hull = svg.append("path")
+	// .attr("class", "hull");
 
 	force
 	.nodes(nodeData.nodes)
@@ -697,8 +651,8 @@ function drawFacets(svg,nodeData,vm){
 	var heightD3 = widthTitle/2;
 	var height=heightD3;
 
-    var padding = 25; // separation between same-color circles
-    var clusterPadding = 50; // separation between different-color circles
+    var padding = 30; // separation between same-color circles
+    var clusterPadding = 60; // separation between different-color circles
     var maxRadius = 50;
 	// The largest node for each cluster.
 	var clusters = [];
@@ -1167,17 +1121,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	console.log(nodeData.nodes[ nodeData.nodes.length-1 ]);
 	console.log("svg : ");console.log(svg);
 
-	// var widthTitle = window.innerWidth;
-	// var width = Math.floor((70 * window.innerWidth)/100);
-	// var heightD3 = widthTitle/2;
-	// var height=heightD3;
-
-	// var force = d3.layout.force()
-	// .gravity(.08)
-	// .distance(40)
-	// .charge(-90)
-	// .size([width, height]);
-
 	//Add circles to the svgContainer
 	var node = d3.selectAll("#vizSpotRelations").select("g").selectAll(".node")
 	// svg.selectAll("node")
@@ -1189,25 +1132,16 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	.attr("class","node")
 	.call(force.drag);
 
-	console.log("before adding data in node : ");console.log(node);
-
-	// var widthTitle = window.innerWidth;
-	// var width = Math.floor((70 * window.innerWidth)/100);
-	// var heightD3 = widthTitle/2;
-	// var height=heightD3;
-
-	// force = d3.layout.force()
-	// .nodes(nodeData.nodes)
-	// .links(nodeData.links)
-	// .size([width, height])
-	// .gravity(0)
-	// .charge(0)
-	// .start();
-	// ;
-
-	// Calling function draw would redraw all the elements, which we do not want
-	// (or other idea would be to verify the existence of the node before drawing it... Maybe a good idea)
-	// Bad idea to draw all the nodes.
+	// var link = svg.selectAll(".link")
+	// .data(nodeData.links)
+	// .enter().append("line")
+	// .attr("class", "link")
+	// .attr("id",function(d){return d.id;})
+	// .attr("source",function(d){return d.source;})
+	// .attr("target",function(d){return d.target;})
+	// .attr("nodeSource",function(d){ return d.nodeSource; })
+	// .attr("nodeTarget",function(d){ return d.nodeTarget; })
+	// .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
 	node.append("circle")
 	.attr("r", function (d) { return d.radius * 3; })
@@ -1273,14 +1207,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		console.log('mousedown node d : ');console.log(d);
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select("this").attr("theOneSelected",'true');
-
-		// Exemples to try funcitons to add and remove elements
-		// removeNode( nodeData, d.accession, force );
-		addNode( nodeData,"tagadaTest",force,svg );
-		console.log("nodeData : ");console.log( nodeData );
-		console.log("force : ");console.log(force);
-		// console.log("groupsReturned : ");console.log(groupsReturned);
-
 		d3.selectAll("circle").style("stroke-width",2);
 		d3.select(this).selectAll("circle").style("stroke-width", 4);
 
@@ -1291,9 +1217,8 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		for (var prop in d.responseDoc) {
 		  // skip loop if the property is from prototype
 		  if(!d.responseDoc.hasOwnProperty(prop)) continue;
-		  // d3.select("#textData").style("text-align","center");
-		  // Should we calculate connections onclick or on loading ?
-		  document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
+		  // document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
+		  document.getElementById("textData").innerHTML+="<div class='textAttribute'"
 		  + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
 
 		  URLs = getURLsFromObject(d.responseDoc,prop);
@@ -1314,8 +1239,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		if ( d3.select(".node").attr("isThereSelected") == "false" ){
 			d3.selectAll("text").style("opacity",1);
 		  	d3.selectAll(".node").selectAll("text").style("dx", 12);
-		  	// d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
-		  	// d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
 			d3.select("#textHelp").html("Click on a node to display its information.");
 		}
 	})
@@ -1326,11 +1249,8 @@ function addNode( nodeData,nodeAccession,force,svg ){
 			d3.select("#textHelp").html(""+d.accession);
 			var circleNode = d3.select(this).selectAll("circle");
 			var textNode = d3.select(this).select("text");
-
 			d3.selectAll(".node").selectAll("text").style("opacity",.25);
 			textNode.style("opacity",1);
-			// circleNode.transition().duration(10).style("r", d.radius*3);
-			// textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
 		} 
 	})
 	;
@@ -1358,10 +1278,40 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	})
 	;
 
-	console.log("node : ");console.log(node);
-	console.log("nodeData : ");console.log(nodeData);
-	console.log("force.nodes() : ");console.log(force.nodes());
+	force
+	.nodes(nodeData.nodes)
+	.links(nodeData.links)
+	.start()
+	;
+
+	// Force rules:
+	force.on("tick", function() {
+		// link.attr("x1", function(d) {return d.source.x;})
+		// .attr("y1", function(d) {return d.source.y; })
+		// .attr("x2", function(d) {return d.target.x; })
+		// .attr("y2", function(d) {return d.target.y; })
+		// ;
+
+		// Check if within node there is a class node dragging
+		// if so, translate by 0
+		var isDragging = false;
+		var accessionDragged = '';
+		var elements = svg.selectAll('g');
+		for (var i=0; i < elements[0].length; i++){
+		  	if ( elements[0][i].classList.length > 1 ){
+		  		isDragging = true;
+		 		accessionDragged = elements[0][i].accession;
+			}
+		}
+		node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	});
+
 	console.log("---- addition passed ----");
+}
+
+
+function addLink(nodeData,accessionSource,accessionTarget,force){
+
 }
 
 function loadNode(nodeAccession,vm){
@@ -1370,21 +1320,17 @@ function loadNode(nodeAccession,vm){
 	var root;
 	var url;
 	if ( nodeAccession.indexOf("g") !== -1 ){ nodeIsGroup = true; }
+	// root = "http://beans.ebi.ac.uk:9480/biosamples/relations/
+	root = "http://localhost:8181/relations-webapp-0.0.1-SNAPSHOT/";
 	if (nodeIsGroup){
-		// root = "http://beans.ebi.ac.uk:9480/biosamples/relations/groups/";
-		root = "http://localhost:8181/relations-webapp-0.0.1-SNAPSHOT/groups/";
+		root += "groups/"; 
 	} else {
-		// root = "http://beans.ebi.ac.uk:9480/biosamples/relations/samples/";
-		root ="http://localhost:8181/relations-webapp-0.0.1-SNAPSHOT/samples/";
+		root += "samples/";
 	}
 	url = root + nodeAccession+"/graph"
-	console.log("before trying a get vm : ");console.log(vm);
 	var arrayRelationships = [];
 	vm.$http.get(url)
-	    .then(function(results) {
-	    	console.log("results.data : ");console.log(results.data);
-	    	console.log("results.nodes : ");console.log(results.data.nodes);
-	    	console.log("results.edges : ");console.log(results.data.edges);
+		.then(function(results) {
 	    	return {"nodes":  results.nodes, "edges" : results.edges };
 	    })
 	    .catch(function(data,status,response){

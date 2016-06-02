@@ -464,3 +464,24 @@ $(document).bind('mousemove', function(e){
   //  }
   //  cptDraw--;
   // }
+
+
+
+//// Avorted code to link according to attributes
+function linkPerAttributes(e){
+  console.log("linkPerAttributes");
+  // console.log("d3.select(e)[0][0] : ");console.log(d3.select(e)[0][0]);
+  // console.log("d3.select(e)[0][0].attributes : ");console.log(d3.select(e)[0][0].attributes);
+  // console.log('(d3.selectAll(".node") : ');console.log(d3.selectAll(".node"));
+  var d3Node = d3.select("#vizSpotRelations");
+  var attributeClicked = d3.select(e)[0][0].attributes.id.value.replace(/[^A-Za-z0-9]/g,"") , valueClicked = d3.select(e)[0][0].attributes.value.value.replace(/[^A-Za-z0-9]/g,"");
+  console.log("----");
+  console.log("attributeClicked : ");console.log(attributeClicked);
+  console.log("valueClicked : ");console.log(valueClicked);
+  console.log("----");
+
+  var force = d3.layout.force();
+  var node = d3Node.selectAll(".node"),
+    link = d3Node.selectAll(".link"),
+    responseDocs = d3Node.selectAll(".node").select("responseDoc");
+}
