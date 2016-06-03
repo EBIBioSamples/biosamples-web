@@ -25,6 +25,7 @@ public class Group {
 
     @Id @Field("accession") String id;
     @Field String accession;
+    @Field String name;
     @Field String description;
 
     @Field("updatedate") String updateDate;
@@ -38,12 +39,24 @@ public class Group {
     @Field("*_crt_json")
     Map<String, List<String>> characteristics;
 
-    // XML payload for this sample - don't return in REST API
-    @Field("xmlAPI") @JsonIgnore String xml;
+    // collection of all external reference names
+    @JsonIgnore @Field("external_references_name") List<String> externalReferencesNames;
+
+    // external references
+    @JsonSerialize(using = ExternalReferencesSerializer.class)
+    @Field("external_references_json")
+    String externalReferences;
+
+    // sample metadata
+    @Field("number_of_samples") String numberOfSamples;
+    @Field("grp_sample_accessions") List<String> samples;
 
     // submission metadata
     @Field("submission_acc") String submissionAccession;
     @Field("submission_title") String submissionTitle;
+
+    // XML payload for this sample - don't return in REST API
+    @Field("api_xml") @JsonIgnore String xml;
 
     public String getAccession() {
         return accession;
@@ -51,6 +64,14 @@ public class Group {
 
     public void setAccession(String accession) {
         this.accession = accession;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -113,12 +134,36 @@ public class Group {
         this.characteristics = characteristics;
     }
 
-    public String getXml() {
-        return xml;
+    public List<String> getExternalReferencesNames() {
+        return externalReferencesNames;
     }
 
-    public void setXml(String xml) {
-        this.xml = xml;
+    public void setExternalReferencesNames(List<String> externalReferencesNames) {
+        this.externalReferencesNames = externalReferencesNames;
+    }
+
+    public String getExternalReferences() {
+        return externalReferences;
+    }
+
+    public void setExternalReferences(String externalReferences) {
+        this.externalReferences = externalReferences;
+    }
+
+    public String getNumberOfSamples() {
+        return numberOfSamples;
+    }
+
+    public void setNumberOfSamples(String numberOfSamples) {
+        this.numberOfSamples = numberOfSamples;
+    }
+
+    public List<String> getSamples() {
+        return samples;
+    }
+
+    public void setSamples(List<String> samples) {
+        this.samples = samples;
     }
 
     public String getSubmissionAccession() {
@@ -135,5 +180,13 @@ public class Group {
 
     public void setSubmissionTitle(String submissionTitle) {
         this.submissionTitle = submissionTitle;
+    }
+
+    public String getXml() {
+        return xml;
+    }
+
+    public void setXml(String xml) {
+        this.xml = xml;
     }
 }

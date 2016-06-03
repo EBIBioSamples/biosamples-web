@@ -49,7 +49,7 @@ public class Sample {
     String externalReferences;
 
     // group metadata
-    @Field("sample_grp_accessions") List<String> groupAccession;
+    @Field("sample_grp_accessions") List<String> groups;
 
     // submission metadata
     @Field("submission_acc") String submissionAccession;
@@ -124,6 +124,14 @@ public class Sample {
         this.characteristics = characteristics;
     }
 
+    public List<String> getExternalReferencesNames() {
+        return externalReferencesNames;
+    }
+
+    public void setExternalReferencesNames(List<String> externalReferencesNames) {
+        this.externalReferencesNames = externalReferencesNames;
+    }
+
     public String getExternalReferences() {
         return externalReferences;
     }
@@ -132,12 +140,12 @@ public class Sample {
         this.externalReferences = externalReferences;
     }
 
-    public List<String> getGroupAccession() {
-        return groupAccession;
+    public List<String> getGroups() {
+        return groups;
     }
 
-    public void setGroupAccession(List<String> groupAccession) {
-        this.groupAccession = groupAccession;
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
     }
 
     public String getSubmissionAccession() {

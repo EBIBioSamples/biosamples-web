@@ -81,10 +81,25 @@
                 <td th:text="${sample.updateDate}"></td>
             </tr>
             <tr>
-                <td class="col_title"><b>Groups :</b></td>
-                <td>
-                    <!--<a href="../group/SAMEG39304"><id>SAMEG39304</id></a>-->
+                <td class="col_title"><b>Databases :</b></td>
+                <td th:if="${#maps.isEmpty(sample.databases)}">None</td>
+                <td th:if="${not #maps.isEmpty(sample.databases)}">
+                    <p th:each="database : ${sample.databases}">
+                        <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none">
+                            <img th:src="@{/images/dblinks/hipsci_small_logo.png}">
+                        </a>
+                        <a th:text="${database.key}" th:href="${database.value}"></a>
+                    </p>
                 </td>
+            </tr>
+            <tr>
+                <td class="col_title"><b>Groups :</b></td>
+                <td th:if="${#lists.isEmpty(sample.groups)}">None</td>
+                <td th:if="${not #lists.isEmpty(sample.groups)}">
+                    <p th:each="group : ${sample.groups}">
+                        <a th:text="${group}" th:href="${'../group/' + group}"></a>
+                    </p>
+                <td/>
             </tr>
             </tbody>
         </table>
