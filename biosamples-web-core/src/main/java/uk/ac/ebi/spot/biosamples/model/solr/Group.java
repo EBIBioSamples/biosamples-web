@@ -2,18 +2,13 @@ package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
-
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,14 +20,15 @@ import java.util.TreeMap;
  * @date 10/02/16
  */
 @SolrDocument(solrCoreName = "groups")
-public class Group implements ResultQueryDocument {
+public class Group {
     private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Id @Field String accession;
+    @Id @Field("accession") String id;
+    @Field String accession;
     @Field String description;
 
-    @Field(value = "updatedate") String updateDate;
-    @Field(value = "releasedate") String releaseDate;
+    @Field("updatedate") String updateDate;
+    @Field("releasedate") String releaseDate;
 
     // collection of all characteristics as key/list of value pairs
     @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
@@ -140,9 +136,4 @@ public class Group implements ResultQueryDocument {
     public void setSubmissionTitle(String submissionTitle) {
         this.submissionTitle = submissionTitle;
     }
-
-    public String getDocumentType() {
-        return "BioSampleGroup";
-    }
-
 }

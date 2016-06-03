@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import uk.ac.ebi.spot.biosamples.model.solr.Group;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
+import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
+import uk.ac.ebi.spot.biosamples.model.xml.SampleResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 
@@ -81,8 +83,8 @@ public class LegacyApiController {
 
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
         PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
-        Page<Group> results = groupRepository.find(searchTerm,querySpec);
-        ResultQuery rq = new ResultQuery(results);
+        Page<Group> results = groupRepository.findByAccession(searchTerm,querySpec);
+        ResultQuery rq = new GroupResultQuery(results);
         return rq.renderDocument();
     }
 
@@ -99,7 +101,7 @@ public class LegacyApiController {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
         PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
         Page<Sample> results = sampleRepository.findTermInGroup(searchTerm, groupAccession,querySpec);
-        ResultQuery rq = new ResultQuery(results);
+        ResultQuery rq = new SampleResultQuery(results);
         return rq.renderDocument();
     }
 
@@ -115,7 +117,7 @@ public class LegacyApiController {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
         PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
         Page<Sample> results = sampleRepository.find(searchTerm,querySpec);
-        ResultQuery rq = new ResultQuery(results);
+        ResultQuery rq = new SampleResultQuery(results);
         return rq.renderDocument();
 
     }

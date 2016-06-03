@@ -11,13 +11,13 @@ import java.util.List;
 /**
  * Created by lucacherubin on 2016/05/06.
  */
-public class ResultQuery {
+public abstract class ResultQuery<T> {
 
     private final Namespace XMLNS = Namespace.getNamespace("http://www.ebi.ac.uk/biosamples/ResultQuery1.0");
 
     private Document doc;
 
-    public ResultQuery(Page<? extends ResultQueryDocument> results) {
+    public ResultQuery(Page<T> results) {
         doc = getDocument();
         Element root = getDocumentRoot();
         Element summary = getSummaryInfoElement(results);
@@ -26,15 +26,14 @@ public class ResultQuery {
         root.addContent(summary);
         root.addContent(resultList);
         doc.setRootElement(root);
-
     }
 
-    private List<Element> getResultList(Page<? extends ResultQueryDocument> results) throws IllegalArgumentException{
+    private List<Element> getResultList(Page<T> results) throws IllegalArgumentException{
 
         List<Element> resultList = new ArrayList<>();
-        for (ResultQueryDocument result : results) {
-            Element rqDocument = new Element(result.getDocumentType(),XMLNS);
-            rqDocument.setAttribute("id", result.getAccession());
+        for (T result : results) {
+            Element rqDocument = new Element(getDocumentType(result),XMLNS);
+            rqDocument.setAttribute("id", getAccession(result));
             resultList.add(rqDocument);
         }
         return resultList;
@@ -93,5 +92,7 @@ public class ResultQuery {
         return xmlOutput.outputString(doc);
     }
 
+    protected abstract String getDocumentType(T result);
 
+    protected abstract String getAccession(T result);
 }

@@ -1,12 +1,10 @@
 package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
-import uk.ac.ebi.spot.biosamples.model.xml.ResultQueryDocument;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -23,10 +21,11 @@ import java.util.TreeMap;
  * @date 10/02/16
  */
 @SolrDocument(solrCoreName = "samples")
-public class Sample implements ResultQueryDocument {
+public class Sample {
     private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Id @Field String accession;
+    @Id @Field("accession") String id;
+    @Field String accession;
     @Field String description;
 
     @Field(value = "updatedate") String updateDate;
@@ -127,9 +126,5 @@ public class Sample implements ResultQueryDocument {
 
     public void setXml(String xml) {
         this.xml = xml;
-    }
-
-    public String getDocumentType() {
-        return "BioSample";
     }
 }
