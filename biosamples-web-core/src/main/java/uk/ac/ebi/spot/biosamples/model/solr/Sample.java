@@ -26,10 +26,11 @@ public class Sample {
 
     @Id @Field("accession") String id;
     @Field String accession;
+    @Field String name;
     @Field String description;
 
-    @Field(value = "updatedate") String updateDate;
-    @Field(value = "releasedate") String releaseDate;
+    @Field("updatedate") String updateDate;
+    @Field("releasedate") String releaseDate;
 
     // collection of all characteristics as key/list of value pairs
     @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
@@ -39,28 +40,23 @@ public class Sample {
     @Field("*_crt_json")
     Map<String, List<String>> characteristics;
 
-    // XML payload for this sample - don't return in REST API
-    @Field("xmlAPI") @JsonIgnore String xml;
+    // collection of all external reference names
+    @JsonIgnore @Field("external_references_name") List<String> externalReferencesNames;
+
+    // external references
+    @JsonSerialize(using = ExternalReferencesSerializer.class)
+    @Field("external_references_json")
+    String externalReferences;
+
+    // group metadata
+    @Field("sample_grp_accessions") List<String> groupAccession;
 
     // submission metadata
     @Field("submission_acc") String submissionAccession;
     @Field("submission_title") String submissionTitle;
 
-    public String getSubmissionAccession() {
-        return submissionAccession;
-    }
-
-    public void setSubmissionAccession(String submissionAccession) {
-        this.submissionAccession = submissionAccession;
-    }
-
-    public String getSubmissionTitle() {
-        return submissionTitle;
-    }
-
-    public void setSubmissionTitle(String submissionTitle) {
-        this.submissionTitle = submissionTitle;
-    }
+    // XML payload for this sample - don't return in REST API
+    @Field("api_xml") @JsonIgnore String xml;
 
     public String getAccession() {
         return accession;
@@ -68,6 +64,14 @@ public class Sample {
 
     public void setAccession(String accession) {
         this.accession = accession;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -78,20 +82,20 @@ public class Sample {
         this.description = description;
     }
 
-    public LocalDate getReleaseDate() throws ParseException {
-        return releaseDate == null ? null : LocalDate.from(solrDateFormatter.parse(releaseDate));
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
     public LocalDate getUpdateDate() throws ParseException {
         return updateDate == null ? null : LocalDate.from(solrDateFormatter.parse(updateDate));
     }
 
     public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public LocalDate getReleaseDate() throws ParseException {
+        return releaseDate == null ? null : LocalDate.from(solrDateFormatter.parse(releaseDate));
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public Map<String, List<String>> getCharacteristicsText() {
@@ -118,6 +122,38 @@ public class Sample {
 
     public void setCharacteristics(Map<String, List<String>> characteristics) {
         this.characteristics = characteristics;
+    }
+
+    public String getExternalReferences() {
+        return externalReferences;
+    }
+
+    public void setExternalReferences(String externalReferences) {
+        this.externalReferences = externalReferences;
+    }
+
+    public List<String> getGroupAccession() {
+        return groupAccession;
+    }
+
+    public void setGroupAccession(List<String> groupAccession) {
+        this.groupAccession = groupAccession;
+    }
+
+    public String getSubmissionAccession() {
+        return submissionAccession;
+    }
+
+    public void setSubmissionAccession(String submissionAccession) {
+        this.submissionAccession = submissionAccession;
+    }
+
+    public String getSubmissionTitle() {
+        return submissionTitle;
+    }
+
+    public void setSubmissionTitle(String submissionTitle) {
+        this.submissionTitle = submissionTitle;
     }
 
     public String getXml() {

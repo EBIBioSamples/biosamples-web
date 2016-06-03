@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
@@ -25,11 +26,13 @@ public class CharacteristicMappingsSerializer extends JsonSerializer<Map<String,
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode object = mapper.createObjectNode();
         for (String crt : characteristicMappings.keySet()) {
+            ArrayNode array = mapper.createArrayNode();
             for (String jsonFromSolr : characteristicMappings.get(crt)) {
                 // parse json from solr
                 JsonNode json = mapper.readTree(jsonFromSolr);
-                object.set(crt, json);
+                array.add(json);
             }
+            object.set(crt, array);
         }
         jsonGenerator.writeObject(object);
     }
