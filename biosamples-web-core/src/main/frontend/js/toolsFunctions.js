@@ -486,14 +486,14 @@ function draw(svg,nodeData,vm){
 		}
 	  	document.getElementById("textData").innerHTML+='</p>';
 
-	  	// var loadedStuff = loadNode(d.accession,vm);
-	  	// console.log("loadedStuff : ");console.log(loadedStuff);
+	  	var loadedStuff = loadNode(d.accession,vm);
+	  	console.log("loadedStuff : ");console.log(loadedStuff);
 
 		// Exemples to try functions to add and remove elements
 		// removeNode( nodeData, d.accession, force );
 		// addNode( nodeData,"tagadaTest",force );
 		console.log("d : ");console.log(d);
-		addLink(nodeData,d.accession,d.sample_grp_accessions[0],force,"MEMBERSHIP");
+		// addLink(nodeData,d.accession,d.sample_grp_accessions[0],force,"MEMBERSHIP");
 
 	})
 	.on("mouseup",function(d){
@@ -1331,22 +1331,35 @@ function loadNode(nodeAccession,vm){
 	}
 	url = root + nodeAccession+"/graph"
 	var arrayRelationships = [];
-	vm.$http.get(url)
-		.then(function(results) {
-	    	return {"nodes":  results.nodes, "edges" : results.edges };
-	    })
-	    .catch(function(data,status,response){
-	        console.log("data");console.log(data);
-	        console.log("status");console.log(status);
-	        console.log("response");console.log(response);
-	    })
+	// vm.$http.get(url)
+	// 	.then(function(results) {
+	//     	console.log("results : ");console.log(results);
+	//     	return {"nodes":  results.nodes, "edges" : results.edges };
+	//     })
+	//     .catch(function(data,status,response){
+	//         console.log("data");console.log(data);
+	//         console.log("status");console.log(status);
+	//         console.log("response");console.log(response);
+	//     })
 
-	// jQuery.getJSON( url, function (data){  
-	// 	// whatever you want to do with the data, the function is called after completion of the webservice call  
-	// 	console.log("data : ");console.log(data);
-	// })	
-	// .fail(function(error){
-	// 	// This is executed in case of failure of the webservoce call. So something like console.log("Error, error")
-	// 	console.log("error : ");console.log(error);
-	// });
+	var nodesObject = {};
+
+	jQuery.getJSON( url, function (data){
+		// whatever you want to do with the data, the function is called after completion of the webservice call  
+		console.log("data : ");console.log(data);
+		console.log("data.nodes : ");console.log(data.nodes);
+		console.log("data.edges : ");console.log(data.edges);
+		var nodes = data.nodes; var edges = data.edges;
+		// return {"nodes": nodes, "edges" : edges };
+		nodesObject = {"nodes": nodes, "edges" : edges };
+	})
+	.fail(function(error){
+		// This is executed in case of failure of the webservice call.
+		console.log("error : ");console.log(error);
+	})
+	.always(function(){
+		console.log("Always");
+	})
+	;
+	return nodesObject;
 }
