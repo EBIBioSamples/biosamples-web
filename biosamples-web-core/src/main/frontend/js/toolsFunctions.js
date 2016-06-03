@@ -10,9 +10,20 @@ function getRandomColor() {
   return color;
 }
 
-// TODO Incorporation of code from searchComponents
-function loadBars(width,height,margin,results,dataBars){
+function hashCode(str) { // java String#hashCode
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+} 
 
+function intToRGB(i){
+    var c = (i & 0x00FFFFFF)
+        .toString(16)
+        .toUpperCase();
+
+    return "00000".substring(0, 6 - c.length) + c;
 }
 
 function getURLsFromObject(objectToRead,prop){
@@ -240,6 +251,10 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 				var id, source, target, nodeSource, nodeTarget, weight;
 				id = "link_"+nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].accession+"_"+nodeData.nodes[ nameToNodeIndex[ group] ].accession;
 				source = nameToNodeIndex[ groupsReturned[group][i] ]; target = nameToNodeIndex[ group ];
+				console.log("####");
+				console.log("source : ");console.log(source);
+				console.log("target : ");console.log(target);
+				console.log("####");
 				nodeSource = nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]; nodeTarget = nodeData.nodes[ nameToNodeIndex[ group] ];
 				weight = Math.sqrt(groupsReturned[group].length);
 				console.log("right before push nodeData.links : ");console.log(nodeData.links);
@@ -367,8 +382,8 @@ function draw(svg,nodeData,vm){
 	.enter().append("line")
 	.attr("class", "link")
 	.attr("id",function(d){return d.id;})
-	.attr("source",function(d){return d.source;})
-	.attr("target",function(d){return d.target;})
+	.attr("source",function(d){ return d.source;})
+	.attr("target",function(d){ return d.target;})
 	.attr("nodeSource",function(d){ return d.nodeSource; })
 	.attr("nodeTarget",function(d){ return d.nodeTarget; })
 	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
@@ -471,12 +486,14 @@ function draw(svg,nodeData,vm){
 		}
 	  	document.getElementById("textData").innerHTML+='</p>';
 
-	  	var loadedStuff = loadNode(d.accession,vm);
-	  	console.log("loadedStuff : ");console.log(loadedStuff);
+	  	// var loadedStuff = loadNode(d.accession,vm);
+	  	// console.log("loadedStuff : ");console.log(loadedStuff);
 
 		// Exemples to try functions to add and remove elements
 		// removeNode( nodeData, d.accession, force );
 		// addNode( nodeData,"tagadaTest",force );
+		console.log("d : ");console.log(d);
+		addLink(nodeData,d.accession,d.sample_grp_accessions[0],force,"MEMBERSHIP");
 
 	})
 	.on("mouseup",function(d){
@@ -996,67 +1013,6 @@ function displayRevertingFilters( results,vm ){
     });
 }
 
-// var update = function (force,nodes,links) {
-// 	console.log("update");
-// 	var vis = d3.select("#vizSpotRelations");
-// 	var link = vis.selectAll("line")
-// 		.data(links, function (d) {
-// 			return d.source.id + "-" + d.target.id;
-// 		});
-
-//     link.enter().append("line")
-//             .attr("id", function (d) {
-//                 return d.source.id + "-" + d.target.id;
-//             })
-//             .attr("stroke-width", function (d) {
-//                 return d.value / 10;
-//             })
-//     link.append("title")
-//             .text(function (d) {
-//                 return d.value;
-//             });
-//     link.exit().remove();
-
-//     var node = vis.selectAll("g.node")
-//             .data(nodes, function (d) {
-//                 return d.id;
-//             });
-
-//     var nodeEnter = node.enter().append("g")
-//             .attr("class", "node")
-//             .call(force.drag);
-
-//     nodeEnter.append("svg:circle")
-//             .attr("r", 12)
-//             .attr("id", function (d) {
-//                 return "Node;" + d.id;
-//             })
-//             .attr("fill", function(d) { return color(d.id); });
-
-//     nodeEnter.append("svg:text")
-//             .attr("class", "node")
-//             .text(function (d) {
-//                 return d.id;
-//             });
-
-//     node.exit().remove();
-
-//     // Restart the force layout.
-// 	var widthTitle = window.innerWidth;
-// 	var width = Math.floor((70 * window.innerWidth)/100);
-// 	var heightD3 = widthTitle/2;
-// 	var height=heightD3;
-
-//     var w = width, h = height;
-//     force
-// 	    .gravity(.01)
-// 	    .charge(-80000)
-// 	    .friction(0)
-// 	    .linkDistance( function(d) { return d.value * 10 } )
-// 	    .size([w, h])
-// 	    .start();
-// };
-
 function removeNode(nodeData,nodeAccession, force){
 	console.log("removeNode");
 	d3.select( "#node_"+nodeAccession ).remove();
@@ -1109,14 +1065,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		"id": nodeAccession
 	});
 
-	// nodeData.links.push({
-	// 	"id":"link_"+nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].accession+"_"+nodeData.nodes[ nameToNodeIndex[ group] ].accession,
-	// 	"source": nameToNodeIndex[ groupsReturned[group][i] ],
-	// 	"target": nameToNodeIndex[ group ],
-	// 	"nodeSource": nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ],
-	// 	"nodeTarget": nodeData.nodes[ nameToNodeIndex[ group] ] ,
-	// 	"weight": Math.sqrt(groupsReturned[group].length)
-	// })
 	console.log("nodeData.nodes[ nodeData.nodes.length-1 ] : ");
 	console.log(nodeData.nodes[ nodeData.nodes.length-1 ]);
 	console.log("svg : ");console.log(svg);
@@ -1131,17 +1079,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	// .append("g")
 	.attr("class","node")
 	.call(force.drag);
-
-	// var link = svg.selectAll(".link")
-	// .data(nodeData.links)
-	// .enter().append("line")
-	// .attr("class", "link")
-	// .attr("id",function(d){return d.id;})
-	// .attr("source",function(d){return d.source;})
-	// .attr("target",function(d){return d.target;})
-	// .attr("nodeSource",function(d){ return d.nodeSource; })
-	// .attr("nodeTarget",function(d){ return d.nodeTarget; })
-	// .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
 	node.append("circle")
 	.attr("r", function (d) { return d.radius * 3; })
@@ -1182,7 +1119,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	  		var value = d.responseDoc[i]+''; value = value.replace(/[^A-Za-z0-9]/g,"");
 	  		d3.select(this).attr( attr , value );
 	  	}
-	  	// console.log("d3.select(this)[0][0].attributes : ");console.log(d3.select(this)[0][0].attributes);
 	  	return d.responseDoc
 	  })
 	  .attr("name",function(d){return d.accession})
@@ -1309,9 +1245,75 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	console.log("---- addition passed ----");
 }
 
+// We can only create links of existing nodes. 
+function addLink(nodeData,accessionSource,accessionTarget,force,label){
+	console.log("---- addLink ----");
+	console.log("nodeData.links : ");console.log(nodeData.links);
+	var nodeSource, nodeTarget;
+	for (var i = 0; i < nodeData.nodes.length; i++){
+		if ( nodeData.nodes[i].accession == accessionSource){
+			nodeSource = nodeData.nodes[i];
+		} else if ( nodeData.nodes[i].accession == accessionTarget){
+			nodeTarget = nodeData.nodes[i];
+		}
+	}
 
-function addLink(nodeData,accessionSource,accessionTarget,force){
+	if (typeof nodeSource !== "undefined" && typeof nodeTarget !== "undefined"){
+		nodeData.links.push({
+			"id":"link_"+accessionSource+"_"+accessionTarget,
+			"source": nodeSource.index,
+			"target": nodeTarget.index,
+			"nodeSource": nodeSource,
+			"nodeTarget": nodeTarget,
+			"weight": 10,
+			"label":label
+		});
 
+		// var link = svg.selectAll(".link")
+		var link = d3.selectAll("#vizSpotRelations").select("g").selectAll(".link")
+		.data(nodeData.links)
+		.enter()
+		// .append("line")
+		.insert("line")
+		.attr("class", "link")
+		.attr("id",function(d){return d.id;})
+		.style("stroke", function(d) {return "#F00";})
+		.attr("source",function(d){return d.source;})
+		.attr("target",function(d){return d.target;})
+		.attr("nodeSource",function(d){ return d.nodeSource; })
+		.attr("nodeTarget",function(d){ return d.nodeTarget; })
+		.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+
+		force
+		.nodes(nodeData.nodes)
+		.links(nodeData.links)
+		.start()
+		;
+
+		// Force rules:
+		force.on("tick", function() {
+			link.attr("x1", function(d) {return d.source.x;})
+			.attr("y1", function(d) {return d.source.y; })
+			.attr("x2", function(d) {return d.target.x; })
+			.attr("y2", function(d) {return d.target.y; })
+			;
+
+			// Check if within node there is a class node dragging
+			// if so, translate by 0
+			// var isDragging = false;
+			// var accessionDragged = '';
+			// var elements = svg.selectAll('g');
+			// for (var i=0; i < elements[0].length; i++){
+			//   	if ( elements[0][i].classList.length > 1 ){
+			//   		isDragging = true;
+			//  		accessionDragged = elements[0][i].accession;
+			// 	}
+			// }
+			// node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+		});
+	} else {
+		console.log("You can not create a link in between non existing nodes");
+	}
 }
 
 function loadNode(nodeAccession,vm){
