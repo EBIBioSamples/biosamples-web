@@ -5,6 +5,11 @@
       th:with="currentPage = 'samples'">
 <head>
     <title th:text="${sample.accession}">SAMEAxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
+
+    <link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
+
 </head>
 <body>
 
@@ -79,8 +84,117 @@
                     <!--<a href="../group/SAMEG39304"><id>SAMEG39304</id></a>-->
                 </td>
             </tr>
+
+
+
+            <tr>
+                <td th:if="${!derivedFrom.isEmpty()}">
+                    <b>Derived from: </b></td><td>
+                <a th:each="item : ${derivedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <!-- old try -->
+
+
+            <!--
+                            <tr>
+                                <td th:if="!$#lists.isEmpty(derivedFrom)}">
+                                    <b>Derived from: </b></td><td>
+                                  <a th:each="item : ${relations.derivedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                            </td>
+                            </tr>-->
+
+
+                <tr>
+                    <td th:if="!${derivedTo.isEmpty()}">
+                        <b>Derived to: </b></td><td>
+                    <a th:each="item : ${derivedTo}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                </td>
+                </tr>
+
+                <tr>
+                    <td th:if="!${childOf.isEmpty()}">
+                        <b>Children: </b></td><td>
+                    <a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                </td>
+                </tr>
+
+                <tr>
+                    <td th:if="!${sameAs.isEmpty()}">
+                        <b>Same as: </b></td><td>
+                    <a th:each="item : ${sameAs}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                </td>
+                </tr>
+
+
+                <tr>
+                    <td th:if="!${curatedInto.isEmpty()}">
+                        <b>Manually curated into: </b></td><td>
+                    <a th:each="item : ${curatedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                </td>
+                </tr>
+
+                <tr>
+                    <td th:if="!${curatedFrom.isEmpty()}">
+                        <b>Manually curated from: </b></td><td>
+                    <a th:each="item : ${curatedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                </td>
+                </tr>
+
+
+                <!-- RESTY legacy part, can be removed if Rest Template approach works
+                <tr>
+                    <td th:if="${derivedFrom!=null}">
+                        <b>Derived from: </b></td><td>
+                        <a th:each="item : ${derivedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td th:if="${derivedTo!=null}">
+                        <b>Derived to: </b></td><td>
+                        <a th:each="item : ${derivedTo}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td th:if="${childOf!=null}">
+                        <b>Children: </b></td><td>
+                        <a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td th:if="${sameAs!=null}">
+                        <b>Same as: </b></td><td>
+                        <a th:each="item : ${sameAs}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td th:if="${curatedInto!=null}">
+                        <b>Manually curated into: </b></td><td>
+                        <a th:each="item : ${curatedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td th:if="${curatedFrom!=null}">
+                        <b>Manually curated from: </b></td><td>
+                        <a th:each="item : ${curatedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+                    </td>
+                </tr>
+                -->
+
+
             </tbody>
         </table>
+    </div>
+    <div id="samples">
+        <br><br><hr><h4>Samples Relations</h4>
+        <div id="ontology_vis">
+        </div>
     </div>
 </main>
 
@@ -88,6 +202,10 @@
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
 </th:block>
 
+
+<th:block layout:fragment="custom-endpage-scripts">
+    <script th:src="@{/javascript/relationsVis.js}"></script>
+</th:block>
 
 </body>
 </html>

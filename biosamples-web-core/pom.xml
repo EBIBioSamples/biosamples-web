@@ -85,6 +85,37 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
+
+
+
+
+		<!-- Dependency FOR JSON simple, used for the internal webservice call to NEO -->
+		<dependency>
+			<groupId>us.monoid.web</groupId>
+			<artifactId>resty</artifactId>
+			<version>0.3.2</version>
+		</dependency>
+
+
+		<!-- Including the neo4j model in the project-->
+		<dependency>
+			<groupId>uk.ac.ebi.biosamples.relations</groupId>
+			<artifactId>model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+
+		<!-- PLAYGROUND -->
+
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+
+		<!-- END OF PLAYGROUND -->
+
 	</dependencies>
 
 	<build>
@@ -173,6 +204,33 @@
 					</execution>
 				</executions>
 			</plugin>
+
+
+
+
+			<!-- Experimental - Not needed if we don't include the model as jar
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<groupId>uk.ac.ebi.biosamples.relations</groupId>
+							<artifactId>model</artifactId>
+							<version>0.0.1-SNAPSHOT</version>
+							<packaging>jar</packaging>
+							<file>/Users/tliener/biosamples/relations/relations-model/target/model-0.0.1-SNAPSHOT.jar</file>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			 Experimental END -->
+
 		</plugins>
 	</build>
 

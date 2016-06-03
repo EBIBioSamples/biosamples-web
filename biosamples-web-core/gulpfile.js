@@ -13,5 +13,6 @@ elixir(function(mix) {
         })
 	 	.sass('main_samelf.scss')
 	 	.browserify('searchComponents.js')
+        .browserify('relationsVis.js')
 	 	.scripts('toolsFunctions.js')
 });

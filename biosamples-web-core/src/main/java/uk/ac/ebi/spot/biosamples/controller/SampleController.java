@@ -1,10 +1,11 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
+
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.databind.util.JSONWrappedObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,10 +14,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
+import us.monoid.web.JSONResource;
+import us.monoid.web.Resty;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 /**
  * Javadocs go here!
@@ -27,13 +35,59 @@ import java.util.Map;
 @Controller
 public class SampleController {
     @Autowired private SampleRepository sampleRepository;
+    //@Autowired private uk.ac.ebi.biosamples.relations.repo.SampleRepository neo4jSampleRepository;
+
 
     @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
-    public String sample(Model model, @PathVariable String accession) {
+    public String sample(Model model, @PathVariable String accession, HttpServletRequest request) {
         Sample sample = sampleRepository.findOne(accession);
         model.addAttribute("sample", sample);
+
+        //This parses the current URL and adds the bits to reach the relations endpoint
+        String currentURL = request.getRequestURL().toString();
+        String relationsURL = currentURL.substring(0, currentURL.indexOf("/sample/")) + "/samples/" + accession + "/biosamplesWeb";
+
+        /*----Just for localhost testing, deactivate this line on server, the URL is set above (!)--------*/
+        relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
+        /* ------------------------------------------------------------------------------------------------*/
+
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        JSONObject result = restTemplate.getForObject(relationsURL, JSONObject.class);
+
+        JSONParser parser = new JSONParser();
+
+        /*  Part to test the template/parsing with dummy data - without having to ask the endpoint for different samples
+        try {
+            result=(JSONObject) parser.parse("{\"derivedFrom\":[\"Test1\", \"Test2\"],\"childOf\":[\"SMAEA22032\"],\"ReCuratedInto\":[\"SMAE2\"],\"derivedTo\":[\"XXX\"],\"ReCuratedFrom\":[],\"sameAs\":[\"same as reply\"]}\n");
+
+        }catch(Exception e){System.out.println(e);}*/
+
+        System.out.println(result);
+
+        model.addAttribute("derivedFrom",result.get("derivedFrom"));
+        System.out.println(result.get("derivedFrom"));
+
+        model.addAttribute("derivedTo",result.get("derivedTo"));
+        System.out.println(result.get("derivedTo"));
+
+        model.addAttribute("childOf",result.get("childOf"));
+        System.out.println(result.get("childOf"));
+
+        model.addAttribute("sameAs",result.get("sameAs"));
+        System.out.println(result.get("sameAs"));
+
+        model.addAttribute("curatedInto",result.get("ReCuratedInto"));
+        System.out.println(result.get("curatedInto"));
+
+        model.addAttribute("curatedFrom",result.get("\"ReCuratedFrom"));
+        System.out.println(result.get("curatedFrom"));
+
+
         return "sample";
     }
+
 
     @RequestMapping(value = "sample/{accession}",
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
@@ -57,7 +111,6 @@ public class SampleController {
             return sample.getXml();
         }
     }
-
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
