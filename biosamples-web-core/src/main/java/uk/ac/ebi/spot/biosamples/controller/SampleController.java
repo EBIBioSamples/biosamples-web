@@ -1,8 +1,5 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
-
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.fasterxml.jackson.databind.util.JSONWrappedObject;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
-import us.monoid.web.JSONResource;
-import us.monoid.web.Resty;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 
 /**
  * Javadocs go here!
@@ -35,8 +26,6 @@ import java.util.List;
 @Controller
 public class SampleController {
     @Autowired private SampleRepository sampleRepository;
-    //@Autowired private uk.ac.ebi.biosamples.relations.repo.SampleRepository neo4jSampleRepository;
-
 
     @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String sample(Model model, @PathVariable String accession, HttpServletRequest request) {
@@ -48,7 +37,7 @@ public class SampleController {
         String relationsURL = currentURL.substring(0, currentURL.indexOf("/sample/")) + "/samples/" + accession + "/biosamplesWeb";
 
         /*----Just for localhost testing, deactivate this line on server, the URL is set above (!)--------*/
-        relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
+        //relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
         /* ------------------------------------------------------------------------------------------------*/
 
 
@@ -61,9 +50,10 @@ public class SampleController {
         /*  Part to test the template/parsing with dummy data - without having to ask the endpoint for different samples
         try {
             result=(JSONObject) parser.parse("{\"derivedFrom\":[\"Test1\", \"Test2\"],\"childOf\":[\"SMAEA22032\"],\"ReCuratedInto\":[\"SMAE2\"],\"derivedTo\":[\"XXX\"],\"ReCuratedFrom\":[],\"sameAs\":[\"same as reply\"]}\n");
-
         }catch(Exception e){System.out.println(e);}*/
 
+
+        //System.outs of course can be removed once we trust everything!
         System.out.println(result);
 
         model.addAttribute("derivedFrom",result.get("derivedFrom"));
@@ -79,11 +69,10 @@ public class SampleController {
         System.out.println(result.get("sameAs"));
 
         model.addAttribute("curatedInto",result.get("ReCuratedInto"));
-        System.out.println(result.get("curatedInto"));
+        System.out.println(result.get("ReCuratedInto"));
 
-        model.addAttribute("curatedFrom",result.get("\"ReCuratedFrom"));
-        System.out.println(result.get("curatedFrom"));
-
+        model.addAttribute("curatedFrom",result.get("ReCuratedFrom"));
+        System.out.println(result.get("ReCuratedFrom"));
 
         return "sample";
     }
