@@ -22,7 +22,7 @@ import javax.validation.constraints.NotNull;
 @Configuration
 @EnableAutoConfiguration
 @EnableSolrRepositories(multicoreSupport = true)
-public class BiosamplesWebConfiguration extends WebMvcConfigurerAdapter {
+public class BiosamplesWebCoreConfiguration extends WebMvcConfigurerAdapter {
     @NotNull @Value("${solr.server}")
     private String solrServerUrl;
 
