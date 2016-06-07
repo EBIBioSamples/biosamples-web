@@ -12,10 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.model.solr.Group;
 import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
+
+import java.util.Map;
 
 /**
  * Javadocs go here!
@@ -58,6 +61,31 @@ public class GroupController {
         }
     }
 
+    @RequestMapping(value = "xml/group", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String groupXmlQuery(
+            @RequestParam(value = "query") String searchTerm,
+            @RequestParam(value = "sortby", defaultValue = "score") String sortBy,
+            @RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
+            @RequestParam(value = "pagesize", defaultValue = "10") int pageSize,
+            @RequestParam(value = "page", defaultValue = "1") int page) {
+        Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
+        PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
+        Page<Group> results = groupRepository.findByAccession(searchTerm,querySpec);
+        ResultQuery rq = new GroupResultQuery(results);
+        return rq.renderDocument();
+    }
+
+    @RequestMapping(value = "xml/group/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String legacyGroupXmlQueryRedirect(@PathVariable String query){
+        Map<String,String> paramMap = LegacyApiQueryParser.parseLegacyQueryFormat(query);
+        return groupXmlQuery(
+                paramMap.get("query"),
+                paramMap.get("sortby"),
+                paramMap.get("sortorder"),
+                Integer.parseInt(paramMap.get("pagesize")),
+                Integer.parseInt(paramMap.get("page")));
+
+    }
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
