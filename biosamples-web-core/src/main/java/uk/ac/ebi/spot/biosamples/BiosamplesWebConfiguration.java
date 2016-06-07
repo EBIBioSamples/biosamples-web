@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.solr.repository.config.EnableSolrRepositories;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,7 +22,7 @@ import javax.validation.constraints.NotNull;
 @Configuration
 @EnableAutoConfiguration
 @EnableSolrRepositories(multicoreSupport = true)
-public class BiosamplesWebConfiguration {
+public class BiosamplesWebConfiguration extends WebMvcConfigurerAdapter {
     @NotNull @Value("${solr.server}")
     private String solrServerUrl;
 
@@ -28,4 +31,12 @@ public class BiosamplesWebConfiguration {
         return new HttpSolrServer(solrServerUrl);
     }
 
+    @Override public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("index");
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/api/**").allowedMethods("GET");
+    }
 }
