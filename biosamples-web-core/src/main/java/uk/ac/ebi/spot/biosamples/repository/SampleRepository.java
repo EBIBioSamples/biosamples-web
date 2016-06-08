@@ -14,7 +14,7 @@ import uk.ac.ebi.spot.biosamples.model.solr.Sample;
  * @author Tony Burdett
  * @date 10/02/16
  */
-public interface SampleRepository extends SolrCrudRepository<Sample, String> {
+public interface SampleRepository extends ReadOnlySolrRepository<Sample, String> {
 
     @Query(value = "?0", fields = { "accession"} )
     Page<Sample> find(@Param("keyword") String keyword, Pageable page);
