@@ -37,7 +37,7 @@ public class SampleController {
         String relationsURL = currentURL.substring(0, currentURL.indexOf("/sample/")) + "/samples/" + accession + "/biosamplesWeb";
 
         /*----Just for localhost testing, deactivate this line on server, the URL is set above (!)--------*/
-        //relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
+        relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
         /* ------------------------------------------------------------------------------------------------*/
 
 
@@ -64,6 +64,9 @@ public class SampleController {
 
         model.addAttribute("childOf",result.get("childOf"));
         System.out.println(result.get("childOf"));
+
+        model.addAttribute("parentOf",result.get("parentOf"));
+        System.out.println(result.get("parentOf"));
 
         model.addAttribute("sameAs",result.get("sameAs"));
         System.out.println(result.get("sameAs"));
