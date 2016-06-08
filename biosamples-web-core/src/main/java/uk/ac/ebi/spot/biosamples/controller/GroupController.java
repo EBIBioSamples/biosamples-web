@@ -73,7 +73,7 @@ public class GroupController {
             @RequestParam(value = "sortby", defaultValue = "score") String sortBy,
             @RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
             @RequestParam(value = "pagesize", defaultValue = "10") int pageSize,
-            @RequestParam(value = "page", defaultValue = "1") int page) {
+            @RequestParam(value = "page", defaultValue = "0") int page) {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
         PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
         Page<Group> results = groupRepository.findByAccession(searchTerm,querySpec);
