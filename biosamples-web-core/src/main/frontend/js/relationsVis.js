@@ -12,31 +12,34 @@ var term=tmp.split("").reverse().join("")
 function sampleOrGroup(accession){
     var isGroup=accession.substring(0,5).indexOf("G")
     if (isGroup===-1)
-    {
-        console.log("It's a sample!")
-        return "samples"
-    }
+    {   return "samples"    }
     else
-    {
-        console.log("It is a group!")
-        return "groups"
+    {   return "groups"     }
+}
+
+
+//This function parses the relations URL out the sample biosamples url
+function parseURL(urlparsing){
+
+if (urlparsing.substring(0,16)==="http://localhost")
+    {   //if the url is localhost, return the 8081 endpoint - it is expected that the relations API runs at this port
+        return "http://localhost:8081/";
+    }
+else {
+    //This part parses the url if it is not localhost, preparing the url for requests for relations API
+    var reversed = urlparsing.split("").reverse().join("");
+    var base = reversed.substring(reversed.indexOf("/")+1, reversed.length)
+    base=base.substring(base.indexOf("/"), base.length)
+    var baseurl = base.split("").reverse().join("")
+    baseurl = baseurl + "relations/"
+    return baseurl
     }
 }
 
-/* Silly way to check if we are on a groups or sampes page*/
-//if (document.getElementById("samples")!=null)
-//    path="samples"
-//if (document.getElementById("groups")!=null)
-//    path="groups"
 
-
-
-var graphURL="http://localhost:8081/"+sampleOrGroup(term)+"/"+term+"/graph"
-
-console.log("This is a .... ")
-sampleOrGroup(term)
-
-
+console.log(parseURL("http://beans:9480/biosamples/sample/SAMEA2799418")+sampleOrGroup(term)+"/"+term+"/graph")
+var graphURL=parseURL(url)+sampleOrGroup(term)+"/"+term+"/graph"
+console.log(graphURL)
 
 var app = require("ols-graphview");
 var tmpnetworkOptions={
@@ -46,9 +49,15 @@ var tmpnetworkOptions={
     callbacks: {
 
             onSelectNode:function(params){console.log(params); console.log(params.nodes[0]);
-            instance.fetchNewGraphData("http://beans:9480/biosamples/relations/"+sampleOrGroup(params.nodes[0])+"/"+params.nodes[0]+"/graph")},
-            onDoubleClick:function(params){console.log(params); },
-            onSelectEdge:function(params){console.log(params); }
+                console.log("Selected");
+                instance.fetchNewGraphData("http://localhost:8081/"+sampleOrGroup(params.nodes[0])+"/"+params.nodes[0]+"/graph")
+            },
+            onDoubleClick:function(params){
+                console.log("Double click!")
+                //Have to be funky and get rid of the last letter,namly an s to turn sampleS/groupS to sample/group
+                window.location=parseURL(url)+sampleOrGroup(params.nodes[0]).substring(0,sampleOrGroup(params.nodes[0]).length-1)+"/"+params.nodes[0];
+             },
+            onSelectEdge:function(params){}
     },
     loadingBar :{
         pictureURL: "../images/loading.gif",

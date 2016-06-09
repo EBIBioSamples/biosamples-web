@@ -104,14 +104,14 @@
 
             <tr>
                 <td th:if="!${childOf.isEmpty()}">
-                    <b>Children: </b></td><td>
+                    <b>Offspring from</b></td><td>
                  <a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
             </td>
             </tr>
 
             <tr>
                 <td th:if="!${parentOf.isEmpty()}">
-                    <b>Parent:</b></td><td>
+                    <b>Offspring to</b></td><td>
                 <a th:each="item : ${parentOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
             </td>
             </tr>
@@ -125,14 +125,14 @@
 
             <tr>
                 <td th:if="!${curatedInto.isEmpty()}">
-                    <b>Manually curated into: </b></td><td>
+                    <b>Re-curated into: </b></td><td>
                 <a th:each="item : ${curatedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
             </td>
             </tr>
 
             <tr>
                 <td th:if="!${curatedFrom.isEmpty()}">
-                    <b>Manually curated from: </b></td><td>
+                    <b>Re-curated from: </b></td><td>
                 <a th:each="item : ${curatedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
             </td>
             </tr>

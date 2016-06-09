@@ -54,28 +54,15 @@ public class SampleController {
 
 
         //System.outs of course can be removed once we trust everything!
-        System.out.println(result);
+        //System.out.println(result);
 
         model.addAttribute("derivedFrom",result.get("derivedFrom"));
-        System.out.println(result.get("derivedFrom"));
-
         model.addAttribute("derivedTo",result.get("derivedTo"));
-        System.out.println(result.get("derivedTo"));
-
         model.addAttribute("childOf",result.get("childOf"));
-        System.out.println(result.get("childOf"));
-
         model.addAttribute("parentOf",result.get("parentOf"));
-        System.out.println(result.get("parentOf"));
-
         model.addAttribute("sameAs",result.get("sameAs"));
-        System.out.println(result.get("sameAs"));
-
         model.addAttribute("curatedInto",result.get("ReCuratedInto"));
-        System.out.println(result.get("ReCuratedInto"));
-
         model.addAttribute("curatedFrom",result.get("ReCuratedFrom"));
-        System.out.println(result.get("ReCuratedFrom"));
 
         return "sample";
     }
