@@ -5,6 +5,12 @@
       th:with="currentPage = 'groups'">
 <head>
     <title th:text="${group.accession}">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
+
+    <link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
+
+
 </head>
 <body>
 
@@ -77,6 +83,20 @@
             </table>
         </div>
     </div>
+    <!-- New part Vis-->
+    <div >
+        <br><br><hr><h4 id="groups">Group Relations</h4>
+        <div id="ontology_vis">
+        </div>
+    </div>
+
+
 </div>
+
+
+<th:block layout:fragment="custom-endpage-scripts">
+    <script th:src="@{/javascript/relationsVis.js}"></script>
+</th:block>
+
 </body>
 </html>
