@@ -52,7 +52,7 @@ public abstract class ResultQuery<T> {
         Element total = new Element("Total",XMLNS).setText(Long.toString(totalElementsValue));
         Element from = new Element("From",XMLNS).setText(Integer.toString(resultsFromValue));
         Element to = new Element("To",XMLNS).setText(Long.toString(resultsToValue));
-        Element pageNumber = new Element("PageNumber",XMLNS).setText(Integer.toString(pageNumberValue));
+        Element pageNumber = new Element("PageNumber",XMLNS).setText(Integer.toString(pageNumberValue + 1));
         Element pageSize = new Element("PageSize",XMLNS).setText(Integer.toString(pageSizeValue));
 
         summary.addContent(total);
