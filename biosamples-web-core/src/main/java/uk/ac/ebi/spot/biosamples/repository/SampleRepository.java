@@ -19,6 +19,8 @@ import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 public interface SampleRepository extends SolrCrudRepository<Sample, String> {
     Page<Sample> findByAccession(@Param("accession") String accession, Pageable page);
 
+    Page<Sample> findByKeywords(@Param("keyword") String keyword);
+
     Page<Sample> findByAccessionAndGroupsContains(@Param("accession") String accession, @Param("group") String group, Pageable page);
 
     Page<Sample> findByKeywordsAndGroupsContains(@Param("keyword") String keyword, @Param("group") String group, Pageable page);

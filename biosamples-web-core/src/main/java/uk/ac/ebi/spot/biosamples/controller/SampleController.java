@@ -1,5 +1,7 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
+import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.SampleResultQuery;
@@ -36,6 +39,12 @@ import java.util.Map;
 @CrossOrigin(methods = RequestMethod.GET)
 public class SampleController {
     @Autowired private SampleRepository sampleRepository;
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
+    protected Logger getLog() {
+        return log;
+    }
 
     @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String sample(Model model, @PathVariable String accession) {
@@ -105,7 +114,6 @@ public class SampleController {
             @RequestParam(value = "page", defaultValue = "0") int page) {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
         PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
-//        Page<Sample> results = sampleRepository.findByAccessionAndGroupsContains(searchTerm, groupAccession, querySpec);
         Page<Sample> results = sampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession, querySpec);
         ResultQuery rq = new SampleResultQuery(results);
         return rq.renderDocument();
@@ -126,11 +134,20 @@ public class SampleController {
     }
 
     @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleNPE(NullPointerException e) {
-        e.printStackTrace();
+        getLog().error("There is no XML available for this accession - return NOT_FOUND response", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>("There is no XML available for this accession", headers, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>("There is no XML available for this accession", headers, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(RequestParameterSyntaxException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleRPSE(RequestParameterSyntaxException e) {
+        getLog().error("Failed to parse legacy query request", e);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(), headers, HttpStatus.BAD_REQUEST);
     }
 }
