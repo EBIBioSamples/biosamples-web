@@ -49,6 +49,16 @@
                     </div>
                 </td>
             </tr>
+            
+            <!-- update times metadata -->
+            <tr>
+                <td class="col_title"><b>Release Date :</b></td>
+                <td th:text="${sample.releaseDate}"></td>
+            </tr>
+            <tr>
+                <td class="col_title"><b>Last Updated :</b></td>
+                <td th:text="${sample.updateDate}"></td>
+            </tr>
 
             <!-- Dedicated organism attribute -->
             <tr th:if="${#maps.containsKey(sample.characteristics, 'organism') and #arrays.length(sample.characteristics.organism) > 0}">
@@ -71,27 +81,19 @@
             </tr>
             <!-- end all characteristics -->
 
-            <!-- update times metadata -->
-            <tr>
-                <td class="col_title"><b>Release Date :</b></td>
-                <td th:text="${sample.releaseDate}"></td>
-            </tr>
-            <tr>
-                <td class="col_title"><b>Last Updated :</b></td>
-                <td th:text="${sample.updateDate}"></td>
-            </tr>
-            <tr>
-                <td class="col_title"><b>Databases :</b></td>
-                <td th:if="${#maps.isEmpty(sample.databases)}">None</td>
-                <td th:if="${not #maps.isEmpty(sample.databases)}">
-                    <p th:each="database : ${sample.databases}">
-                        <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none">
-                            <img th:src="@{/images/dblinks/hipsci_small_logo.png}">
-                        </a>
-                        <a th:text="${database.key}" th:href="${database.value}"></a>
-                    </p>
-                </td>
-            </tr>
+			<!-- Relationships in a table -->
+<!--             <tr> -->
+<!--                 <td class="col_title"><b>Databases :</b></td> -->
+<!--                 <td th:if="${#maps.isEmpty(sample.databases)}">None</td> -->
+<!--                 <td th:if="${not #maps.isEmpty(sample.databases)}"> -->
+<!--                     <p th:each="database : ${sample.databases}"> -->
+<!--                         <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none"> -->
+<!--                             <img th:src="@{/images/dblinks/hipsci_small_logo.png}"> -->
+<!--                         </a> -->
+<!--                         <a th:text="${database.key}" th:href="${database.value}"></a> -->
+<!--                     </p> -->
+<!--                 </td> -->
+<!--             </tr> -->
             <tr>
                 <td class="col_title"><b>Groups :</b></td>
                 <td th:if="${#lists.isEmpty(sample.groups)}">None</td>
