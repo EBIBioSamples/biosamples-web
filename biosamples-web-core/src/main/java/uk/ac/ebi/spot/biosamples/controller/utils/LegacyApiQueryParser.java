@@ -17,7 +17,7 @@ public class LegacyApiQueryParser {
         customParam.put("query","");
         customParam.put("sortby","score");
         customParam.put("sortorder","desc");
-        customParam.put("pagesize","10");
+        customParam.put("pagesize","25");
         customParam.put("page","0");
         for(String pair: paramPairs) {
             String[] keyValue = pair.split("=");

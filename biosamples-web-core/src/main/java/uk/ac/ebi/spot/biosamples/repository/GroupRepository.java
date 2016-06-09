@@ -16,4 +16,6 @@ import uk.ac.ebi.spot.biosamples.model.solr.Group;
  */
 public interface GroupRepository extends SolrCrudRepository<Group, String> {
     Page<Group> findByAccession(@Param("accession") String accession, Pageable page);
+
+    Page<Group> findByKeywords(@Param("keyword") String keyword, Pageable page);
 }
