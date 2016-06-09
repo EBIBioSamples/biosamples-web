@@ -3,3 +3,4 @@ solr.server.search.core-name        CORE
 spring.data.rest.base-path          /api
 spring.data.rest.default-page-size  50
 spring.thymeleaf.mode               LEGACYHTML5
+spring.relations.url                http://XXXX/relations/

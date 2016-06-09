@@ -3,6 +3,7 @@ package uk.ac.ebi.spot.biosamples.controller;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,19 +29,29 @@ import javax.servlet.http.HttpServletRequest;
 public class SampleController {
     @Autowired private SampleRepository sampleRepository;
 
+    @Value("${spring.relations.url}")
+    private String springRelationsURL;
+
     @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String sample(Model model, @PathVariable String accession, HttpServletRequest request) {
         Sample sample = sampleRepository.findOne(accession);
         model.addAttribute("sample", sample);
 
+
         //This parses the current URL and adds the bits to reach the relations endpoint
-        String currentURL = request.getRequestURL().toString();
-        String relationsURL = currentURL.substring(0, currentURL.indexOf("/sample/")) + "/samples/" + accession + "/biosamplesWeb";
+        //currentURL="http://beans:9480/biosamples/sample/SAMEA2399248";
+        /*That would be a way to parse the adress from url, but we do it now with properties
+        *String currentURL = request.getRequestURL().toString();
+        *String relationsURL = currentURL.substring(0, currentURL.indexOf("/sample/")) + "/relations/samples/" + accession + "/biosamplesWeb";
+        *System.out.println(relationsURL);
+        *System.out.println(springRelationsURL+"samples/"+accession+"/biosamplesWeb");
+        */
 
         /*----Just for localhost testing, deactivate this line on server, the URL is set above (!)--------*/
         //relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
         /* ------------------------------------------------------------------------------------------------*/
 
+        String relationsURL = springRelationsURL+"samples/"+accession+"/biosamplesWeb";
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -51,11 +62,9 @@ public class SampleController {
         /*  Part to test the template/parsing with dummy data - without having to ask the endpoint for different samples
         try {
             result=(JSONObject) parser.parse("{\"derivedFrom\":[\"Test1\", \"Test2\"],\"childOf\":[\"SMAEA22032\"],\"ReCuratedInto\":[\"SMAE2\"],\"derivedTo\":[\"XXX\"],\"ReCuratedFrom\":[],\"sameAs\":[\"same as reply\"]}\n");
-        }catch(Exception e){System.out.println(e);}*/
-
-
-        //System.outs of course can be removed once we trust everything!
-        //System.out.println(result);
+        }catch(Exception e){System.out.println(e);}
+        System.out.println(result);
+        */
 
         model.addAttribute("derivedFrom",result.get("derivedFrom"));
         model.addAttribute("derivedTo",result.get("derivedTo"));
