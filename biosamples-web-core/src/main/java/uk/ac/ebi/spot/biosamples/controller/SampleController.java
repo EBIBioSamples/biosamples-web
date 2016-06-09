@@ -38,7 +38,7 @@ public class SampleController {
         String relationsURL = currentURL.substring(0, currentURL.indexOf("/sample/")) + "/samples/" + accession + "/biosamplesWeb";
 
         /*----Just for localhost testing, deactivate this line on server, the URL is set above (!)--------*/
-        relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
+        //relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
         /* ------------------------------------------------------------------------------------------------*/
 
 
