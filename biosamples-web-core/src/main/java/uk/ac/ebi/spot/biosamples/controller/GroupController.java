@@ -46,26 +46,21 @@ public class GroupController {
         return log;
     }
 
-    @RequestMapping(value = "group/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
+    @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
         model.addAttribute("group", group);
         return "group";
     }
 
-    @RequestMapping(value = "group/{accession}",
+    @RequestMapping(value = "groups/{accession}",
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
                     method = RequestMethod.GET)
     public @ResponseBody Group groupJson(@PathVariable String accession) {
         return groupRepository.findOne(accession);
     }
 
-    @RequestMapping(value = "group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String groupXmlRedirect(@PathVariable String accession) {
-        return groupXml(accession);
-    }
-
-    @RequestMapping(value = "xml/group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String groupXml(@PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
         if (group.getXml().isEmpty()) {
@@ -76,7 +71,7 @@ public class GroupController {
         }
     }
 
-    @RequestMapping(value = "xml/group", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    @RequestMapping(value = "xml/groups", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String groupXmlQuery(
             @RequestParam(value = "query") String searchTerm,
             @RequestParam(value = "sortby", defaultValue = "score") String sortBy,
@@ -90,7 +85,17 @@ public class GroupController {
         return rq.renderDocument();
     }
 
-    @RequestMapping(value = "xml/group/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    @RequestMapping(value = "xml/groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String hybridGroupXml(@PathVariable String accession) {
+        return groupXml(accession);
+    }
+
+    @RequestMapping(value = "xml/group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String legacyGroupXml(@PathVariable String accession) {
+        return groupXml(accession);
+    }
+
+    @RequestMapping(value = "xml/groups/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String legacyGroupXmlQueryRedirect(@PathVariable String query){
         Map<String,String> paramMap = LegacyApiQueryParser.parseLegacyQueryFormat(query);
         return groupXmlQuery(

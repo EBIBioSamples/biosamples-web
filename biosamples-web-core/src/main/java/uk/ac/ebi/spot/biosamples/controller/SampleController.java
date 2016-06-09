@@ -46,26 +46,21 @@ public class SampleController {
         return log;
     }
 
-    @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
+    @RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String sample(Model model, @PathVariable String accession) {
         Sample sample = sampleRepository.findOne(accession);
         model.addAttribute("sample", sample);
         return "sample";
     }
 
-    @RequestMapping(value = "sample/{accession}",
+    @RequestMapping(value = "samples/{accession}",
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
                     method = RequestMethod.GET)
     public @ResponseBody Sample sampleJson(@PathVariable String accession) {
         return sampleRepository.findOne(accession);
     }
 
-    @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String sampleXmlRedirect(@PathVariable String accession) {
-        return sampleXml(accession);
-    }
-
-    @RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    @RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String sampleXml(@PathVariable String accession) {
         Sample sample = sampleRepository.findOne(accession);
         if (sample.getXml().isEmpty()) {
@@ -74,6 +69,30 @@ public class SampleController {
         else {
             return sample.getXml();
         }
+    }
+
+    @RequestMapping(value = "xml/samples", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String sampleXmlQuery(
+            @RequestParam(value = "query") String searchTerm,
+            @RequestParam(value = "sortby", defaultValue = "score") String sortBy,
+            @RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
+            @RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
+            @RequestParam(value = "page", defaultValue = "0") int page) {
+        Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
+        PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
+        Page<Sample> results = sampleRepository.findByAccession(searchTerm, querySpec);
+        ResultQuery rq = new SampleResultQuery(results);
+        return rq.renderDocument();
+    }
+
+    @RequestMapping(value = "xml/samples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String hybridSampleXml(@PathVariable String accession) {
+        return sampleXml(accession);
+    }
+
+    @RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+    public @ResponseBody String legacySampleXml(@PathVariable String accession) {
+        return sampleXml(accession);
     }
 
     @RequestMapping(value = "xml/sample/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
@@ -119,20 +138,6 @@ public class SampleController {
         return rq.renderDocument();
     }
 
-    @RequestMapping(value = "xml/sample", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String sampleXmlQuery(
-            @RequestParam(value = "query") String searchTerm,
-            @RequestParam(value = "sortby", defaultValue = "score") String sortBy,
-            @RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
-            @RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
-            @RequestParam(value = "page", defaultValue = "0") int page) {
-        Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
-        PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
-        Page<Sample> results = sampleRepository.findByAccession(searchTerm, querySpec);
-        ResultQuery rq = new SampleResultQuery(results);
-        return rq.renderDocument();
-    }
-
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleNPE(NullPointerException e) {
@@ -148,6 +153,8 @@ public class SampleController {
         getLog().error("Failed to parse legacy query request", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(), headers, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(),
+                                    headers,
+                                    HttpStatus.BAD_REQUEST);
     }
 }
