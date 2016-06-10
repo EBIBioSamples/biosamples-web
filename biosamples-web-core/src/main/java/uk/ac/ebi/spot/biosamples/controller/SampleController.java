@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -27,44 +31,26 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
 public class SampleController {
-    @Autowired private SampleRepository sampleRepository;
+    @Autowired 
+    private SampleRepository sampleRepository;
 
-    @Value("${spring.relations.url}")
-    private String springRelationsURL;
+    @Value("${relations.server:http://localhost:8080/}")
+    private String relationsServer;
 
+    
+    private RestTemplate restTemplate = new RestTemplate();
+    
     @RequestMapping(value = "sample/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
-    public String sample(Model model, @PathVariable String accession, HttpServletRequest request) {
+    public String sample(Model model, @PathVariable String accession, HttpServletRequest request) throws URISyntaxException {
         Sample sample = sampleRepository.findOne(accession);
         model.addAttribute("sample", sample);
 
 
-        //This parses the current URL and adds the bits to reach the relations endpoint
-        //currentURL="http://beans:9480/biosamples/sample/SAMEA2399248";
-        /*That would be a way to parse the adress from url, but we do it now with properties
-        *String currentURL = request.getRequestURL().toString();
-        *String relationsURL = currentURL.substring(0, currentURL.indexOf("/sample/")) + "/relations/samples/" + accession + "/biosamplesWeb";
-        *System.out.println(relationsURL);
-        *System.out.println(springRelationsURL+"samples/"+accession+"/biosamplesWeb");
-        */
-
-        /*----Just for localhost testing, deactivate this line on server, the URL is set above (!)--------*/
-        //relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
-        /* ------------------------------------------------------------------------------------------------*/
-
-        String relationsURL = springRelationsURL+"samples/"+accession+"/biosamplesWeb";
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        JSONObject result = restTemplate.getForObject(relationsURL, JSONObject.class);
-
-        JSONParser parser = new JSONParser();
-
-        /*  Part to test the template/parsing with dummy data - without having to ask the endpoint for different samples
-        try {
-            result=(JSONObject) parser.parse("{\"derivedFrom\":[\"Test1\", \"Test2\"],\"childOf\":[\"SMAEA22032\"],\"ReCuratedInto\":[\"SMAE2\"],\"derivedTo\":[\"XXX\"],\"ReCuratedFrom\":[],\"sameAs\":[\"same as reply\"]}\n");
-        }catch(Exception e){System.out.println(e);}
-        System.out.println(result);
-        */
+        //This parses the configured URL and adds the bits to reach the relations endpoint
+        URIBuilder uriBuilder = new URIBuilder(relationsServer);
+        uriBuilder.setPath(uriBuilder.getPath()+"/samples/"+accession+"/biosamplesWeb");
+        
+        JSONObject result = restTemplate.getForObject(uriBuilder.build(), JSONObject.class);
 
         model.addAttribute("derivedFrom",result.get("derivedFrom"));
         model.addAttribute("derivedTo",result.get("derivedTo"));
