@@ -22,6 +22,7 @@ import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,15 +57,15 @@ public class SampleController {
         
         URI uri = uriBuilder.build();
         log.info("Getting relations from "+uri);
-        JSONObject result = restTemplate.getForObject(uri, JSONObject.class);
+        BiosamplesWeb result = restTemplate.getForObject(uri, BiosamplesWeb.class);
 
-        model.addAttribute("derivedFrom",result.get("derivedFrom"));
-        model.addAttribute("derivedTo",result.get("derivedTo"));
-        model.addAttribute("childOf",result.get("childOf"));
-        model.addAttribute("parentOf",result.get("parentOf"));
-        model.addAttribute("sameAs",result.get("sameAs"));
-        model.addAttribute("curatedInto",result.get("ReCuratedInto"));
-        model.addAttribute("curatedFrom",result.get("ReCuratedFrom"));
+        model.addAttribute("derivedFrom",result.derivedFrom);
+        model.addAttribute("derivedTo",result.derivedTo);
+        model.addAttribute("childOf",result.childOf);
+        model.addAttribute("parentOf",result.parentOf);
+        model.addAttribute("sameAs",result.sameAs);
+        model.addAttribute("curatedInto",result.recuratedInto);
+        model.addAttribute("curatedFrom",result.recuratedFrom);
 
         return "sample";
     }
@@ -100,5 +101,15 @@ public class SampleController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>("There is no XML available for this accession", headers, HttpStatus.NOT_ACCEPTABLE);
+    }
+    
+    public class BiosamplesWeb {    	
+    	public List<String> derivedFrom;
+    	public List<String> derivedTo;
+    	public List<String> childOf;
+    	public List<String> parentOf;
+    	public List<String> recuratedInto;
+    	public List<String> recuratedFrom;
+    	public List<String> sameAs;
     }
 }
