@@ -22,6 +22,7 @@ import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -104,12 +105,14 @@ public class SampleController {
     }
     
     public class BiosamplesWeb {    	
-    	public List<String> derivedFrom;
-    	public List<String> derivedTo;
-    	public List<String> childOf;
-    	public List<String> parentOf;
-    	public List<String> recuratedInto;
-    	public List<String> recuratedFrom;
-    	public List<String> sameAs;
+    	public List<String> derivedFrom = new ArrayList<>();
+    	public List<String> derivedTo = new ArrayList<>();
+    	public List<String> childOf = new ArrayList<>();
+    	public List<String> parentOf = new ArrayList<>();
+    	public List<String> recuratedInto = new ArrayList<>();
+    	public List<String> recuratedFrom = new ArrayList<>();
+    	public List<String> sameAs = new ArrayList<>();
+    	
+    	public BiosamplesWeb(){};
     }
 }
