@@ -3,6 +3,8 @@ package uk.ac.ebi.spot.biosamples.controller;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -31,12 +34,14 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
 public class SampleController {
+
+	private Logger log = LoggerFactory.getLogger(getClass());
+	
     @Autowired 
     private SampleRepository sampleRepository;
 
     @Value("${relations.server:http://localhost:8080/}")
     private String relationsServer;
-
     
     private RestTemplate restTemplate = new RestTemplate();
     
@@ -45,12 +50,13 @@ public class SampleController {
         Sample sample = sampleRepository.findOne(accession);
         model.addAttribute("sample", sample);
 
-
         //This parses the configured URL and adds the bits to reach the relations endpoint
         URIBuilder uriBuilder = new URIBuilder(relationsServer);
         uriBuilder.setPath(uriBuilder.getPath()+"/samples/"+accession+"/biosamplesWeb");
         
-        JSONObject result = restTemplate.getForObject(uriBuilder.build(), JSONObject.class);
+        URI uri = uriBuilder.build();
+        log.info("Getting relations from "+uri);
+        JSONObject result = restTemplate.getForObject(uri, JSONObject.class);
 
         model.addAttribute("derivedFrom",result.get("derivedFrom"));
         model.addAttribute("derivedTo",result.get("derivedTo"));
