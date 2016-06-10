@@ -58,23 +58,26 @@ public class HttpSolrDispatcher {
     private void readIgnoredFacet() {
         ignoredFacets = new HashSet<>();
         ignoredFacets.add("content_type"); // content_type is always returned as facet
+        
+        if (ignoredFacetsResource != null && ignoredFacetsResource.exists()) {
 
-        Pattern pattern = Pattern.compile("^(\\w+)\\s*(?:#.*)?$");
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(ignoredFacetsResource.getInputStream()));
-            String line = br.readLine();
-            while (line != null) {
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    ignoredFacets.add(matcher.group(1).trim());
-                }
-                line = br.readLine();
-            }
-            br.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            ignoredFacets.add("content_type");
+	        Pattern pattern = Pattern.compile("^(\\w+)\\s*(?:#.*)?$");
+	        try {
+	            BufferedReader br = new BufferedReader(new InputStreamReader(ignoredFacetsResource.getInputStream()));
+	            String line = br.readLine();
+	            while (line != null) {
+	                Matcher matcher = pattern.matcher(line);
+	                if (matcher.find()) {
+	                    ignoredFacets.add(matcher.group(1).trim());
+	                }
+	                line = br.readLine();
+	            }
+	            br.close();
+	        }
+	        catch (IOException e) {
+	            e.printStackTrace();
+	            ignoredFacets.add("content_type");
+	        }
         }
     }
 
