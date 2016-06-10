@@ -22,17 +22,9 @@ import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 12/02/16
- */
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
 public class SampleController {
@@ -53,20 +45,22 @@ public class SampleController {
         model.addAttribute("sample", sample);
 
         //This parses the configured URL and adds the bits to reach the relations endpoint
+        //TODO Add some sort of caching here... Google Guava?
         URIBuilder uriBuilder = new URIBuilder(relationsServer);
         uriBuilder.setPath(uriBuilder.getPath()+"/samples/"+accession+"/biosamplesWeb");
         
         URI uri = uriBuilder.build();
         log.info("Getting relations from "+uri);
-        BiosamplesWeb result = restTemplate.getForObject(uri, BiosamplesWeb.class);
+        SampleRelationsWrapper result = restTemplate.getForObject(uri, SampleRelationsWrapper.class);
 
+        //TODO derivedFrom/To display the other way around for some reason? correct in relations output, but wrong here
         model.addAttribute("derivedFrom",result.derivedFrom);
         model.addAttribute("derivedTo",result.derivedTo);
         model.addAttribute("childOf",result.childOf);
         model.addAttribute("parentOf",result.parentOf);
         model.addAttribute("sameAs",result.sameAs);
-        model.addAttribute("curatedInto",result.recuratedInto);
-        model.addAttribute("curatedFrom",result.recuratedFrom);
+        model.addAttribute("recuratedInto",result.recuratedInto);
+        model.addAttribute("recuratedFrom",result.recuratedFrom);
 
         return "sample";
     }
@@ -87,32 +81,16 @@ public class SampleController {
     @RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String sampleXml(@PathVariable String accession) {
         Sample sample = sampleRepository.findOne(accession);
-        if (sample.getXml().isEmpty()) {
-            throw new NullPointerException("No XML present for " + sample.getAccession());
+        if (sample == null || sample.getXml() == null || sample.getXml().isEmpty()) {
+            throw new APIXMLNotFoundException();
         }
         else {
             return sample.getXml();
         }
     }
-
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
-    public ResponseEntity<String> handleNPE(NullPointerException e) {
-        e.printStackTrace();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>("There is no XML available for this accession", headers, HttpStatus.NOT_ACCEPTABLE);
-    }
     
-    public class BiosamplesWeb {    	
-    	public List<String> derivedFrom = new ArrayList<>();
-    	public List<String> derivedTo = new ArrayList<>();
-    	public List<String> childOf = new ArrayList<>();
-    	public List<String> parentOf = new ArrayList<>();
-    	public List<String> recuratedInto = new ArrayList<>();
-    	public List<String> recuratedFrom = new ArrayList<>();
-    	public List<String> sameAs = new ArrayList<>();
-    	
-    	public BiosamplesWeb(){};
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    private class APIXMLNotFoundException extends RuntimeException {
+		private static final long serialVersionUID = -5929037398365356631L;
     }
 }
