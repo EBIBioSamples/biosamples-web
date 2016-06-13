@@ -548,3 +548,38 @@ var update = function (force,nodes,links) {
       .size([w, h])
       .start();
 };
+
+
+// getJSON code to load relationships. Creates issues because it is asynchrounous, instead we // use ajax
+
+  jQuery.getJSON( url, function (data){
+  })
+  .fail(function(error){
+    // This is executed in case of failure of the webservice call.
+    console.log("error : ");console.log(error);
+    loadedStuff = {};
+  })
+  .always(function(data){
+    console.log("Always");
+  })
+  .done(function(data){
+    console.log("done");
+  })
+  .complete(function(data){
+    console.log("%%%%");
+    console.log("complete");
+    var nodesObject = {"nodes": [], "edges" : [] };
+    // var nodes = data.nodes; var edges = data.edges;
+    var nodes = data.responseJSON.nodes; var edges = data.responseJSON.edges;
+    nodesObject.nodes = nodes ;
+    nodesObject.edges = edges ;
+    loadedStuff = nodesObject;    
+    console.log("data : ");console.log(data);
+    console.log("nodesObject : ");console.log(nodesObject);
+    console.log("loadedStuff : ");console.log(loadedStuff);
+    console.log("%%%%");
+    return nodesObject
+  })
+  ;
+
+  

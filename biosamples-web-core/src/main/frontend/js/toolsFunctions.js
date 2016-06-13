@@ -239,13 +239,13 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 				var id, source, target, nodeSource, nodeTarget, weight;
 				id = "link_"+nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].accession+"_"+nodeData.nodes[ nameToNodeIndex[ group] ].accession;
 				source = nameToNodeIndex[ groupsReturned[group][i] ]; target = nameToNodeIndex[ group ];
-				console.log("####");
-				console.log("source : ");console.log(source);
-				console.log("target : ");console.log(target);
-				console.log("####");
+				// console.log("####");
+				// console.log("source : ");console.log(source);
+				// console.log("target : ");console.log(target);
+				// console.log("####");
 				nodeSource = nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]; nodeTarget = nodeData.nodes[ nameToNodeIndex[ group] ];
 				weight = Math.sqrt(groupsReturned[group].length);
-				console.log("right before push nodeData.links : ");console.log(nodeData.links);
+				// console.log("right before push nodeData.links : ");console.log(nodeData.links);
 				var link = {
 					"id":id,
 					"source": source,
@@ -474,13 +474,16 @@ function draw(svg,nodeData,vm){
 		}
 	  	document.getElementById("textData").innerHTML+='</p>';
 
-	  	var loadedStuff = loadNode(d.accession,vm);
+	  	var loadedStuff = {};
+	  	loadedStuff = loadNode(d.accession,vm,loadedStuff);
 	  	console.log("loadedStuff : ");console.log(loadedStuff);
+	  	console.log("loadedStuff.nodes : ");console.log(loadedStuff.nodes);
+	  	console.log("loadedStuff.edges : ");console.log(loadedStuff.edges);
 
 		// Exemples to try functions to add and remove elements
 		// removeNode( nodeData, d.accession, force );
-		addNode( nodeData,"tagadaTest",force );
-		console.log("d : ");console.log(d);
+		// addNode( nodeData,"tagadaTest",force );
+		// console.log("d : ");console.log(d);
 		// addLink(nodeData,d.accession,d.sample_grp_accessions[0],force,"MEMBERSHIP");
 
 	})
@@ -1305,7 +1308,7 @@ function addLink(nodeData,accessionSource,accessionTarget,force,label){
 	}
 }
 
-function loadNode(nodeAccession,vm){
+function loadNode(nodeAccession,vm,loadedStuff){
 	console.log("---- loadNode ----");
 	var nodeIsGroup = false;
 	var root;
@@ -1319,6 +1322,7 @@ function loadNode(nodeAccession,vm){
 		root += "samples/";
 	}
 	url = root + nodeAccession+"/graph"
+	console.log("url : ");console.log(url);
 	var arrayRelationships = [];
 	// vm.$http.get(url)
 	// 	.then(function(results) {
@@ -1331,24 +1335,20 @@ function loadNode(nodeAccession,vm){
 	//         console.log("response");console.log(response);
 	//     })
 
-	var nodesObject = {};
+	var nodesObject = {"nodes": [], "edges" : [] };
 
-	jQuery.getJSON( url, function (data){
-		// whatever you want to do with the data, the function is called after completion of the webservice call  
-		console.log("data : ");console.log(data);
-		console.log("data.nodes : ");console.log(data.nodes);
-		console.log("data.edges : ");console.log(data.edges);
-		var nodes = data.nodes; var edges = data.edges;
-		// return {"nodes": nodes, "edges" : edges };
-		nodesObject = {"nodes": nodes, "edges" : edges };
-	})
-	.fail(function(error){
-		// This is executed in case of failure of the webservice call.
-		console.log("error : ");console.log(error);
-	})
-	.always(function(){
-		console.log("Always");
-	})
-	;
+	$.ajax({
+    	url: url,
+    	async: false,
+    	dataType: 'json',
+    	success: function(data) {
+    		// console.log("in ajax, data : ");console.log(data);
+    		nodesObject = data;
+    	}
+    });	
+
+	console.log("End of loadNode");
+	// console.log("loadedStuff : ");console.log(loadedStuff);
+	// console.log("nodesObject : ");console.log(nodesObject);
 	return nodesObject;
 }
