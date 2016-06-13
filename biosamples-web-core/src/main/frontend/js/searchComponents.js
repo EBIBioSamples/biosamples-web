@@ -153,15 +153,32 @@
                 // Options passed to ajax request
                 // Timeout set to prevent infinite waiting
                 let ajaxOptions = {
-                    timeout: 10000
+                    // timeout: 10000
+                    timeout: 50000
                 };
 
                 this.isQuerying = true;
 
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                     .then(function(results) {
+                        console.log("in the then");
                         displayRevertingFilters(results,this);
                         this.consumeResults(results);
+
+                        // doD3Alternative(queryParams.searchTerm, results);
+
+                        // var searchWord = "sonic";
+                        // var url = "http://cocoa.ebi.ac.uk:8989/solr/merged/select?q="+searchWord+"&wt=json&indent=true&facet=true";
+                        // NOT POSSIBLE, SOLR BLOCKS THE END POINT...
+                        // var url = "http://cocoa.ebi.ac.uk:8989/solr/merged/select?q=sonic&wt=json&indent=true&facet=true";
+                        // var accession = "tagadaTest";
+                        // var url="http://beans:9480/biosamples/api/samples/"+accession;
+                        // jQuery.getJSON( url, function (data){  
+                        //     console.log("data : ");
+                        //     console.log(data);
+                        // }) ;
+
+                        // Version with switch from Facet to Sample representation
                         if ( typeof loadD3 === "undefined" || loadD3 ){
                             doD3Stuff(results,apiUrl,this);
                         }
@@ -415,6 +432,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
   var margin = {top: 10, right: 10, bottom: 10, left: 10};
 
+  // Not added part
   if (typeof results !== 'undefined'){
     var numberFacetsUnEmpty = {};
     // console.log( "results.data.facet_counts : " ); console.log( results.data.facet_counts );
@@ -429,6 +447,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }
     }
 
+    // Not added part
     // Create elements which will call functions with the arguments necessary1
     document.getElementById("representationButton").onclick = function()
     {
@@ -450,7 +469,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         }
     }
 
-
+    // Not added part
     $(document).bind('mousemove', function(e){
         var widthWindow = $(window).width();
         var posLeft = e.pageX + 20;
@@ -469,7 +488,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").innerHTML="Display result information";
     document.getElementById("sectionVizResult").style.display="none";
-
+    // Not added part
     d3.select("#sectionVizResult").on("mouseenter",function(){
       document.getElementById("elementHelp").style.visibility="visible";
       if ( d3.select(".node")[0][0] == null || d3.select(".node").attr("isThereSelected") == "false" ){
@@ -994,7 +1013,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       .append("g")
       ;
 
-
     var groupsReturned={};
     var nameToNodeIndex={};
     var nodeData ={ "stuff":[], "nodes":[],"links":[],"group":[],"color":[] };
@@ -1026,4 +1044,59 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         document.getElementById("vizSpotRelations").style.height="0px";
     }
   }
+}
+
+// function doD3Alternative( nodeAccession, idToFillWithViz ){
+function doD3Alternative( nodeAccession, results ){
+    console.log("---- doD3Alternative ----");
+    console.log("nodeAccession : "+nodeAccession);
+    console.log("results : ");console.log(results);
+    // We consider we can modify the html of sample and group page
+    // var inexistant = d3.select("#inexistant");
+    // console.log("inexistant : ");console.log(inexistant);
+    // var sectionViz = d3.select("#sectionVisualisation");
+    // console.log("sectionViz : ");console.log(sectionViz);
+
+    // If existing, clean the visualisation space
+    d3.select("#vizSpotRelations").remove();
+
+    var fill = d3.scale.category20();
+    var widthTitle = window.innerWidth;
+    var widthD3 = Math.floor( (70*widthTitle)/100 );
+    var heightD3 = widthTitle/2;
+
+    document.getElementById("infoVizRelations").style.height = heightD3+'px';
+    var margin = {top: 10, right: 10, bottom: 10, left: 10};
+
+    // Nodes relationships here
+    var svg;
+    svg = d3.select("#vizNodeLink").insert("svg")
+      .attr("width", "100%")
+      .attr("height", heightD3)
+      .attr("id","vizSpotRelations")
+      .style("stroke", "black")
+      .style("stroke-width", 1)
+      .style("border","solid")
+      //.style("overflow","scroll")
+      .style("border-color","#5D8C83")
+      .style("border-radius","4px")
+      .call(d3.behavior.zoom().on("zoom", (function (d) {
+          svg.attr("transform", 
+            "translate(" + d3.event.translate + ")" + 
+            " scale(" + d3.event.scale + ")"
+            );
+        })
+      ))
+      .append("g")
+      ;
+
+    var nameToNodeIndex={};
+    var nodeData ={ "stuff":[], "nodes":[],"links":[],"group":[],"color":[] };
+
+    d3.select("#vizSpotRelations").attr("visibility","visible");
+    var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
+    nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
+    d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";          
+    console.log("vm : ");console.log(vm);
+    draw(svg,nodeData,vm);
 }

@@ -96,18 +96,6 @@ function getURLsFromObject(objectToRead,prop){
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 	console.log("!!!!!loadDataFromGET !!!!!");
 	console.log("results.data.response.docs : ");console.log( results.data.response.docs );
-	// for (var i in results.data.response.docs){
-	// 	// console.log("results.data.response.docs[i] : ");console.log(results.data.response.docs[i]);
-	// 	for (var j in results.data.response.docs[i]){
-	// 		console.log("j : ");console.log(j);
-	// 		console.log("results.data.response.docs[i][j] : ");console.log(results.data.response.docs[i][j]);
-	// 	}
-	// }
-	console.log('d3.select("#vizSpotRelations") : ');
-	console.log(d3.select("#vizSpotRelations"));
-	// console.log("force : ");
-	// console.log(force);
-	console.log("!!!!!!");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
@@ -491,7 +479,7 @@ function draw(svg,nodeData,vm){
 
 		// Exemples to try functions to add and remove elements
 		// removeNode( nodeData, d.accession, force );
-		// addNode( nodeData,"tagadaTest",force );
+		addNode( nodeData,"tagadaTest",force );
 		console.log("d : ");console.log(d);
 		// addLink(nodeData,d.accession,d.sample_grp_accessions[0],force,"MEMBERSHIP");
 
@@ -1232,7 +1220,8 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		// if so, translate by 0
 		var isDragging = false;
 		var accessionDragged = '';
-		var elements = svg.selectAll('g');
+		// var elements = svg.selectAll('g');
+		var elements = d3.selectAll("#vizSpotRelations").selectAll("g");
 		for (var i=0; i < elements[0].length; i++){
 		  	if ( elements[0][i].classList.length > 1 ){
 		  		isDragging = true;
