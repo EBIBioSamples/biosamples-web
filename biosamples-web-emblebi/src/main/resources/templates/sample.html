@@ -81,9 +81,9 @@
             </tr>
             <!-- end all characteristics -->
 
-			<!-- Relationships in a table -->
+			<!-- External links in a table -->
 <!--             <tr> -->
-<!--                 <td class="col_title"><b>Databases :</b></td> -->
+<!--                 <td class="col_title"><b>External links :</b></td> -->
 <!--                 <td th:if="${#maps.isEmpty(sample.databases)}">None</td> -->
 <!--                 <td th:if="${not #maps.isEmpty(sample.databases)}"> -->
 <!--                     <p th:each="database : ${sample.databases}"> -->
@@ -94,6 +94,7 @@
 <!--                     </p> -->
 <!--                 </td> -->
 <!--             </tr> -->
+
             <tr>
                 <td class="col_title"><b>Groups :</b></td>
                 <td th:if="${#lists.isEmpty(sample.groups)}">None</td>
@@ -103,6 +104,55 @@
                     </p>
                 <td/>
             </tr>
+            
+			<!-- relationships via neo -->
+            <tr>
+                <td th:if="${not #lists.isEmpty(sameAs)}">
+                    <b>Same as: </b></td><td>
+                <a th:each="item : ${sameAs}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            
+            <tr>
+                <td th:if="${not #lists.isEmpty(derivedFrom)}">
+                    <b>Derived from: </b></td><td>
+                <a th:each="item : ${derivedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(derivedTo)}">
+                    <b>Derived to: </b></td><td>
+                <a th:each="item : ${derivedTo}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+
+            <tr>
+                <td th:if="${not #lists.isEmpty(childOf)}">
+                    <b>Child of</b></td><td>
+                 <a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(parentOf)}">
+                    <b>Parent of</b></td><td>
+                <a th:each="item : ${parentOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+
+            <tr>
+                <td th:if="${not #lists.isEmpty(recuratedInto)}">
+                    <b>Recurated to: </b></td><td>
+                <a th:each="item : ${recuratedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(recuratedFrom)}">
+                    <b>Recurated from: </b></td><td>
+                <a th:each="item : ${recuratedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            
+            
             </tbody>
         </table>
     </div>
