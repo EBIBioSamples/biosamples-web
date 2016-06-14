@@ -37,9 +37,10 @@ else {
 }
 
 
-console.log(parseURL("http://beans:9480/biosamples/sample/SAMEA2799418")+sampleOrGroup(term)+"/"+term+"/graph")
-var graphURL=parseURL(url)+sampleOrGroup(term)+"/"+term+"/graph"
-console.log(graphURL)
+console.log(parseURL("http://beans:9480/biosamples/sample/SAMEA2799418")+sampleOrGroup(term)+"/"+term+"/graph");
+var graphURL=parseURL(url)+sampleOrGroup(term)+"/"+term+"/graph";
+console.log("graphURL : ");
+console.log(graphURL);
 
 var app = require("ols-graphview");
 var tmpnetworkOptions={

@@ -1,3 +1,7 @@
+/**
+ * Created by Kevin-Allain
+ */
+
 //var Biosample   = require('./components/Biosample.js');
 
 //This is the file to work with for toolsFunctions
@@ -453,7 +457,15 @@ function draw(svg,nodeData,vm){
 		d3.select(this).selectAll("circle").style("stroke-width", 4);
 		d3.event.stopPropagation();
 		// Fill in the infoVizRelations according to data returned
-		document.getElementById("textData").innerHTML='<p>';
+		var url=document.URL;
+		var indexUrl = url.indexOf("/?");
+		url = url.substring(0,indexUrl);
+		var currentAccession = d.accession;
+		var indicationType = "sample";
+		if ( currentAccession.substring(0,5).indexOf("SAMEG") !== -1 ){ indicationType = "group"; }
+		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
+	  	document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
+
 		var URLs = [];
 		for (var prop in d.responseDoc) {
 		  // skip loop if the property is from prototype
@@ -1143,6 +1155,15 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		d3.event.stopPropagation();
 		// Fill in the infoVizRelations according to data returned
 		document.getElementById("textData").innerHTML='<p>';
+		var url=document.URL;
+		var indexUrl = url.indexOf("/?");
+		url = url.substring(0,indexUrl);
+		var currentAccession = d.accession;
+		var indicationType = "sample";
+		if ( currentAccession.substring(0,5).indexOf("SAMEG") !== -1 ){ indicationType = "group"; }
+		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
+	  	document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
+
 		var URLs = [];
 		for (var prop in d.responseDoc) {
 		  // skip loop if the property is from prototype

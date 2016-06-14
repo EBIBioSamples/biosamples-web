@@ -447,12 +447,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
   document.getElementById("infoVizRelations").style.height = heightD3+'px';
   if (results.data.response.docs.length == 0  ){
-    // document.getElementById("infoVizRelations").style.visibility='hidden';
     document.getElementById("infoVizRelations").style.display="none";
-    // Add display of the filters if there are existing filters ?
-    // No, do it for both the sections, and do it under the search bar
   } else {
-    // document.getElementById("infoVizRelations").style.visibility='visible';
     document.getElementById("infoVizRelations").style.display="block";
   }
 

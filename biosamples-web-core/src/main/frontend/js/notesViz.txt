@@ -683,3 +683,12 @@ var update = function (force,nodes,links) {
 
 </body>
 </html>
+
+
+// application.properties
+solr.server                         http://beans.ebi.ac.uk:8989/solr/
+relations.server          http://beans.ebi.ac.uk:9480/biosamples/relations/
+solr.server.search.core-name        merged
+spring.data.rest.base-path          /api
+spring.data.rest.default-page-size  50
+spring.thymeleaf.mode               LEGACYHTML5
