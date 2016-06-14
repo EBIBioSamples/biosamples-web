@@ -1385,6 +1385,7 @@ function loadNode(nodeAccession,loadedStuff){
 	var root;
 	var url;
 	if ( nodeAccession.indexOf("SAMEG") !== -1 ){ nodeIsGroup = true; }
+	// TO DO: Change the value here by the variable in relations.server
 	root = "http://beans.ebi.ac.uk:9480/biosamples/relations/"
 	// root = "http://localhost:8181/relations-webapp-0.0.1-SNAPSHOT/";
 	if (nodeIsGroup){
@@ -1392,7 +1393,7 @@ function loadNode(nodeAccession,loadedStuff){
 	} else {
 		root += "samples/";
 	}
-	url = root + nodeAccession+"/graph"
+	url = root + nodeAccession+"/graph";
 	console.log("url : ");console.log(url);
 	var arrayRelationships = [];
 	// vm.$http.get(url)

@@ -186,17 +186,6 @@
 
                         // doD3Alternative(queryParams.searchTerm, results);
 
-                        // var searchWord = "sonic";
-                        // var url = "http://cocoa.ebi.ac.uk:8989/solr/merged/select?q="+searchWord+"&wt=json&indent=true&facet=true";
-                        // NOT POSSIBLE, SOLR BLOCKS THE END POINT...
-                        // var url = "http://cocoa.ebi.ac.uk:8989/solr/merged/select?q=sonic&wt=json&indent=true&facet=true";
-                        // var accession = "tagadaTest";
-                        // var url="http://beans:9480/biosamples/api/samples/"+accession;
-                        // jQuery.getJSON( url, function (data){  
-                        //     console.log("data : ");
-                        //     console.log(data);
-                        // }) ;
-
                         // Version with switch from Facet to Sample representation
                         if ( typeof loadD3 === "undefined" || loadD3 ){
                             doD3Stuff(results,apiUrl,this);
