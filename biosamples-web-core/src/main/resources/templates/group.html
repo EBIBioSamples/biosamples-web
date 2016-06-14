@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       layout:decorator="__parent_base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="currentPage = 'groups'">
+      th:with="currentPage = 'groups', relationsUrl=${@environment.getProperty('relations.server')}">
 <head>
     <title th:text="${group.accession}">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
 
@@ -10,6 +10,13 @@
     <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"  rel="stylesheet" type="text/css"  />
     <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
 
+    <!--/* Pass SPRING variables to Javascript */-->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.relationsUrl = [[${relationsUrl}]];
+        window.accession = [[${group.accession}]];
+        /*]]>*/
+    </script>
 
 </head>
 <body>
