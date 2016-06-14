@@ -6,7 +6,8 @@
     
     var accession = window.accession;
     var relationsUrl = window.relationsUrl;
-    var originUrl = window.location.origin;
+    var originUrl = window.baseUrl ? window.baseUrl : window.location.origin;
+    
     
 
 
