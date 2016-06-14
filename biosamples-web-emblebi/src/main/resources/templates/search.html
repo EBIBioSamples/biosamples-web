@@ -127,6 +127,10 @@
     table {
         border: 4px solid grey;
     }
+
+    [v-cloak] {
+        display: none;
+    }
   </style>
   <!-- end CSS-->
 </head>
@@ -151,6 +155,18 @@
             <a href="//www.ebi.ac.uk/" title="Go to the EMBL-EBI homepage"><img src="//www.ebi.ac.uk/web_guidelines/images/logos/EMBL-EBI/EMBL_EBI_Logo_white.png" alt="EMBL European Bioinformatics Institute"/></a>
 
 <div layout:fragment="content">
+
+    <div v-if="hasAlerts" class="alerts__container" >
+        <component v-for="alert in alerts"
+                   is="alert"
+                   v-bind:type="alert.type"
+                   v-bind:timeout="alert.timeout"
+                   v-on:alert-closed="removeAlert(alert)">
+            {{alert.message}}
+        </component>
+    </div>
+
+    <div v-bind:class="{loading: isQuerying}"></div>
 
     <nav id="breadcrumb">
         <p>

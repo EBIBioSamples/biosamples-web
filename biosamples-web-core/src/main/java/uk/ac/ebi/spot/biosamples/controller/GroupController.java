@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import uk.ac.ebi.spot.biosamples.model.solr.Group;
+import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
+import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 
 /**
@@ -22,6 +24,7 @@ import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
  * @date 25/02/16
  */
 @Controller
+@CrossOrigin(methods = RequestMethod.GET)
 public class GroupController {
     @Autowired private GroupRepository groupRepository;
 
@@ -54,6 +57,7 @@ public class GroupController {
             return group.getXml();
         }
     }
+
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)

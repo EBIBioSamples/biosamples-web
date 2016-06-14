@@ -1,8 +1,8 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
-layout:decorator="__parent_base"
-xmlns:layout="http://www.w3.org/1999/xhtml"
-th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      layout:decorator="__parent_base"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 <head>
     <title>Search</title>
     <link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>
@@ -138,6 +138,10 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
     table {
         border: 4px solid grey;
     }
+
+    [v-cloak] {
+        display: none;
+    }
   </style>
 
     <script th:inline="javascript">
@@ -149,9 +153,17 @@ th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 </head>
 <body id="app">
     <main layout:fragment="content">
+        <div v-if="hasAlerts" class="alerts__container" >
+            <component v-for="alert in alerts"
+                       is="alert"
+                       v-bind:type="alert.type"
+                       v-bind:timeout="alert.timeout"
+                       v-on:alert-closed="removeAlert(alert)">
+                {{alert.message}}
+            </component>
+        </div>
 
         <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
-
         <div v-bind:class="{loading: isQuerying}"></div>
         <br/><br/>
         <div id="displayRemainingFilters" ></div>

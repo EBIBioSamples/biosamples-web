@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 import uk.ac.ebi.spot.biosamples.service.HttpSolrQuery;
@@ -17,7 +18,6 @@ import java.util.Map;
  * Created by lucacherubin on 01/03/2016.
  */
 @Controller
-@RequestMapping("/api")
 public class SearchController {
     @Autowired
     private HttpSolrDispatcher httpSolrDispatcher;
@@ -25,8 +25,8 @@ public class SearchController {
     @Autowired
     private SolrQueryBuilder solrQueryBuilder;
 
-    @CrossOrigin
-    @RequestMapping(value = "/search")
+    @CrossOrigin(methods = RequestMethod.GET)
+    @RequestMapping(value = "/api/search")
     public void find(
             @RequestParam("searchTerm") String searchTerm,
             @RequestParam(value = "useFuzzySearch", defaultValue = "false") boolean useFuzzySearch,

@@ -1,5 +1,7 @@
 solr.server                         http://HOSTNAME:PORT/solr/
 solr.server.search.core-name        CORE
+relations.server					http://HOSTNAME:PORT/PATH/
 spring.data.rest.base-path          /api
 spring.data.rest.default-page-size  50
 spring.thymeleaf.mode               LEGACYHTML5
+spring.relations.url                http://XXXX/relations/

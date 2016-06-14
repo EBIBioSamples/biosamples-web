@@ -5,6 +5,11 @@
       th:with="currentPage = 'samples'">
 <head>
     <title th:text="${sample.accession}">SAMEAxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
+
+    <link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
+
 </head>
 <body>
 
@@ -43,6 +48,16 @@
                 </td>
             </tr>
 
+            <!-- update times metadata -->
+            <tr>
+                <td class="col_title"><b>Release Date :</b></td>
+                <td th:text="${sample.releaseDate}"></td>
+            </tr>
+            <tr>
+                <td class="col_title"><b>Last Updated :</b></td>
+                <td th:text="${sample.updateDate}"></td>
+            </tr>
+
             <!-- Dedicated organism attribute -->
             <tr th:if="${#maps.containsKey(sample.characteristics, 'organism') and #arrays.length(sample.characteristics.organism) > 0}">
                 <td class="col_title"><b>Organism : </b></td>
@@ -64,23 +79,86 @@
             </tr>
             <!-- end all characteristics -->
 
-            <!-- update times metadata -->
-            <tr>
-                <td class="col_title"><b>Release Date :</b></td>
-                <td th:text="${sample.releaseDate}"></td>
-            </tr>
-            <tr>
-                <td class="col_title"><b>Last Updated :</b></td>
-                <td th:text="${sample.updateDate}"></td>
-            </tr>
+			<!-- External links -->
+<!--             <tr> -->
+<!--                 <td class="col_title"><b>External links :</b></td> -->
+<!--                 <td th:if="${#maps.isEmpty(sample.databases)}">None</td> -->
+<!--                 <td th:if="${not #maps.isEmpty(sample.databases)}"> -->
+<!--                     <p th:each="database : ${sample.databases}"> -->
+<!--                         <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none"> -->
+<!--                             <img th:src="@{/images/dblinks/hipsci_small_logo.png}"> -->
+<!--                         </a> -->
+<!--                         <a th:text="${database.key}" th:href="${database.value}"></a> -->
+<!--                     </p> -->
+<!--                 </td> -->
+<!--             </tr> -->
+
+			<!-- groups containing this sample -->
             <tr>
                 <td class="col_title"><b>Groups :</b></td>
-                <td>
-                    <!--<a href="../group/SAMEG39304"><id>SAMEG39304</id></a>-->
-                </td>
+                <td th:if="${#lists.isEmpty(sample.groups)}">None</td>
+                <td th:if="${not #lists.isEmpty(sample.groups)}">
+                    <p th:each="group : ${sample.groups}">
+                        <a th:text="${group}" th:href="${'../group/' + group}"></a>
+                    </p>
+                <td/>
             </tr>
+
+			<!-- relationships via neo -->
+            <tr>
+                <td th:if="${not #lists.isEmpty(sameAs)}">
+                    <b>Same as: </b></td><td>
+                <a th:each="item : ${sameAs}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            
+            <tr>
+                <td th:if="${not #lists.isEmpty(derivedFrom)}">
+                    <b>Derived from: </b></td><td>
+                <a th:each="item : ${derivedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(derivedTo)}">
+                    <b>Derived to: </b></td><td>
+                <a th:each="item : ${derivedTo}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+
+            <tr>
+                <td th:if="${not #lists.isEmpty(childOf)}">
+                    <b>Offspring from</b></td><td>
+                 <a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(parentOf)}">
+                    <b>Offspring to</b></td><td>
+                <a th:each="item : ${parentOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+
+            <tr>
+                <td th:if="${not #lists.isEmpty(recuratedInto)}">
+                    <b>Recurated to: </b></td><td>
+                <a th:each="item : ${recuratedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(recuratedFrom)}">
+                    <b>Recurated from: </b></td><td>
+                <a th:each="item : ${recuratedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+
+
             </tbody>
         </table>
+    </div>
+    <div id="samples">
+        <br><br><hr><h4>Samples Relations</h4>
+        <div id="ontology_vis">
+        </div>
     </div>
 </main>
 
@@ -88,6 +166,10 @@
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
 </th:block>
 
+
+<th:block layout:fragment="custom-endpage-scripts">
+    <script th:src="@{/javascript/relationsVis.js}"></script>
+</th:block>
 
 </body>
 </html>

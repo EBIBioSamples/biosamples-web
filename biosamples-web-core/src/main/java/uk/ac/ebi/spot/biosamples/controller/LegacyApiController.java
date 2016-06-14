@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import uk.ac.ebi.spot.biosamples.model.solr.Group;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
+import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
+import uk.ac.ebi.spot.biosamples.model.xml.SampleResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 
@@ -22,6 +24,7 @@ import java.util.Map;
  * Created by lucacherubin on 2016/05/05.
  */
 @Controller
+@CrossOrigin(methods = RequestMethod.GET)
 public class LegacyApiController {
     @Autowired
     private GroupRepository groupRepository;
@@ -42,6 +45,7 @@ public class LegacyApiController {
 
     }
 
+
     @RequestMapping(value = "xml/sample/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String legacySampleXmlQueryRedirect(@PathVariable String query){
         Map<String,String> paramMap = getCustomQueryParam(query);
@@ -53,6 +57,7 @@ public class LegacyApiController {
                 Integer.parseInt(paramMap.get("page")));
 
     }
+
     @RequestMapping(value = "xml/groupsamples/{accession}/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String legacySampleInGroupXmlQueryRedirect(@PathVariable String accession, @PathVariable String query){
         Map<String,String> paramMap = getCustomQueryParam(query);
@@ -78,8 +83,8 @@ public class LegacyApiController {
 
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
         PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
-        Page<Group> results = groupRepository.find(searchTerm,querySpec);
-        ResultQuery rq = new ResultQuery(results);
+        Page<Group> results = groupRepository.findByAccession(searchTerm,querySpec);
+        ResultQuery rq = new GroupResultQuery(results);
         return rq.renderDocument();
     }
 
@@ -96,7 +101,7 @@ public class LegacyApiController {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
         PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
         Page<Sample> results = sampleRepository.findTermInGroup(searchTerm, groupAccession,querySpec);
-        ResultQuery rq = new ResultQuery(results);
+        ResultQuery rq = new SampleResultQuery(results);
         return rq.renderDocument();
     }
 
@@ -112,7 +117,7 @@ public class LegacyApiController {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
         PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
         Page<Sample> results = sampleRepository.find(searchTerm,querySpec);
-        ResultQuery rq = new ResultQuery(results);
+        ResultQuery rq = new SampleResultQuery(results);
         return rq.renderDocument();
 
     }

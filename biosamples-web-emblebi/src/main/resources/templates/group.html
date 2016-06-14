@@ -8,7 +8,6 @@
 </head>
 <body>
 
-
 <div layout:fragment="content">
 
         <nav id="breadcrumb">
@@ -54,8 +53,6 @@
                         <td th:text="${group.updateDate}"></td>
                     </tr>
 
-
-
                     <!-- Dedicated organism attribute -->
                     <tr th:if="${#maps.containsKey(group.characteristics, 'organism') and #arrays.length(group.characteristics.organism) > 0}" >
                         <td class="col_title"><b>Organism : </b></td>
@@ -76,6 +73,26 @@
                         </td>
                     </tr>
                     <!-- end all characteristics -->
+
+                    <!-- start all database links -->
+                    <tr>
+                        <td class="col_title"><b>Databases :</b></td>
+                        <td th:if="${#maps.isEmpty(group.databases)}">None</td>
+                        <td th:if="not ${#maps.isEmpty(group.databases)}">
+                            <p th:each="database : ${group.databases}">
+                                <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none">
+                                    <img th:src="@{/images/dblinks/hipsci_small_logo.png}">
+                                </a>
+                                <a th:text="${database.key}" th:href="${database.value}"></a>
+                            </p>
+                        </td>
+                    </tr>
+                    <!-- end all database links -->
+
+                    <tr>
+                        <td class="col_title"><b>Samples in Group :</b></td>
+                        <td th:text="${group.numberOfSamples}"></td>
+                    </tr>
 
                     </tbody>
 

@@ -34,7 +34,7 @@ public class HttpSolrQuery implements Cloneable {
 
     public HttpSolrQuery searchFor(String term) {
         if (capturedTerm) { throw new HttpSolrQueryBuildingException("Invalid query - search term already added"); }
-        queryStringBuilder.append("select?");
+        queryStringBuilder.append("search?");
         try {
             queryStringBuilder.append("q=").append(URLEncoder.encode(term, "UTF-8"));
             capturedTerm = true;
@@ -47,7 +47,7 @@ public class HttpSolrQuery implements Cloneable {
 
     public HttpSolrQuery searchFor(String field, String term) {
         if (capturedTerm) { throw new HttpSolrQueryBuildingException("Invalid query - search term already added"); }
-        queryStringBuilder.append("select?");
+        queryStringBuilder.append("search?");
         try {
             queryStringBuilder.append("q=")
                     .append(URLEncoder.encode(field, "UTF-8"))
