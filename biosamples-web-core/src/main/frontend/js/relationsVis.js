@@ -6,13 +6,19 @@
     
     var accession = window.accession;
     var relationsUrl = window.relationsUrl;
+    var originUrl = window.location.origin;
+    
+
+
 
     // Parse the sample/group accession out of the URL
     // var url = document.URL;
     // var reversed = url.split("").reverse().join("");
     // var tmp = reversed.substring(0, reversed.indexOf("/"));
     // var term = tmp.split("").reverse().join("");
-
+    function buildGraphUrl(baseUrl,accession) {
+        return `${baseUrl}${sampleOrGroup(accession)}/${accession}/graph`;
+    }
 
     function sampleOrGroup(accession) {
         var isGroup = accession.substring(0, 5).indexOf("G");
@@ -48,7 +54,8 @@
 
 // console.log(parseURL("http://beans:9480/biosamples/sample/SAMEA2799418")+sampleOrGroup(term)+"/"+term+"/graph");
 //     var graphURL = parseURL(url) + sampleOrGroup(term) + "/" + term + "/graph";
-    var graphURL = `${relationsUrl}/${sampleOrGroup(accession)}/graph`;
+
+    var graphURL = buildGraphUrl(relationsUrl,accession);
     console.log(graphURL);
 
     var tmpNetworkOptions = {
@@ -68,15 +75,25 @@
         callbacks: {
 
             onSelectNode: function (params) {
+                let nodeAccession = params.nodes[0];
                 console.log(params);
                 console.log(params.nodes[0]);
                 console.log("Selected");
-                instance.fetchNewGraphData("http://localhost:8081/" + sampleOrGroup(params.nodes[0]) + "/" + params.nodes[0] + "/graph");
+                instance.fetchNewGraphData(buildGraphUrl(relationsUrl,nodeAccession));
+                
+                // instance.fetchNewGraphData("http://localhost:8081/" + sampleOrGroup(params.nodes[0]) + "/" + params.nodes[0] + "/graph");
             },
             onDoubleClick: function (params) {
                 console.log("Double click!");
+
+                let nodeAccession = params.nodes[0];
+                //Have to be funky and get rid of the last letter, namely an s to turn sampleS/groupS to sample/group
+                let singleContentType = sampleOrGroup(nodeAccession).slice(0, -1);
+                window.location = `${originUrl}/${singleContentType}/${nodeAccession}`;
+
+
                 //Have to be funky and get rid of the last letter,namly an s to turn sampleS/groupS to sample/group
-                window.location = parseURL(url) + sampleOrGroup(params.nodes[0]).substring(0, sampleOrGroup(params.nodes[0]).length - 1) + "/" + params.nodes[0];
+                // window.location = parseURL(url) + sampleOrGroup(params.nodes[0]).substring(0, sampleOrGroup(params.nodes[0]).length - 1) + "/" + params.nodes[0];
             },
             onSelectEdge: function (params) {
             }
