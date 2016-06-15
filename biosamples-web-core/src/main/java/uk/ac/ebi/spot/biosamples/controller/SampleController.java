@@ -1,7 +1,6 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
@@ -67,34 +67,20 @@ public class SampleController {
         String relationsURL =
                 currentURL.substring(0, currentURL.indexOf("/samples/")) + "/samples/" + accession + "/biosamplesWeb";
 
-        /*----Just for localhost testing, deactivate this line on server, the URL is set above (!)--------*/
-        //relationsURL = "http://localhost:8081/samples/" + accession + "/biosamplesWeb";
-        /* ------------------------------------------------------------------------------------------------*/
-
-
         RestTemplate restTemplate = new RestTemplate();
-
-        JSONObject result = restTemplate.getForObject(relationsURL, JSONObject.class);
-
-        JSONParser parser = new JSONParser();
-
-        /*  Part to test the template/parsing with dummy data - without having to ask the endpoint for different samples
         try {
-            result=(JSONObject) parser.parse("{\"derivedFrom\":[\"Test1\", \"Test2\"],\"childOf\":[\"SMAEA22032\"],\"ReCuratedInto\":[\"SMAE2\"],\"derivedTo\":[\"XXX\"],\"ReCuratedFrom\":[],\"sameAs\":[\"same as reply\"]}\n");
-        }catch(Exception e){System.out.println(e);}*/
-
-
-        //System.outs of course can be removed once we trust everything!
-        //System.out.println(result);
-
-        model.addAttribute("derivedFrom", result.get("derivedFrom"));
-        model.addAttribute("derivedTo", result.get("derivedTo"));
-        model.addAttribute("childOf", result.get("childOf"));
-        model.addAttribute("parentOf", result.get("parentOf"));
-        model.addAttribute("sameAs", result.get("sameAs"));
-        model.addAttribute("curatedInto", result.get("ReCuratedInto"));
-        model.addAttribute("curatedFrom", result.get("ReCuratedFrom"));
-
+            JSONObject result = restTemplate.getForObject(relationsURL, JSONObject.class);
+            model.addAttribute("derivedFrom", result.get("derivedFrom"));
+            model.addAttribute("derivedTo", result.get("derivedTo"));
+            model.addAttribute("childOf", result.get("childOf"));
+            model.addAttribute("parentOf", result.get("parentOf"));
+            model.addAttribute("sameAs", result.get("sameAs"));
+            model.addAttribute("curatedInto", result.get("ReCuratedInto"));
+            model.addAttribute("curatedFrom", result.get("ReCuratedFrom"));
+        }
+        catch (RestClientException e) {
+            getLog().error("Failed to retrieve relations data from '" + relationsURL + "'", e);
+        }
         return "sample";
     }
 
