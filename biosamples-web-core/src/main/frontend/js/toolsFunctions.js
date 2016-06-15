@@ -679,7 +679,7 @@ function drawFacets(svg,nodeData,vm){
 	var height=heightD3;
 
     var padding = 30; // separation between same-color circles
-    var clusterPadding = 60; // separation between different-color circles
+    var clusterPadding = 50; // separation between different-color circles
     var maxRadius = 50;
 	// The largest node for each cluster.
 	var clusters = [];
@@ -777,6 +777,12 @@ function drawFacets(svg,nodeData,vm){
 				}
 			}
 		});
+
+		console.log("Is there force ?");console.log(force);
+		console.log("Is there force.nodes()");console.log(force.nodes());
+		console.log("d.cluster : ");console.log(d.cluster);
+		console.log( 'd3.selectAll("node[cluster=\'"+d.cluster+"\']") : ');
+		console.log( d3.selectAll("node[cluster='"+d.cluster+"']") );
 	})
 	.on("mouseup",function(d){
 		d3.selectAll(".node").attr("isThereSelected",'false');
@@ -788,12 +794,18 @@ function drawFacets(svg,nodeData,vm){
 			console.log("There is no selected people ");
 			d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.readableContent+"<hr/>"+d.value+" elements");
 		}
+		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+		// CHANGE OPACITY OF OTHERS WHEN HOVERING
+		d3.selectAll(".node").selectAll("text").attr("opacity",".3");
+		d3.select(this).select("text").attr("opacity","1");		
 	})
 	.on("mouseout",function(d){
 		if ( d3.select(".node").attr("isThereSelected")=='false' ){
 			d3.select("#textHelp").html("Click on a node to display its information, and click twice to filter according to it.");
-		}
-	})
+		}		
+		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+		d3.selectAll(".node").selectAll("text").attr("opacity","1");
+	})		
 	.on("dblclick",function(d){
 		console.log("dblclick nodeFacet");
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
@@ -822,6 +834,28 @@ function drawFacets(svg,nodeData,vm){
 	.style("opacity", .7)
 	;
 
+	// Pretty bad idea: put rectangles behind text to help discern it
+	// We keep it for debugging to see the boxes
+	// node.append("rect")
+	// .attr("dx", 12)
+	// // .attr("dy", ".35em")
+	// .attr("id",function(d){ return 'background_'+d.index})
+	// .attr("name",function(d){return d.name})
+	// .attr("width",function(d){return d.name.length*10;})
+	// .attr("height",function(d){return 10;})
+	// // .text( function (d) { return "["+d.name+"]"; })
+	// .attr("font-family", "sans-serif").attr("font-size", "10px")
+	// .attr("opacity",".6")
+	// // .attr("border","solid").attr("border-radius","10px")
+	// .style("border","solid").style("border-radius","10px")
+	// .style("box-shadow","gray")
+	// // .style("background-color","#46b4af")
+	// .attr("fill", "d.color")
+	// .on("mouseover",function(d){
+	// 	d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	// })
+	// ;
+
 	node.append("text")
 	.attr("dx", 12)
 	.attr("dy", ".35em")
@@ -848,9 +882,6 @@ function drawFacets(svg,nodeData,vm){
 	.style("box-shadow","gray")
 	.style("background-color","#46b4af")
 	.attr("fill", "#4D504F")
-	.on("mouseover",function(d){
-		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
-	})
 	;
 
 	// Moved to be adjacent to the cluster node.
@@ -910,10 +941,10 @@ function drawFacets(svg,nodeData,vm){
 
 	// Force rules:
 	force.on("tick", function(e) {
-	  	node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-	  	d3.selectAll(".node")
-	      .each(cluster(10 * e.alpha * e.alpha))
-	      .each(collide(.5))
+		node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+		d3.selectAll(".node")
+	      .each( cluster(10 * e.alpha * e.alpha) )
+	      .each( collide(.5) );
 	});
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");
@@ -1389,7 +1420,7 @@ function loadNode(nodeAccession,loadedStuff){
 	// TO DO: Change the value here by the variable in relations.server
 	root = "http://beans.ebi.ac.uk:9480/biosamples/relations/"
 	console.log("baseUrl : ");console.log(baseUrl);
-	
+
 	// root = buildGraphUrl(baseUrl,nodeAccession);
 
 	// root = "http://localhost:8181/relations-webapp-0.0.1-SNAPSHOT/";
