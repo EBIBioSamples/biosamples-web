@@ -52,15 +52,17 @@ public class SampleController {
         URI uri = uriBuilder.build();
         log.info("Getting relations from "+uri);
         SampleRelationsWrapper result = restTemplate.getForObject(uri, SampleRelationsWrapper.class);
+        Boolean sampleHasRelations = !sample.getGroups().isEmpty() || result.hasRelations();
 
         //TODO derivedFrom/To display the other way around for some reason? correct in relations output, but wrong here
-        model.addAttribute("derivedFrom",result.derivedFrom);
-        model.addAttribute("derivedTo",result.derivedTo);
-        model.addAttribute("childOf",result.childOf);
-        model.addAttribute("parentOf",result.parentOf);
-        model.addAttribute("sameAs",result.sameAs);
-        model.addAttribute("recuratedInto",result.recuratedInto);
-        model.addAttribute("recuratedFrom",result.recuratedFrom);
+        model.addAttribute("derivedFrom",result.getDerivedFrom());
+        model.addAttribute("derivedTo",result.getDerivedTo());
+        model.addAttribute("childOf",result.getChildOf());
+        model.addAttribute("parentOf",result.getParentOf());
+        model.addAttribute("sameAs",result.getSameAs());
+        model.addAttribute("recuratedInto",result.getRecuratedInto());
+        model.addAttribute("recuratedFrom",result.getRecuratedFrom());
+        model.addAttribute("hasRelations", sampleHasRelations);
 
         return "sample";
     }

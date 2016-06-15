@@ -8,10 +8,6 @@
     var relationsUrl = window.relationsUrl;
     var originUrl = window.baseUrl ? window.baseUrl : window.location.origin;
     
-    
-
-
-
     // Parse the sample/group accession out of the URL
     // var url = document.URL;
     // var reversed = url.split("").reverse().join("");
