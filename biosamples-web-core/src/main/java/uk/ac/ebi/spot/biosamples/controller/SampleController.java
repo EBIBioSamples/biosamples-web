@@ -1,10 +1,8 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -63,14 +61,14 @@ public class SampleController {
         String relationsURL = relationsLinkFactory.createRelationsLinkForSample(sample).getHref();
         RestTemplate restTemplate = new RestTemplate();
         try {
-            JSONObject result = restTemplate.getForObject(relationsURL, JSONObject.class);
-            model.addAttribute("derivedFrom", result.get("derivedFrom"));
-            model.addAttribute("derivedTo", result.get("derivedTo"));
-            model.addAttribute("childOf", result.get("childOf"));
-            model.addAttribute("parentOf", result.get("parentOf"));
-            model.addAttribute("sameAs", result.get("sameAs"));
-            model.addAttribute("curatedInto", result.get("ReCuratedInto"));
-            model.addAttribute("curatedFrom", result.get("ReCuratedFrom"));
+            SampleRelationsWrapper result = restTemplate.getForObject(relationsURL, SampleRelationsWrapper.class);
+            model.addAttribute("derivedFrom", result.getDerivedFrom());
+            model.addAttribute("derivedTo", result.getDerivedTo());
+            model.addAttribute("childOf", result.getChildOf());
+            model.addAttribute("parentOf", result.getParentOf());
+            model.addAttribute("sameAs", result.getSameAs());
+            model.addAttribute("curatedInto", result.getRecuratedInto());
+            model.addAttribute("curatedFrom", result.getRecuratedFrom());
         }
         catch (RestClientException e) {
             getLog().error("Failed to retrieve relations data from '" + relationsURL + "'", e);
@@ -170,7 +168,9 @@ public class SampleController {
         getLog().error("There is no data available for this accession - return NOT_FOUND response", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>("There is no data available for this accession: " + e.getMessage(), headers, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("There is no data available for this accession: " + e.getMessage(),
+                                    headers,
+                                    HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(APIXMLNotFoundException.class)
@@ -179,7 +179,9 @@ public class SampleController {
         getLog().error("There is no XML available for this accession - return NOT_FOUND response", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>("There is no XML available for this accession: " + e.getMessage(), headers, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("There is no XML available for this accession: " + e.getMessage(),
+                                    headers,
+                                    HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(RequestParameterSyntaxException.class)
