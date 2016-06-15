@@ -14,7 +14,7 @@ import uk.ac.ebi.spot.biosamples.model.solr.Sample;
  */
 @Component
 public class RelationsLinkFactory {
-    @Value("${relations.server:http://localhost:8080/}")
+    @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
     private String relationsServerUrl;
 
     public Link createRelationsLinkForSample(Sample sample) {

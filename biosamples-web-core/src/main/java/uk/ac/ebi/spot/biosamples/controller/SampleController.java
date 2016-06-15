@@ -46,7 +46,7 @@ import java.util.Map;
 public class SampleController {
     @Autowired private SampleRepository sampleRepository;
 
-    @Value("${relations.server:http://localhost:8080/}")
+    @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
     private String relationsServer;
 
     private RestTemplate restTemplate = new RestTemplate();
