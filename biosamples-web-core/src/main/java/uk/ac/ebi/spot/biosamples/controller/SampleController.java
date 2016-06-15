@@ -31,6 +31,7 @@ import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.SampleResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
+import uk.ac.ebi.spot.biosamples.service.RelationsLinkFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -46,10 +47,7 @@ import java.util.Map;
 public class SampleController {
     @Autowired private SampleRepository sampleRepository;
 
-    @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
-    private String relationsServer;
-
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired private RelationsLinkFactory relationsLinkFactory;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -62,11 +60,7 @@ public class SampleController {
         Sample sample = sampleRepository.findOne(accession);
         model.addAttribute("sample", sample);
 
-        //This parses the current URL and adds the bits to reach the relations endpoint
-        String currentURL = request.getRequestURL().toString();
-        String relationsURL =
-                currentURL.substring(0, currentURL.indexOf("/samples/")) + "/samples/" + accession + "/biosamplesWeb";
-
+        String relationsURL = relationsLinkFactory.createRelationsLinkForSample(sample).getHref();
         RestTemplate restTemplate = new RestTemplate();
         try {
             JSONObject result = restTemplate.getForObject(relationsURL, JSONObject.class);
