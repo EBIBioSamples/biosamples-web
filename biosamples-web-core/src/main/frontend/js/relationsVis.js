@@ -7,9 +7,6 @@
     var accession = window.accession;
     var relationsUrl = window.relationsUrl;
     var originUrl = window.location.origin;
-    
-
-
 
     // Parse the sample/group accession out of the URL
     // var url = document.URL;
@@ -48,7 +45,6 @@
         baseurl = baseurl + "relations/";
         return baseurl;
     }
-
 // }
 */
 
@@ -73,7 +69,6 @@
         },
         
         callbacks: {
-
             onSelectNode: function (params) {
                 let nodeAccession = params.nodes[0];
                 console.log(params);
@@ -110,8 +105,6 @@
         nodes: {shape: "dot"}
     };
 
-
     var instance = new app();
     instance.visstart("ontology_vis", accession, tmpNetworkOptions, visOptions);
-    
 })(window);

@@ -457,6 +457,7 @@ function draw(svg,nodeData,vm){
 		d3.select(this).selectAll("circle").style("stroke-width", 4);
 		d3.event.stopPropagation();
 		// Fill in the infoVizRelations according to data returned
+		document.getElementById("textData").innerHTML='<p>';
 		var url=document.URL;
 		var indexUrl = url.indexOf("/?");
 		url = url.substring(0,indexUrl);
@@ -520,9 +521,9 @@ function draw(svg,nodeData,vm){
 		d3.event.preventDefault();
 		// TO DO : Once code of Tommy added, try again the addNode to work with the force field
 		// var svg = d3.select("#vizNodeLink").select("svg");
-		// var loadedStuff = {};
-		// loadedStuff = loadNode(d.accession,loadedStuff);
-		// console.log("loadedStuff : ");console.log(loadedStuff);
+		var loadedStuff = {};
+		loadedStuff = loadNode(d.accession,loadedStuff);
+		console.log("loadedStuff : ");console.log(loadedStuff);
 		// addNodesAndLinks( nodeData,d.accession,force,loadedStuff,svg );
 
 		// Exemples to try functions to add and remove elements
@@ -1162,7 +1163,7 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		var indicationType = "sample";
 		if ( currentAccession.substring(0,5).indexOf("SAMEG") !== -1 ){ indicationType = "group"; }
 		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
-	  	document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
+		document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
 
 		var URLs = [];
 		for (var prop in d.responseDoc) {
@@ -1387,6 +1388,10 @@ function loadNode(nodeAccession,loadedStuff){
 	if ( nodeAccession.indexOf("SAMEG") !== -1 ){ nodeIsGroup = true; }
 	// TO DO: Change the value here by the variable in relations.server
 	root = "http://beans.ebi.ac.uk:9480/biosamples/relations/"
+	console.log("baseUrl : ");console.log(baseUrl);
+	
+	// root = buildGraphUrl(baseUrl,nodeAccession);
+
 	// root = "http://localhost:8181/relations-webapp-0.0.1-SNAPSHOT/";
 	if (nodeIsGroup){
 		root += "groups/";
