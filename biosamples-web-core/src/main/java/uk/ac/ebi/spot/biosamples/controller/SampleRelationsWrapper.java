@@ -1,16 +1,18 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SampleRelationsWrapper {    	
-	public List<String> derivedFrom = new ArrayList<>();
-	public List<String> derivedTo = new ArrayList<>();
-	public List<String> childOf = new ArrayList<>();
-	public List<String> parentOf = new ArrayList<>();
-	public List<String> recuratedInto = new ArrayList<>();
-	public List<String> recuratedFrom = new ArrayList<>();
-	public List<String> sameAs = new ArrayList<>();
+public class SampleRelationsWrapper {
+
+    private List<String> derivedFrom = new ArrayList<>();
+    private List<String> derivedTo = new ArrayList<>();
+    private List<String> childOf = new ArrayList<>();
+    private List<String> parentOf = new ArrayList<>();
+    private List<String> recuratedInto = new ArrayList<>();
+    private List<String> recuratedFrom = new ArrayList<>();
+    private List<String> sameAs = new ArrayList<>();
 	
 	public SampleRelationsWrapper(){}
 
@@ -68,5 +70,21 @@ public class SampleRelationsWrapper {
 
 	public void setSameAs(List<String> sameAs) {
 		this.sameAs = sameAs;
-	};
+	}
+
+	public Boolean hasRelations() {
+		Boolean hasRelations = false;
+		Field[] allFields = this.getClass().getDeclaredFields();
+		for (Field field: allFields) {
+				try {
+					field.setAccessible(true);
+					hasRelations = ((List) field.get(this)).size() > 0;
+					if (hasRelations) return true;
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+		}
+
+		return hasRelations;
+	}
 }
