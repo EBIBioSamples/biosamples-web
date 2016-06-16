@@ -62,6 +62,7 @@ public class SampleController {
         RestTemplate restTemplate = new RestTemplate();
         try {
             SampleRelationsWrapper result = restTemplate.getForObject(relationsURL, SampleRelationsWrapper.class);
+            Boolean sampleHasRelations = !sample.getGroups().isEmpty() || result.hasRelations();
             model.addAttribute("derivedFrom", result.getDerivedFrom());
             model.addAttribute("derivedTo", result.getDerivedTo());
             model.addAttribute("childOf", result.getChildOf());
@@ -69,6 +70,7 @@ public class SampleController {
             model.addAttribute("sameAs", result.getSameAs());
             model.addAttribute("curatedInto", result.getRecuratedInto());
             model.addAttribute("curatedFrom", result.getRecuratedFrom());
+            model.addAttribute("hasRelations", sampleHasRelations);
         }
         catch (RestClientException e) {
             getLog().error("Failed to retrieve relations data from '" + relationsURL + "'", e);
