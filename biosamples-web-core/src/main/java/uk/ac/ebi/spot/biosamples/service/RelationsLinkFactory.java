@@ -18,12 +18,14 @@ public class RelationsLinkFactory {
     private String relationsServerUrl;
 
     public Link createRelationsLinkForSample(Sample sample) {
-        String url = relationsServerUrl + (relationsServerUrl.endsWith("/") ? "samples/" : "/samples/") + sample.getAccession();
+        String url = relationsServerUrl + (relationsServerUrl.endsWith("/") ? "samples/" : "/samples/") +
+                sample.getAccession();
         return new Link(url, "relations");
     }
 
     public Link createRelationsLinkForGroup(Group group) {
-        String url = relationsServerUrl + (relationsServerUrl.endsWith("/") ? "groups/" : "/groups/") + group.getAccession();
+        String url =
+                relationsServerUrl + (relationsServerUrl.endsWith("/") ? "groups/" : "/groups/") + group.getAccession();
         return new Link(url, "relations");
     }
 }
