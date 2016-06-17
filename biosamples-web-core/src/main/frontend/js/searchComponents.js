@@ -1085,6 +1085,7 @@ function doD3Alternative( nodeAccession, results ){
       .attr("width", "100%")
       .attr("height", heightD3)
       .attr("id","vizSpotRelations")
+      .attr("displayCluster",-1)
       .style("stroke", "black")
       .style("stroke-width", 1)
       .style("border","solid")

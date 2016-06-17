@@ -387,6 +387,30 @@ function draw(svg,nodeData,vm){
 	.attr("class","node")
 	.call(force.drag);
 
+
+	node.append("text")
+	.attr("dx", 12)
+	.attr("dy", ".35em")
+	.attr("id",function(d){return 'text_'+d.accession})
+	.text( function (d) { return "["+d.accession+"]"; })
+	.attr("font-family", "sans-serif").attr("font-size", "10px")
+	.attr("border","solid").attr("border-radius","10px")
+	.style("border","solid").style("border-radius","10px")
+	.style("box-shadow","gray")
+	.style("background-color","#46b4af")
+	.style("visibility", function(d){
+		if ( d.accession.indexOf("SAMEG") > -1 ){
+			return "visible";
+		} else {
+			return "hidden";
+		}
+	})
+	.attr("fill", "#4D504F")
+	.on("mouseover",function(d){
+		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
+	})
+	;
+
 	node.append("circle")
 	.attr("r", function (d) { return d.radius * 3; })
 	.attr("accession",function(d){return d.accession})
@@ -534,29 +558,6 @@ function draw(svg,nodeData,vm){
 	})
 	;
 
-	node.append("text")
-	.attr("dx", 12)
-	.attr("dy", ".35em")
-	.attr("id",function(d){return 'text_'+d.accession})
-	.text( function (d) { return "["+d.accession+"]"; })
-	.attr("font-family", "sans-serif").attr("font-size", "10px")
-	.attr("border","solid").attr("border-radius","10px")
-	.style("border","solid").style("border-radius","10px")
-	.style("box-shadow","gray")
-	.style("background-color","#46b4af")
-	.style("visibility", function(d){
-		if ( d.accession.indexOf("SAMEG") > -1 ){
-			return "visible";
-		} else {
-			return "hidden";
-		}
-	})
-	.attr("fill", "#4D504F")
-	.on("mouseover",function(d){
-		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
-	})
-	;
-
 	// var hull = svg.append("path")
 	// .attr("class", "hull");
 
@@ -689,7 +690,11 @@ function drawFacets(svg,nodeData,vm){
 			clusters.push(nodeData.nodes[i]);
 		}
 	}
+
+
 	for ( var i = 0 ; i < nodeData.nodes.length; i++){
+		// console.log('d3.select("#text_"+i) : ');console.log(d3.select("#text_"+i));
+		// nodeData.nodes[i].width = d3.select("#text_"+i).node().getBBox().width;
 		for (var j = 0; j < clusters.length; j++ ){
 			if ( clusters[j].facet == nodeData.nodes[i].facet ){
 				nodeData.nodes[i].cluster = j;
@@ -748,6 +753,12 @@ function drawFacets(svg,nodeData,vm){
 		// Facet nousedown ?
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select(this).attr("theOneSelected",'true');
+// Selection for the separation of text
+		// d3.selectAll("text").attr("textToDisplay",'false');
+		// console.log("d.cluster : ");console.log(d.cluster);
+		// console.log('d3.selectAll(".text_facet_"+d.cluster) : ');console.log(d3.selectAll(".text_facet_"+d.cluster));
+		d3.selectAll("#vizSpotRelations").attr("displayCluster",function(){return d.cluster});
+// 
 		d3.event.stopPropagation();
 		d3.selectAll("circle").style("stroke-width",2);
 		d3.select(this).select("circle").style("stroke-width", 4);
@@ -778,11 +789,11 @@ function drawFacets(svg,nodeData,vm){
 			}
 		});
 
-		console.log("Is there force ?");console.log(force);
-		console.log("Is there force.nodes()");console.log(force.nodes());
-		console.log("d.cluster : ");console.log(d.cluster);
-		console.log( 'd3.selectAll("node[cluster=\'"+d.cluster+"\']") : ');
-		console.log( d3.selectAll("node[cluster='"+d.cluster+"']") );
+		// console.log("Is there force ?");console.log(force);
+		// console.log("Is there force.nodes()");console.log(force.nodes());
+		// console.log("d.cluster : ");console.log(d.cluster);
+		// console.log( 'd3.selectAll("node[cluster=\'"+d.cluster+"\']") : ');
+		// console.log( d3.selectAll("node[cluster='"+d.cluster+"']") );
 	})
 	.on("mouseup",function(d){
 		d3.selectAll(".node").attr("isThereSelected",'false');
@@ -797,7 +808,7 @@ function drawFacets(svg,nodeData,vm){
 		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
 		// CHANGE OPACITY OF OTHERS WHEN HOVERING
 		d3.selectAll(".node").selectAll("text").attr("opacity",".3");
-		d3.select(this).select("text").attr("opacity","1");		
+		d3.select(this).select("text").attr("opacity","1");
 	})
 	.on("mouseout",function(d){
 		if ( d3.select(".node").attr("isThereSelected")=='false' ){
@@ -819,6 +830,72 @@ function drawFacets(svg,nodeData,vm){
 		fadeOutDiv("infoPop");
 		vm.$options.methods.querySamples(this,false);
 	});
+
+	node.append("text")
+	.text( function (d) {
+		var indexFilter = d.facet.indexOf( "_crt_ft" );
+		var nameFacet = d.facet;
+		// var nameFacet = d.readableContent;
+		if ( indexFilter > -1 ){ nameFacet = nameFacet.substr(0,indexFilter); }
+		return "["+nameFacet+"]";
+	})
+	.attr("xPos",function(d){return d.px;})
+	.attr("yPos",function(d){return d.py;})
+	.attr("dx", function(d){
+		// var radius = d3.select(this)[0][0].parentNode.attributes.r.value;
+		var radius = d.radius;
+		// console.log("radius: ");console.log(radius);
+		// console.log('d3.select(this).select("text").node().getBBox() : ');
+		// console.log( d3.select(this).select("text").node().getBBox() );
+		// console.log('d3.select(this).select("text").node().getComputedTextLength() : ');
+		// console.log( d3.select(this).select("text").node().getComputedTextLength() );
+		// console.log( 'd3.select(this) : ');console.log( d3.select(this) );
+		// console.log("this : ");console.log(this);
+		// console.log('this.getComputedTextLength() : ');
+		// console.log( this.getComputedTextLength() );
+		// return -radius/2 + "em" ;
+		return -radius/2;
+		// return 0;
+	})
+	.attr("dy", function(d){
+		// console.log( 'd3.select(this) : ');
+		// console.log( d3.select(this) );
+		// console.log( 'd3.select(this)[0][0].parentNode.attributes.r.value : ');
+		// console.log( d3.select(this)[0][0].parentNode.attributes.r.value );
+		// var radius = d3.select(this)[0][0].parentNode.attributes.r.value;
+		var radius = d.radius;
+		// console.log("radius: ");console.log(radius);
+		// return -radius/2 + "em";
+		return -radius -3;
+		// return 0;
+	})
+	.attr("id",function(d){ return 'text_'+d.index})
+	.attr("class",function(d){ return 'text_facet_'+d.cluster})
+	// .attr("textToDisplay",function(d){return 'false'})
+	.attr("name",function(d){return d.name})
+	// .text( function (d) { return "["+d.name+"]"; })
+	.attr("font-family", "sans-serif").attr("font-size", "10px")
+	.attr("border","solid").attr("border-radius","10px")
+	.style("visibility", function(d){
+		if ( d.index == clusters[d.cluster].index ){
+			return "visible";
+		} else {
+			return "hidden";
+		}
+	})
+	.style("border","solid").style("border-radius","10px")
+	.style("box-shadow","gray")
+	.style("background-color","#46b4af")
+	.attr("fill", "#4D504F")
+	;
+
+	// d3.selectAll(".text_facet")
+	// .each(function(d) {
+	// 	console.log('this : ');console.log(this);
+	// 	console.log( 'this.getBBox() : ');console.log( this.getBBox() );
+ //        d.width = this.getBBox().width;
+ //        // return this.getBBox().width;
+ //    });
 
 	node.append("circle")
 	.attr("r", function (d) { return d.radius; })
@@ -855,34 +932,6 @@ function drawFacets(svg,nodeData,vm){
 	// 	d3.selectAll(".node").selectAll("text").style("font-size", "10px");
 	// })
 	// ;
-
-	node.append("text")
-	.attr("dx", 12)
-	.attr("dy", ".35em")
-	.attr("id",function(d){ return 'text_'+d.index})
-	.attr("name",function(d){return d.name})
-	// .text( function (d) { return "["+d.name+"]"; })
-	.text( function (d) {
-		var indexFilter = d.facet.indexOf( "_crt_ft" );
-		var nameFacet = d.facet;
-		// var nameFacet = d.readableContent;
-		if ( indexFilter > -1 ){ nameFacet = nameFacet.substr(0,indexFilter); }
-		return "["+nameFacet+"]";
-	})
-	.attr("font-family", "sans-serif").attr("font-size", "10px")
-	.attr("border","solid").attr("border-radius","10px")
-	.style("visibility", function(d){
-		if ( d.index == clusters[d.cluster].index ){
-			return "visible";
-		} else {
-			return "hidden";
-		}
-	})
-	.style("border","solid").style("border-radius","10px")
-	.style("box-shadow","gray")
-	.style("background-color","#46b4af")
-	.attr("fill", "#4D504F")
-	;
 
 	// Moved to be adjacent to the cluster node.
 	function cluster(alpha){
@@ -939,12 +988,94 @@ function drawFacets(svg,nodeData,vm){
 	  };
 	}
 
+	// console.log("@@@@");
+	// console.log('node.select("text").node().getBBox() : ');
+	// console.log( node.select("text").node().getBBox() );
+	// console.log('node.select("text").node().getComputedTextLength() : ');
+	// console.log( node.select("text").node().getComputedTextLength() );
+	// console.log( 'd3.geom.quadtree(node) : ');console.log( d3.geom.quadtree(node));
+	// console.log( 'd3.selectAll(".text_facet_4") : ' );console.log( d3.selectAll(".text_facet_4") );
+	// console.log('d3.select("#text_9")[0][0].parentNode.attributes.transform : ');
+	// console.log(d3.select("#text_9")[0][0].parentNode.attributes.transform);
+	// console.log(	'd3.select("#vizSpotRelations").selectAll(".text_facet") : ');
+	// console.log(	d3.select("#vizSpotRelations").selectAll(".text_facet"));
+	// console.log("@@@@");
+
+
 	// Force rules:
 	force.on("tick", function(e) {
+		// console.log("tick");
+		// console.log('d3.select("#text_9")[0][0].parentNode.attributes.transform : ');
+		// console.log(d3.select("#text_9")[0][0].parentNode.attributes.transform);
+		// console.log( d3.select("#text_14")[0][0].parentNode.attributes.transform );
+
 		node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+		// node.childNodes[1].attr("transform", function(d) { return "translate(" + 20 + "," + 20 + ")"; });
 		d3.selectAll(".node")
-	      .each( cluster(10 * e.alpha * e.alpha) )
-	      .each( collide(.5) );
+		    .each( cluster(10 * e.alpha * e.alpha) )
+		    .each( collide(.5) )
+		    // .each(function(d){
+	      	// Here make modifications to move text in order to avoid overlays
+			//	this.childNodes[0].setAttribute("transform", "translate(" + 20 + "," + 20 + ")");
+			// })
+	    ;
+
+	    var clusterNumber = d3.select("#vizSpotRelations").attr("displayCluster");
+	    if (clusterNumber != -1 && clusterNumber != null){
+	    	var firstX, firstY;
+
+	    	d3.select(".text_facet_"+clusterNumber)
+	    		.each(function(d,i){
+	    			firstX = d.x;
+	    			firstY = d.y;
+	    		})
+	    	;
+
+	  		d3.selectAll(".text_facet_"+clusterNumber)
+	  			.each(function(d,i){
+	  				// console.log("d : ");console.log(d);
+					// console.log("d.x : "+d.x+", d.y : "+d.y+", i : "+i);
+					// console.log("firstX : "+firstX+", firstY : "+firstY);
+					// Let's try to push the text away from the center, the further the node, the further the text
+					var diffX, diffY;
+					if (i != 0){
+						diffX = Math.abs( d.x-firstX );
+						diffY = Math.abs( d.y-firstY );
+						// console.log("diffX : "+diffX+", diffY : "+diffY);
+						if ( d.x-firstX < 0 ){ 
+							diffX = -diffX;
+							var value = d.name;
+							diffX -= value.length * 15;
+						}
+						if ( d.y-firstY < 0 ){ diffY = -diffY }
+						console.log("diffX : "+diffX);
+						this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY/4 + ")");
+					}					
+					// +", id : "+d.id
+					// console.log('d : ');console.log( d );
+					// console.log('this : ');console.log(this);
+					// console.log('this.textToDisplay : ');console.log(this.textToDisplay);
+
+					// console.log("d.cluster : ");console.log(d.cluster);
+					// var cptText = 0;
+					// var numberCluster = d3.selectAll(".text_facet_"+d.cluster)
+					// d3.selectAll(".text_facet_"+d.cluster)
+					// 	.each(function(d,i){
+
+					// 	})
+					// ;
+					// console.log("this : ");console.log(this);
+					// Works
+					// this.setAttribute("transform", "translate(" + 20 + "," + 20 + ")");
+					// Need to establish the nodes that need to be moved -> Get positions of group
+
+					// console.log('this.id : ');console.log(this.id);
+					// node.select("#text_"+d.id)
+	  			})
+	  		;
+	  	}
+
 	});
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");
