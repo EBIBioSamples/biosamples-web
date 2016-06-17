@@ -11,10 +11,11 @@
     <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
 
     <!--/* Pass SPRING variables to Javascript */-->
-    <script th:inline="javascript">
+    <script th:if="${hasRelations}" th:inline="javascript">
         /*<![CDATA[*/
         window.relationsUrl = [[${relationsUrl}]];
         window.accession = [[${sample.accession}]];
+        window.baseUrl = [[@{/}]];
         /*]]>*/
     </script>
 
@@ -163,7 +164,7 @@
             </tbody>
         </table>
     </div>
-    <div id="samples">
+    <div id="samples" th:if="${hasRelations}">
         <br><br><hr><h4>Samples Relations</h4>
         <div id="ontology_vis">
         </div>
@@ -172,10 +173,6 @@
 
 <th:block layout:fragment="custom-endpage-scripts">
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
-</th:block>
-
-
-<th:block layout:fragment="custom-endpage-scripts">
     <script th:src="@{/javascript/relationsVis.js}"></script>
 </th:block>
 

@@ -32,6 +32,9 @@ public class Sample {
     @Field("updatedate") String updateDate;
     @Field("releasedate") String releaseDate;
 
+    // collection of all text attributes for search
+    @JsonIgnore @Field("text") List<String> keywords;
+
     // collection of all characteristics as key/list of value pairs
     @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
 
@@ -96,6 +99,14 @@ public class Sample {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
     }
 
     public Map<String, List<String>> getCharacteristicsText() {

@@ -45,13 +45,14 @@ public abstract class ResultQuery<T> {
         long totalElementsValue = results.getTotalElements();
         int pageNumberValue = results.getNumber();
         int pageSizeValue = results.getSize();
-        int resultsFromValue = pageSizeValue * (pageNumberValue - 1) + 1;
-        long resultsToValue = Math.min(pageSizeValue * pageNumberValue, totalElementsValue);
+        int resultsFromValue = pageSizeValue * pageNumberValue + 1;
+        int pageEndValue = (pageNumberValue + 1) * pageSizeValue;
+        long resultsToValue = totalElementsValue < pageEndValue ? totalElementsValue : pageEndValue;
 
         Element total = new Element("Total",XMLNS).setText(Long.toString(totalElementsValue));
         Element from = new Element("From",XMLNS).setText(Integer.toString(resultsFromValue));
         Element to = new Element("To",XMLNS).setText(Long.toString(resultsToValue));
-        Element pageNumber = new Element("PageNumber",XMLNS).setText(Integer.toString(pageNumberValue));
+        Element pageNumber = new Element("PageNumber",XMLNS).setText(Integer.toString(pageNumberValue + 1));
         Element pageSize = new Element("PageSize",XMLNS).setText(Integer.toString(pageSizeValue));
 
         summary.addContent(total);
