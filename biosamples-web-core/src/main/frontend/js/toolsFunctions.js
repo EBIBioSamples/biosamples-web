@@ -1034,23 +1034,41 @@ function drawFacets(svg,nodeData,vm){
 
 	  		d3.selectAll(".text_facet_"+clusterNumber)
 	  			.each(function(d,i){
-	  				// console.log("d : ");console.log(d);
+					console.log("d : ");console.log(d);
 					// console.log("d.x : "+d.x+", d.y : "+d.y+", i : "+i);
 					// console.log("firstX : "+firstX+", firstY : "+firstY);
 					// Let's try to push the text away from the center, the further the node, the further the text
 					var diffX, diffY;
 					if (i != 0){
 						diffX = Math.abs( d.x-firstX );
-						diffY = Math.abs( d.y-firstY );
+						diffY = Math.abs(d.y-firstY);
 						// console.log("diffX : "+diffX+", diffY : "+diffY);
 						if ( d.x-firstX < 0 ){ 
 							diffX = -diffX;
 							var value = d.name;
 							diffX -= value.length * 15;
 						}
-						if ( d.y-firstY < 0 ){ diffY = -diffY }
-						console.log("diffX : "+diffX);
-						this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY/4 + ")");
+
+						var stdDerivation = 10;
+						var coeff = 1;
+						if ( diffY < 1 ){
+							coeff = 1/diffX;
+							diffY = stdDerivation * coeff;
+						} else {
+							diffY = Math.sqrt(diffY)
+						}
+
+						if ( d.y-firstY < 0 ){ 
+							diffY = -diffY;
+						}
+						// console.log("diffX : "+diffX);
+						// console.log("----");
+						// console.log("d.x-firstX : "+d.x-firstX);
+						// console.log("diffY : "+diffY);
+						// console.log("----");
+						
+						// this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY/4 + ")");
+						this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY + ")");
 					}					
 					// +", id : "+d.id
 					// console.log('d : ');console.log( d );
