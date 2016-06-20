@@ -105,7 +105,8 @@
             },
             previousQueryParams: {},
             currentQueryParams: {},
-            alerts: []
+            alerts: [],
+            facetsCollapsed: false
         },
         computed: {
 
@@ -322,6 +323,10 @@
             removeAlert(item) {
                 this.alerts.$remove(item);
             },
+
+            collapseFacets() {
+                this.$broadcast('collapse', this.facetsCollapsed);
+        },
 
             /**
              * Register event handlers for Vue custom events
