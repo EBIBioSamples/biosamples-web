@@ -1,0 +1,16 @@
+@import 'labels';
+@import 'facets';
+
+.panel-heading {
+     * {
+        vertical-align: middle;
+     }
+}
+
+// side_panel
+.panel-footer {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-content: center;
+}

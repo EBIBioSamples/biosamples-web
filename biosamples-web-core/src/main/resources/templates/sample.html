@@ -27,9 +27,9 @@
 <main layout:fragment="content">
 
     <div class="detail_table">
-        <h4 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h4>
+        <h1 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h1>
 
-        <table id="bs_results_tablesamplegroupdetail">
+        <table id="bs_results_tablesamplegroupdetail" class="listing">
             <tbody>
             <!-- Common sample attributes -->
             <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_name') and #arrays.length(sample.characteristics.sample_name) > 0}">
@@ -164,8 +164,8 @@
             </tbody>
         </table>
     </div>
-    <div id="samples" th:if="${hasRelations}">
-        <br><br><hr><h4>Samples Relations</h4>
+    <div id="samples" class="relation-graph" th:if="${hasRelations}">
+        <h2 class="relation-graph__title">Samples Relations</h2>
         <div id="ontology_vis">
         </div>
     </div>

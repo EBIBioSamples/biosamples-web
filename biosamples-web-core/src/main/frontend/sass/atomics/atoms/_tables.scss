@@ -1,0 +1,22 @@
+.listing {
+
+  tr:nth-child(2n) {
+    background-color: #c2ccd1;
+  }
+  tr:nth-child(2n+1) {
+    background-color: $gray-lighter;
+  }
+
+  td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.3em 0.5em;
+  }
+
+  td:first-child {
+    white-space: nowrap;
+  }
+
+
+
+}

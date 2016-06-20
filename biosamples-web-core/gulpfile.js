@@ -1,5 +1,6 @@
 var elixir = require('laravel-elixir');
 var srcStaticPath = elixir.config.publicPath;
+var publicCssPath = `${elixir.config.publicPath}${elixir.config.css.outputFolder}`;
 
 require('laravel-elixir-vueify');
 
@@ -11,7 +12,7 @@ elixir(function(mix) {
                 srcStaticPath + "/**/*.css"
             ]
         })
-	 	.sass('main_samelf.scss')
+	 	.sass('base.scss')
 	 	.browserify('searchComponents.js')
         .browserify('relationsVis.js')
 	 	.scripts('toolsFunctions.js')
