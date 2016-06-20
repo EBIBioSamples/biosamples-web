@@ -52,7 +52,22 @@
       border-radius: 50%; behavior: url(PIE.htc); /* remove if you don't care about IE8 */ width: 13px; height: 13px; padding: 3px; background: #f5f5f5; 
       border: 1px solid #000; color: #000; text-align: center; 
       font: 13px Arial, sans-serif;
+      cursor: pointer;
     }
+    .crossDelete2{
+    border-radius: 50%;
+    behavior: url(PIE.htc);
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    background: #f5f5f5;
+    border: 1px solid #000;
+    color: #000;
+    text-align: center;
+    font: 13px Arial, sans-serif;
+    cursor:pointer;
+    }
+
     #areaNodeLink{
       position:relative; width:100%;
     }
@@ -109,9 +124,9 @@
     }
 
     #elementHelp{
-        position:absolute; 
+        /*position:absolute; */
         width:320px; text-align: center; 
-        float: right;
+        /*float: right;*/
         visibility: hidden;
     }
     #textHelp{
@@ -324,6 +339,9 @@
         </div>
         <div id="dynamicText">
           <h3> Clicked element information </h3>
+          <div id="elementHelp">
+            <div id="textHelp"> Help</div>
+          </div>
           <div id="textData" style="overflow:hidden">Click on an element of the diagram to display its information </div>
         </div>
       </div>
@@ -332,13 +350,13 @@
   </section>
 </div>
 
-<div id="elementHelp">
+<!-- <div id="elementHelp">
         <div id="textHelp"> Help</div>
 </div>
-<div id="infoPop"> Temporary display of information </div>
+ --><div id="infoPop"> Temporary display of information </div>
 
 <div id="indicationWindow">
-  <div id="hideIndication" class="crossDelete" >&#10006;</div>
+  <div id="hideIndication" class="crossDelete2" >&#10006;</div>
   <h3 class="titleIndication" >Introduction</h3>
   This visualisation offers the possibility to explore and filter the results of your search according to the categories, or facets, returned. There are two visualisation modes, the "Facet" one, and the "Sample" one:<br/><ul>
     <li><b>Facet mode</b>: In this mode the big central square with nodes represents the categories of your results, where the size of the nodes indicates how much of the results a category represents, and the same color indicates belonging to the same mother category. </li>

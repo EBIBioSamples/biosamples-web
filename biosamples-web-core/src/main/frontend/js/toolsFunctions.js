@@ -392,7 +392,8 @@ function draw(svg,nodeData,vm){
 	.attr("dx", 12)
 	.attr("dy", ".35em")
 	.attr("id",function(d){return 'text_'+d.accession})
-	.text( function (d) { return "["+d.accession+"]"; })
+	// .text( function (d) { return "["+d.accession+"]"; })
+	.text( function (d) { return d.accession; })
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
 	.attr("border","solid").attr("border-radius","10px")
 	.style("border","solid").style("border-radius","10px")
@@ -770,20 +771,23 @@ function drawFacets(svg,nodeData,vm){
 
 		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
 			if ( d2.cluster == d.cluster ){
-				d3.select(this)[0][0].textContent = '['+d2.readableContent+']';
+				// d3.select(this)[0][0].textContent = '['+d2.readableContent+']';
+				d3.select(this)[0][0].textContent = d2.readableContent;
 				return "visible";
 			} else {
 				if ( clusters[d2.cluster].index == d2.index ){
 					var indexFilter = d2.facet.indexOf( "_crt_ft" );
 					var nameFacet = d2.facet;
 					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
-					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
+					// d3.select(this)[0][0].textContent = "["+nameFacet+"]";
+					d3.select(this)[0][0].textContent = nameFacet;
 					return "visible";
 				} else {
 					var indexFilter = d2.facet.indexOf( "_crt_ft" );
 					var nameFacet = d2.facet;
 					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
-					d3.select(this)[0][0].textContent = "["+nameFacet+"]";
+					// d3.select(this)[0][0].textContent = "["+nameFacet+"]";
+					d3.select(this)[0][0].textContent = nameFacet;
 					return "hidden";
 				}
 			}
@@ -837,7 +841,8 @@ function drawFacets(svg,nodeData,vm){
 		var nameFacet = d.facet;
 		// var nameFacet = d.readableContent;
 		if ( indexFilter > -1 ){ nameFacet = nameFacet.substr(0,indexFilter); }
-		return "["+nameFacet+"]";
+		// return "["+nameFacet+"]";
+		return nameFacet;
 	})
 	.attr("xPos",function(d){return d.px;})
 	.attr("yPos",function(d){return d.py;})
@@ -1407,7 +1412,8 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	.attr("dx", 12)
 	.attr("dy", ".35em")
 	.attr("id",function(d){return 'text_'+d.accession})
-	.text( function (d) { return "["+d.accession+"]"; })
+	// .text( function (d) { return "["+d.accession+"]"; })
+	.text( function (d) { return d.accession; })
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
 	.attr("border","solid").attr("border-radius","10px")
 	.style("border","solid").style("border-radius","10px")

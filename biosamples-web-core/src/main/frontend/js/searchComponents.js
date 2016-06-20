@@ -496,20 +496,22 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     }
 
     // Not added part
-    $(document).bind('mousemove', function(e){
-        var widthWindow = $(window).width();
-        var posLeft = e.pageX + 20;
-        var posY = e.pageY - $("#elementHelp").height()/2 ;
-        var widthTail = $("#elementHelp").width();
-        if ( posLeft + widthTail >= widthWindow ){
-          posLeft= e.pageX - $("#elementHelp").width;
-          posY = e.pageY+20;
-        }
-        $('#elementHelp').css({
-            left:  posLeft,
-            top:   posY
-        });
-    });
+    // CHANGE: not bound to position of mouse anymore.
+    // $(document).bind('mousemove', function(e){
+    //     var widthWindow = $(window).width();
+    //     var posLeft = e.pageX + 20;
+    //     var posY = e.pageY - $("#elementHelp").height()/2 ;
+    //     var widthTail = $("#elementHelp").width();
+    //     if ( posLeft + widthTail >= widthWindow ){
+    //       posLeft= e.pageX - $("#elementHelp").width;
+    //       posY = e.pageY+20;
+    //     }
+    //     $('#elementHelp').css({
+    //         left:  posLeft,
+    //         top:   posY
+    //     });
+    // });
+
     document.getElementById("elementHelp").style.visibility="hidden";
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").innerHTML="Display result information";
