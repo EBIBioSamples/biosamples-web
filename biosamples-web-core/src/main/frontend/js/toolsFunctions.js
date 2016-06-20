@@ -1066,7 +1066,7 @@ function drawFacets(svg,nodeData,vm){
 						// console.log("d.x-firstX : "+d.x-firstX);
 						// console.log("diffY : "+diffY);
 						// console.log("----");
-						
+
 						// this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY/4 + ")");
 						this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY + ")");
 					}					
@@ -1090,7 +1090,7 @@ function drawFacets(svg,nodeData,vm){
 
 					// console.log('this.id : ');console.log(this.id);
 					// node.select("#text_"+d.id)
-	  			})
+				})
 	  		;
 	  	}
 

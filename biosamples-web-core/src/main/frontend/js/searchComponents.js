@@ -186,6 +186,22 @@
 
                         // doD3Alternative(queryParams.searchTerm, results);
 
+
+                        document.getElementById("indicationButton").onclick = function(){
+                            // console.log( 'document.getElementById("indicationWindow").style.display : ' );
+                            // console.log( document.getElementById("indicationWindow").style.display );
+                            // if ( document.getElementById("indicationWindow").style.display != "block" ){
+                            //     console.log(' document.getElementById("indicationWindow").style.display != "block" ');
+                                document.getElementById("indicationWindow").style.display="block";
+                            // } else {
+                            //     console.log(' document.getElementById("indicationWindow").style.display == "block" ');
+                            //     document.getElementById("indicationWindow").style.display="none";
+                            // }
+                        };
+                        document.getElementById("hideIndication").onclick = function(){
+                            document.getElementById("indicationWindow").style.display="none";
+                        }
+
                         // Version with switch from Facet to Sample representation
                         if ( typeof loadD3 === "undefined" || loadD3 ){
                             doD3Stuff(results,apiUrl,this);
@@ -425,7 +441,6 @@ function log(value,context) {
 function doD3Stuff( results, apiUrl, vm=0  ){
   console.log("_______doD3Stuff______");
   console.log("results : ");console.log(results);
-
   // If existing, clean the visualisation space
   d3.select("#vizSpotRelations").remove();
 

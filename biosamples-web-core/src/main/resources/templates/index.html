@@ -82,6 +82,32 @@
         cursor:pointer;
     }
 
+    #indicationButton{
+      cursor:pointer;
+      width:auto;
+      /*float:right;*/
+    }
+    #indicationButton:hover{color:blue;}
+
+    #indicationWindow{
+      position: absolute;
+      display: none;
+      background-color: white;
+      opacity: .95;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      top: 0;
+      height: 100%;
+      color: black;
+    }
+    #indicationWindow:hover{}
+
+    .titleIndication{
+      color:green;
+    }
+
     #elementHelp{
         position:absolute; 
         width:320px; text-align: center; 
@@ -254,8 +280,10 @@
   </div>
 </section>
 
-
+  
   <section id="sectionVisualisation" class='tab-pane fade'>
+    <br/>
+    <div id ="indicationButton"><u>Click here for help with the visualisation</u></div>
 
     <div id="buttonRezInfo"> 
       <h4 id="titleRezInfo" >
@@ -300,6 +328,7 @@
         </div>
       </div>
     </div>
+
   </section>
 </div>
 
@@ -307,6 +336,29 @@
         <div id="textHelp"> Help</div>
 </div>
 <div id="infoPop"> Temporary display of information </div>
+
+<div id="indicationWindow">
+  <div id="hideIndication" class="crossDelete" >&#10006;</div>
+  <h3 class="titleIndication" >Introduction</h3>
+  This visualisation offers the possibility to explore and filter the results of your search according to the categories, or facets, returned. There are two visualisation modes, the "Facet" one, and the "Sample" one:<br/><ul>
+    <li><b>Facet mode</b>: In this mode the big central square with nodes represents the categories of your results, where the size of the nodes indicates how much of the results a category represents, and the same color indicates belonging to the same mother category. </li>
+    <li><b>Sample mode</b>: This mode shows samples or groups returned by the search. If samples belong to the same group, they are linked to it, and share the same color. Selecting a node allows the user to go towards its specific page, where more data is displayed. </li>
+  </ul>
+
+  <h3 class="titleIndication" > Main window </h3>
+    The big rectangle in the center of the page is the main window. According to the mode, it displays either categories of your search results, or samples returned. You can zoom in and out using your mouse wheel, or trackpad. <br/>
+    Double clicking on a category in the Facet mode will filter the results according to it.
+
+<!--   <h3 class="titleIndication"> Text window </h3> -->
+<!--   Termino et statuuntur fabricarum nominum Epigonus his ob praediximus oppressi Montium Eusebius vivendi vivendi futurae tribunos appellatos praediximus Eusebius adminicula nominum ut ob statuuntur sub appellatos his his ob termino tribunos praediximus nominum praediximus sub praediximus praediximus termino appellatos Montium vivendi ipso tribunos Epigonus molitioni oppressi adminicula his igitur molitioni. -->
+
+  <h3 class="titleIndication"> Bar chart </h3>
+  By clicking on the button on top of the main visualisation, a bar chart appears, displaying for each category returned, the sub categories and how important they are. The interaction with it is similar to the main visualisation in Facet mode: double clicking on a bar will filter the results according to the category.
+
+  <h3 class="titleIndication"> Purpose of the visualisation </h3>
+  The purpose of this visualisation is to provide a way to browse through the data in a new way, by focusing on filtering the categories, so that the number of elements returned to be small enough for the user to analyse them into details.
+
+</div>
 
 </main>
 
