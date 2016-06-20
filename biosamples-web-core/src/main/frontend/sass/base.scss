@@ -2,69 +2,22 @@
 
 @import "vendor/custom_bootstrap";
 
-@import 'atomics/atoms/panels';
-@import 'atomics/atoms/loading';
-@import 'atomics/atoms/alerts';
-@import 'atomics/atoms/search';
-@import 'atomics/atoms/graphs';
-@import 'atomics/atoms/tables';
-@import 'atomics/atoms/tabs';
-@import 'atomics/atoms/badges';
-@import 'atomics/atoms/pagination';
+@import 'atomic/atoms/panels';
+@import 'atomic/atoms/loading';
+@import 'atomic/atoms/alerts';
+@import 'atomic/atoms/search';
+@import 'atomic/atoms/graphs';
+@import 'atomic/atoms/tables';
+@import 'atomic/atoms/tabs';
+@import 'atomic/atoms/badges';
+@import 'atomic/atoms/pagination';
 
-@import 'atomics/organisms/body_sections';
-@import 'atomics/organisms/header';
-@import 'atomics/organisms/footer';
+@import 'atomic/organisms/body_sections';
+@import 'atomic/organisms/header';
+@import 'atomic/organisms/footer';
+@import 'atomic/organisms/refining_panel';
 
 
 @import 'mixins/flexbox-mixins';
 @import 'grid/flexbox';
 
-
-// personal:scss
-
-//
-//.highlight {
-//  background-color: $highlight-color;
-//}
-//
-//
-
-//
-//a.v-link-active {
-//  color: red;
-//  font-weight: bold;
-//  text-decoration: none;
-//}
-//
-//
-//
-//.badge {
-//  background-color: $primary-color;
-//}
-//
-//
-///* Responsive: Portrait tablets and up */
-//@media screen and (min-width: 768px) {
-//  // .container {
-//  //   max-width: 730px;
-//  // }
-//
-//  /* Remove the padding we set earlier */
-//  .header,
-//  .marketing,
-//  .footer {
-//    padding-left: 0;
-//    padding-right: 0;
-//  }
-//
-//  /* Space out the masthead */
-//  .header {
-//    margin-bottom: 30px;
-//  }
-//
-//  /* Remove the bottom border on the jumbotron for visual effect */
-//  .jumbotron {
-//    border-bottom: 0;
-//  }
-//}

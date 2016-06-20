@@ -173,7 +173,7 @@
                 // Options passed to ajax request
                 // Timeout set to prevent infinite waiting
                 let ajaxOptions = {
-                    timeout: 10000
+                    timeout: 20000
                 };
 
                 this.isQuerying = true;
