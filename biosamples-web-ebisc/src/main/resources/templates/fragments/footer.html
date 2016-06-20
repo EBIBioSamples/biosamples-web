@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<footer th:fragment="footer">
+    <div class="row">
+        <div class="support">
+            <hr>
+            <div class="text">
+                The EBiSC – European Bank for induced pluripotent Stem Cells project has received support from the Innovative Medicines Initiative Joint Undertaking under grant agreement n° 115582, resources of which are composed of financial contribution from the European Union’s Seventh Framework Programme (FP7/2007-2013) and EFPIA companies’ in kind contribution. <a href="http://www.imi.europa.eu/">www.imi.europa.eu</a>
+            </div>
+            <div class="links">
+                <ul>
+                    <li><a href="http://www.efpia.eu/"><img src="../../static/images/logo-efpia.png" th:src="@{/images/logo-efpia.png}" width="144" height="60" alt="EFPIA - European Federation of Pharmaceutical Industries and Associations"></a></li>
+                    <li><a href="http://www.imi.europa.eu/"><img src="../../static/images/logo-imi.png" th:src="@{/images/logo-imi.png}" width="96" height="60" alt="IMI - Innovative Medicines Initiative"></a></li>
+                    <li><a href="http://europa.eu/"><img src="../../static/images/logo-europe.png" th:src="@{/images/logo-europe.png}" width="80" height="60" alt="EU"></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

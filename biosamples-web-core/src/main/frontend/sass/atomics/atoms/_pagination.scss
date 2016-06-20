@@ -1,0 +1,19 @@
+.pagination {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  #inputPageContainer {
+    text-align: center;
+    min-width: 100px;
+
+    &.editMode {
+      input {
+        text-align: center;
+        border: none;
+        margin: -1px;
+        max-width: 50px;
+      }
+    }
+
+  }
+}

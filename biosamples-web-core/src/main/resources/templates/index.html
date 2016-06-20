@@ -5,7 +5,7 @@
       th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 <head>
     <title>Search</title>
-    <link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>
+    <!--<link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>-->
 
     <style type="text/css">
     /* You have the option of setting a maximum width for your page, and making sure everything is centered */
@@ -159,16 +159,14 @@
 
         <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
         <div v-bind:class="{loading: isQuerying}"></div>
-        <br/><br/>
         <div id="displayRemainingFilters" ></div>
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs col-xs-12">
             <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
             <li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>
         </ul>
 
-        <div class="tab-content">
-          <section id="sectionList" class="container tab-pane fade in active" v-show="queryTermPresent" v-cloak>
-
+        <div class="tab-content col-xs-12">
+          <section id="sectionList" class="tab-pane fade in active" v-show="queryTermPresent" v-cloak>
               <div v-if="!queryHasResults">
                   <div class="row">
                       <h3>
@@ -179,7 +177,7 @@
               </div>
 
               <div v-else="">
-                  <div class="row">
+                  <div>
                       <div class="col-md-4"></div>
                       <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
                   </div>
@@ -187,15 +185,22 @@
                       <div class="row">
                           <div class="col-md-4">
                               <div class="row">
-                                  <div class="panel panel-default">
+                                  <div class="panel panel-default refine-panel">
                                       <div class="panel-heading">
                                           <h3>Refine search results</h3>
                                       </div>
                                       <div class="panel-body">
                                         <form>
-                                            <label for="fuzzy-search">Search for similar terms</label>
-                                            <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
-                                            v-model="useFuzzy" v-on:change="querySamples" />
+                                            <div class="form-group">
+                                                <label for="fuzzy-search">Search for similar terms</label>
+                                                <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
+                                                       v-model="useFuzzy" v-on:change="querySamples" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="collapse-facets">Collapse all facets</label>
+                                                <input type="checkbox" v-model="facetsCollapsed" id="collapse-facets" name="collapse-facets"
+                                                       v-on:change="collapseFacets">
+                                            </div>
                                         </form>
 
                                         <component v-for="(key,facetObj) in facets"
@@ -207,14 +212,13 @@
                                   </div>
                                   <div class="panel-footer">
                                       <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-xs-6">
                                             <component is="pagination"
                                               v-bind:total-results="resultsNumber"
-                                              v-bind:displayed-results="samplesToRetrieve"
-                                              style="float:right">
+                                              v-bind:displayed-results="samplesToRetrieve">
                                           </component>
                                       </div>
-                                      <div class="col-md-6">
+                                      <div class="col-xs-6">
                                           <component is="items-dropdown"
                                                      v-bind:items-per-page="samplesToRetrieve">
                                           </component>
