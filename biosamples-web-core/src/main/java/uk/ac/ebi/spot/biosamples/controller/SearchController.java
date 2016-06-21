@@ -58,7 +58,7 @@ public class SearchController {
                 .withContentType(HttpSolrQuery.CONTENT_TYPE.JSON)
                 .withFacetOn("content_type")
                 .withFacetOn(httpSolrDispatcher.getMostUsedFacets(solrQuery, 5))
-                .withFacetLimit(10)
+                .withFacetLimit(5)
                 .withPage(start, rows);
 
         // Setup highlighting

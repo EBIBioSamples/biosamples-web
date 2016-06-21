@@ -84,20 +84,29 @@ public class HttpSolrDispatcher {
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
         try {
             HttpSolrQuery facetQuery = solrQuery.clone();
-            facetLimit = ignoredFacets.size() - 1 + facetLimit;
+            int safeFacetLimit = ignoredFacets.size() - 1 + facetLimit;
 
             // we don't need any results here
             facetQuery.withPage(0,0);
 
             // and we are investigating crt_type_ft
             facetQuery.withFacetOn("crt_type_ft");
-            facetQuery.withFacetLimit(facetLimit);
+            facetQuery.withFacetLimit(safeFacetLimit);
 
-            return executeAndParseFacetQuery(facetQuery);
+            return reduceFacetsNumber(executeAndParseFacetQuery(facetQuery),facetLimit);
         }
         catch (CloneNotSupportedException e) {
             throw new RuntimeException("Unexpected exception cloning query to determine most used attributes", e);
         }
+    }
+
+    private String[] reduceFacetsNumber(String[] facetsList, int facetLimit) {
+        if ( facetsList.length  < facetLimit) {
+            return facetsList;
+        }
+        String[] reducedFacetList = new String[facetLimit];
+        System.arraycopy(facetsList, 0, reducedFacetList, 0, facetLimit);
+        return reducedFacetList;
     }
 
     public void streamSolrResponse(OutputStream outputStream, HttpSolrQuery solrQuery) throws IOException {
