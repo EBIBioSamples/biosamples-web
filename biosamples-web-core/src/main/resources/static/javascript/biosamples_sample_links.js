@@ -9,6 +9,11 @@ $(document).ready(function(){
 
 function initializeLinks() {
     console.log("Checking characteristic-mappings");
+    charactersticsMapping();
+    accessionMapping();
+}
+
+function charactersticsMapping() {
     $(".characteristic-mapping").each(function(){
         // get JSON payload for each element
         var mapping = $(this);
@@ -38,4 +43,8 @@ function initializeLinks() {
             }
         });
     });
+}
+
+function accessionMapping() {
+    
 }

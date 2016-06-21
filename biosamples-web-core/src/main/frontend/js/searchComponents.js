@@ -90,7 +90,8 @@
             pageNumber: 1,
             samplesToRetrieve: 10,
             isQuerying: false,
-            resultsNumber: '',
+            submittedQuery: false,
+            resultsNumber: 1,
             queryResults: {},
             biosamples: [],
             filterQuery: {},
@@ -104,6 +105,9 @@
 
             queryTermPresent() {
                 return !_.isEmpty(this.queryTerm);
+            },
+            querySubmitted() {
+                return this.submittedQuery;
             },
             queryHasResults() {
                 return this.resultsNumber > 0;
@@ -156,7 +160,7 @@
             },
 
             setDefaultSearchTerm() {
-                if (! this.queryTermPresent ) {
+                if ( _.isEmpty(this.searchTerm) ) {
                     this.$set('searchTerm','*:*');
                 }
             },
@@ -196,6 +200,9 @@
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                 .then(function(results) {
                     // displayRevertingFilters(results,this);
+                    if (! this.submittedQuery) {
+                        this.submittedQuery = true;
+                    }
                     this.consumeResults(results);
                     if ( typeof loadD3 === "undefined" || loadD3 ){
                         doD3Stuff(results,apiUrl,this);
