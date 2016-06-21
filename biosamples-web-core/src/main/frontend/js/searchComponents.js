@@ -136,21 +136,29 @@
         methods: {
 
             querySamplesOnScratch(e) {
+                console.log('querySamplesOnScratch');
                 if (e !== undefined) {
                     e.preventDefault();
                 }
                 this.useFuzzy = false;
                 this.pageNumber = 1;
                 this.samplesToRetrieve = 10;
-                this.querySamples();
+                this.querySamples(e);
             },
 
             querySamplesUsingFuzzy: function(e) {
-              if (e !== undefined) {
-                  e.preventDefault();
-              }
-              this.useFuzzy = true;
-              this.querySamples();
+                console.log('querySamplesUsingFuzzy');
+                if (e !== undefined) {
+                    e.preventDefault();
+                }
+                this.useFuzzy = true;
+                this.querySamples(e);
+            },
+
+            setDefaultSearchTerm() {
+                if (! this.queryTermPresent ) {
+                    this.$set('searchTerm','*:*');
+                }
             },
 
             /**
@@ -160,30 +168,34 @@
              */
 
              querySamples: function(e) {
+                console.log('querySamples');
                 log("Query Samples");
-                log("this : ");console.log(this);
-                log("this.$http : ");console.log(this.$http);
+                // log("this : "); console.log(this);
+                // log("this.$http : "); console.log(this.$http);
                 // console.log("e : ");console.log(e);
                 if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
                     e.preventDefault();
                 }
+
                 if (this.isQuerying) {
                     log("Still getting results from previous query, new query aborted");
                     return;
                 }
 
+                this.setDefaultSearchTerm();
+
                 let queryParams = this.getQueryParameters();
                 // Options passed to ajax request
                 // Timeout set to prevent infinite waiting
                 let ajaxOptions = {
-                    timeout: 20000
+                    timeout: 200000
                 };
 
                 this.isQuerying = true;
 
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                 .then(function(results) {
-                    displayRevertingFilters(results,this);
+                    // displayRevertingFilters(results,this);
                     this.consumeResults(results);
                     if ( typeof loadD3 === "undefined" || loadD3 ){
                         doD3Stuff(results,apiUrl,this);

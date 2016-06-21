@@ -2,11 +2,11 @@
 	margin: 10px 0;
 
 	.panel-heading {
-		padding: 5px 10px;
+		padding: $panel-padding 2*$panel-padding;
 	} 
 
 	.panel-body {
-		padding: 5px 20px;
+		padding: 2*$panel-padding 4*$panel-padding;
 	}
 }
 
