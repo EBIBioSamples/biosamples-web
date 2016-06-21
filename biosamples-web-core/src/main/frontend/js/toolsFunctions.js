@@ -528,7 +528,8 @@ function draw(svg,nodeData,vm){
 	.on("mouseover",function(d){
 		if ( d3.select(this).attr("isThereSelected") == 'false' ){
 			var allNodes = d3.selectAll(".node");
-			document.getElementById("elementHelp").style.visibility="visible";
+			// document.getElementById("elementHelp").style.visibility="visible";
+			document.getElementById("elementHelp").style.display="block";
 			d3.select("#textHelp").html(""+d.accession);
 			var circleNode = d3.select(this).selectAll("circle");
 			var textNode = d3.select(this).select("text");
@@ -804,7 +805,8 @@ function drawFacets(svg,nodeData,vm){
 		d3.select(this).attr("theOneSelected",'false');
 	})
 	.on("mouseover",function(d){
-		document.getElementById("elementHelp").style.visibility="visible";
+		// document.getElementById("elementHelp").style.visibility="visible";
+		document.getElementById("elementHelp").style.display="block";
 		if ( d3.select(".node").attr("isThereSelected")=="false" ){
 			console.log("There is no selected people ");
 			d3.select("#textHelp").html("Double click on a node to filter the results according to this facet <hr/>"+d.facet+"<hr/>"+d.readableContent+"<hr/>"+d.value+" elements");
@@ -1381,7 +1383,8 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	.on("mouseover",function(d){
 		if ( d3.select(this).attr("isThereSelected") == 'false' ){
 			var allNodes = d3.selectAll(".node");
-			document.getElementById("elementHelp").style.visibility="visible";
+			// document.getElementById("elementHelp").style.visibility="visible";
+			document.getElementById("elementHelp").style.display="block";
 			d3.select("#textHelp").html(""+d.accession);
 			var circleNode = d3.select(this).selectAll("circle");
 			var textNode = d3.select(this).select("text");
