@@ -38,4 +38,27 @@ function initializeLinks() {
             }
         });
     });
+
+    console.log("Checking external-references-payload");
+    $(".external-references-payload").each(function(){
+        // get JSON payload 
+        var quotedPayload = $(this).html();
+        var mapping = $(this);
+        var jsonStr;
+        if (quotedPayload.charAt(0) === '"' && quotedPayload.charAt(str.length -1) === '"'){
+            jsonStr = quotedPayload.substr(1, str.length-2);
+        }
+        else {
+            jsonStr = quotedPayload;
+        }
+        var json = jQuery.parseJSON(jsonStr);
+        var output = "";
+        $.each( json, function( index, value ) {
+            output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"</a>";
+            if (index < json.length-1) {
+            	output += "<br />"
+            }
+        });
+        mapping.html(output); 
+    });
 }
