@@ -544,7 +544,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 ) ) {        
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
-        +'<div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+        +'<div id="textData">'
+        // +' <p> Click on an element of the diagram to display its information </p>'
+        +' </div>';
       var cpt = 0;
       var strResults = '<table id="table" style="width: 100%"; " > <tr>';
       
@@ -566,7 +568,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       document.getElementById("sectionVizResult").innerHTML= strResults;
     } else {
       document.getElementById("dynamicText").innerHTML= ' <h3>Clicked element information</h3>'
-      +' <div id="textData"> <p> Click on an element of the diagram to display its information </p> </div>';
+      +' <div id="textData"> <p>'
+      // ' Click on an element of the diagram to display its information'
+      +' </p> </div>';
 
       document.getElementById("sectionVizResult").innerHTML= ' <div id="tableResults"> <table  style="width:100%" <tr> <td>  </table> </div>';
     }
