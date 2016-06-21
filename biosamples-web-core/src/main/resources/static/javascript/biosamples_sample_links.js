@@ -54,9 +54,14 @@ function initializeLinks() {
         var json = jQuery.parseJSON(jsonStr);
         var output = "";
         $.each( json, function( index, value ) {
-            output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"</a>";
+            if (value.URL.indexOf("/ena/") > -1) {
+                output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"<img src=\"../images/ena_logo.gif\"></img></a>";
+            } else {
+                output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"</a>";
+            	
+            }
             if (index < json.length-1) {
-            	output += "<br />"
+            	output += "<br />";
             }
         });
         mapping.html(output); 
