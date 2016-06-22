@@ -995,26 +995,10 @@ function drawFacets(svg,nodeData,vm){
 	  };
 	}
 
-	// console.log("@@@@");
-	// console.log('node.select("text").node().getBBox() : ');
-	// console.log( node.select("text").node().getBBox() );
-	// console.log('node.select("text").node().getComputedTextLength() : ');
-	// console.log( node.select("text").node().getComputedTextLength() );
-	// console.log( 'd3.geom.quadtree(node) : ');console.log( d3.geom.quadtree(node));
-	// console.log( 'd3.selectAll(".text_facet_4") : ' );console.log( d3.selectAll(".text_facet_4") );
-	// console.log('d3.select("#text_9")[0][0].parentNode.attributes.transform : ');
-	// console.log(d3.select("#text_9")[0][0].parentNode.attributes.transform);
-	// console.log(	'd3.select("#vizSpotRelations").selectAll(".text_facet") : ');
-	// console.log(	d3.select("#vizSpotRelations").selectAll(".text_facet"));
-	// console.log("@@@@");
 
 
 	// Force rules:
 	force.on("tick", function(e) {
-		// console.log("tick");
-		// console.log('d3.select("#text_9")[0][0].parentNode.attributes.transform : ');
-		// console.log(d3.select("#text_9")[0][0].parentNode.attributes.transform);
-		// console.log( d3.select("#text_14")[0][0].parentNode.attributes.transform );
 
 		node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
@@ -1041,7 +1025,7 @@ function drawFacets(svg,nodeData,vm){
 
 	  		d3.selectAll(".text_facet_"+clusterNumber)
 	  			.each(function(d,i){
-					console.log("d : ");console.log(d);
+					// console.log("d : ");console.log(d);
 					// console.log("d.x : "+d.x+", d.y : "+d.y+", i : "+i);
 					// console.log("firstX : "+firstX+", firstY : "+firstY);
 					// Let's try to push the text away from the center, the further the node, the further the text
@@ -1059,7 +1043,7 @@ function drawFacets(svg,nodeData,vm){
 						var stdDerivation = 10;
 						var coeff = 1;
 						if ( diffY < 1 ){
-							coeff = 1/diffX;
+							coeff = 1/diffY;
 							diffY = stdDerivation * coeff;
 						} else {
 							diffY = Math.sqrt(diffY)
@@ -1077,26 +1061,6 @@ function drawFacets(svg,nodeData,vm){
 						// this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY/4 + ")");
 						this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY + ")");
 					}					
-					// +", id : "+d.id
-					// console.log('d : ');console.log( d );
-					// console.log('this : ');console.log(this);
-					// console.log('this.textToDisplay : ');console.log(this.textToDisplay);
-
-					// console.log("d.cluster : ");console.log(d.cluster);
-					// var cptText = 0;
-					// var numberCluster = d3.selectAll(".text_facet_"+d.cluster)
-					// d3.selectAll(".text_facet_"+d.cluster)
-					// 	.each(function(d,i){
-
-					// 	})
-					// ;
-					// console.log("this : ");console.log(this);
-					// Works
-					// this.setAttribute("transform", "translate(" + 20 + "," + 20 + ")");
-					// Need to establish the nodes that need to be moved -> Get positions of group
-
-					// console.log('this.id : ');console.log(this.id);
-					// node.select("#text_"+d.id)
 				})
 	  		;
 	  	}

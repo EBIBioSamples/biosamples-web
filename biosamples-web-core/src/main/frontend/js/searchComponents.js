@@ -446,6 +446,8 @@ function log(value,context) {
 function doD3Stuff( results, apiUrl, vm=0  ){
   console.log("_______doD3Stuff______");
   console.log("results : ");console.log(results);
+  var numberMatches = results.data.response.numFound;
+  document.getElementById("numberMatches").innerHTML = "Number of returned elements: "+numberMatches;
   document.getElementById("indicationButton").style.display="block";
   // If existing, clean the visualisation space
   d3.select("#vizSpotRelations").remove();
