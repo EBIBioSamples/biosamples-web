@@ -702,9 +702,10 @@ function drawFacets(svg,nodeData,vm){
 				nodeData.nodes[i].d.cluster = j;
 				var indexForID =  clusters[j].index ;
 				d3.select("#text_"+indexForID).style("visibility", "visible");
-				console.log('clusters[j].facet : '+clusters[j].facet);
 				if (cptClusters[clusters[j].facet]){
 					cptClusters[clusters[j].facet][0]++;
+					// cptClusters[clusters[j].facet][1].push(i);
+					cptClusters[clusters[j].facet][1]=i;
 				} else {
 					cptClusters[clusters[j].facet] = [1, i];
 				}
@@ -712,23 +713,42 @@ function drawFacets(svg,nodeData,vm){
 		}
 	}
 
+	console.log("nodeData.nodes before modifications: ");
+	console.log(nodeData.nodes);
+
 	console.log("cptClusters : ");console.log(cptClusters);
-	// Additional code to remove the nodes where there is only one element in the nodeData.nodes
 	console.log("clusters : ");console.log(clusters);
+	// Additional code to remove the nodes where there is only one element in the nodeData.nodes
+	var indexToRemove = [];
 	for (var i in cptClusters){
 		if (cptClusters[i][0] == 1){
-			var indexToRemove = cptClusters[i][1];
-			console.log("indexToRemove : ");console.log(indexToRemove);
-			nodeData.nodes.splice( indexToRemove, 1);
-			for (var j in cptClusters){
-				if ( cptClusters[j][1] >= indexToRemove ){
-				cptClusters[j][1]-=1;
-				}
-			}
+			indexToRemove.push(cptClusters[i][1]);
+			// console.log("nodeData.nodes[indexToRemove] : ");
+			// console.log(nodeData.nodes[indexToRemove]);
+			// console.log("indexToRemove : ");
+			// console.log(indexToRemove);
+			// if (typeof nodeData.nodes[indexToRemove] !== "undefined" ){
+			// 	nodeData.nodes.splice( indexToRemove, 1);
+			// }
 		}
 	}
 
-	
+	console.log("indexToRemove : ");console.log(indexToRemove);
+	// for (var i = nodeData.nodes.length; i>0; i--){
+		for (var j=indexToRemove.length-1;j>=0;j--){
+			nodeData.nodes.splice(indexToRemove[j],1);
+		}
+	// }
+
+	console.log("nodeData.nodes.length after modifications: ");
+	console.log(nodeData.nodes.length);
+
+	// console.log("clusters : ");console.log(clusters);
+	// console.log("nodeData.nodes : ");console.log(nodeData.nodes);
+	if (clusters.length == nodeData.nodes.length){
+		console.log("clusters.length : ");console.log(clusters.length);
+		console.log("nodeData.nodes : ");console.log(nodeData.nodes);
+	}
 
 	var force = d3.layout.force()
 		.nodes(nodeData.nodes)
@@ -737,8 +757,6 @@ function drawFacets(svg,nodeData,vm){
 		.gravity(0)
 		.charge(0)
 		.start();
-
-	console.log("in drawFacets, nodeData.nodes : ");console.log(nodeData.nodes);
 
 	//Add nodes to the svgContainer
 	var node = svg.selectAll("node")

@@ -621,11 +621,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     var height = heightD3/4;
     var width = widthTitle;
 
-    console.log("@@@@");
-    console.log('numberFacetsUnEmpty : ');console.log( numberFacetsUnEmpty );
-    console.log('results.data.facet_counts.facet_fields : ');
-    console.log(results.data.facet_counts.facet_fields);
-    console.log("@@@@");
     for (var u in numberFacetsUnEmpty){
       // QUESTION: Do we want this ? Possible new approach, when only one facet is here, maybe we don't want to see it.
       // To implement, change condition to numberFacetsUnEmpty[u] > 1
