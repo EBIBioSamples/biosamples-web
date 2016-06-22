@@ -89,19 +89,19 @@
                 </tr>
                 <!-- end all characteristics -->
 
+
                 <!-- External links -->
-                <!--             <tr> -->
-                <!--                 <td class="col_title"><b>External links :</b></td> -->
-                <!--                 <td th:if="${#maps.isEmpty(sample.databases)}">None</td> -->
-                <!--                 <td th:if="${not #maps.isEmpty(sample.databases)}"> -->
-                <!--                     <p th:each="database : ${sample.databases}"> -->
-                <!--                         <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none"> -->
-                <!--                             <img th:src="@{/images/dblinks/hipsci_small_logo.png}"> -->
-                <!--                         </a> -->
-                <!--                         <a th:text="${database.key}" th:href="${database.value}"></a> -->
-                <!--                     </p> -->
-                <!--                 </td> -->
-                <!--             </tr> -->
+                <tr>
+                    <td class="col_title"><b>External references :</b></td>
+                    <td >
+                        <p th:if="${#strings.isEmpty(sample.externalReferences)}">None</p>
+                        <div class="external-references-payload"
+                             th:if="${not #strings.isEmpty(sample.externalReferences)}"
+                             th:text="${sample.externalReferences}">
+                            [{"name":"bar","acc":"1234","url":"http://www.google.com"},{"name":"foo","acc":"9876","url":"http://www.google.co.uk"}]
+                        </div>
+                    </td>
+                </tr>>
 
                 <!-- groups containing this sample -->
                 <tr>
@@ -114,49 +114,35 @@
 
                 <!-- relationships via neo -->
                 <tr th:if="${not #lists.isEmpty(sameAs)}">
-                    <td>
-                        <b>Same as: </b></td><td>
-                    <a th:each="item : ${sameAs}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
-                </td>
+                    <td><b>Same as: </b></td>
+                    <td><a th:each="item : ${sameAs}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(derivedFrom)}">
-                    <td>
-                        <b>Derived from: </b></td><td>
-                    <a th:each="item : ${derivedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
-                </td>
+                    <td><b>Derived from: </b></td>
+                    <td><a th:each="item : ${derivedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(derivedTo)}">
-                    <td>
-                        <b>Derived to: </b></td><td>
-                    <a th:each="item : ${derivedTo}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
-                </td>
+                    <td><b>Derived to: </b></td>
+                    <td><a th:each="item : ${derivedTo}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(childOf)}">
-                    <td>
-                        <b>Offspring from</b></td><td>
-                    <a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
-                </td>
+                    <td><b>Offspring from</b></td>
+                    <td><a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(parentOf)}">
-                    <td>
-                        <b>Offspring to</b></td><td>
-                    <a th:each="item : ${parentOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
-                </td>
+                    <td><b>Offspring to</b></td>
+                    <td><a th:each="item : ${parentOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(recuratedInto)}">
-                    <td>
-                        <b>Recurated to: </b></td><td>
-                    <a th:each="item : ${recuratedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
-                </td>
+                    <td><b>Recurated to: </b></td>
+                    <td><a th:each="item : ${recuratedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(recuratedFrom)}">
-                    <td>
-                        <b>Recurated from: </b></td><td>
-                    <a th:each="item : ${recuratedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
-                </td>
+                    <td><b>Recurated from: </b></td>
+                    <td><a th:each="item : ${recuratedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
 
 

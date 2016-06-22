@@ -9,11 +9,6 @@ $(document).ready(function(){
 
 function initializeLinks() {
     console.log("Checking characteristic-mappings");
-    charactersticsMapping();
-    accessionMapping();
-}
-
-function charactersticsMapping() {
     $(".characteristic-mapping").each(function(){
         // get JSON payload for each element
         var mapping = $(this);
@@ -43,8 +38,32 @@ function charactersticsMapping() {
             }
         });
     });
-}
 
-function accessionMapping() {
-    
+    console.log("Checking external-references-payload");
+    $(".external-references-payload").each(function(){
+        // get JSON payload 
+        var quotedPayload = $(this).html();
+        var mapping = $(this);
+        var jsonStr;
+        if (quotedPayload.charAt(0) === '"' && quotedPayload.charAt(str.length -1) === '"'){
+            jsonStr = quotedPayload.substr(1, str.length-2);
+        }
+        else {
+            jsonStr = quotedPayload;
+        }
+        var json = jQuery.parseJSON(jsonStr);
+        var output = "";
+        $.each( json, function( index, value ) {
+            if (value.URL.indexOf("/ena/") > -1) {
+                output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"<img src=\"../images/ena_logo.gif\"></img></a>";
+            } else {
+                output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"</a>";
+            	
+            }
+            if (index < json.length-1) {
+            	output += "<br />";
+            }
+        });
+        mapping.html(output); 
+    });
 }
