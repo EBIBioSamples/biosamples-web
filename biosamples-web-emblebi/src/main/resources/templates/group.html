@@ -74,20 +74,15 @@
                     </tr>
                     <!-- end all characteristics -->
 
-                    <!-- start all database links -->
-                    <tr>
-                        <td class="col_title"><b>Databases :</b></td>
-                        <td th:if="${#maps.isEmpty(group.databases)}">None</td>
-                        <td th:if="not ${#maps.isEmpty(group.databases)}">
-                            <p th:each="database : ${group.databases}">
-                                <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none">
-                                    <img th:src="@{/images/dblinks/hipsci_small_logo.png}">
-                                </a>
-                                <a th:text="${database.key}" th:href="${database.value}"></a>
-                            </p>
-                        </td>
-                    </tr>
-                    <!-- end all database links -->
+
+			<!-- External links -->
+            <tr>
+                <td class="col_title"><b>External references :</b></td>
+                <td th:if="${#strings.isEmpty(group.externalReferences)}">None</td>
+                <td th:if="${not #strings.isEmpty(group.externalReferences)}">
+                	<div class="external-references-payload" th:text="${group.externalReferences}">[{"name":"bar","acc":"1234","url":"http://www.google.com"},{"name":"foo","acc":"9876","url":"http://www.google.co.uk"}]</div>
+                </td>
+            </tr>
 
                     <tr>
                         <td class="col_title"><b>Samples in Group :</b></td>
