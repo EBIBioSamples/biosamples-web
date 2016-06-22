@@ -478,6 +478,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               numberFacetsUnEmpty[u]++;
             }
           }
+          // QUESTION: Do we want to display facets with one value ? I guess we do in the bar chart ?
+          // New change not to display a facet with only one value
+          // if (numberFacetsUnEmpty[u] == 1){
+          //       delete numberFacetsUnEmpty[u];
+          // }
       }
     }
 
@@ -616,7 +621,14 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     var height = heightD3/4;
     var width = widthTitle;
 
+    console.log("@@@@");
+    console.log('numberFacetsUnEmpty : ');console.log( numberFacetsUnEmpty );
+    console.log('results.data.facet_counts.facet_fields : ');
+    console.log(results.data.facet_counts.facet_fields);
+    console.log("@@@@");
     for (var u in numberFacetsUnEmpty){
+      // QUESTION: Do we want this ? Possible new approach, when only one facet is here, maybe we don't want to see it.
+      // To implement, change condition to numberFacetsUnEmpty[u] > 1
       if (numberFacetsUnEmpty[u] > 0){
         var idToSelect = "#rezFacets"+cpt;
         barCharts.push(

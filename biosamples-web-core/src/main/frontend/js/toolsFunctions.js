@@ -686,14 +686,13 @@ function drawFacets(svg,nodeData,vm){
     var maxRadius = 50;
 	// The largest node for each cluster.
 	var clusters = [];
-	var cptClusters = 0;
 	for (var i in nodeData.nodes){
 		if (nodeData.nodes[i].cluster ==  nodeData.nodes[i].name){
 			clusters.push(nodeData.nodes[i]);
 		}
 	}
 
-
+	var cptClusters={};
 	for ( var i = 0 ; i < nodeData.nodes.length; i++){
 		// console.log('d3.select("#text_"+i) : ');console.log(d3.select("#text_"+i));
 		// nodeData.nodes[i].width = d3.select("#text_"+i).node().getBBox().width;
@@ -703,9 +702,33 @@ function drawFacets(svg,nodeData,vm){
 				nodeData.nodes[i].d.cluster = j;
 				var indexForID =  clusters[j].index ;
 				d3.select("#text_"+indexForID).style("visibility", "visible");
+				console.log('clusters[j].facet : '+clusters[j].facet);
+				if (cptClusters[clusters[j].facet]){
+					cptClusters[clusters[j].facet][0]++;
+				} else {
+					cptClusters[clusters[j].facet] = [1, i];
+				}
 			}
 		}
 	}
+
+	console.log("cptClusters : ");console.log(cptClusters);
+	// Additional code to remove the nodes where there is only one element in the nodeData.nodes
+	console.log("clusters : ");console.log(clusters);
+	for (var i in cptClusters){
+		if (cptClusters[i][0] == 1){
+			var indexToRemove = cptClusters[i][1];
+			console.log("indexToRemove : ");console.log(indexToRemove);
+			nodeData.nodes.splice( indexToRemove, 1);
+			for (var j in cptClusters){
+				if ( cptClusters[j][1] >= indexToRemove ){
+				cptClusters[j][1]-=1;
+				}
+			}
+		}
+	}
+
+	
 
 	var force = d3.layout.force()
 		.nodes(nodeData.nodes)
@@ -714,6 +737,8 @@ function drawFacets(svg,nodeData,vm){
 		.gravity(0)
 		.charge(0)
 		.start();
+
+	console.log("in drawFacets, nodeData.nodes : ");console.log(nodeData.nodes);
 
 	//Add nodes to the svgContainer
 	var node = svg.selectAll("node")
@@ -752,7 +777,7 @@ function drawFacets(svg,nodeData,vm){
 		d3.event.preventDefault();
 	})
 	.on("mousedown",function(d){
-		// Facet nousedown ?
+		// Facet nousedown
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select(this).attr("theOneSelected",'true');
 // Selection for the separation of text
@@ -794,11 +819,6 @@ function drawFacets(svg,nodeData,vm){
 			}
 		});
 
-		// console.log("Is there force ?");console.log(force);
-		// console.log("Is there force.nodes()");console.log(force.nodes());
-		// console.log("d.cluster : ");console.log(d.cluster);
-		// console.log( 'd3.selectAll("node[cluster=\'"+d.cluster+"\']") : ');
-		// console.log( d3.selectAll("node[cluster='"+d.cluster+"']") );
 	})
 	.on("mouseup",function(d){
 		d3.selectAll(".node").attr("isThereSelected",'false');
@@ -849,32 +869,12 @@ function drawFacets(svg,nodeData,vm){
 	.attr("xPos",function(d){return d.px;})
 	.attr("yPos",function(d){return d.py;})
 	.attr("dx", function(d){
-		// var radius = d3.select(this)[0][0].parentNode.attributes.r.value;
 		var radius = d.radius;
-		// console.log("radius: ");console.log(radius);
-		// console.log('d3.select(this).select("text").node().getBBox() : ');
-		// console.log( d3.select(this).select("text").node().getBBox() );
-		// console.log('d3.select(this).select("text").node().getComputedTextLength() : ');
-		// console.log( d3.select(this).select("text").node().getComputedTextLength() );
-		// console.log( 'd3.select(this) : ');console.log( d3.select(this) );
-		// console.log("this : ");console.log(this);
-		// console.log('this.getComputedTextLength() : ');
-		// console.log( this.getComputedTextLength() );
-		// return -radius/2 + "em" ;
 		return -radius/2;
-		// return 0;
 	})
 	.attr("dy", function(d){
-		// console.log( 'd3.select(this) : ');
-		// console.log( d3.select(this) );
-		// console.log( 'd3.select(this)[0][0].parentNode.attributes.r.value : ');
-		// console.log( d3.select(this)[0][0].parentNode.attributes.r.value );
-		// var radius = d3.select(this)[0][0].parentNode.attributes.r.value;
 		var radius = d.radius;
-		// console.log("radius: ");console.log(radius);
-		// return -radius/2 + "em";
 		return -radius -3;
-		// return 0;
 	})
 	.attr("id",function(d){ return 'text_'+d.index})
 	.attr("class",function(d){ return 'text_facet_'+d.cluster})
@@ -900,9 +900,9 @@ function drawFacets(svg,nodeData,vm){
 	// .each(function(d) {
 	// 	console.log('this : ');console.log(this);
 	// 	console.log( 'this.getBBox() : ');console.log( this.getBBox() );
- //        d.width = this.getBBox().width;
- //        // return this.getBBox().width;
- //    });
+	//        d.width = this.getBBox().width;
+	//        // return this.getBBox().width;
+	// });
 
 	node.append("circle")
 	.attr("r", function (d) { return d.radius; })
@@ -917,28 +917,6 @@ function drawFacets(svg,nodeData,vm){
 	.style("stroke-opacity",1)
 	.style("opacity", .7)
 	;
-
-	// Pretty bad idea: put rectangles behind text to help discern it
-	// We keep it for debugging to see the boxes
-	// node.append("rect")
-	// .attr("dx", 12)
-	// // .attr("dy", ".35em")
-	// .attr("id",function(d){ return 'background_'+d.index})
-	// .attr("name",function(d){return d.name})
-	// .attr("width",function(d){return d.name.length*10;})
-	// .attr("height",function(d){return 10;})
-	// // .text( function (d) { return "["+d.name+"]"; })
-	// .attr("font-family", "sans-serif").attr("font-size", "10px")
-	// .attr("opacity",".6")
-	// // .attr("border","solid").attr("border-radius","10px")
-	// .style("border","solid").style("border-radius","10px")
-	// .style("box-shadow","gray")
-	// // .style("background-color","#46b4af")
-	// .attr("fill", "d.color")
-	// .on("mouseover",function(d){
-	// 	d3.selectAll(".node").selectAll("text").style("font-size", "10px");
-	// })
-	// ;
 
 	// Moved to be adjacent to the cluster node.
 	function cluster(alpha){
