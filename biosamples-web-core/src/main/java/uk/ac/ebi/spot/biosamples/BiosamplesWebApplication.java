@@ -8,9 +8,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
-import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
+import uk.ac.ebi.spot.biosamples.filter.ResourceAwareUrlRewriteFilter;
 import uk.ac.ebi.spot.biosamples.model.solr.Group;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.service.RelationsLinkFactory;
@@ -19,8 +20,11 @@ import javax.validation.constraints.NotNull;
 
 @SpringBootApplication
 public class BiosamplesWebApplication {
-    public static final String REWRITE_FILTER_NAME = "rewriteFilter";
-    public static final String REWRITE_FILTER_CONF_PATH = "urlrewrite.xml";
+    @NotNull @Value("${rewrite.filter.name:rewriteFilter}")
+    private String rewriteFilterName;
+
+    @NotNull @Value("${rewrite.filter.location:classpath:urlrewrite.xml}")
+    private String rewriteFilterResourceLocation;
 
     @NotNull @Value("${solr.server}")
     private String solrServerUrl;
@@ -38,11 +42,11 @@ public class BiosamplesWebApplication {
     }
 
     @Bean
-    public FilterRegistrationBean rewriteFilterConfig() {
+    public FilterRegistrationBean rewriteFilterConfig(ResourceLoader resourceLoader) {
         FilterRegistrationBean reg = new FilterRegistrationBean();
-        reg.setName(REWRITE_FILTER_NAME);
-        reg.setFilter(new UrlRewriteFilter());
-        reg.addInitParameter("confPath", REWRITE_FILTER_CONF_PATH);
+        reg.setName(rewriteFilterName);
+        reg.setFilter(new ResourceAwareUrlRewriteFilter(resourceLoader));
+        reg.addInitParameter("confPath", rewriteFilterResourceLocation);
         reg.addInitParameter("confReloadCheckInterval", "-1");
         reg.addInitParameter("statusPath", "/redirect");
         reg.addInitParameter("statusEnabledOnHosts", "*");
