@@ -492,25 +492,25 @@ function draw(svg,nodeData,vm){
 		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
 	  	document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
 
-		var URLs = [];
-		for (var prop in d.responseDoc) {
-		  // skip loop if the property is from prototype
-		  if(!d.responseDoc.hasOwnProperty(prop)) continue;
-		  // d3.select("#textData").style("text-align","center");
-		  // Should we calculate connections onclick or on loading ?
-		  // document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
-		  document.getElementById("textData").innerHTML+="<div class='textAttribute'"
-		  + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
+		// var URLs = [];
+		// for (var prop in d.responseDoc) {
+		//   // skip loop if the property is from prototype
+		//   if(!d.responseDoc.hasOwnProperty(prop)) continue;
+		//   // d3.select("#textData").style("text-align","center");
+		//   // Should we calculate connections onclick or on loading ?
+		//   // document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
+		//   document.getElementById("textData").innerHTML+="<div class='textAttribute'"
+		//   + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
 
-		  URLs = getURLsFromObject(d.responseDoc,prop);
-		  if (URLs.length>0){
-		  	for (var k=0;k<URLs.length;k++){
-				document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
-				document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
-		   	}
-		  }
-		}
-	  	document.getElementById("textData").innerHTML+='</p>';
+		//   URLs = getURLsFromObject(d.responseDoc,prop);
+		//   if (URLs.length>0){
+		//   	for (var k=0;k<URLs.length;k++){
+		// 		document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
+		// 		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
+		//    	}
+		//   }
+		// }
+		document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
 		d3.selectAll(".node").attr("isThereSelected",'false');
@@ -1316,21 +1316,22 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
 		document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
 
-		var URLs = [];
-		for (var prop in d.responseDoc) {
-		  // skip loop if the property is from prototype
-		  if(!d.responseDoc.hasOwnProperty(prop)) continue;
-		  // document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
-		  document.getElementById("textData").innerHTML+="<div class='textAttribute'"
-		  + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
-		  URLs = getURLsFromObject(d.responseDoc,prop);
-		  if (URLs.length>0){
-		  	for (var k=0;k<URLs.length;k++){
-				document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
-				document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
-		   	}
-		  }
-		}
+		// We decide not to display these information anymore
+		// var URLs = [];
+		// for (var prop in d.responseDoc) {
+		//   // skip loop if the property is from prototype
+		//   if(!d.responseDoc.hasOwnProperty(prop)) continue;
+		//   // document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
+		//   document.getElementById("textData").innerHTML+="<div class='textAttribute'"
+		//   + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
+		//   URLs = getURLsFromObject(d.responseDoc,prop);
+		//   if (URLs.length>0){
+		//   	for (var k=0;k<URLs.length;k++){
+		// 		document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
+		// 		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
+		//    	}
+		//   }
+		// }
 	  	document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
