@@ -49,7 +49,7 @@ public class HttpSolrDispatcher {
         return log;
     }
 
-    @Value("classpath:ignoredFacets.fields")
+    @Value("${solr.ignoredfacets.file:classpath:ignoredFacets.fields}")
     private Resource ignoredFacetsResource;
 
     private Set<String> ignoredFacets;
