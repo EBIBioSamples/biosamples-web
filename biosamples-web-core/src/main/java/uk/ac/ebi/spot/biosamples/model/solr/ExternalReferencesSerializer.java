@@ -7,12 +7,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 03/06/16
- */
 public class ExternalReferencesSerializer extends JsonSerializer<String> {
     @Override
     public void serialize(String externalReferences,

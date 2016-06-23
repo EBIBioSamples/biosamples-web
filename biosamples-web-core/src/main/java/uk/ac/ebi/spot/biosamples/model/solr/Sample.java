@@ -43,14 +43,16 @@ public class Sample {
     @Field("*_crt_json")
     Map<String, List<String>> characteristics;
 
-    // collection of all external reference names
-    @JsonIgnore @Field("external_references_name") List<String> externalReferencesNames;
-
     // external references
     @JsonSerialize(using = ExternalReferencesSerializer.class)
     @Field("external_references_json")
     String externalReferences;
 
+    // external references
+    @JsonSerialize(using = ExternalReferencesSerializer.class)
+    @Field("pub_json")
+    String publications;
+    
     // group metadata
     @Field("sample_grp_accessions") List<String> groups;
 
@@ -135,14 +137,6 @@ public class Sample {
         this.characteristics = characteristics;
     }
 
-    public List<String> getExternalReferencesNames() {
-        return externalReferencesNames;
-    }
-
-    public void setExternalReferencesNames(List<String> externalReferencesNames) {
-        this.externalReferencesNames = externalReferencesNames;
-    }
-
     public String getExternalReferences() {
         return externalReferences;
     }
@@ -151,7 +145,15 @@ public class Sample {
         this.externalReferences = externalReferences;
     }
 
-    public List<String> getGroups() {
+    public String getPublications() {
+		return publications;
+	}
+
+	public void setPublications(String publications) {
+		this.publications = publications;
+	}
+
+	public List<String> getGroups() {
         return groups;
     }
 

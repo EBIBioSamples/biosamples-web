@@ -90,10 +90,17 @@
 
 			<!-- External links -->
             <tr>
-                <td class="col_title"><b>External references :</b></td>
-                <td th:if="${#strings.isEmpty(sample.externalReferences)}">None</td>
+                <td th:if="${not #strings.isEmpty(sample.externalReferences)}" class="col_title"><b>External references :</b></td>
                 <td th:if="${not #strings.isEmpty(sample.externalReferences)}">
                 	<div class="external-references-payload" th:text="${sample.externalReferences}">[{"name":"bar","acc":"1234","url":"http://www.google.com"},{"name":"foo","acc":"9876","url":"http://www.google.co.uk"}]</div>
+                </td>
+            </tr>
+            
+            <!-- Publications -->
+            <tr>
+                <td th:if="${not #strings.isEmpty(sample.publications)}" class="col_title"><b>Publications :</b></td>
+                <td th:if="${not #strings.isEmpty(sample.publications)}">
+                	<div class="publications-payload" th:text="${sample.publications}">[{\"DOI\":\"doi:10.1016/j.amjhyper.2004.11.037\",\"PubMed ID\":\"15882546\"}]</div>
                 </td>
             </tr>
 

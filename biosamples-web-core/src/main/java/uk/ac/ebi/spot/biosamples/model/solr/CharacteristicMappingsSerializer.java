@@ -12,12 +12,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 11/03/16
- */
 public class CharacteristicMappingsSerializer extends JsonSerializer<Map<String, List<String>>> {
     @Override
     public void serialize(Map<String, List<String>> characteristicMappings,
