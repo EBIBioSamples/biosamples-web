@@ -449,6 +449,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   var numberMatches = results.data.response.numFound;
   document.getElementById("numberMatches").innerHTML = "Number of returned elements: "+numberMatches;
   document.getElementById("indicationButton").style.display="block";
+  
   // If existing, clean the visualisation space
   d3.select("#vizSpotRelations").remove();
 
@@ -457,7 +458,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   var widthD3 = Math.floor( (70*widthTitle)/100 );
   var heightD3 = widthTitle/2;
 
-  document.getElementById("infoVizRelations").style.height = heightD3+'px';
+  // HEIGHT infoVizRelations
+  // document.getElementById("infoVizRelations").style.height = heightD3+'px';
+
   if (results.data.response.docs.length == 0  ){
     document.getElementById("infoVizRelations").style.display="none";
   } else {
@@ -488,6 +491,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
     // Not added part
     // Create elements which will call functions with the arguments necessary1
+    // document.getElementById("indicationButton").style.border = "solid 1px black";
     document.getElementById("representationButton").onclick = function()
     {
         // Change to Sample if equal to Facet, and vice-versa
@@ -528,14 +532,14 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     // document.getElementById("elementHelp").style.visibility="hidden";
     document.getElementById("elementHelp").style.display="none";
     document.getElementById("buttonRezInfo").style.visibility="visible";
-    document.getElementById("titleRezInfo").innerHTML="Display result information";
+    document.getElementById("titleRezInfo").text="Display result information";
     document.getElementById("sectionVizResult").style.display="none";
     // Not added part
     d3.select("#sectionVizResult").on("mouseenter",function(){
       // document.getElementById("elementHelp").style.visibility="visible";
       document.getElementById("elementHelp").style.display="block";
       if ( d3.select(".node")[0][0] == null || d3.select(".node").attr("isThereSelected") == "false" ){
-          document.getElementById("textHelp").innerHTML = "Click on a bar to display its information. <hr/> Double click to filter the results according to the facet.";
+          document.getElementById("textHelp").innerHTML = "Click on a bar to display its information. <br/> Double click to filter the results according to the facet.";
       }
     })
     .on("mouseleave",function(){
@@ -549,9 +553,9 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       // document.getElementById("elementHelp").style.visibility="visible";
       document.getElementById("elementHelp").style.display="block";
       if ( d3.select("#representationButton").attr("value")=="Sample"){
-            document.getElementById("textHelp").innerHTML = "Currently the nodes shows you the keywords that resulted from your search.<hr/> If you click on the button, it will show you samples that matched your search.";
+            document.getElementById("textHelp").innerHTML = "Currently the nodes shows you the keywords that resulted from your search.<br/> If you click on the button, it will show you samples that matched your search.";
         } else {
-            document.getElementById("textHelp").innerHTML = "Currently the nodes shows you the samples that resulted from your search.<hr/> If you click on the button, it will show you the keywords that matched your search.";
+            document.getElementById("textHelp").innerHTML = "Currently the nodes shows you the samples that resulted from your search.<br/> If you click on the button, it will show you the keywords that matched your search.";
         }
     })
     .on("mouseleave",function(){
@@ -596,11 +600,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     document.getElementById("buttonRezInfo").onclick = function(){
       if ( document.getElementById("sectionVizResult").style.display == "none" ){        
         document.getElementById("sectionVizResult").style.display="block";
-        document.getElementById("titleRezInfo").innerHTML="Hide the result information ";
+        // document.getElementById("titleRezInfo").innerHTML="Hide the result information ";
+        document.getElementById("titleRezInfo").text="Hide the result information ";
         var heightBars = $('#table').height(); var heightButton = $('#buttonRezInfo').height();
         document.getElementById("sectionVizResult").style.height= (heightBars+heightButton)+ "px";
       } else {
-        document.getElementById("titleRezInfo").innerHTML="Display the result information ";
+        // document.getElementById("titleRezInfo").innerHTML="Display the result information ";
+        document.getElementById("titleRezInfo").text="Display the result information ";
         document.getElementById("sectionVizResult").style.display="none";
       }
     };
@@ -771,7 +777,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               var facet = d3.select('#bar_'+idToSelect).attr("facet");
 
               // document.getElementById("textHelp").innerHTML= "Help"+"<hr/> "+ facet +" <hr/> "+  content+ " : " + occurence ;
-              document.getElementById("textHelp").innerHTML= facet +" <hr/> "+  content+ " : " + occurence ;
+              // document.getElementById("textHelp").innerHTML= facet +" <hr/> "+  content+ " : " + occurence ;
+              document.getElementById("textHelp").innerHTML="<table><tr><th>"+ facet +"<br/>"+  content+ " : " + occurence+"</th></tr></table>";
               d3.selectAll(".text-d3").style("opacity",.5);
               d3.select(this).style("opacity",1);
               d3.select('#bar_'+idToSelect).style("fill","steelblue");
@@ -781,8 +788,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               document.getElementById("elementHelp").display="block";
               // document.getElementById("textHelp").innerHTML = "Help "
               document.getElementById("textHelp").innerHTML = ""
-              +"Click on a bar or a text to highlight the nodes with these values."
-              +"<hr/> Double click to filter the results according to a facet. ";              
+              // +"Click on a bar or a text to highlight the nodes with these values."
+              // +"<hr/> Double click to filter the results according to a facet. ";              
+              +"<table><tr><th>Click on a bar or a text to highlight the nodes with these values</th>"
+              +"<th>Double click to filter the results according to a facet.</th></tr></table>";
 
               d3.selectAll(".text-d3").style("opacity",1);
               d3.selectAll(".bar-d3").style("fill",function(d){
@@ -929,7 +938,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               // "Help "
               // +"<hr/> Click on a bar or a text to highlight the nodes with these values."
               "Click on a bar or a text to highlight the nodes with these values."
-              +"<hr/>Double click to filter the results according to a facet. ";          
+              +"<br/>Double click to filter the results according to a facet. ";          
               // document.getElementById("elementHelp").visibility="visible";
               document.getElementById("elementHelp").display="block";
               d3.selectAll(".text-d3").style("opacity",1);

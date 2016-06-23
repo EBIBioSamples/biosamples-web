@@ -60,6 +60,7 @@
       width: 25px;
       height: 25px;
       padding: 0;
+      margin-right: 25px;
       float: right;
       background: #f5f5f5;
       border: 1px solid #000;
@@ -72,12 +73,12 @@
     #areaNodeLink{
       position:relative; width:100%;
     }
-    #vizNodeLink{
+/*Version with visualisation on the left and text on the right*/
+/*    #vizNodeLink{
         float: left; width:70%;
     }
     #infoVizRelations{
         float: left; width:30%; 
-        /*border:1px solid transparent;*/
         border:1px solid black;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         border-radius: 4px;
@@ -85,9 +86,21 @@
         background-color: rgba(200, 200, 200, 0.5);
         display:none; overflow:scroll;
         overflow-x:hidden;
+    }*/
+#vizNodeLink{ width:100%;}    
+#infoVizRelations{
+        width:95%; 
+        border:1px solid black;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+        border-radius:4px;
+        background-color: rgba(200, 200, 200, 0.5);
+        display:none; overflow:scroll;
     }
+
     #vizSpotRelations{
         background-color: #ffffff;
+        width:95%;
         border:1px solid black;
     }
     #buttonRezInfo{
@@ -178,7 +191,26 @@
          border: 4px solid grey;
         display:none
     }
-    ::-webkit-scrollbar {
+    /* scrollbar */
+::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5;
+}
+::-webkit-scrollbar
+{
+  width: 12px;
+  background-color: #F5F5F5;
+}
+::-webkit-scrollbar-thumb
+{
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #555;
+}
+    
+/*    ::-webkit-scrollbar {
       width: 15px; height: 15px;
     }
     ::-webkit-scrollbar-button {
@@ -189,16 +221,17 @@
       overflow-y: auto;
     }
     ::-webkit-scrollbar-thumb {
-    border: 6px solid #BBB;
+    border: 1px solid #BBB;
     border-radius: 5px;
     }
-    ::-webkit-scrollbar-track {
-      background: #eee; border: 72px none #ffffff; border-radius: 84px;
-    }
-    table {
+*//*    ::-webkit-scrollbar-track {
+      background: black;
+    }*/
+
+/*    table {
         border: 4px solid grey;
     }
-
+*/
     [v-cloak] {
         display: none;
     }
@@ -231,6 +264,7 @@
             <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
             <li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>
         </ul>
+
 
         <div class="tab-content">
           <section id="sectionList" class="container tab-pane fade in active" v-show="queryTermPresent" v-cloak>
@@ -301,11 +335,14 @@
   </div>
 </section>
 
+<div><u><p id="indicationButton">Click here for help with the visualisation</p></u></div>
   
+
+
   <section id="sectionVisualisation" class='tab-pane fade'>
     <br/>
-    <div id ="indicationButton"><u>Click here for help with the visualisation</u></div>
-
+<!--     <div id ="indicationButton"><u>Click here for help with the visualisation</u></div>
+ -->
     <div id="buttonRezInfo"> 
       <h4 id="titleRezInfo" >
         Display result information
@@ -317,7 +354,8 @@
     </div>
 
     <div id="areaNodeLink">
-      <div id= "vizNodeLink"></div>
+      <!-- Old version: vizNodeLink div, then infoVizRelations div -->
+<!--       <div id= "vizNodeLink"></div>
       <div id="infoVizRelations">
         <div id="numberMatches">  </div>
         <div id="vizRepresentation"> <h5> Switch the display of the results according to : <p style="font-size:large"><div id="questionSwitch">?</div></p> </h5>
@@ -335,7 +373,6 @@
               <ul>
                 <component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve">
                 </component>
-                <!-- style="float:right" -->
               </ul>
               <ul>
                 <h5 style="display:inline"> Display text of all samples </h5>  <input type="checkbox" onclick='showTextSamples(this)' />
@@ -351,10 +388,64 @@
             <div id="textHelp"> Help</div>
           </div>
           <div id="textData" style="overflow:hidden">
-            <!-- Click on an element of the diagram to display its information  -->
           </div>
         </div>
+      </div> -->
+
+      <div id="infoVizRelations">
+        <table>
+          <tr> 
+            <th>
+              <div id="numberMatches">  </div>
+            </th>
+            <th>
+              <div id="vizRepresentation"> <h5> Switch the display of the results according to : <p style="font-size:large"><div id="questionSwitch">?</div></p> </h5>
+              <div id="representationButton" name="representationButton" active="false" value="Sample">Sample</div><br>
+              </div>
+            </th>        
+            <th>
+              <div id="elementHelp">
+                <div id ="textHelp"></div>
+              </div>
+            </th>
+            <th>
+              <div id ="buttons-display" style="display:none;">
+                <h4> Choose the number of elements fully loaded : </h4>
+                  <li style="list-style:none;">
+                    <ul>
+                      <component is="items-dropdown"> </component>
+                    </ul>
+                    <ul>
+                      <component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve">
+                      </component>
+                    </ul>
+                    <ul>
+                      <h5 style="display:inline"> Display text of all samples </h5>  <input type="checkbox" onclick='showTextSamples(this)' />
+                    </ul>
+                    <ul>
+                      <div id="saveButton" onclick='saveURL(this)'> <p> Get the URL to find back the current filters <p/> </div>
+                    </ul>
+                  </li>
+                <hr/>
+              </div>
+            </th>
+
+            <th>
+              <div id="dynamicText">
+                <h4> Clicked element information </h4>
+                  <div id="textHelp"> Help</div>
+              </div>
+            </th>
+            <th>
+              <div id="textData" style="overflow:hidden">
+              </div>
+            </th>
+          </tr>
+        </table>
+        </div>
       </div>
+      <div id= "vizNodeLink"></div>
+
     </div>
 
   </section>
@@ -363,9 +454,10 @@
 <!-- <div id="elementHelp">
         <div id="textHelp"> Help</div>
 </div>
- --><div id="infoPop"> Temporary display of information </div>
+ -->
+ <div id="infoPop"> Temporary display of information </div>
 
-<div id="indicationWindow">
+   <div id="indicationWindow">
   <div id="hideIndication" class="crossDelete2" >&#10006;</div>
   <h3 class="titleIndication" >Introduction</h3>
   This visualisation offers the possibility to explore and filter the results of your search according to the categories, or facets, returned. There are two visualisation modes, the "Facet" one, and the "Sample" one:<br/><ul>
@@ -385,6 +477,11 @@
 
   <h3 class="titleIndication"> Purpose of the visualisation </h3>
   The purpose of this visualisation is to provide a way to browse through the data in a new way, by focusing on filtering the categories, so that the number of elements returned to be small enough for the user to analyse them into details.
+
+  <h3 class="titleIndication"> Video of explanation </h3>
+  This video illustrates an example on how to use the visualisation.<br/>
+    <iframe width="420" height="315" src="https://www.youtube.com/embed/mpe1R6veuBw" frameborder="0" allowfullscreen>
+    </iframe>
 
 </div>
 
