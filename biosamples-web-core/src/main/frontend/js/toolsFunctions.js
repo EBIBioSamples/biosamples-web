@@ -739,14 +739,21 @@ function drawFacets(svg,nodeData,vm){
 
 	console.log("indexToRemove : ");console.log(indexToRemove);
 	for (var j=indexToRemove.length-1;j>=0;j--){
-		console.log('nodeData.nodes[indexToRemove[j]] : ');
-		console.log(nodeData.nodes[indexToRemove[j]]);
-		console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)  : ');
+		// console.log('nodeData.nodes[indexToRemove[j]] : ');
+		// console.log(nodeData.nodes[indexToRemove[j]]);
+		// console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)  : ');
+		// console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) );
+		// console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color)  : ');
+		// console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color) );
+
+		console.log( 'nodeData.nodes[indexToRemove[j]].name : ');
+		console.log( nodeData.nodes[indexToRemove[j]].name );
+
+		console.log('d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) : ');
 		console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) );
-		console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color)  : ');
-		console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color) );
-		var color = d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color);
-			if (color == 'rgb(70,130,180)'){
+		var color = d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)[0][0].style.fill;
+		console.log("@@@@"); console.log("color : ");console.log(color); console.log("@@@@");
+			if (color == 'steelblue'){
 				// steelblue is #4682B4 and rgb(70,130,180) => thus try with 'rgb(70,130,180)'
 				nodeData.nodes.splice(indexToRemove[j],1);
 			}
@@ -875,7 +882,7 @@ function drawFacets(svg,nodeData,vm){
 	})
 	.on("mouseout",function(d){
 		if ( d3.select(".node").attr("isThereSelected")=='false' ){
-			d3.select("#textHelp").html("Click on a node to display its information <br/> and click twice to filter according to it.");
+			d3.select("#textHelp").html("Click on a node to display its information <br/> click twice to filter according to it.");
 		}		
 		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
 		d3.selectAll(".node").selectAll("text").attr("opacity","1");
