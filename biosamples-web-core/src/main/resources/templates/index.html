@@ -87,15 +87,20 @@
         display:none; overflow:scroll;
         overflow-x:hidden;
     }*/
-#vizNodeLink{ width:100%;}    
-#infoVizRelations{
+    #vizNodeLink{ width:100%;}    
+    #infoVizRelations{
         width:95%; 
+        height:190px;
         border:1px solid black;
         box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
         border-radius: 4px;
         border-radius:4px;
         background-color: rgba(200, 200, 200, 0.5);
         display:none; overflow:scroll;
+    }
+    #tableInfoViz{
+        border-spacing: 10px;
+        border-collapse: separate;  
     }
 
     #vizSpotRelations{
@@ -109,6 +114,7 @@
         visibility:hidden;
         border: solid 1px black;
         cursor:pointer;
+        text-align: center;
     }
 
     #indicationButton{
@@ -141,7 +147,8 @@
 
     #elementHelp{
         /*position:absolute; */
-        width:320px; text-align: center; 
+        /*height:190px;*/
+        width:380px; text-align: center; 
         /*float: right;*/
         /*visibility: hidden;*/
         display:none;
@@ -149,13 +156,21 @@
     #textHelp{
         /*background: grey;*/
         background:#d3d3d3;
-        width:260px;
+        width:380px;
         color:black;
         stroke-width: 32px;
         opacity:0.9;
         border:solid 1px black;
         border-radius: 5px;
+        text-align: center; 
     }
+    #tableHelp{
+/*     border-width:1px; 
+     border-style:solid; 
+     border-color:black;*/
+     cellspacing:1px;
+    }
+
     #saveButton{
       border-width:1px; border-radius:5px; border-color:black; background-color: white; 
       margin-right:30%; width:90%; text-align:center; overflow:scroll; overflow-y:hidden; padding: 6px 12px;
@@ -209,7 +224,7 @@
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
   background-color: #555;
 }
-    
+
 /*    ::-webkit-scrollbar {
       width: 15px; height: 15px;
     }
@@ -335,7 +350,7 @@
   </div>
 </section>
 
-<div><u><p id="indicationButton">Click here for help with the visualisation</p></u></div>
+<div><u><a id="indicationButton">Click here for help with the visualisation</a></u></div>
   
 
 
@@ -345,7 +360,7 @@
  -->
     <div id="buttonRezInfo"> 
       <h4 id="titleRezInfo" >
-        Display result information
+        Bar chart of categories
       </h4>
     </div>
     <div id="sectionVizResult"
@@ -393,7 +408,7 @@
       </div> -->
 
       <div id="infoVizRelations">
-        <table>
+        <table div='tableInfoViz'>
           <tr> 
             <th>
               <div id="numberMatches">  </div>
@@ -422,14 +437,13 @@
                     <ul>
                       <h5 style="display:inline"> Display text of all samples </h5>  <input type="checkbox" onclick='showTextSamples(this)' />
                     </ul>
-                    <ul>
-                      <div id="saveButton" onclick='saveURL(this)'> <p> Get the URL to find back the current filters <p/> </div>
-                    </ul>
                   </li>
                 <hr/>
               </div>
             </th>
-
+            <th>
+              <div id="saveButton" style="display:none;" onclick='saveURL(this)'> <p> Get the URL to find back the current filters <p/> </div>
+            </th>
             <th>
               <div id="dynamicText">
                 <h4> Clicked element information </h4>
@@ -480,8 +494,8 @@
 
   <h3 class="titleIndication"> Video of explanation </h3>
   This video illustrates an example on how to use the visualisation.<br/>
-    <iframe width="420" height="315" src="https://www.youtube.com/embed/mpe1R6veuBw" frameborder="0" allowfullscreen>
-    </iframe>
+<!--     <iframe width="420" height="315" src="https://www.youtube.com/embed/mpe1R6veuBw" frameborder="0" allowfullscreen>
+    </iframe> -->
 
 </div>
 

@@ -357,6 +357,7 @@ function draw(svg,nodeData,vm){
 	console.log("in draw svg : ");console.log(svg);
 
 	document.getElementById("buttons-display").style.display="block";
+	document.getElementById("saveButton").style.display="block";
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
@@ -674,6 +675,7 @@ function drawFacets(svg,nodeData,vm){
 	console.log("function drawFacets");
 
 	document.getElementById("buttons-display").style.display="none";
+	document.getElementById("saveButton").style.display="none";
 	d3.select("#textHelp").html("Click on a node to display its information <br/> and click twice to filter according to it.");
 
 	var widthTitle = window.innerWidth;
@@ -719,54 +721,54 @@ function drawFacets(svg,nodeData,vm){
 	console.log("cptClusters : ");console.log(cptClusters);
 	console.log("clusters : ");console.log(clusters);
 	// Additional code to remove the nodes where there is only one element in the nodeData.nodes
-	var indexToRemove = [];
-	for (var i in cptClusters){
-		// Additional condition, being already selected
-		console.log("cptClusters[i] : ");console.log(cptClusters[i]);
-		// console.log( 'd3.select("#bar_"+nodeData.nodes[cptClusters[i]])  : ');
-		// console.log( d3.select("#bar_"+nodeData.nodes[cptClusters[i]]) );
-		if (cptClusters[i][0] == 1 ){
-			indexToRemove.push(cptClusters[i][1]);
-			// console.log("nodeData.nodes[indexToRemove] : ");
-			// console.log(nodeData.nodes[indexToRemove]);
-			// console.log("indexToRemove : ");
-			// console.log(indexToRemove);
-			// if (typeof nodeData.nodes[indexToRemove] !== "undefined" ){
-			// 	nodeData.nodes.splice( indexToRemove, 1);
-			// }
-		}
-	}
+		// var indexToRemove = [];
+		// for (var i in cptClusters){
+		// 	// Additional condition, being already selected
+		// 	console.log("cptClusters[i] : ");console.log(cptClusters[i]);
+		// 	// console.log( 'd3.select("#bar_"+nodeData.nodes[cptClusters[i]])  : ');
+		// 	// console.log( d3.select("#bar_"+nodeData.nodes[cptClusters[i]]) );
+		// 	if (cptClusters[i][0] == 1 ){
+		// 		indexToRemove.push(cptClusters[i][1]);
+		// 		// console.log("nodeData.nodes[indexToRemove] : ");
+		// 		// console.log(nodeData.nodes[indexToRemove]);
+		// 		// console.log("indexToRemove : ");
+		// 		// console.log(indexToRemove);
+		// 		// if (typeof nodeData.nodes[indexToRemove] !== "undefined" ){
+		// 		// 	nodeData.nodes.splice( indexToRemove, 1);
+		// 		// }
+		// 	}
+		// }
 
-	console.log("indexToRemove : ");console.log(indexToRemove);
-	for (var j=indexToRemove.length-1;j>=0;j--){
-		// console.log('nodeData.nodes[indexToRemove[j]] : ');
-		// console.log(nodeData.nodes[indexToRemove[j]]);
-		// console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)  : ');
-		// console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) );
-		// console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color)  : ');
-		// console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color) );
+		// console.log("indexToRemove : ");console.log(indexToRemove);
+		// for (var j=indexToRemove.length-1;j>=0;j--){
+		// 	// console.log('nodeData.nodes[indexToRemove[j]] : ');
+		// 	// console.log(nodeData.nodes[indexToRemove[j]]);
+		// 	// console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)  : ');
+		// 	// console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) );
+		// 	// console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color)  : ');
+		// 	// console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color) );
 
-		console.log( 'nodeData.nodes[indexToRemove[j]].name : ');
-		console.log( nodeData.nodes[indexToRemove[j]].name );
+		// 	console.log( 'nodeData.nodes[indexToRemove[j]].name : ');
+		// 	console.log( nodeData.nodes[indexToRemove[j]].name );
 
-		console.log('d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) : ');
-		console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) );
-		var color = d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)[0][0].style.fill;
-		console.log("@@@@"); console.log("color : ");console.log(color); console.log("@@@@");
-			if (color == 'steelblue'){
-				// steelblue is #4682B4 and rgb(70,130,180) => thus try with 'rgb(70,130,180)'
-				nodeData.nodes.splice(indexToRemove[j],1);
-			}
-	}
+		// 	console.log('d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) : ');
+		// 	console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) );
+		// 	var color = d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)[0][0].style.fill;
+		// 	console.log("@@@@"); console.log("color : ");console.log(color); console.log("@@@@");
+		// 		if (color == 'steelblue'){
+		// 			// steelblue is #4682B4 and rgb(70,130,180) => thus try with 'rgb(70,130,180)'
+		// 			nodeData.nodes.splice(indexToRemove[j],1);
+		// 		}
+		// }
 
-	if (nodeData.nodes.length==0){
-		console.log("nodeData.nodes.length == 0");
-		document.getElementById("representationButton").style.border = "solid 5px black";
-		document.getElementById("representationButton").style.background = "#ff0000";
-	}
+		// if (nodeData.nodes.length==0){
+		// 	console.log("nodeData.nodes.length == 0");
+		// 	document.getElementById("representationButton").style.border = "solid 5px black";
+		// 	document.getElementById("representationButton").style.background = "#ff0000";
+		// }
 
-	console.log("nodeData.nodes.length after modifications: ");
-	console.log(nodeData.nodes.length);
+		// console.log("nodeData.nodes.length after modifications: ");
+		// console.log(nodeData.nodes.length);
 	// End of additional code
 
 	// console.log("clusters : ");console.log(clusters);
@@ -873,7 +875,8 @@ function drawFacets(svg,nodeData,vm){
 		document.getElementById("elementHelp").style.display="block";
 		if ( d3.select(".node").attr("isThereSelected")=="false" ){
 			console.log("There is no selected people ");
-			d3.select("#textHelp").html("<table><tr><th>Double click on a node to filter the results according to this facet </th><th>"+d.facet+"<br/>"+d.readableContent+"<br/>"+d.value+" elements</th></tr></table>");
+			d3.select("#textHelp").html("<table id='tableHelp'><tr><th>Double click on a node to filter the results according to this facet </th><th>"+d.facet+"<br/>"+d.readableContent+"<br/>"+d.value+" elements</th></tr></table>");
+			// d3.select("#textHelp").html("<table><tr><th>Double click on a node to filter the results according to this facet </th><th>"+d.facet+"<br/>"+d.readableContent+"<br/>"+d.value+" elements</th></tr></table>");
 		}
 		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
 		// CHANGE OPACITY OF OTHERS WHEN HOVERING
@@ -895,11 +898,14 @@ function drawFacets(svg,nodeData,vm){
 		nameFilter+='Filter';
 		vm.$data.filterQuery[ nameFilter ] = d.name;
 		vm.$emit("bar-selected");
-		// document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
-		document.getElementById("infoPop").text=" Filtering the results according to "+d.name;
+		document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
+		// document.getElementById("infoPop").text=" Filtering the results according to "+d.name;
 		popOutDiv("infoPop");
 		fadeOutDiv("infoPop");
-		vm.$options.methods.querySamples(this,false);
+		console.log('vm : ');console.log( vm );
+		console.log('this : ');console.log( this );
+		// vm.$options.methods.querySamples(this,false);
+
 	});
 
 	node.append("text")

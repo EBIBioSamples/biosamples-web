@@ -532,7 +532,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     // document.getElementById("elementHelp").style.visibility="hidden";
     document.getElementById("elementHelp").style.display="none";
     document.getElementById("buttonRezInfo").style.visibility="visible";
-    document.getElementById("titleRezInfo").text="Display result information";
+    document.getElementById("titleRezInfo").text="Bar chart of categories";
     document.getElementById("sectionVizResult").style.display="none";
     // Not added part
     d3.select("#sectionVizResult").on("mouseenter",function(){
@@ -778,7 +778,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
               // document.getElementById("textHelp").innerHTML= "Help"+"<hr/> "+ facet +" <hr/> "+  content+ " : " + occurence ;
               // document.getElementById("textHelp").innerHTML= facet +" <hr/> "+  content+ " : " + occurence ;
-              document.getElementById("textHelp").innerHTML="<table><tr><th>"+ facet +"<br/>"+  content+ " : " + occurence+"</th></tr></table>";
+              document.getElementById("textHelp").innerHTML="<table id='tableHelp'><tr><th>"+ facet +"<br/>"+  content+ " : " + occurence+"</th></tr></table>";
+              // document.getElementById("textHelp").innerHTML="<table ><tr><th>"+ facet +"<br/>"+  content+ " : " + occurence+"</th></tr></table>";
               d3.selectAll(".text-d3").style("opacity",.5);
               d3.select(this).style("opacity",1);
               d3.select('#bar_'+idToSelect).style("fill","steelblue");
@@ -790,7 +791,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               document.getElementById("textHelp").innerHTML = ""
               // +"Click on a bar or a text to highlight the nodes with these values."
               // +"<hr/> Double click to filter the results according to a facet. ";              
-              +"<table><tr><th>Click on a bar or a text to highlight the nodes with these values</th>"
+              +"<table id='tableHelp'><tr><th>Click on a bar or a text to highlight the nodes with these values</th>"
+              // +"<table ><tr><th>Click on a bar or a text to highlight the nodes with these values</th>"
               +"<th>Double click to filter the results according to a facet.</th></tr></table>";
 
               d3.selectAll(".text-d3").style("opacity",1);
@@ -1092,12 +1094,14 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }
       var valueDisplay = vm.$data.valueDisplay;
       if (valueDisplay == "Sample" ){
+            // document.getElementById('infoVizRelations').style.height = '260px';
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";          
           console.log("vm : ");console.log(vm);
           draw(svg,nodeData,vm);
       } else {
+            // document.getElementById('infoVizRelations').style.height = '190px';
           d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";
           nodeData = loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex );
           drawFacets(svg,nodeData,vm);
