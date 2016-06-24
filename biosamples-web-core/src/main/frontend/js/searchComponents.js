@@ -159,7 +159,6 @@
                 log("Query Samples");
                 log("this : ");console.log(this);
                 log("this.$http : ");console.log(this.$http);
-                // console.log("e : ");console.log(e);
                 if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
                     e.preventDefault();
                 }
@@ -180,28 +179,11 @@
 
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                     .then(function(results) {
-                        console.log("in the then");
                         displayRevertingFilters(results,this);
                         this.consumeResults(results);
 
-                        // doD3Alternative(queryParams.searchTerm, results);
-
-                        // document.getElementById('indicationWindow').setAttribute("style","height:$('body').height()");
-                        // document.getElementById('indicationWindow').setAttribute("style","height:200%");
-
-                        // document.getElementById("indicationWindow").style.height = $('body').height(); 
-                        // document.getElementById("indicationWindow").style.height = window.innerHeight;
-
                         document.getElementById("indicationButton").onclick = function(){
-                            // console.log( 'document.getElementById("indicationWindow").style.display : ' );
-                            // console.log( document.getElementById("indicationWindow").style.display );
-                            // if ( document.getElementById("indicationWindow").style.display != "block" ){
-                            //     console.log(' document.getElementById("indicationWindow").style.display != "block" ');
-                                document.getElementById("indicationWindow").style.display="block";
-                            // } else {
-                            //     console.log(' document.getElementById("indicationWindow").style.display == "block" ');
-                            //     document.getElementById("indicationWindow").style.display="none";
-                            // }
+                            document.getElementById("indicationWindow").style.display="block";
                         };
                         document.getElementById("hideIndication").onclick = function(){
                             document.getElementById("indicationWindow").style.display="none";
@@ -354,7 +336,6 @@
              */
             registerEventHandlers: function() {
                 this.$on('page-changed', function(newPage) {
-                    console.log(" on page-changed");
                     this.pageNumber = newPage;
                     this.querySamples();
                 });
@@ -367,21 +348,18 @@
                 });
 
                 this.$on('bar-selected', function(d,loadD3) {
-                  console.log(" on bar-selected");
                   // If we desire to have an event happening without reloading d3
                   // we need to pass false as a second argument 
                   this.querySamples(d,loadD3);
                 });
 
                 this.$on('displayChanged', function(d,loadD3) {
-                  console.log(" on displayChanged");
                   // If we desire to have an event happening without reloading d3
                   // we need to pass false as a second argument 
                   this.querySamples(d,loadD3);
                 });
 
                 this.$on('facet-selected', function(key, value) {
-                    console.log(" on facet-selected");
                     if (value === "") {
                         Vue.delete(this.filterQuery,key);
                     } else {
@@ -444,8 +422,6 @@ function log(value,context) {
 }
 
 function doD3Stuff( results, apiUrl, vm=0  ){
-  console.log("_______doD3Stuff______");
-  console.log("results : ");console.log(results);
   var numberMatches = results.data.response.numFound;
   document.getElementById("numberMatches").innerHTML = "Number of returned elements: "+numberMatches;
   document.getElementById("indicationButton").style.display="block";
@@ -458,9 +434,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   var widthD3 = Math.floor( (70*widthTitle)/100 );
   var heightD3 = widthTitle/2;
 
-  // HEIGHT infoVizRelations
-  // document.getElementById("infoVizRelations").style.height = heightD3+'px';
-
   if (results.data.response.docs.length == 0  ){
     document.getElementById("infoVizRelations").style.display="none";
   } else {
@@ -472,7 +445,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   // Not added part
   if (typeof results !== 'undefined'){
     var numberFacetsUnEmpty = {};
-    // console.log( "results.data.facet_counts : " ); console.log( results.data.facet_counts );
     for (var u in results.data.facet_counts.facet_fields){
       if ( results.data.facet_counts.facet_fields[u][1] > 0 ){
         numberFacetsUnEmpty[u]=0;
@@ -481,11 +453,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               numberFacetsUnEmpty[u]++;
             }
           }
-          // QUESTION: Do we want to display facets with one value ? I guess we do in the bar chart ?
-          // New change not to display a facet with only one value
-          // if (numberFacetsUnEmpty[u] == 1){
-          //       delete numberFacetsUnEmpty[u];
-          // }
       }
     }
 
@@ -496,15 +463,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     {
         // Change to Sample if equal to Facet, and vice-versa
         if ( d3.select('#representationButton').attr('value') == 'Facet' ){
-            console.log(" d3.select('#representationButton').attr('value') == 'Facet' ");
-            console.log("**** Change to Facet ");
             d3.select('#representationButton').text("Sample");
             d3.select('#representationButton').attr('value',"Sample");
             vm.$data.valueDisplay = "Facet";
             vm.$emit("displayChanged");
         } else {
-            console.log(" d3.select('#representationButton').attr('value') == 'Sample' ");
-            console.log("**** Change to Sample ");
             d3.select('#representationButton').text("Facet");
             d3.select('#representationButton').attr('value',"Facet");
             vm.$data.valueDisplay = "Sample";
@@ -512,45 +475,24 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         }
     }
 
-    // Not added part
-    // CHANGE: not bound to position of mouse anymore.
-    // $(document).bind('mousemove', function(e){
-    //     var widthWindow = $(window).width();
-    //     var posLeft = e.pageX + 20;
-    //     var posY = e.pageY - $("#elementHelp").height()/2 ;
-    //     var widthTail = $("#elementHelp").width();
-    //     if ( posLeft + widthTail >= widthWindow ){
-    //       posLeft= e.pageX - $("#elementHelp").width;
-    //       posY = e.pageY+20;
-    //     }
-    //     $('#elementHelp').css({
-    //         left:  posLeft,
-    //         top:   posY
-    //     });
-    // });
-
-    // document.getElementById("elementHelp").style.visibility="hidden";
     document.getElementById("elementHelp").style.display="none";
     document.getElementById("buttonRezInfo").style.visibility="visible";
     document.getElementById("titleRezInfo").text="Bar chart of categories";
     document.getElementById("sectionVizResult").style.display="none";
     // Not added part
     d3.select("#sectionVizResult").on("mouseenter",function(){
-      // document.getElementById("elementHelp").style.visibility="visible";
       document.getElementById("elementHelp").style.display="block";
       if ( d3.select(".node")[0][0] == null || d3.select(".node").attr("isThereSelected") == "false" ){
           document.getElementById("textHelp").innerHTML = "Click on a bar to display its information. <br/> Double click to filter the results according to the facet.";
       }
     })
     .on("mouseleave",function(){
-        // document.getElementById("elementHelp").style.visibility="hidden";
         document.getElementById("elementHelp").style.display="none";
         if ( d3.select(".node")[0][0] == null ||  d3.select(".node").attr("isThereSelected") == "false" ){
-            d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+            d3.select("#textHelp").html("Click on a node to display its information.");
         }
     })
     d3.select("#questionSwitch").on("mouseover",function(){
-      // document.getElementById("elementHelp").style.visibility="visible";
       document.getElementById("elementHelp").style.display="block";
       if ( d3.select("#representationButton").attr("value")=="Sample"){
             document.getElementById("textHelp").innerHTML = "Currently the nodes shows you the keywords that resulted from your search.<br/> If you click on the button, it will show you samples that matched your search.";
@@ -559,15 +501,13 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         }
     })
     .on("mouseleave",function(){
-        // document.getElementById("elementHelp").style.visibility="hidden";
         document.getElementById("elementHelp").style.display="none";
-        d3.select("#textHelp").html("Hover over a node to make it bigger. <br/> Click on a node to display its information.");
+        d3.select("#textHelp").html("Click on a node to display its information.");
     })
 
     if ( ! (Object.keys(numberFacetsUnEmpty).length === 0 ) ) {        
       document.getElementById("dynamicText").innerHTML= ' <h4>Clicked element information</h4>'
         +'<div id="textData">'
-        // +' <p> Click on an element of the diagram to display its information </p>'
         +' </div>';
       var cpt = 0;
       var strResults = '<table id="table" style="width: 100%"; " > <tr>';
@@ -591,7 +531,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     } else {
       document.getElementById("dynamicText").innerHTML= ' <h4>Clicked element information</h4>'
       +' <div id="textData"> <p>'
-      // ' Click on an element of the diagram to display its information'
       +' </p> </div>';
 
       document.getElementById("sectionVizResult").innerHTML= ' <div id="tableResults"> <table  style="width:100%" <tr> <td>  </table> </div>';
@@ -600,12 +539,10 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     document.getElementById("buttonRezInfo").onclick = function(){
       if ( document.getElementById("sectionVizResult").style.display == "none" ){        
         document.getElementById("sectionVizResult").style.display="block";
-        // document.getElementById("titleRezInfo").innerHTML="Hide the result information ";
         document.getElementById("titleRezInfo").text="Hide the result information ";
         var heightBars = $('#table').height(); var heightButton = $('#buttonRezInfo').height();
         document.getElementById("sectionVizResult").style.height= (heightBars+heightButton)+ "px";
       } else {
-        // document.getElementById("titleRezInfo").innerHTML="Display the result information ";
         document.getElementById("titleRezInfo").text="Display the result information ";
         document.getElementById("sectionVizResult").style.display="none";
       }
@@ -648,9 +585,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             .style("border-color","#5D8C83")
             .style("border-radius","10px")
         );
-      } else {
-        console.log("numberFacetsUnEmpty[u] == 0");console.log(u);
-      }
+      } 
       cpt++;
     }
 
@@ -768,7 +703,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             .attr("dy", ".71em")
             .attr("opacity","1")
             .on("mouseover",function(d){
-              // document.getElementById("elementHelp").style.visibility="visible";
               document.getElementById("elementHelp").style.display="block";
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
@@ -776,23 +710,15 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               var occurence = d3.select('#bar_'+idToSelect).attr("occurence");
               var facet = d3.select('#bar_'+idToSelect).attr("facet");
 
-              // document.getElementById("textHelp").innerHTML= "Help"+"<hr/> "+ facet +" <hr/> "+  content+ " : " + occurence ;
-              // document.getElementById("textHelp").innerHTML= facet +" <hr/> "+  content+ " : " + occurence ;
               document.getElementById("textHelp").innerHTML="<table id='tableHelp'><tr><th>"+ facet +"<br/>"+  content+ " : " + occurence+"</th></tr></table>";
-              // document.getElementById("textHelp").innerHTML="<table ><tr><th>"+ facet +"<br/>"+  content+ " : " + occurence+"</th></tr></table>";
               d3.selectAll(".text-d3").style("opacity",.5);
               d3.select(this).style("opacity",1);
               d3.select('#bar_'+idToSelect).style("fill","steelblue");
             })
             .on("mouseout",function(){
-              // document.getElementById("elementHelp").visibility="visible";
               document.getElementById("elementHelp").display="block";
-              // document.getElementById("textHelp").innerHTML = "Help "
               document.getElementById("textHelp").innerHTML = ""
-              // +"Click on a bar or a text to highlight the nodes with these values."
-              // +"<hr/> Double click to filter the results according to a facet. ";              
               +"<table id='tableHelp'><tr><th>Click on a bar or a text to highlight the nodes with these values</th>"
-              // +"<table ><tr><th>Click on a bar or a text to highlight the nodes with these values</th>"
               +"<th>Double click to filter the results according to a facet.</th></tr></table>";
 
               d3.selectAll(".text-d3").style("opacity",1);
@@ -801,7 +727,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               });
             })
             .on("mousedown",function(){
-              console.log("mousedown text");
               d3.selectAll("circle").style("stroke","black");
               var indexToCut = this.id.indexOf("_");
               var idToSelect = this.id.substring(indexToCut+1,this.id.length)
@@ -842,7 +767,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
               }
             })
             .on("dblclick",function(d){
-              console.log("dblclick text-d3");
                 var indexUnderscore = this.textContent.lastIndexOf(":");
                 var nameClickedBar = this.textContent.substring(0, indexUnderscore-1);
                 for (var u in vm.$data.facets){
@@ -852,7 +776,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                         if ( nameClickedBar == vm.$data.facets[u][v][w]){
                           var nameOfFilter = u+'Filter';
                           if ( typeof vm.$data.filterQuery[ nameOfFilter ] == 'undefined' || vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar ){
-                            console.log(" vm.$data.filterQuery[ nameOfFilter ] !=  nameClickedBar : CASE 1 ");
                             vm.$data.filterQuery[ nameOfFilter ] = nameClickedBar;
                             vm.$emit("bar-selected");
                             document.getElementById("infoPop").innerHTML=" Filtering the results according to "+vm.$data.filterQuery[ nameOfFilter ];
@@ -860,16 +783,14 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                             fadeOutDiv("infoPop");
                             vm.$options.methods.querySamples(this,false);
                           } else if ( vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar ){
-                            console.log("vm.$data.filterQuery[ nameOfFilter ] ==  nameClickedBar : CASE 2 ");
                             vm.$data.filterQuery[ nameOfFilter ] = '';
-
                             vm.$emit("bar-selected");
                             document.getElementById("infoPop").innerHTML=" Reverting the filter of the results according to "+nameClickedBar;
                             popOutDiv("infoPop");
                             fadeOutDiv("infoPop");
                             vm.$options.methods.querySamples(this,false);
                           } else {
-                            console.log("hum... what the hell is happening ? CASE 3");
+                            console.log("hum... what is happening ?");
                           }
                         }
                       }
@@ -919,14 +840,11 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         .attr("occurence",function(d){ 
           return d.occurence;
         })
-        // space is 5
         .attr("width", widthRectangles[h] )
         .attr("fill", "#46b4af" )
-        .on("mouseover",function(d,i){     
-              // document.getElementById("elementHelp").style.visibility="visible";
+        .on("mouseover",function(d,i){
               document.getElementById("elementHelp").style.display="block";
               document.getElementById("textHelp").innerHTML=
-                // "Help"+"<hr/>"+ d.facet +" <hr/> "+d.content
                 d.facet +" <hr/> "+d.content
                 +", "+d.occurence;
               var modifiedContent = changeSpecialCharacters(d.content);
@@ -937,11 +855,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         })
         .on("mouseout",function(d,i){
               document.getElementById("textHelp").innerHTML = 
-              // "Help "
-              // +"<hr/> Click on a bar or a text to highlight the nodes with these values."
               "Click on a bar or a text to highlight the nodes with these values."
               +"<br/>Double click to filter the results according to a facet. ";          
-              // document.getElementById("elementHelp").visibility="visible";
               document.getElementById("elementHelp").display="block";
               d3.selectAll(".text-d3").style("opacity",1);
               d3.selectAll(".bar-d3").style("fill",function(d){
@@ -955,7 +870,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         })
         .attr("opacity","0.5")
         .on("dblclick",function(d){
-          console.log("dblclick rectangle");
           var content = d.content;
           var nameClickedBar = d.content;
           for (var u in vm.$data.facets){
@@ -1002,9 +916,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
             for (var u in d.responseDoc){
               var stringResponse = d.responseDoc[u]+'';
               if ( stringResponse.indexOf ( content ) > -1 ){
-                //this.attr("stroke-opacity","1");
                 d3.select(this).style("stroke-opacity","1");
-                //d3.select(this).style("shape-rendering","crispEdges");
                 var idGhost = "#ghost_"+rez.accession ;
                 d3.select(idGhost).style("visibility","visible");
                 if (!gotHighlighted){ cptHighlighted++; gotHighlighted = true; }
@@ -1053,21 +965,16 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       .style("stroke", "black")
       .style("stroke-width", 1)
       .style("border","solid")
-      //.style("overflow","scroll")
       .style("border-color","#5D8C83")
       .style("border-radius","4px")
       .on("mouseenter",function(){
-        // document.getElementById("elementHelp").style.visibility="visible";
         document.getElementById("elementHelp").style.display="block";
-        // d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger <br/> Click a node to display its information. <br/> ");
         if ( d3.select(".node").attr("isThereSelected") == "false" ){
             d3.select("#textHelp").html("Hover over a node to make it bigger <br/> Click a node to display its information. <br/> ");
         }
       })
       .on("mouseleave",function(){
-        // document.getElementById("elementHelp").style.visibility="hidden";
         document.getElementById("elementHelp").style.display="none";
-        // d3.select("#elementHelp").html("Help <hr/> Hover over a node to make it bigger. <br/> Click a node to display its information. <br/> ")
         if ( d3.select(".node").attr("isThereSelected") == "false" ){
             d3.select("#textHelp").html(" Hover over a node to make it bigger. <br/> Click a node to display its information. <br/> ")
         }
@@ -1098,7 +1005,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";          
-          console.log("vm : ");console.log(vm);
           draw(svg,nodeData,vm);
       } else {
             // document.getElementById('infoVizRelations').style.height = '190px';
@@ -1107,7 +1013,6 @@ function doD3Stuff( results, apiUrl, vm=0  ){
           drawFacets(svg,nodeData,vm);
       }
     } else {
-        console.log("No results from the current query.");
         d3.select("#vizSpotRelations").attr("visibility","hidden");
         d3.select("#vizSpotRelations").selectAll("*").remove();
         document.getElementById("infoVizRelations").style.display="none";
@@ -1115,60 +1020,4 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         document.getElementById("vizSpotRelations").style.height="0px";
     }
   }
-}
-
-// function doD3Alternative( nodeAccession, idToFillWithViz ){
-function doD3Alternative( nodeAccession, results ){
-    console.log("---- doD3Alternative ----");
-    console.log("nodeAccession : "+nodeAccession);
-    console.log("results : ");console.log(results);
-    // We consider we can modify the html of sample and group page
-    // var inexistant = d3.select("#inexistant");
-    // console.log("inexistant : ");console.log(inexistant);
-    // var sectionViz = d3.select("#sectionVisualisation");
-    // console.log("sectionViz : ");console.log(sectionViz);
-
-    // If existing, clean the visualisation space
-    d3.select("#vizSpotRelations").remove();
-
-    var fill = d3.scale.category20();
-    var widthTitle = window.innerWidth;
-    var widthD3 = Math.floor( (70*widthTitle)/100 );
-    var heightD3 = widthTitle/2;
-
-    document.getElementById("infoVizRelations").style.height = heightD3+'px';
-    var margin = {top: 10, right: 10, bottom: 10, left: 10};
-
-    // Nodes relationships here
-    var svg;
-    svg = d3.select("#vizNodeLink").insert("svg")
-      .attr("width", "100%")
-      .attr("height", heightD3)
-      .attr("id","vizSpotRelations")
-      .attr("displayCluster",-1)
-      .style("stroke", "black")
-      .style("stroke-width", 1)
-      .style("border","solid")
-      //.style("overflow","scroll")
-      .style("border-color","#5D8C83")
-      .style("border-radius","4px")
-      .call(d3.behavior.zoom().on("zoom", (function (d) {
-          svg.attr("transform", 
-            "translate(" + d3.event.translate + ")" + 
-            " scale(" + d3.event.scale + ")"
-            );
-        })
-      ))
-      .append("g")
-      ;
-
-    var nameToNodeIndex={};
-    var nodeData ={ "stuff":[], "nodes":[],"links":[],"group":[],"color":[] };
-
-    d3.select("#vizSpotRelations").attr("visibility","visible");
-    var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
-    nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
-    d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";          
-    console.log("vm : ");console.log(vm);
-    draw(svg,nodeData,vm);
 }

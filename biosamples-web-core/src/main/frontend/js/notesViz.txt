@@ -48761,3 +48761,108 @@ return /******/ (function(modules) { // webpackBootstrap
 
 //# sourceMappingURL=relationsVis.js.map
 
+//
+function doD3Alternative( nodeAccession, results ){
+    console.log("---- doD3Alternative ----");
+    console.log("nodeAccession : "+nodeAccession);
+    console.log("results : ");console.log(results);
+
+    // If existing, clean the visualisation space
+    d3.select("#vizSpotRelations").remove();
+
+    var fill = d3.scale.category20();
+    var widthTitle = window.innerWidth;
+    var widthD3 = Math.floor( (70*widthTitle)/100 );
+    var heightD3 = widthTitle/2;
+
+    document.getElementById("infoVizRelations").style.height = heightD3+'px';
+    var margin = {top: 10, right: 10, bottom: 10, left: 10};
+
+    // Nodes relationships here
+    var svg;
+    svg = d3.select("#vizNodeLink").insert("svg")
+      .attr("width", "100%")
+      .attr("height", heightD3)
+      .attr("id","vizSpotRelations")
+      .attr("displayCluster",-1)
+      .style("stroke", "black")
+      .style("stroke-width", 1)
+      .style("border","solid")
+      //.style("overflow","scroll")
+      .style("border-color","#5D8C83")
+      .style("border-radius","4px")
+      .call(d3.behavior.zoom().on("zoom", (function (d) {
+          svg.attr("transform", 
+            "translate(" + d3.event.translate + ")" + 
+            " scale(" + d3.event.scale + ")"
+            );
+        })
+      ))
+      .append("g")
+      ;
+
+    var nameToNodeIndex={};
+    var nodeData ={ "stuff":[], "nodes":[],"links":[],"group":[],"color":[] };
+
+    d3.select("#vizSpotRelations").attr("visibility","visible");
+    var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
+    nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
+    d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";          
+    console.log("vm : ");console.log(vm);
+    draw(svg,nodeData,vm);
+}
+
+//
+      <!-- Old version: vizNodeLink div, then infoVizRelations div -->
+<!--       <div id= "vizNodeLink"></div>
+      <div id="infoVizRelations">
+        <div id="numberMatches">  </div>
+        <div id="vizRepresentation"> <h5> Switch the display of the results according to : <p style="font-size:large"><div id="questionSwitch">?</div></p> </h5>
+          <div id="representationButton" name="representationButton" active="false" value="Sample">Sample</div><br>
+        </div>
+        <div id="elementHelp">
+          <div id ="textHelp"></div>
+        </div>
+        <div id ="buttons-display" style="display:none;">
+          <h4> Choose the number of elements fully loaded : </h4>
+            <li style="list-style:none;">
+              <ul>
+                <component is="items-dropdown"> </component>
+              </ul>
+              <ul>
+                <component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve">
+                </component>
+              </ul>
+              <ul>
+                <h5 style="display:inline"> Display text of all samples </h5>  <input type="checkbox" onclick='showTextSamples(this)' />
+              </ul>
+              <ul>
+                <div id="saveButton" onclick='saveURL(this)'> <p> Get the URL to find back the current filters <p/> </div>
+              </ul>
+            </li>
+          <hr/>
+        </div>
+        <div id="dynamicText">
+          <h4> Clicked element information </h4>
+            <div id="textHelp"> Help</div>
+          </div>
+          <div id="textData" style="overflow:hidden">
+          </div>
+        </div>
+      </div> -->
+
+//
+/*Version with visualisation on the left and text on the right*/
+/*    #vizNodeLink{
+        float: left; width:70%;
+    }
+    #infoVizRelations{
+        float: left; width:30%; 
+        border:1px solid black;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
+        border-radius:4px;
+        background-color: rgba(200, 200, 200, 0.5);
+        display:none; overflow:scroll;
+        overflow-x:hidden;
+    }*/

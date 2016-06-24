@@ -98,8 +98,6 @@ function getURLsFromObject(objectToRead,prop){
 }
 
 function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	console.log("!!!!!loadDataFromGET !!!!!");
-	console.log("results.data.response.docs : ");console.log( results.data.response.docs );
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
@@ -243,13 +241,8 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 				var id, source, target, nodeSource, nodeTarget, weight;
 				id = "link_"+nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ].accession+"_"+nodeData.nodes[ nameToNodeIndex[ group] ].accession;
 				source = nameToNodeIndex[ groupsReturned[group][i] ]; target = nameToNodeIndex[ group ];
-				// console.log("####");
-				// console.log("source : ");console.log(source);
-				// console.log("target : ");console.log(target);
-				// console.log("####");
 				nodeSource = nodeData.nodes[ nameToNodeIndex[ groupsReturned[group][i]] ]; nodeTarget = nodeData.nodes[ nameToNodeIndex[ group] ];
 				weight = Math.sqrt(groupsReturned[group].length);
-				// console.log("right before push nodeData.links : ");console.log(nodeData.links);
 				var link = {
 					"id":id,
 					"source": source,
@@ -263,8 +256,6 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		}
 	}
 	nodeData.links = linksToPush;
-	console.log("nodeData : ");console.log(nodeData);
-	console.log("===========================");
 	return [nodeData,groupsReturned,nameToNodeIndex];
 }
 
@@ -353,8 +344,6 @@ function saveURL(e){
 }
 
 function draw(svg,nodeData,vm){
-
-	console.log("in draw svg : ");console.log(svg);
 
 	document.getElementById("buttons-display").style.display="block";
 	document.getElementById("saveButton").style.display="block";
@@ -452,7 +441,6 @@ function draw(svg,nodeData,vm){
 	  		var value = d.responseDoc[i]+''; value = value.replace(/[^A-Za-z0-9]/g,"");
 	  		d3.select(this).attr( attr , value );
 	  	}
-	  	// console.log("d3.select(this)[0][0].attributes : ");console.log(d3.select(this)[0][0].attributes);
 	  	return d.responseDoc
 	  })
 	  .attr("name",function(d){return d.accession})
@@ -475,10 +463,8 @@ function draw(svg,nodeData,vm){
 	  })
 	  .on("mousedown",function(d){
 		// Node
-		console.log('mousedown node d : ');console.log(d);
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select("this").attr("theOneSelected",'true');
-		console.log('d3.select("#vizSpotRelations") : ');console.log( d3.select("#vizSpotRelations") );
 		d3.selectAll("circle").style("stroke-width",2);
 		d3.select(this).selectAll("circle").style("stroke-width", 4);
 		d3.event.stopPropagation();
@@ -529,7 +515,6 @@ function draw(svg,nodeData,vm){
 	.on("mouseover",function(d){
 		if ( d3.select(this).attr("isThereSelected") == 'false' ){
 			var allNodes = d3.selectAll(".node");
-			// document.getElementById("elementHelp").style.visibility="visible";
 			document.getElementById("elementHelp").style.display="block";
 			d3.select("#textHelp").html(""+d.accession);
 			var circleNode = d3.select(this).selectAll("circle");
@@ -537,33 +522,12 @@ function draw(svg,nodeData,vm){
 
 			d3.selectAll(".node").selectAll("text").style("opacity",.25);
 			textNode.style("opacity",1);
-			// circleNode.transition().duration(10).style("r", d.radius*3);
-			// textNode.attr("transform","translate("+ d.radius*1.5 +","+0+")");
 		} 
 	})
 	.on("contextmenu",function(d){
-		console.log("right click");
-		console.log("IN RIGHT CLICK BEFORE ADDING ANYTHING, nodeData : ");console.log(nodeData);
-		console.log("****");
 		d3.event.preventDefault();
-		// TO DO : Once code of Tommy added, try again the addNode to work with the force field
-		// var svg = d3.select("#vizNodeLink").select("svg");
-		var loadedStuff = {};
-		loadedStuff = loadNode(d.accession,loadedStuff);
-		console.log("loadedStuff : ");console.log(loadedStuff);
-		// addNodesAndLinks( nodeData,d.accession,force,loadedStuff,svg );
-
-		// Exemples to try functions to add and remove elements
-		// removeNode( nodeData, d.accession, force );
-		// addNode( nodeData,"tagadaTest",force );
-		// console.log("d : ");console.log(d);
-		// addLink(nodeData,d.accession,d.sample_grp_accessions[0],force,"MEMBERSHIP");
 	})
 	;
-
-	// var hull = svg.append("path")
-	// .attr("class", "hull");
-
 
 	force
 	.nodes(nodeData.nodes)
@@ -598,9 +562,6 @@ function draw(svg,nodeData,vm){
 
 // This function is to load data according to the facets, when the number of nodes would be too high to directly display
 function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
-	console.log("!!!!!loadDataFromFacets 1 !!!!!");
-	console.log("loadDataFromFacets in src/main/ressources/static/javascript/toolsFunctions");
-
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	if (typeof nodeData === "undefined"){ nodeData = {}; }
 	nodeData.nodes=[];
@@ -672,7 +633,6 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 }
 
 function drawFacets(svg,nodeData,vm){
-	console.log("function drawFacets");
 
 	document.getElementById("buttons-display").style.display="none";
 	document.getElementById("saveButton").style.display="none";
@@ -696,8 +656,6 @@ function drawFacets(svg,nodeData,vm){
 
 	var cptClusters={};
 	for ( var i = 0 ; i < nodeData.nodes.length; i++){
-		// console.log('d3.select("#text_"+i) : ');console.log(d3.select("#text_"+i));
-		// nodeData.nodes[i].width = d3.select("#text_"+i).node().getBBox().width;
 		for (var j = 0; j < clusters.length; j++ ){
 			if ( clusters[j].facet == nodeData.nodes[i].facet ){
 				nodeData.nodes[i].cluster = j;
@@ -706,76 +664,12 @@ function drawFacets(svg,nodeData,vm){
 				d3.select("#text_"+indexForID).style("visibility", "visible");
 				if (cptClusters[clusters[j].facet]){
 					cptClusters[clusters[j].facet][0]++;
-					// cptClusters[clusters[j].facet][1].push(i);
 					cptClusters[clusters[j].facet][1]=i;
 				} else {
 					cptClusters[clusters[j].facet] = [1, i];
 				}
 			}
 		}
-	}
-
-	console.log("nodeData.nodes before modifications: ");
-	console.log(nodeData.nodes);
-
-	console.log("cptClusters : ");console.log(cptClusters);
-	console.log("clusters : ");console.log(clusters);
-	// Additional code to remove the nodes where there is only one element in the nodeData.nodes
-		// var indexToRemove = [];
-		// for (var i in cptClusters){
-		// 	// Additional condition, being already selected
-		// 	console.log("cptClusters[i] : ");console.log(cptClusters[i]);
-		// 	// console.log( 'd3.select("#bar_"+nodeData.nodes[cptClusters[i]])  : ');
-		// 	// console.log( d3.select("#bar_"+nodeData.nodes[cptClusters[i]]) );
-		// 	if (cptClusters[i][0] == 1 ){
-		// 		indexToRemove.push(cptClusters[i][1]);
-		// 		// console.log("nodeData.nodes[indexToRemove] : ");
-		// 		// console.log(nodeData.nodes[indexToRemove]);
-		// 		// console.log("indexToRemove : ");
-		// 		// console.log(indexToRemove);
-		// 		// if (typeof nodeData.nodes[indexToRemove] !== "undefined" ){
-		// 		// 	nodeData.nodes.splice( indexToRemove, 1);
-		// 		// }
-		// 	}
-		// }
-
-		// console.log("indexToRemove : ");console.log(indexToRemove);
-		// for (var j=indexToRemove.length-1;j>=0;j--){
-		// 	// console.log('nodeData.nodes[indexToRemove[j]] : ');
-		// 	// console.log(nodeData.nodes[indexToRemove[j]]);
-		// 	// console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)  : ');
-		// 	// console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) );
-		// 	// console.log( 'd3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color)  : ');
-		// 	// console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].color) );
-
-		// 	console.log( 'nodeData.nodes[indexToRemove[j]].name : ');
-		// 	console.log( nodeData.nodes[indexToRemove[j]].name );
-
-		// 	console.log('d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) : ');
-		// 	console.log( d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name) );
-		// 	var color = d3.select("#bar_"+nodeData.nodes[indexToRemove[j]].name)[0][0].style.fill;
-		// 	console.log("@@@@"); console.log("color : ");console.log(color); console.log("@@@@");
-		// 		if (color == 'steelblue'){
-		// 			// steelblue is #4682B4 and rgb(70,130,180) => thus try with 'rgb(70,130,180)'
-		// 			nodeData.nodes.splice(indexToRemove[j],1);
-		// 		}
-		// }
-
-		// if (nodeData.nodes.length==0){
-		// 	console.log("nodeData.nodes.length == 0");
-		// 	document.getElementById("representationButton").style.border = "solid 5px black";
-		// 	document.getElementById("representationButton").style.background = "#ff0000";
-		// }
-
-		// console.log("nodeData.nodes.length after modifications: ");
-		// console.log(nodeData.nodes.length);
-	// End of additional code
-
-	// console.log("clusters : ");console.log(clusters);
-	// console.log("nodeData.nodes : ");console.log(nodeData.nodes);
-	if (clusters.length == nodeData.nodes.length){
-		console.log("clusters.length : ");console.log(clusters.length);
-		console.log("nodeData.nodes : ");console.log(nodeData.nodes);
 	}
 
 	var force = d3.layout.force()
@@ -819,19 +713,14 @@ function drawFacets(svg,nodeData,vm){
 	.style("stroke-width",1)
 	.style("fill", function (d) { return d.color; })
 	.on("contextmenu",function(d){
-		// console.log("RIGHT CLICK ? YEAH");
 		d3.event.preventDefault();
 	})
 	.on("mousedown",function(d){
 		// Facet nousedown
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select(this).attr("theOneSelected",'true');
-// Selection for the separation of text
-		// d3.selectAll("text").attr("textToDisplay",'false');
-		// console.log("d.cluster : ");console.log(d.cluster);
-		// console.log('d3.selectAll(".text_facet_"+d.cluster) : ');console.log(d3.selectAll(".text_facet_"+d.cluster));
 		d3.selectAll("#vizSpotRelations").attr("displayCluster",function(){return d.cluster});
-// 
+
 		d3.event.stopPropagation();
 		d3.selectAll("circle").style("stroke-width",2);
 		d3.select(this).select("circle").style("stroke-width", 4);
@@ -843,7 +732,6 @@ function drawFacets(svg,nodeData,vm){
 
 		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
 			if ( d2.cluster == d.cluster ){
-				// d3.select(this)[0][0].textContent = '['+d2.readableContent+']';
 				d3.select(this)[0][0].textContent = d2.readableContent;
 				return "visible";
 			} else {
@@ -851,14 +739,12 @@ function drawFacets(svg,nodeData,vm){
 					var indexFilter = d2.facet.indexOf( "_crt_ft" );
 					var nameFacet = d2.facet;
 					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
-					// d3.select(this)[0][0].textContent = "["+nameFacet+"]";
 					d3.select(this)[0][0].textContent = nameFacet;
 					return "visible";
 				} else {
 					var indexFilter = d2.facet.indexOf( "_crt_ft" );
 					var nameFacet = d2.facet;
 					if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
-					// d3.select(this)[0][0].textContent = "["+nameFacet+"]";
 					d3.select(this)[0][0].textContent = nameFacet;
 					return "hidden";
 				}
@@ -871,16 +757,14 @@ function drawFacets(svg,nodeData,vm){
 		d3.select(this).attr("theOneSelected",'false');
 	})
 	.on("mouseover",function(d){
-		// document.getElementById("elementHelp").style.visibility="visible";
 		document.getElementById("elementHelp").style.display="block";
 		if ( d3.select(".node").attr("isThereSelected")=="false" ){
-			console.log("There is no selected people ");
 			d3.select("#textHelp").html("<table id='tableHelp'><tr><th>Double click on a node to filter the results according to this facet </th><th>"+d.facet+"<br/>"+d.readableContent+"<br/>"+d.value+" elements</th></tr></table>");
-			// d3.select("#textHelp").html("<table><tr><th>Double click on a node to filter the results according to this facet </th><th>"+d.facet+"<br/>"+d.readableContent+"<br/>"+d.value+" elements</th></tr></table>");
 		}
 		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
 		// CHANGE OPACITY OF OTHERS WHEN HOVERING
-		d3.selectAll(".node").selectAll("text").attr("opacity",".3");
+		d3.selectAll(".node").selectAll("text").attr("opacity",".6");
+		d3.selectAll(".node").selectAll("circle").attr("opacity",".6");
 		d3.select(this).select("text").attr("opacity","1");
 	})
 	.on("mouseout",function(d){
@@ -891,7 +775,6 @@ function drawFacets(svg,nodeData,vm){
 		d3.selectAll(".node").selectAll("text").attr("opacity","1");
 	})		
 	.on("dblclick",function(d){
-		console.log("dblclick nodeFacet");
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFilter = d.facet;
 		if ( indexFilter > -1 ){ nameFilter = d.facet.substr(0,indexFilter); }
@@ -899,22 +782,15 @@ function drawFacets(svg,nodeData,vm){
 		vm.$data.filterQuery[ nameFilter ] = d.name;
 		vm.$emit("bar-selected");
 		document.getElementById("infoPop").innerHTML=" Filtering the results according to "+d.name;
-		// document.getElementById("infoPop").text=" Filtering the results according to "+d.name;
 		popOutDiv("infoPop");
 		fadeOutDiv("infoPop");
-		console.log('vm : ');console.log( vm );
-		console.log('this : ');console.log( this );
-		// vm.$options.methods.querySamples(this,false);
-
 	});
 
 	node.append("text")
 	.text( function (d) {
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFacet = d.facet;
-		// var nameFacet = d.readableContent;
 		if ( indexFilter > -1 ){ nameFacet = nameFacet.substr(0,indexFilter); }
-		// return "["+nameFacet+"]";
 		return nameFacet;
 	})
 	.attr("xPos",function(d){return d.px;})
@@ -929,9 +805,7 @@ function drawFacets(svg,nodeData,vm){
 	})
 	.attr("id",function(d){ return 'text_'+d.index})
 	.attr("class",function(d){ return 'text_facet_'+d.cluster})
-	// .attr("textToDisplay",function(d){return 'false'})
 	.attr("name",function(d){return d.name})
-	// .text( function (d) { return "["+d.name+"]"; })
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
 	.attr("border","solid").attr("border-radius","10px")
 	.style("visibility", function(d){
@@ -946,14 +820,6 @@ function drawFacets(svg,nodeData,vm){
 	.style("background-color","#46b4af")
 	.attr("fill", "#4D504F")
 	;
-
-	// d3.selectAll(".text_facet")
-	// .each(function(d) {
-	// 	console.log('this : ');console.log(this);
-	// 	console.log( 'this.getBBox() : ');console.log( this.getBBox() );
-	//        d.width = this.getBBox().width;
-	//        // return this.getBBox().width;
-	// });
 
 	node.append("circle")
 	.attr("r", function (d) { return d.radius; })
@@ -1024,21 +890,12 @@ function drawFacets(svg,nodeData,vm){
 	  };
 	}
 
-
-
 	// Force rules:
 	force.on("tick", function(e) {
-
 		node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-
-		// node.childNodes[1].attr("transform", function(d) { return "translate(" + 20 + "," + 20 + ")"; });
 		d3.selectAll(".node")
 		    .each( cluster(10 * e.alpha * e.alpha) )
 		    .each( collide(.5) )
-		    // .each(function(d){
-	      	// Here make modifications to move text in order to avoid overlays
-			//	this.childNodes[0].setAttribute("transform", "translate(" + 20 + "," + 20 + ")");
-			// })
 	    ;
 
 	    var clusterNumber = d3.select("#vizSpotRelations").attr("displayCluster");
@@ -1054,15 +911,11 @@ function drawFacets(svg,nodeData,vm){
 
 	  		d3.selectAll(".text_facet_"+clusterNumber)
 	  			.each(function(d,i){
-					// console.log("d : ");console.log(d);
-					// console.log("d.x : "+d.x+", d.y : "+d.y+", i : "+i);
-					// console.log("firstX : "+firstX+", firstY : "+firstY);
 					// Let's try to push the text away from the center, the further the node, the further the text
 					var diffX, diffY;
 					if (i != 0){
 						diffX = Math.abs( d.x-firstX );
 						diffY = Math.abs(d.y-firstY);
-						// console.log("diffX : "+diffX+", diffY : "+diffY);
 						if ( d.x-firstX < 0 ){ 
 							diffX = -diffX;
 							var value = d.name;
@@ -1081,13 +934,6 @@ function drawFacets(svg,nodeData,vm){
 						if ( d.y-firstY < 0 ){ 
 							diffY = -diffY;
 						}
-						// console.log("diffX : "+diffX);
-						// console.log("----");
-						// console.log("d.x-firstX : "+d.x-firstX);
-						// console.log("diffY : "+diffY);
-						// console.log("----");
-
-						// this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY/4 + ")");
 						this.setAttribute("transform", "translate(" + diffX/4 + "," + diffY + ")");
 					}					
 				})
@@ -1102,7 +948,6 @@ function drawFacets(svg,nodeData,vm){
 function displayRevertingFilters( results,vm ){
 	// Display the filters in filterEmergencyDisplay if we have both filters and empty results
 	var displayRemainingFilters = false;
-	// remainingfilters[ facet ] = [filter,...]
 	var remainingfilters = {};
 	function infoDisplayFilters (results){
 	    var needToDisplay = false; var arrayFilters = [];
@@ -1115,7 +960,7 @@ function displayRevertingFilters( results,vm ){
 	            } 
 	        }
 	    }
-	    // New version with display of filters all the time
+	    // Version with display of filters all the time
 	    else {
 	        for (var i in results.request.params.filters){
 	            var indexPipe = results.request.params.filters[i].indexOf("|");
@@ -1155,7 +1000,7 @@ function displayRevertingFilters( results,vm ){
 		} else {
 			d3.select("#displayRemainingFilters").selectAll("*").remove();
 		}
-	} // New version of the code with filters displayed also when the results are not empty
+	} // Version of the code with filters displayed also when the results are not empty
 	else {
     	d3.select("#displayRemainingFilters").selectAll("*").remove();
 		if ( displayRemainingFilters[1].length>0 ){
@@ -1204,7 +1049,6 @@ function displayRevertingFilters( results,vm ){
 }
 
 function removeNode(nodeData,nodeAccession, force){
-	console.log("removeNode");
 	d3.select( "#node_"+nodeAccession ).remove();
 	var indexToCut;
 	for (var i =0; i <nodeData.nodes.length;i++){
@@ -1243,8 +1087,6 @@ function removeNode(nodeData,nodeAccession, force){
 }
 
 function addNode( nodeData,nodeAccession,force,svg ){
-	console.log("@@@@ addNode @@@@");
-	// console.log("force : ");console.log(force);
 	nodeData.nodes.push({
 		"radius": 5,
 		"color" : getRandomColor(),
@@ -1252,25 +1094,20 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		"name":nodeAccession,
 		"accession":nodeAccession,
 		"sample_grp_accessions":[],
-		// "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
 		"id": nodeAccession
 	});
 
-	//Add circles to the svgContainer
+	//Add nodes to the svgContainer
 	var node = d3.select("#vizNodeLink").select("g").selectAll(".node")
-	// var node = svg.selectAll("node")
-	// var node = d3.selectAll("node")
-	// .selectAll(".node")
 	.data(nodeData.nodes)
 	.enter()
-	// .insert("g")
 	.append("g")
 	.attr("class","node")
 	.call(force.drag);
 
 	node.append("circle")
 	.attr("r", function (d) { return d.radius * 3; })
-	.attr("accession",function(d){ console.log("node circle accession : ");console.log(d.accession); return d.accession})
+	.attr("accession",function(d){ return d.accession})
 	.attr("class","ghost_circle")
 	.attr("id",function(d){ return 'ghost_'+d.accession })
 	.attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
@@ -1296,19 +1133,10 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	;
 
   	node
-	  .attr("accession",function(d){ console.log("accession : ");console.log(d.accession); return d.accession})
+	  .attr("accession",function(d){ return d.accession})
 	  .attr("id",function(d){return d.accession})
 	  .attr("isThereSelected",function(d){ return 'false';})
 	  .attr("theOneSelected",function(d){return 'false'})
-	 //  .attr("responseDoc",function(d){ 
-		// for ( var i in d.responseDoc){
-		// 	// Need to remove special characters to put them in a dom apparently
-		// 	var attr = i+'' ; attr = attr.replace(/[^A-Za-z0-9]/g,"");
-		// 	var value = d.responseDoc[i]+''; value = value.replace(/[^A-Za-z0-9]/g,"");
-		// 	d3.select(this).attr( attr , value );
-		// }
-	 //  	return d.responseDoc
-	 //  })
 	  .attr("name",function(d){return d.accession})
 	  .attr("id",function(d){return 'node_'+d.accession})
 	  .attr("sample_grp_accessions",function(d){ return d.sample_grp_accessions})
@@ -1327,7 +1155,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	  	}
 	  })
 	  .on("mousedown",function(d){
-		// console.log('mousedown node d : ');console.log(d);
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select("this").attr("theOneSelected",'true');
 		d3.selectAll("circle").style("stroke-width",2);
@@ -1387,21 +1214,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		}
 	})
 	.on("contextmenu",function(d){
-		console.log("right click over added relationship node");
-		// console.log("force : ");console.log(force);
-		// console.log("****");
-		// d3.event.preventDefault();
-		// var loadedStuff = {};
-		// loadedStuff = loadNode(d.accession,loadedStuff);
-		// console.log("loadedStuff : ");console.log(loadedStuff);
-
-		// addNodesAndLinks( nodeData,d.accession,force,loadedStuff,svg );
-
-		// Exemples to try functions to add and remove elements
-		// removeNode( nodeData, d.accession, force );
-		// addNode( nodeData,"tagadaTest",force );
-		// console.log("d : ");console.log(d);
-		// addLink(nodeData,d.accession,d.sample_grp_accessions[0],force,"MEMBERSHIP");
 	})
 	;
 
@@ -1409,7 +1221,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	.attr("dx", 12)
 	.attr("dy", ".35em")
 	.attr("id",function(d){return 'text_'+d.accession})
-	// .text( function (d) { return "["+d.accession+"]"; })
 	.text( function (d) { return d.accession; })
 	.attr("font-family", "sans-serif").attr("font-size", "10px")
 	.attr("border","solid").attr("border-radius","10px")
@@ -1434,34 +1245,19 @@ function addNode( nodeData,nodeAccession,force,svg ){
 	var heightD3 = widthTitle/2;
 	var height=heightD3;
 
-	// force.stop();
-
-	// force = d3.layout.force();
-	// .gravity(.08)
-	// .distance(40)
-	// .charge(-90)
-	// .size([width, height]);
-
-	console.log("before putting the nodes in the force, nodeData.nodes : ");console.log(nodeData.nodes);
-	// force = d3.layout.force()
 	force
 	.nodes(nodeData.nodes)
 	.links(nodeData.links)
 	.start()
 	;
 
-	console.log("force.nodes() : ");console.log(force.nodes());
-	console.log("force.links() : ");console.log(force.links());
 	// Force rules:
 	force.on("tick", function() {
 		// Check if within node there is a class node dragging
 		// if so, translate by 0
 		var isDragging = false;
 		var accessionDragged = '';
-		// var elements = svg.selectAll('g');
 		var elements = d3.selectAll("#vizSpotRelations").selectAll("g");
-		// var elements = d3.selectAll("#vizSpotRelations").selectAll("g").selectAll(".nodes");
-		// console.log("elements : ");console.log(elements);
 		for (var i=0; i < elements[0].length; i++){
 		  	if ( elements[0][i].classList.length > 1 ){
 		  		isDragging = true;
@@ -1470,16 +1266,10 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		}
 		node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 	});
-
-	// force.resume();
-
-	console.log("---- addition passed ----");
 }
 
 // We can only create links of existing nodes. 
 function addLink(nodeData,accessionSource,accessionTarget,force,label){
-	console.log("---- addLink ----");
-	console.log("nodeData.links : ");console.log(nodeData.links);
 	var nodeSource, nodeTarget;
 	for (var i = 0; i < nodeData.nodes.length; i++){
 		if ( nodeData.nodes[i].accession == accessionSource){
@@ -1500,11 +1290,9 @@ function addLink(nodeData,accessionSource,accessionTarget,force,label){
 			"label":label
 		});
 
-		// var link = svg.selectAll(".link")
 		var link = d3.selectAll("#vizSpotRelations").select("g").selectAll(".link")
 		.data(nodeData.links)
 		.enter()
-		// .append("line")
 		.insert("line")
 		.attr("class", "link")
 		.attr("id",function(d){return d.id;})
@@ -1529,84 +1317,41 @@ function addLink(nodeData,accessionSource,accessionTarget,force,label){
 			.attr("y2", function(d) {return d.target.y; })
 			;
 		});
-	} else {
-		console.log("You can not create a link in between non existing nodes");
 	}
 }
 
+// Avorted
 function addNodesAndLinks ( nodeData,accession,force, loadedStuff, svg ){
-	console.log("---- addNodesAndLinks ----");
-	console.log("loadedStuff : ");console.log(loadedStuff);
-	console.log("%%%%");
-	console.log("svg : ");console.log(svg);
-	// addNode( nodeData,"tagadaTest",force );
-	// console.log("d : ");console.log(d);
-	// addLink(nodeData,d.accession,d.sample_grp_accessions[0],force,"MEMBERSHIP");	
-	// Add all the nodes
-	console.log("loadedStuff.nodes : ");console.log(loadedStuff.nodes);
-	console.log("%%%%");
-	console.log("nodeData : ");console.log(nodeData);
-	console.log("----");
 	var cptNodesToAdd = 0;
 	for ( var i in loadedStuff.nodes){
 		if ( d3.select("#node_"+loadedStuff.nodes[i].label)[0][0] == null ){
-			// console.log("loadedStuff.nodes[i].label : ");console.log( loadedStuff.nodes[i].label );
 			addNode(nodeData,loadedStuff.nodes[i].label,force,svg);
 			cptNodesToAdd++;
 		}
 	}
-	console.log("cptNodesToAdd : ");console.log(cptNodesToAdd);
-	// Add all the links
-	for ( var i in loadedStuff.links){
-
-	}
-	console.log("----");
 }
 
 function loadNode(nodeAccession,loadedStuff){
-	console.log("---- loadNode ----");
 	var nodeIsGroup = false;
 	var root;
 	var url;
 	if ( nodeAccession.indexOf("SAMEG") !== -1 ){ nodeIsGroup = true; }
-	// TO DO: Change the value here by the variable in relations.server
 	root = "http://beans.ebi.ac.uk:9480/biosamples/relations/"
-	console.log("baseUrl : ");console.log(baseUrl);
-
-	// root = buildGraphUrl(baseUrl,nodeAccession);
-
-	// root = "http://localhost:8181/relations-webapp-0.0.1-SNAPSHOT/";
 	if (nodeIsGroup){
 		root += "groups/";
 	} else {
 		root += "samples/";
 	}
 	url = root + nodeAccession+"/graph";
-	console.log("url : ");console.log(url);
 	var arrayRelationships = [];
-	// vm.$http.get(url)
-	// 	.then(function(results) {
-	//     	console.log("results : ");console.log(results);
-	//     	return {"nodes":  results.nodes, "edges" : results.edges };
-	//     })
-	//     .catch(function(data,status,response){
-	//         console.log("data");console.log(data);
-	//         console.log("status");console.log(status);
-	//         console.log("response");console.log(response);
-	//     })
 	var nodesObject = {"nodes": [], "edges" : [] };
-
 	$.ajax({
     	url: url,
     	async: false,
     	dataType: 'json',
     	success: function(data) {
-    		// console.log("in ajax, data : ");console.log(data);
     		nodesObject = data;
     	}
     });	
-
-	console.log("End of loadNode");
 	return nodesObject;
 }
-
