@@ -66,4 +66,28 @@ function initializeLinks() {
         });
         mapping.html(output); 
     });
+
+    console.log("Checking publications-payload");
+    $(".publications-payload").each(function(){
+        // get JSON payload 
+        var quotedPayload = $(this).html();
+        var mapping = $(this);
+        var jsonStr;
+        if (quotedPayload.charAt(0) === '"' && quotedPayload.charAt(str.length -1) === '"'){
+            jsonStr = quotedPayload.substr(1, str.length-2);
+        }
+        else {
+            jsonStr = quotedPayload;
+        }
+        var json = jQuery.parseJSON(jsonStr);
+        var output = "";
+        $.each( json, function( index, value ) {
+            output += "<a href=\"http://europepmc.org/abstract/MED/"+value.pubmed_id+"\" target='_blank'>"+value.pubmed_id+"</a>";
+            
+            if (index < json.length-1) {
+            	output += "<br />";
+            }
+        });
+        mapping.html(output); 
+    });
 }
