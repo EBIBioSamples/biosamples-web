@@ -564,6 +564,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
     var height = heightD3/4;
     var width = widthTitle;
 
+    // For Luca
+    // Creation of the D3 divs for the bar chart
     for (var u in numberFacetsUnEmpty){
       // QUESTION: Do we want this ? Possible new approach, when only one facet is here, maybe we don't want to see it.
       // To implement, change condition to numberFacetsUnEmpty[u] > 1
@@ -634,6 +636,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       cpt++;
     }
 
+    //  For Luca
+    // Format data for the bar charts so that D3 doesn't complain
     var cpt=0;
     for (var u in numberFacetsUnEmpty ){
       for (var v =0; v < results.data.facet_counts.facet_fields[u].length; v++ ){
@@ -817,6 +821,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       }      
     }
 
+
     // Rectangles of the barCharts
     for (var h=0; h < barCharts.length; h++){
       barCharts[h].selectAll(".bar-d3")
@@ -955,7 +960,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
         })
         ;
     }
-
+    // For Luca
     // Nodes relationships here
     var svg;
     svg = d3.select("#vizNodeLink").insert("svg")
@@ -1002,14 +1007,20 @@ function doD3Stuff( results, apiUrl, vm=0  ){
       var valueDisplay = vm.$data.valueDisplay;
       if (valueDisplay == "Sample" ){
             // document.getElementById('infoVizRelations').style.height = '260px';
+            // For Luca
+            // loadDataFromGET formats the data from results into nodeData
           var resLoad = loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex);
           nodeData=resLoad[0]; groupsReturned=resLoad[1]; nameToNodeIndex=resLoad[2];
           d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";          
+          // Drawing for the sample case
           draw(svg,nodeData,vm);
       } else {
             // document.getElementById('infoVizRelations').style.height = '190px';
           d3.select("#saveButton")[0][0].textContent="Get the URL to find back the current filters";
+            // For Luca
+            // loadDataFromFacets formats the data from results into nodeData          
           nodeData = loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex );
+          // Drawing for the facets visualisation
           drawFacets(svg,nodeData,vm);
       }
     } else {

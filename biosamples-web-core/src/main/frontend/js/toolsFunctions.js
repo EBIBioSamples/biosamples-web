@@ -353,12 +353,15 @@ function draw(svg,nodeData,vm){
 	var heightD3 = widthTitle/2;
 	var height=heightD3;
 
+	// Don't mess up with it
 	var force = d3.layout.force()
 	.gravity(.08)
 	.distance(40)
 	.charge(-90)
 	.size([width, height]);
 
+	// For Luca 
+	// Creation of links from group to samples, separated from creation of cirlcles and texts
 	var link = svg.selectAll(".link")
 	.data(nodeData.links)
 	.enter().append("line")
@@ -370,14 +373,15 @@ function draw(svg,nodeData,vm){
 	.attr("nodeTarget",function(d){ return d.nodeTarget; })
 	.style("stroke-width", function(d) { return Math.sqrt(d.weight); });
 
-	//Add circles to the svgContainer
+	//Add nodes to the svgContainer
+	// Important element here is force.drag (inside toolsFunctions.js)
 	var node = svg.selectAll("node")
 	.data(nodeData.nodes)
 	.enter().append("g")
 	.attr("class","node")
 	.call(force.drag);
 
-
+	// Creation of text
 	node.append("text")
 	.attr("dx", 12)
 	.attr("dy", ".35em")
@@ -402,6 +406,7 @@ function draw(svg,nodeData,vm){
 	})
 	;
 
+	// Ghost circle is the circle only showed when a node matches with a bar chart clicked
 	node.append("circle")
 	.attr("r", function (d) { return d.radius * 3; })
 	.attr("accession",function(d){return d.accession})
@@ -450,7 +455,7 @@ function draw(svg,nodeData,vm){
 	  .attr("responseDoc",function(d){return d.responseDoc})
 	  .attr("type", function (d) { return d.type; })
 	  .style("stroke-width",1)
-	  .style("fill", function(d) { 
+	  .style("fill", function(d) {
 	  	if (typeof d.group !==  'undefined'){
 	  		if (typeof d.group.color !==  'undefined'){
 	  			return fill(d.group.color); 
@@ -478,25 +483,6 @@ function draw(svg,nodeData,vm){
 		if ( currentAccession.substring(0,5).indexOf("SAMEG") !== -1 ){ indicationType = "group"; }
 		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
 	  	document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
-
-		// var URLs = [];
-		// for (var prop in d.responseDoc) {
-		//   // skip loop if the property is from prototype
-		//   if(!d.responseDoc.hasOwnProperty(prop)) continue;
-		//   // d3.select("#textData").style("text-align","center");
-		//   // Should we calculate connections onclick or on loading ?
-		//   // document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
-		//   document.getElementById("textData").innerHTML+="<div class='textAttribute'"
-		//   + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
-
-		//   URLs = getURLsFromObject(d.responseDoc,prop);
-		//   if (URLs.length>0){
-		//   	for (var k=0;k<URLs.length;k++){
-		// 		document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
-		// 		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
-		//    	}
-		//   }
-		// }
 		document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
@@ -507,8 +493,6 @@ function draw(svg,nodeData,vm){
 		if ( d3.select(".node").attr("isThereSelected") == "false" ){
 			d3.selectAll("text").style("opacity",1);
 		  	d3.selectAll(".node").selectAll("text").style("dx", 12);
-		  	// d3.selectAll(".node").selectAll("text").attr("transform","translate("+ 0 +","+0+")");
-		  	// d3.selectAll(".node").selectAll("circle").transition().duration(10).style("r", this.radius);
 			d3.select("#textHelp").html("Click on a node to display its information.");
 		}
 	})
@@ -1172,22 +1156,6 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
 		document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
 
-		// We decide not to display these information anymore
-		// var URLs = [];
-		// for (var prop in d.responseDoc) {
-		//   // skip loop if the property is from prototype
-		//   if(!d.responseDoc.hasOwnProperty(prop)) continue;
-		//   // document.getElementById("textData").innerHTML+="<div class='textAttribute' onclick='linkPerAttributes(this)'"
-		//   document.getElementById("textData").innerHTML+="<div class='textAttribute'"
-		//   + " id="+prop+" value="+d.responseDoc[prop]+" > <b>"+prop + " : </b>" + d.responseDoc[prop]+"" +"</div><br/>";
-		//   URLs = getURLsFromObject(d.responseDoc,prop);
-		//   if (URLs.length>0){
-		//   	for (var k=0;k<URLs.length;k++){
-		// 		document.getElementById("textData").innerHTML+="<a href=\""+URLs[k]+"\">link text</a>+<br/>";
-		// 		document.getElementById("textData").innerHTML+="<img src=\""+URLs[k]+"\" alt=\"google.com\" style=\"height:200px;\" ><br/>"; 
-		//    	}
-		//   }
-		// }
 	  	document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
