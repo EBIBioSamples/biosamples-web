@@ -10,6 +10,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,9 @@ public class HttpSolrDispatcher {
     @Value("classpath:ignoredFacets.fields")
     private Resource ignoredFacetsResource;
 
+    @Autowired
+    private SolrQueryBuilder solrQueryBuilder;
+
     private Set<String> ignoredFacets;
 
     @PostConstruct
@@ -80,6 +84,29 @@ public class HttpSolrDispatcher {
 	        }
         }
     }
+
+    public String[] getGroupCommonAttributes(String groupAccession, int facetCount) {
+
+        HttpSolrQuery commonFacetQuery = solrQueryBuilder
+                .createQuery("sample_grp_accessions",groupAccession);
+
+        commonFacetQuery.withPage(0,0);
+        commonFacetQuery.withFacetOn("crt_type_ft");
+        commonFacetQuery.withFacetMinCount(facetCount);
+
+        String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery);
+
+        HttpSolrQuery commonAttrQuery = solrQueryBuilder
+                .createQuery("sample_grp_accessions",groupAccession);
+
+        commonAttrQuery.withPage(0,0);
+        for(String attribute: possibleAttributes) {
+            commonAttrQuery.withFacetOn(attribute);
+        }
+        commonAttrQuery.withFacetMinCount(facetCount);
+    }
+
+
 
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
         try {

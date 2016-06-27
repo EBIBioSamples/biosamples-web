@@ -17,6 +17,7 @@ public class HttpSolrQuery implements Cloneable {
     private boolean capturedTerm = false;
     private boolean facetsEnabled = false;
     private boolean facetLimitEnabled = false;
+    private boolean facetMinCountEnabled = false;
     private boolean highlightingEnabled = false;
 
     HttpSolrQuery(String solrBaseUrl) {
@@ -99,6 +100,13 @@ public class HttpSolrQuery implements Cloneable {
         if (facetLimitEnabled) { throw new HttpSolrQueryBuildingException("Facet limit has already been set"); }
         queryStringBuilder.append("&facet.limit=").append(facetLimit);
         facetLimitEnabled = true;
+        return this;
+    }
+
+    public HttpSolrQuery withFacetMinCount(int facetMinCount) {
+        if (facetMinCountEnabled) { throw new HttpSolrQueryBuildingException("Facet minimum count has already been set"); }
+        queryStringBuilder.append("&facet.mincount=").append(facetMinCount);
+        facetMinCountEnabled = true;
         return this;
     }
 

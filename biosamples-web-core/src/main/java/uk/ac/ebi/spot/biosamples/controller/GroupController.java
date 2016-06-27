@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.solr.server.support.HttpSolrServerFactoryBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,6 +29,7 @@ import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
+import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 
 import java.util.Map;
 
@@ -44,6 +46,8 @@ public class GroupController {
 
     @Autowired private SampleRepository sampleRepository;
 
+    @Autowired private HttpSolrDispatcher httpSolrDispatcher;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected Logger getLog() {
@@ -53,6 +57,7 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
+        String[] sampleCommonAttributes = httpSolrDispatcher.getGroupCommonAttributes(accession,Integer.parseInt(group.getNumberOfSamples()));
         model.addAttribute("group", group);
         return "group";
     }
