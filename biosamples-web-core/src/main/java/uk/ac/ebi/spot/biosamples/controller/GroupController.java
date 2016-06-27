@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 import uk.ac.ebi.spot.biosamples.model.solr.Group;
+import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
+import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 
 import java.util.Map;
 
@@ -39,6 +41,8 @@ import java.util.Map;
 @CrossOrigin(methods = RequestMethod.GET)
 public class GroupController {
     @Autowired private GroupRepository groupRepository;
+
+    @Autowired private SampleRepository sampleRepository;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -63,6 +67,7 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String groupXml(@PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
+
         if (group.getXml().isEmpty()) {
             throw new NullPointerException("No XML present for " + group.getAccession());
         }
