@@ -18,6 +18,8 @@ biosamples-web-core/src/main/resources/logback.xml
 **/*/logs
 logs/
 
+ignoredFacets.fields
+
 .idea/
 *.iml
 */target/
