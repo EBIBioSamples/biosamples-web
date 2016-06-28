@@ -249,22 +249,41 @@
     </div>
 
     <section>
-        <h2>Crop Informatics BioSamples</h2>
-        <h3>Database of Crop Plant Biosamples</h3>
+        <h2>BioSamples for Crop Plant Bioinformatics</h2>
+    </section>
 
+    <!--<div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>-->
+
+    <!-- search box goes here -->
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search the catalog" id="search-box"/>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" id="search-button">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+    </div>
+    <div class="examples">
+        Examples:
+        <a href="search?query=breast%20cancer">breast cancer</a>,
+        <a href="search?query=rs7329174">rs7329174</a>,
+        <a href="search?query=Yang">Yang</a>,
+        <!--<a href="search?query=44892362">44892362</a>,-->
+        <a href="search?query=2q37.1">2q37.1</a>,
+        <a href="search?query=HBS1L">HBS1L</a>
+    </div>
+
+    <section>
         <p class="intro justify">
             The BioSamples database is a repository of sample information.  This is the dedicated Crop Informatics
             instance of Biosamples, and it contains all known metadata from publicly available crop plant samples.
         </p>
     </section>
 
-    <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
-
 </main>
 
 <th:block layout:fragment="custom-endpage-scripts">
-    <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
-    <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
+    <script src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
     <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js}"
             src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
     <script th:src="@{/javascript/searchComponents.js}" src="../static/javascript/searchComponents.js"></script>
