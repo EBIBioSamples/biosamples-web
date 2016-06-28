@@ -248,16 +248,6 @@
         </component>
     </div>
 
-    <section>
-        <h2>Crop Informatics BioSamples</h2>
-        <h3>Database of Crop Plant Biosamples</h3>
-
-        <p class="intro justify">
-            The BioSamples database is a repository of sample information.  This is the dedicated Crop Informatics
-            instance of Biosamples, and it contains all known metadata from publicly available crop plant samples.
-        </p>
-    </section>
-
     <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
     <div v-bind:class="{loading: isQuerying}"></div>
     <br/><br/>
