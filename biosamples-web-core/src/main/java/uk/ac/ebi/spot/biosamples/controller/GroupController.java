@@ -1,5 +1,6 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,8 @@ import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Javadocs go here!
@@ -58,7 +59,14 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
-        Map<String,List<String>> sampleCommonAttributes = httpSolrDispatcher.getGroupCommonAttributes(accession,Integer.parseInt(group.getNumberOfSamples()));
+        Set<String> tempSampleCommonAttributes = httpSolrDispatcher.getGroupCommonAttributes(accession,Integer.parseInt(group.getNumberOfSamples()));
+        Sample sample = sampleRepository.findFirstByGroupsContains(accession);
+        Map<String, List<String>> sampleCrts = sample.getCharacteristics();
+        TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
+        for(String attribute: tempSampleCommonAttributes) {
+            List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$",""));
+            sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+        }
         model.addAttribute("group", group);
         model.addAttribute("common_attrs", sampleCommonAttributes);
         return "group";
@@ -135,5 +143,12 @@ public class GroupController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(), headers, HttpStatus.BAD_REQUEST);
+    }
+
+    private String cleanAttributeName(String name) {
+        name = name.substring(0, name.indexOf("_crt_ft"));
+        return Arrays.stream(name.split("_")).map(part -> {
+            return part.substring(0, 1).toUpperCase() + part.substring(1, part.length()).toLowerCase();
+        }).collect(Collectors.joining(" "));
     }
 }

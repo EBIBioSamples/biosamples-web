@@ -19,6 +19,15 @@
         /*]]>*/
     </script>
 
+    <style>
+
+        table.common-attr {
+            width: 100%;
+        }
+
+
+    </style>
+
 </head>
 <body>
 
@@ -85,45 +94,38 @@
                 </tr>
                 <!-- end all characteristics -->
                 <tr>
-                    <td></td>
+                    <td class="col_title"><b>Common Attributes</b></td>
                     <td>
-                        <tbody>
-                            <tr th:each="common_attribute: ${common_attr}" th:unless="not #maps.isEmpty(common_attr)">
-                                <td th:text="${common_attribute}"></td>
-                            </tr>
-                        </tbody>
-                    </td>
-                </tr>
+                        <table class="common-attr">
+                            <thead>
+                                <tr>
+                                    <th th:each="attr: ${common_attrs}" th:text="${attr.key}">attrname</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td th:each="attr: ${common_attrs}" >
+                                        <div class="characteristic-mapping">
+                                            <div class="characteristic-mapping-payload" th:text="${attr.value[0]}">{"foo":"bar"}</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!--<tr th:each="common_attribute: ${common_attr}" th:unless="not #maps.isEmpty(common_attr)">-->
+                                    <!--<td th:text="${common_attribute}"></td>-->
+                                <!--</tr>-->
+                            </tbody>
 
-                </tbody>
+                        </table>
+                                       </td>
+                                    </tr>
 
-                <!-- Samples summary table goes here -->
-            </table>
-        </div>
-    </div>
+                                    </tbody>
 
-    <div class="group_content__samples">
-        <table style="width: 100%">
-            <thead>
-                <tr>
-                    <td>Accession <button @click="sortBy('accession')" class="glyphicon glyphicon-chevron-up"></button></td>
-                    <td>Organism <button @click="sortBy('organism')" class="glyphicon glyphicon-chevron-up"></button></td>
-                    <td>Name <button @click="sortBy('name')" class="glyphicon glyphicon-chevron-up"></button></td>
-                    <td>Description <button @click="sortBy('description')" class="glyphicon glyphicon-chevron-up"></button></td>
-                    <td>Database <button @click="sortBy('database')" class="glyphicon glyphicon-chevron-up"></button></td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="item in items">
-                    <td>{{item.accession}}</td>
-                    <td>{{item.organism}}</td>
-                    <td>{{item.name}}</td>
-                    <td>{{item.description}}</td>
-                    <td>{{item.database}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                                    <!-- Samples summary table goes here -->
+                                </table>
+                            </div>
+                        </div>
+
 
     <!-- New part Vis-->
     <div class="relation-graph">
@@ -137,8 +139,8 @@
 
 
 <th:block layout:fragment="custom-endpage-scripts">
+    <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
     <script th:src="@{/javascript/relationsVis.js}"></script>
-    <script th:src="@{/javascript/samplesInGroup.js}"></script>
 </th:block>
 
 </body>

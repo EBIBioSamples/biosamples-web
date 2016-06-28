@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Javadocs go here!
@@ -81,7 +82,7 @@ public class HttpSolrDispatcher {
         }
     }
 
-    public Map<String,List<String>> getGroupCommonAttributes(String groupAccession, int facetCount) {
+    public Set<String> getGroupCommonAttributes(String groupAccession, int facetCount) {
 
         HttpSolrQuery commonFacetQuery = solrQueryBuilder
                 .createQuery("sample_grp_accessions",groupAccession);
@@ -101,6 +102,8 @@ public class HttpSolrDispatcher {
         }
         commonAttrQuery.withFacetMinCount(facetCount);
         return executeAndParseCommonAttributeQuery(commonAttrQuery);
+
+
     }
 
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
@@ -129,6 +132,15 @@ public class HttpSolrDispatcher {
         String[] reducedFacetList = new String[facetLimit];
         System.arraycopy(facetsList, 0, reducedFacetList, 0, facetLimit);
         return reducedFacetList;
+    }
+
+    private String cleanAttributeName(String name) {
+        name = name.substring(0, name.indexOf("_crt_ft"));
+        return Arrays.stream(name.split("_")).map(part -> {
+            return part.substring(0, 1).toUpperCase() + part.substring(1, part.length()).toLowerCase();
+        }).collect(Collectors.joining(" "));
+
+
     }
 
     public void streamSolrResponse(OutputStream outputStream, HttpSolrQuery solrQuery) throws IOException {
@@ -199,14 +211,14 @@ public class HttpSolrDispatcher {
     }
 
     //TODO: should I suppose attrQuery has everything I need to get the correct attributes - No check here?
-    private Map<String,List<String>> executeAndParseCommonAttributeQuery(HttpSolrQuery attrQuery) {
+    private Set<String> executeAndParseCommonAttributeQuery(HttpSolrQuery attrQuery) {
         try {
             final PipedInputStream in = new PipedInputStream();
             final PipedOutputStream out = new PipedOutputStream(in);
 
             ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
-            Future<Map<String,List<String>>> ftResults = singleExecutor.submit(() -> {
-                Map<String, List<String>> commonAttributes = new HashMap();
+            Future<Set<String>> ftResults = singleExecutor.submit(() -> {
+                Set<String> commonAttributes = new HashSet<>();
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(in);
                 JsonNode facetCounts = jsonNode.get("facet_counts");
@@ -221,14 +233,9 @@ public class HttpSolrDispatcher {
                 while(fieldNamesIt.hasNext()) {
                     String fieldName = fieldNamesIt.next();
                     JsonNode fieldValue = facetFields.get(fieldName);
-                    List<String> fieldCommonValues = new ArrayList<>();
-                    Iterator<JsonNode> fieldValueIt = fieldValue.elements();
-                    while(fieldValueIt.hasNext()) {
-                        String attrName = fieldValueIt.next().asText();
-                        int attrCount = fieldValueIt.next().asInt();
-                        fieldCommonValues.add(attrName);
+                    if(fieldValue.elements().hasNext()) {
+                        commonAttributes.add(fieldName);
                     }
-                    commonAttributes.put(fieldName,fieldCommonValues);
                 }
                 return commonAttributes;
             });
@@ -237,7 +244,7 @@ public class HttpSolrDispatcher {
 
             long timeout = 600;
             try {
-                Map<String,List<String>> results = ftResults.get(timeout, TimeUnit.SECONDS);
+                Set<String> results = ftResults.get(timeout, TimeUnit.SECONDS);
                 singleExecutor.shutdown();
                 return results;
             }  catch (TimeoutException e) {
