@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.solr.server.support.HttpSolrServerFactoryBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,9 +24,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 import uk.ac.ebi.spot.biosamples.model.solr.Group;
+import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
+import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
+import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 
 import java.util.List;
 import java.util.Map;
@@ -41,6 +45,10 @@ import java.util.Map;
 public class GroupController {
     @Autowired private GroupRepository groupRepository;
 
+    @Autowired private SampleRepository sampleRepository;
+
+    @Autowired private HttpSolrDispatcher httpSolrDispatcher;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected Logger getLog() {
@@ -50,10 +58,7 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
-<<<<<<< HEAD
-=======
         Map<String,List<String>> sampleCommonAttributes = httpSolrDispatcher.getGroupCommonAttributes(accession,Integer.parseInt(group.getNumberOfSamples()));
->>>>>>> 0c2edb1... Temporary save the commits for different branch
         model.addAttribute("group", group);
         model.addAttribute("common_attrs", sampleCommonAttributes);
         return "group";
@@ -69,6 +74,7 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String groupXml(@PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
+
         if (group.getXml().isEmpty()) {
             throw new NullPointerException("No XML present for " + group.getAccession());
         }

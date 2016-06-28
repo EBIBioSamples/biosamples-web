@@ -10,6 +10,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,9 @@ public class HttpSolrDispatcher {
     @Value("classpath:ignoredFacets.fields")
     private Resource ignoredFacetsResource;
 
+    @Autowired
+    private SolrQueryBuilder solrQueryBuilder;
+
     private Set<String> ignoredFacets;
 
     @PostConstruct
@@ -77,8 +81,6 @@ public class HttpSolrDispatcher {
         }
     }
 
-<<<<<<< HEAD
-=======
     public Map<String,List<String>> getGroupCommonAttributes(String groupAccession, int facetCount) {
 
         HttpSolrQuery commonFacetQuery = solrQueryBuilder
@@ -101,9 +103,6 @@ public class HttpSolrDispatcher {
         return executeAndParseCommonAttributeQuery(commonAttrQuery);
     }
 
-
-
->>>>>>> 0c2edb1... Temporary save the commits for different branch
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
         try {
             HttpSolrQuery facetQuery = solrQuery.clone();

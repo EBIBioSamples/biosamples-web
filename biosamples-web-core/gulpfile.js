@@ -15,5 +15,6 @@ elixir(function(mix) {
 	 	.sass('base.scss')
 	 	.browserify('searchComponents.js')
         .browserify('relationsVis.js')
+        .browserify('samplesInGroup.js')
 	 	.scripts('toolsFunctions.js')
 });
