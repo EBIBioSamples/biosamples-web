@@ -31,6 +31,7 @@ import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,8 +58,9 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
-        String[] sampleCommonAttributes = httpSolrDispatcher.getGroupCommonAttributes(accession,Integer.parseInt(group.getNumberOfSamples()));
+        Map<String,List<String>> sampleCommonAttributes = httpSolrDispatcher.getGroupCommonAttributes(accession,Integer.parseInt(group.getNumberOfSamples()));
         model.addAttribute("group", group);
+        model.addAttribute("common_attrs", sampleCommonAttributes);
         return "group";
     }
 

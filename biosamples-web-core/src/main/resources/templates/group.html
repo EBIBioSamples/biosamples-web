@@ -84,6 +84,16 @@
                     </td>
                 </tr>
                 <!-- end all characteristics -->
+                <tr>
+                    <td></td>
+                    <td>
+                        <tbody>
+                            <tr th:each="common_attribute: ${common_attr}" th:unless="not #maps.isEmpty(common_attr)">
+                                <td th:text="${common_attribute}"></td>
+                            </tr>
+                        </tbody>
+                    </td>
+                </tr>
 
                 </tbody>
 
