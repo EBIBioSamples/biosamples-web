@@ -27,6 +27,7 @@ import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,7 +50,12 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
+<<<<<<< HEAD
+=======
+        Map<String,List<String>> sampleCommonAttributes = httpSolrDispatcher.getGroupCommonAttributes(accession,Integer.parseInt(group.getNumberOfSamples()));
+>>>>>>> 0c2edb1... Temporary save the commits for different branch
         model.addAttribute("group", group);
+        model.addAttribute("common_attrs", sampleCommonAttributes);
         return "group";
     }
 

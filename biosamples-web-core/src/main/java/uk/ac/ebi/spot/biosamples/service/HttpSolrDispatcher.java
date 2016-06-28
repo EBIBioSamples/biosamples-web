@@ -21,11 +21,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -81,6 +77,33 @@ public class HttpSolrDispatcher {
         }
     }
 
+<<<<<<< HEAD
+=======
+    public Map<String,List<String>> getGroupCommonAttributes(String groupAccession, int facetCount) {
+
+        HttpSolrQuery commonFacetQuery = solrQueryBuilder
+                .createQuery("sample_grp_accessions",groupAccession);
+
+        commonFacetQuery.withPage(0,0);
+        commonFacetQuery.withFacetOn("crt_type_ft");
+        commonFacetQuery.withFacetMinCount(facetCount);
+
+        String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery);
+
+        HttpSolrQuery commonAttrQuery = solrQueryBuilder
+                .createQuery("sample_grp_accessions",groupAccession);
+
+        commonAttrQuery.withPage(0,0);
+        for(String attribute: possibleAttributes) {
+            commonAttrQuery.withFacetOn(attribute);
+        }
+        commonAttrQuery.withFacetMinCount(facetCount);
+        return executeAndParseCommonAttributeQuery(commonAttrQuery);
+    }
+
+
+
+>>>>>>> 0c2edb1... Temporary save the commits for different branch
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
         try {
             HttpSolrQuery facetQuery = solrQuery.clone();
@@ -172,6 +195,60 @@ public class HttpSolrDispatcher {
             throw new RuntimeException("Execution of Solr parsing thread failed", e);
         }
         catch (IOException e) {
+            throw new RuntimeException("Unable to calculate most commonly used facets", e);
+        }
+    }
+
+    //TODO: should I suppose attrQuery has everything I need to get the correct attributes - No check here?
+    private Map<String,List<String>> executeAndParseCommonAttributeQuery(HttpSolrQuery attrQuery) {
+        try {
+            final PipedInputStream in = new PipedInputStream();
+            final PipedOutputStream out = new PipedOutputStream(in);
+
+            ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
+            Future<Map<String,List<String>>> ftResults = singleExecutor.submit(() -> {
+                Map<String, List<String>> commonAttributes = new HashMap();
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(in);
+                JsonNode facetCounts = jsonNode.get("facet_counts");
+                if (facetCounts == null) {
+                    throw new RuntimeException("Unexpected Solr response - no facet_counts field");
+                }
+                JsonNode facetFields = facetCounts.get("facet_fields");
+                if (facetFields == null) {
+                    throw new RuntimeException("Unexpected Solr response - no facet_fields field");
+                }
+                Iterator<String> fieldNamesIt = facetFields.fieldNames();
+                while(fieldNamesIt.hasNext()) {
+                    String fieldName = fieldNamesIt.next();
+                    JsonNode fieldValue = facetFields.get(fieldName);
+                    List<String> fieldCommonValues = new ArrayList<>();
+                    Iterator<JsonNode> fieldValueIt = fieldValue.elements();
+                    while(fieldValueIt.hasNext()) {
+                        String attrName = fieldValueIt.next().asText();
+                        int attrCount = fieldValueIt.next().asInt();
+                        fieldCommonValues.add(attrName);
+                    }
+                    commonAttributes.put(fieldName,fieldCommonValues);
+                }
+                return commonAttributes;
+            });
+
+            streamSolrResponse(out, attrQuery);
+
+            long timeout = 600;
+            try {
+                Map<String,List<String>> results = ftResults.get(timeout, TimeUnit.SECONDS);
+                singleExecutor.shutdown();
+                return results;
+            }  catch (TimeoutException e) {
+                throw new RuntimeException("No Solr response acquired in " + timeout + "s.");
+            }
+        } catch (InterruptedException e) {
+                throw new RuntimeException("Solr parsing thread was interrupted", e);
+        } catch (ExecutionException e) {
+                throw new RuntimeException("Execution of Solr parsing thread failed", e);
+        } catch (IOException e) {
             throw new RuntimeException("Unable to calculate most commonly used facets", e);
         }
     }
