@@ -182,11 +182,18 @@
                         displayRevertingFilters(results,this);
                         this.consumeResults(results);
 
-                        document.getElementById("indicationButton").onclick = function(){
-                            document.getElementById("indicationWindow").style.display="block";
-                        };
-                        document.getElementById("hideIndication").onclick = function(){
-                            document.getElementById("indicationWindow").style.display="none";
+                        var indicationButton = document.getElementById("indicationButton");
+                        if (indicationButton != null) {
+                            indicationButton.onclick = function(){
+                                document.getElementById("indicationWindow").style.display="block";
+                            };
+                        }
+
+                        var hideIndication = document.getElementById("hideIndication");
+                        if (hideIndication != null) {
+                            hideIndication.onclick = function() {
+                                document.getElementById("indicationWindow").style.display = "none";
+                            };
                         }
 
                         // Version with switch from Facet to Sample representation
@@ -194,12 +201,12 @@
                             doD3Stuff(results,apiUrl,this);
                         }
                     })
-                    .catch(function(data){
-                        console.log(data);
+                    .catch(function(results){
+                        console.log(results);
                         this.alerts.push({
                             type: 'danger',
                             timeout: 5000,
-                            message: `Something went wrong!\nError code: ${data.status} - ${data.statusText}`
+                            message: `Something went wrong!\nError code: ${results.status} - ${results.statusText}`
                         });
                     })
                     .then(function() {

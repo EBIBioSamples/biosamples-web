@@ -68,10 +68,6 @@
             stroke-linejoin: round;
         }
 
-        /*    .reverter{
-              border:solid; border-color:black; border-radius:2px; background-color: #cccccc;
-              color: white; text-align: center; stroke: white; stroke-width: 32px;
-            }*/
         .crossDelete {
             border-radius: 50%;
             behavior: url(PIE.htc); /* remove if you don't care about IE8 */
@@ -83,6 +79,23 @@
             color: #000;
             text-align: center;
             font: 13px Arial, sans-serif;
+            cursor: pointer;
+        }
+
+        .crossDelete2 {
+            border-radius: 50%;
+            behavior: url(PIE.htc);
+            width: 25px;
+            height: 25px;
+            padding: 0;
+            margin-right: 25px;
+            float: right;
+            background: #f5f5f5;
+            border: 1px solid #000;
+            color: #000;
+            text-align: center;
+            font: 21px Arial, sans-serif;
+            cursor: pointer;
         }
 
         #areaNodeLink {
@@ -91,43 +104,91 @@
         }
 
         #vizNodeLink {
-            float: left;
-            width: 70%;
+            width: 100%;
         }
 
         #infoVizRelations {
-            float: left;
-            width: 30%;
-            border: solid;
-            border-color: black;
+            width: 95%;
+            height: 190px;
+            border: 1px solid black;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
             border-radius: 4px;
             background-color: rgba(200, 200, 200, 0.5);
             display: none;
             overflow: scroll;
-            overflow-x: hidden;
+        }
+
+        #tableInfoViz {
+            border-spacing: 10px;
+            border-collapse: separate;
         }
 
         #vizSpotRelations {
             background-color: #ffffff;
+            width: 95%;
+            border: 1px solid black;
+        }
+
+        #buttonRezInfo {
+            border: solid;
+            border-radius: 4px;
+            visibility: hidden;
+            border: solid 1px black;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        #indicationButton {
+            cursor: pointer;
+            width: auto;
+            display: none;
+        }
+
+        #indicationButton:hover {
+            color: blue;
+        }
+
+        #indicationWindow {
+            position: absolute;
+            display: none;
+            background-color: white;
+            opacity: .95;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            top: 0;
+            height: 150%;
+            color: black;
+        }
+
+        #indicationWindow:hover {
+        }
+
+        .titleIndication {
+            color: green;
         }
 
         #elementHelp {
-            position: absolute;
-            width: 320px;
+            width: 380px;
             text-align: center;
-            float: right;
-            visibility: hidden;
+            display: none;
         }
 
         #textHelp {
-            background: grey;
-            width: 260px;
-            color: white;
-            stroke: steelblue;
+            background: #d3d3d3;
+            width: 380px;
+            color: black;
             stroke-width: 32px;
-            opacity: 0.8;
+            opacity: 0.9;
             border: solid 1px black;
             border-radius: 5px;
+            text-align: center;
+        }
+
+        #tableHelp {
+            cellspacing: 1px;
         }
 
         #saveButton {
@@ -136,7 +197,7 @@
             border-color: black;
             background-color: white;
             margin-right: 30%;
-            width: 70%;
+            width: 90%;
             text-align: center;
             overflow: scroll;
             overflow-y: hidden;
@@ -155,6 +216,7 @@
             padding: 6px 12px;
             font-size: 14px;
             width: 70%;
+            cursor: pointer;
         }
 
         #representationButton:hover {
@@ -166,12 +228,12 @@
             behavior: url(PIE.htc);
             width: 16px;
             height: 16px;
-            /* padding: 3px; */
             background: #fff;
             border: 1px solid #000;
             color: #000;
             text-align: center;
             font: 13px Arial, sans-serif;
+            cursor: pointer
         }
 
         #questionSwitch:hover {
@@ -194,34 +256,22 @@
             display: none
         }
 
-        ::-webkit-scrollbar {
-            width: 15px;
-            height: 15px;
-        }
-
-        ::-webkit-scrollbar-button {
-            width: 31px;
-            height: 31px;
+        /* scrollbar */
+        ::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            background-color: #F5F5F5;
         }
 
         ::-webkit-scrollbar {
-            overflow-x: scroll;
-            overflow-y: auto;
+            width: 12px;
+            background-color: #F5F5F5;
         }
 
         ::-webkit-scrollbar-thumb {
-            border: 6px solid #BBB;
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #eee;
-            border: 72px none #ffffff;
-            border-radius: 84px;
-        }
-
-        table {
-            border: 4px solid grey;
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            background-color: #555;
         }
 
         [v-cloak] {
@@ -256,6 +306,7 @@
         <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
         <li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>
     </ul>
+
 
     <div class="tab-content">
         <section id="sectionList" class="container tab-pane fade in active" v-show="queryTermPresent" v-cloak>
@@ -327,12 +378,14 @@
             </div>
         </section>
 
+        <div><u><a id="indicationButton">Click here for help with the visualisation</a></u></div>
+
 
         <section id="sectionVisualisation" class='tab-pane fade'>
-
-            <div id="buttonRezInfo" style="border:solid; border-radius:1px;visibility:hidden;">
+            <br/>
+            <div id="buttonRezInfo">
                 <h4 id="titleRezInfo">
-                    Display result information
+                    Bar chart of categories
                 </h4>
             </div>
             <div id="sectionVizResult"
@@ -341,64 +394,124 @@
             </div>
 
             <div id="areaNodeLink">
-                <div id="vizNodeLink"></div>
                 <div id="infoVizRelations">
-                    <div id="numberMatches"></div>
-                    <div id="vizRepresentation">
-                        <h4> Switch the display of the results according to : <p style="font-size:large">
-                            <div id="questionSwitch">?</div>
-                            </p> </h4>
-                        <div id="representationButton" name="representationButton" active="false" value="Sample">
-                            Sample
-                        </div>
-                        <br>
-                    </div>
-                    <div id="buttons-display" style="display:none;">
-                        <h4> Decide the number of elements fully loaded : </h4>
-                        <li style="list-style:none;">
-                            <ul>
-                                <component is="items-dropdown"></component>
-                            </ul>
-                            <ul>
-                                <component is="pagination"
-                                           v-bind:total-results="resultsNumber"
-                                           v-bind:displayed-results="samplesToRetrieve">
-                                </component>
-                                <!-- style="float:right" -->
-                            </ul>
-                            <ul>
-                                <h4 style="display:inline"> Display text of all samples </h4>  <input type="checkbox"
-                                                                                                      onclick='showTextSamples(this)'/>
-                            </ul>
-                            <ul>
-                                <div id="saveButton" onclick='saveURL(this)'><p> Get the URL to find back the current
-                                                                                 filters
+                    <table div='tableInfoViz'>
+                        <tr>
+                            <th>
+                                <div id="numberMatches"></div>
+                            </th>
+                            <th>
+                                <div id="vizRepresentation">
+                                    <h5> Switch the display of the results <br/> according to :
+                                        <p style="font-size:large">
+                                        <div id="questionSwitch">?</div>
+                                        </p> </h5>
+                                    <div id="representationButton"
+                                         name="representationButton"
+                                         active="false"
+                                         value="Sample">Sample
+                                    </div>
+                                    <br>
+                                </div>
+                            </th>
+                            <th>
+                                <div id="buttons-display" style="display:none;">
+                                    <h4> Choose the number of elements fully loaded : </h4>
+                                    <li style="list-style:none;">
+                                        <ul>
+                                            <component is="items-dropdown"></component>
+                                        </ul>
+                                        <ul>
+                                            <component is="pagination"
+                                                       v-bind:total-results="resultsNumber"
+                                                       v-bind:displayed-results="samplesToRetrieve">
+                                            </component>
+                                        </ul>
+                                        <ul>
+                                            <h5 style="display:inline"> Display text of all samples </h5>
+                                            <input type="checkbox" onclick='showTextSamples(this)'/>
+                                        </ul>
+                                    </li>
+                                </div>
+                            </th>
+                            <th>
+                                <div id="saveButton" style="display:none;" onclick='saveURL(this)'><p> Get the URL to
+                                                                                                       find back the
+                                                                                                       current filters
                                     <p/></div>
-                            </ul>
-                        </li>
-                        <hr/>
-                    </div>
-                    <div id="dynamicText">
-                        <h3> Clicked element information </h3>
-                        <div id="textData" style="overflow:hidden">Click on an element of the diagram to display its
-                                                                   information
-                        </div>
-                    </div>
+                            </th>
+                            <th>
+                                <div id="dynamicText">
+                                    <h4> Clicked element information </h4>
+                                    <div id="textHelp"> Help</div>
+                                </div>
+                            </th>
+                            <th>
+                                <div id="textData" style="overflow:hidden">
+                                </div>
+                            </th>
+                            <th>
+                                <div id="elementHelp">
+                                    <div id="textHelp"></div>
+                                </div>
+                            </th>
+                        </tr>
+                    </table>
                 </div>
             </div>
-        </section>
+            <div id="vizNodeLink"></div>
+
     </div>
 
-    <div id="elementHelp">
-        <div id="textHelp"> Help</div>
+    </section>
     </div>
+
     <div id="infoPop"> Temporary display of information</div>
+
+    <div id="indicationWindow">
+        <div id="hideIndication" class="crossDelete2">&#10006;</div>
+        <h3 class="titleIndication">Introduction</h3>
+        This visualisation offers the possibility to explore and filter the results of your search according to the
+        categories, or facets, returned. There are two visualisation modes, the "Facet" one, and the "Sample" one:<br/>
+        <ul>
+            <li><b>Facet mode</b>: In this mode the big central square with nodes represents the categories of your
+                                 results, where the size of the nodes indicates how much of the results a category
+                                 represents, and the same color indicates belonging to the same mother category.
+            </li>
+            <li><b>Sample mode</b>: This mode shows samples or groups returned by the search. If samples belong to the
+                                  same group, they are linked to it, and share the same color. Selecting a node allows
+                                  the user to go towards its specific page, where more data is displayed.
+            </li>
+        </ul>
+
+        <h3 class="titleIndication"> Main window </h3>
+        The big rectangle in the center of the page is the main window. According to the mode, it displays either
+        categories of your search results, or samples returned. You can zoom in and out using your mouse wheel, or
+        trackpad. <br/>
+        Double clicking on a category in the Facet mode will filter the results according to it.
+
+        <h3 class="titleIndication"> Bar chart </h3>
+        By clicking on the button on top of the main visualisation, a bar chart appears, displaying for each category
+        returned, the sub categories and how many elements are part of it. The interaction with it is similar to the
+        main visualisation in Facet mode: double clicking on a bar will filter the results according to the category. In
+        Sample mode, clicking on a bar once highlights the nodes which contain the term in their data.
+
+        <h3 class="titleIndication"> Purpose of the visualisation </h3>
+        The purpose of this visualisation is to provide a way to browse through the data in a new way, by focusing on
+        filtering the categories, so that the number of elements returned is small enough for the user to analyse them
+        into details. If the user hesitates about the value of a group or a sample, clicking on it creates a link to its
+        personal page, where the user can in detail read the sample data.
+
+        <!--   <h3 class="titleIndication"> Video of explanation </h3>
+          This video illustrates an example on how to use the visualisation.<br/> -->
+        <!--     <iframe width="420" height="315" src="https://www.youtube.com/embed/mpe1R6veuBw" frameborder="0" allowfullscreen>
+            </iframe> -->
+
+    </div>
 
 </main>
 
 <th:block layout:fragment="custom-endpage-scripts">
-    <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
-    <script defer="defer" src="//www.ebi.ac.uk/web_guidelines/js/foot.js"></script>
     <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js}"
             src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
     <script th:src="@{/javascript/searchComponents.js}" src="../static/javascript/searchComponents.js"></script>
