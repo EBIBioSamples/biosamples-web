@@ -7,10 +7,17 @@
 <head>
     <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
     <th:block th:include="fragments/head :: head"></th:block>
+
+    <link rel="stylesheet"
+          th:href="@{/stylesheets/sticky-footer-navbar.css}"
+          href="../static/stylesheets/sticky-footer-navbar.css"
+          type="text/css"
+          media="screen"/>
+
 </head>
 
 
-<body><!-- add any of your classes or IDs -->
+<body style="background-attachment: fixed"><!-- add any of your classes or IDs -->
 
     <div class="container-fluid">
         <header class="row" th:include="fragments/header::header"></header>
@@ -19,7 +26,7 @@
             Hello World
         </main>
 
-        <footer class="row" th:include="fragments/footer :: footer"></footer>
+        <footer class="footer row" th:include="fragments/footer :: footer"></footer>
     </div> <!--! end of #wrapper -->
 
 
