@@ -15,4 +15,6 @@ public interface GroupRepository extends ReadOnlySolrRepository<Group, String> {
     Page<Group> findByAccession(@Param("accession") String accession, Pageable page);
 
     Page<Group> findByKeywords(@Param("keyword") String keyword, Pageable page);
+
+
 }

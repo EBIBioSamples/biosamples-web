@@ -12,14 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
@@ -163,6 +156,25 @@ public class SampleController {
         ResultQuery rq = new SampleResultQuery(results);
         return rq.renderDocument();
     }
+
+    @RequestMapping(value = "groupsamples/{accession}",
+                    produces = MediaType.APPLICATION_JSON_VALUE,
+                    method = RequestMethod.GET)
+    public @ResponseBody
+    Page<Sample> samplesInGroup(
+            @PathVariable(value = "accession") String groupAccession,
+            @RequestParam(value = "query", defaultValue = "*:*") String searchTerm,
+            @RequestParam(value = "sortby", defaultValue = "score") String sortBy,
+            @RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
+            @RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
+            @RequestParam(value = "page", defaultValue = "0") int page) {
+
+        Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
+        PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
+        return sampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession, querySpec);
+    }
+
+
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

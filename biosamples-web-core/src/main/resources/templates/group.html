@@ -19,18 +19,27 @@
         /*]]>*/
     </script>
 
+    <style>
+
+        table.common-attr {
+            width: 100%;
+        }
+
+
+    </style>
+
 </head>
 <body>
 
 
-<div layout:fragment="content">
+<main layout:fragment="content">
 
     <!-- Biosamples specific content goes here -->
     <div id="group_content">
         <div class="detail_table">
-            <h4 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h4>
+            <h1 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h1>
 
-            <table id="bs_results_tablesamplegroupdetail">
+            <table id="bs_results_tablesamplegroupdetail" class="listing">
                 <tbody>
                 <!-- Common group attributes -->
                 <tr th:if="${#maps.containsKey(group.characteristics, 'group_name') and #arrays.length(group.characteristics.group_name) > 0}">
@@ -84,25 +93,53 @@
                     </td>
                 </tr>
                 <!-- end all characteristics -->
+                <tr>
+                    <td class="col_title"><b>Common Attributes</b></td>
+                    <td>
+                        <table class="common-attr">
+                            <thead>
+                                <tr>
+                                    <th th:each="attr: ${common_attrs}" th:text="${attr.key}">attrname</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td th:each="attr: ${common_attrs}" >
+                                        <div class="characteristic-mapping">
+                                            <div class="characteristic-mapping-payload" th:text="${attr.value[0]}">{"foo":"bar"}</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!--<tr th:each="common_attribute: ${common_attr}" th:unless="not #maps.isEmpty(common_attr)">-->
+                                    <!--<td th:text="${common_attribute}"></td>-->
+                                <!--</tr>-->
+                            </tbody>
 
-                </tbody>
+                        </table>
+                                       </td>
+                                    </tr>
 
-                <!-- Samples summary table goes here -->
-            </table>
-        </div>
-    </div>
+                                    </tbody>
+
+                                    <!-- Samples summary table goes here -->
+                                </table>
+                            </div>
+                        </div>
+
+
     <!-- New part Vis-->
-    <div >
-        <br><br><hr><h4 id="groups">Group Relations</h4>
+    <div class="relation-graph">
+        <h2 class="relation-graph__title">Group Relations</h2>
         <div id="ontology_vis">
         </div>
     </div>
 
 
-</div>
+</main>
 
 
 <th:block layout:fragment="custom-endpage-scripts">
+    <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
     <script th:src="@{/javascript/relationsVis.js}"></script>
 </th:block>
 

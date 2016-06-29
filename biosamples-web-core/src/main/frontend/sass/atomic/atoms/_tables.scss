@@ -1,0 +1,35 @@
+.listing {
+
+  //tr:nth-child(2n) {
+  //  background-color: #c2ccd1;
+  //}
+  //tr:nth-child(2n+1) {
+  //  background-color: $gray-lighter;
+  //}
+
+
+  //tr {
+  //  border-bottom: 1px solid $gray-lighter;
+  //  &:last-of-type{
+  //    border-bottom: none;
+  //  }
+  //}
+
+  .details__group {
+    margin-right: 0.2em;
+  }
+
+  td, th{
+    text-align: left;
+    vertical-align: top;
+    padding: 0.3em 0.5em;
+  }
+
+  td:first-child {
+    white-space: nowrap;
+  }
+
+  table.common-attr {
+    width: 100%
+  }
+}

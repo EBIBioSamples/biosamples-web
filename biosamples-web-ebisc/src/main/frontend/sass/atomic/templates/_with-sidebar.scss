@@ -1,0 +1,23 @@
+body.template-with-sidebar {
+  article {
+    .lead {
+      @include span(last 12);
+    }
+
+    .main {
+      @include span(9);
+
+      @include breakpoint(map-get($breakpoints, small)) {
+        @include span(last 12);
+      }
+    }
+
+    .sidebar {
+      @include span(last 3);
+
+      @include breakpoint(map-get($breakpoints, small)) {
+        @include span(last 12);
+      }
+    }
+  }
+}

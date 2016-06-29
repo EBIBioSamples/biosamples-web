@@ -10,17 +10,17 @@
 </head>
 
 
-<body><!-- add any of your classes or IDs -->
+<body class="container"><!-- add any of your classes or IDs -->
 
-    <div class="container-fluid">
-        <header class="row" th:include="fragments/header::header"></header>
+    <!--<div class="container-fluid">-->
+    <header class="row" th:include="fragments/header::header"></header>
 
-        <main id="content" role="main" class="row" layout:fragment="content">
-            Hello World
-        </main>
+    <main id="content" role="main" class="row" layout:fragment="content">
+        Hello World
+    </main>
 
-        <footer class="row" th:include="fragments/footer :: footer"></footer>
-    </div> <!--! end of #wrapper -->
+    <footer class="row" th:include="fragments/footer :: footer"></footer>
+    <!--</div> &lt;!&ndash;! end of #wrapper &ndash;&gt;-->
 
 
 <th:block th:include="fragments/common-endpage-scripts :: scripts" th:remove="tag"></th:block>
