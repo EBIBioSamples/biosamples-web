@@ -4,6 +4,10 @@ import uk.ac.ebi.spot.biosamples.exception.HttpSolrQueryBuildingException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Javadocs go here!
@@ -20,17 +24,23 @@ public class HttpSolrQuery implements Cloneable {
     private boolean facetMinCountEnabled = false;
     private boolean highlightingEnabled = false;
 
+    private final Set<String> filteredFields;
+
     HttpSolrQuery(String solrBaseUrl) {
+        this.filteredFields = new HashSet<>();
         this.queryStringBuilder = new StringBuilder();
         queryStringBuilder.append(solrBaseUrl);
     }
 
     HttpSolrQuery(String solrBaseUrl, String solrSearchCoreName) {
-        this.queryStringBuilder = new StringBuilder();
-        queryStringBuilder.append(solrBaseUrl);
+        this(solrBaseUrl);
         if (!queryStringBuilder.toString().endsWith("/")) { queryStringBuilder.append("/"); }
         queryStringBuilder.append(solrSearchCoreName);
         queryStringBuilder.append("/");
+    }
+
+    public Set<String> getFilteredFields() {
+        return Collections.unmodifiableSet(filteredFields);
     }
 
     public HttpSolrQuery searchFor(String term) {
@@ -66,12 +76,14 @@ public class HttpSolrQuery implements Cloneable {
         queryStringBuilder.append("&wt=");
         if (contentType.equals(CONTENT_TYPE.JSON)) {
             queryStringBuilder.append("json");
-        } else if (contentType.equals(CONTENT_TYPE.XML)) {
-            queryStringBuilder.append("xml");
-        } else {
-        	throw new IllegalArgumentException("ContentType must be a valid constant");
         }
-        	
+        else if (contentType.equals(CONTENT_TYPE.XML)) {
+            queryStringBuilder.append("xml");
+        }
+        else {
+            throw new IllegalArgumentException("ContentType must be a valid constant");
+        }
+
         return this;
     }
 
@@ -104,7 +116,9 @@ public class HttpSolrQuery implements Cloneable {
     }
 
     public HttpSolrQuery withFacetMinCount(int facetMinCount) {
-        if (facetMinCountEnabled) { throw new HttpSolrQueryBuildingException("Facet minimum count has already been set"); }
+        if (facetMinCountEnabled) {
+            throw new HttpSolrQueryBuildingException("Facet minimum count has already been set");
+        }
         queryStringBuilder.append("&facet.mincount=").append(facetMinCount);
         facetMinCountEnabled = true;
         return this;
@@ -112,6 +126,7 @@ public class HttpSolrQuery implements Cloneable {
 
     public HttpSolrQuery withFilterOn(String filterField, String filterValue) {
         try {
+            filteredFields.add(filterField);
             queryStringBuilder.append("&fq=")
                     .append(URLEncoder.encode(filterField, "UTF-8"))
                     .append(":")
@@ -163,7 +178,7 @@ public class HttpSolrQuery implements Cloneable {
         XML
     }
 
-    @Override 
+    @Override
     public HttpSolrQuery clone() throws CloneNotSupportedException {
         HttpSolrQuery clone = (HttpSolrQuery) super.clone();
         clone.queryStringBuilder = new StringBuilder();

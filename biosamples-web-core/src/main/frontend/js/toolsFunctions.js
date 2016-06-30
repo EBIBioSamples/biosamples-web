@@ -588,6 +588,8 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	var cptNodeToIndex = {};
 	var cptIndex = 0;
 	for (var i in results.data.facet_counts.facet_fields){
+		// only draw cluster if there is more than one node with values in it
+		if (results.data.facet_counts.facet_fields[i][1] != maxAndMinTotal[1]) {
 		nodeData.facets.push(i);
 		var colorFacet = getRandomColor();
 		for (var j=0; j < results.data.facet_counts.facet_fields[i].length;j++){
@@ -598,7 +600,7 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 					"r": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
 					"index":cptIndex,
 					"d":{
-						cluster:results.data.facet_counts.facet_fields[i][0], 
+						cluster:results.data.facet_counts.facet_fields[i][0],
 						radius: scaleFacet(results.data.facet_counts.facet_fields[i][j+1]) },
 					"color" : colorFacet,
 					"type":"nodeFacet",
@@ -610,6 +612,10 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 				});
 				cptIndex++;
 			}
+		}
+		}
+		else {
+			console.log("Suppressing node for " + results.data.facet_counts.facet_fields[i][0] + " - only a single value");
 		}
 	}
 
@@ -699,7 +705,7 @@ function drawFacets(svg,nodeData,vm){
 	.on("contextmenu",function(d){
 		d3.event.preventDefault();
 	})
-	.on("mousedown",function(d){
+	.on("mouseover",function(d){
 		// Facet nousedown
 		d3.selectAll(".node").attr("isThereSelected",'true');
 		d3.select(this).attr("theOneSelected",'true');
@@ -710,7 +716,7 @@ function drawFacets(svg,nodeData,vm){
 		d3.select(this).select("circle").style("stroke-width", 4);
 		var indexFilter = d.facet.indexOf( "_crt_ft" );
 		var nameFacet = d.facet;
-		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }		
+		if ( indexFilter > -1 ){ nameFacet = d.facet.substr(0,indexFilter); }
 		var newText = "<p> <b>Facet : </b>"+nameFacet+"<hr/>"+"<b> Name : </b>"+d.name+" : "+d.value+"</p>";
 		document.getElementById("textData").innerHTML=newText;
 
@@ -735,12 +741,6 @@ function drawFacets(svg,nodeData,vm){
 			}
 		});
 
-	})
-	.on("mouseup",function(d){
-		d3.selectAll(".node").attr("isThereSelected",'false');
-		d3.select(this).attr("theOneSelected",'false');
-	})
-	.on("mouseover",function(d){
 		document.getElementById("elementHelp").style.display="block";
 		if ( d3.select(".node").attr("isThereSelected")=="false" ){
 			d3.select("#textHelp").html("<table id='tableHelp'><tr><th>Double click on a node to filter the results according to this facet </th><th>"+d.facet+"<br/>"+d.readableContent+"<br/>"+d.value+" elements</th></tr></table>");
@@ -757,6 +757,23 @@ function drawFacets(svg,nodeData,vm){
 		}		
 		d3.selectAll(".node").selectAll("text").style("font-size", "10px");
 		d3.selectAll(".node").selectAll("text").attr("opacity","1");
+
+		d3.selectAll(".node").selectAll("text").style("visibility",function(d2){
+			if ( clusters[d2.cluster].index == d2.index ){
+				var indexFilter = d2.facet.indexOf( "_crt_ft" );
+				var nameFacet = d2.facet;
+				if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
+				d3.select(this)[0][0].textContent = nameFacet;
+				return "visible";
+			} else {
+				var indexFilter = d2.facet.indexOf( "_crt_ft" );
+				var nameFacet = d2.facet;
+				if ( indexFilter > -1 ){ nameFacet = d2.facet.substr(0,indexFilter); }
+				d3.select(this)[0][0].textContent = nameFacet;
+				return "hidden";
+			}
+		});
+
 	})		
 	.on("dblclick",function(d){
 		var indexFilter = d.facet.indexOf( "_crt_ft" );

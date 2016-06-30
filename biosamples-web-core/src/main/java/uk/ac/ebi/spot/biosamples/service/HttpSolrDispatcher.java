@@ -91,7 +91,7 @@ public class HttpSolrDispatcher {
         commonFacetQuery.withFacetOn("crt_type_ft");
         commonFacetQuery.withFacetMinCount(facetCount);
 
-        String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery);
+        String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery, Collections.emptySet());
 
         HttpSolrQuery commonAttrQuery = solrQueryBuilder
                 .createQuery("sample_grp_accessions",groupAccession);
@@ -109,16 +109,20 @@ public class HttpSolrDispatcher {
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
         try {
             HttpSolrQuery facetQuery = solrQuery.clone();
-            int safeFacetLimit = ignoredFacets.size() - 1 + facetLimit;
+
+            // build the set of facets to exclude
+            final Set<String> excludedFacetsForQuery = ignoredFacets;
+            excludedFacetsForQuery.addAll(facetQuery.getFilteredFields());
+            int facetLimitForQuery = excludedFacetsForQuery.size() + facetLimit;
 
             // we don't need any results here
             facetQuery.withPage(0,0);
 
             // and we are investigating crt_type_ft
             facetQuery.withFacetOn("crt_type_ft");
-            facetQuery.withFacetLimit(safeFacetLimit);
+            facetQuery.withFacetLimit(facetLimitForQuery);
 
-            return reduceFacetsNumber(executeAndParseFacetQuery(facetQuery),facetLimit);
+            return reduceFacetsNumber(executeAndParseFacetQuery(facetQuery, excludedFacetsForQuery),facetLimit);
         }
         catch (CloneNotSupportedException e) {
             throw new RuntimeException("Unexpected exception cloning query to determine most used attributes", e);
@@ -139,8 +143,6 @@ public class HttpSolrDispatcher {
         return Arrays.stream(name.split("_")).map(part -> {
             return part.substring(0, 1).toUpperCase() + part.substring(1, part.length()).toLowerCase();
         }).collect(Collectors.joining(" "));
-
-
     }
 
     public void streamSolrResponse(OutputStream outputStream, HttpSolrQuery solrQuery) throws IOException {
@@ -154,7 +156,7 @@ public class HttpSolrDispatcher {
         }
     }
 
-    private String[] executeAndParseFacetQuery(HttpSolrQuery facetQuery) {
+    private String[] executeAndParseFacetQuery(HttpSolrQuery facetQuery, Collection<String> excludedFacets) {
         try {
             final PipedInputStream in = new PipedInputStream();
             final PipedOutputStream out = new PipedOutputStream(in);
@@ -178,11 +180,11 @@ public class HttpSolrDispatcher {
                 }
                 Iterator<JsonNode> facetNodeIt = facetNodes.elements();
                 while (facetNodeIt.hasNext()) {
-                    String facetName = facetNodeIt.next().asText();
+                    String facetName = String.format("%s_ft", facetNodeIt.next().asText());
                     int facetCount = facetNodeIt.next().asInt();
-                    if (!ignoredFacets.contains(facetName)) {
+                    if (!excludedFacets.contains(facetName)) {
                         getLog().debug("Dynamic facet '" + facetName + "' -> " + facetCount);
-                        dynamicFacets.add(String.format("%s_ft", facetName));
+                        dynamicFacets.add(facetName);
                     }
                 }
                 return dynamicFacets.toArray(new String[dynamicFacets.size()]);
