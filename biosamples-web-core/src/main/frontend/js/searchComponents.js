@@ -455,8 +455,8 @@ function doD3Stuff( results, apiUrl, vm=0  ){
 
   var fill = d3.scale.category20();
   var widthTitle = window.innerWidth;
-  var widthD3 = Math.floor( (70*widthTitle)/100 );
-  var heightD3 = widthTitle/2;
+  // var widthD3 = Math.floor( (70*widthTitle)/100 );
+  // var heightD3 = widthTitle/2;
 
   // document.getElementById("infoVizRelations").style.height = heightD3+'px';
   if (results.data.response.docs.length == 0  ){
@@ -612,7 +612,8 @@ var dataBars = [];
 var barCharts=[];
 var cpt = 0;
 
-var height = heightD3/4;
+// var height = heightD3/4;
+var height = window.innerHeight * 0.6;
 var width = widthTitle;
 
 for (var u in numberFacetsUnEmpty){
@@ -1025,7 +1026,8 @@ for (var u in numberFacetsUnEmpty){
     var svg;
     svg = d3.select("#vizNodeLink").insert("svg")
     .attr("width", "100%")
-    .attr("height", heightD3)
+    // .attr("height", heightD3)
+    .attr("height", height)
     .attr("id","vizSpotRelations")
     .style("stroke", "black")
     .style("stroke-width", 1)

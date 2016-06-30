@@ -108,7 +108,6 @@
         }
 
         #infoVizRelations {
-            width: 95%;
             height: 190px;
             border: 1px solid black;
             box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
@@ -116,7 +115,6 @@
             border-radius: 4px;
             background-color: rgba(200, 200, 200, 0.5);
             display: none;
-            overflow: scroll;
         }
 
         #tableInfoViz {
@@ -126,7 +124,6 @@
 
         #vizSpotRelations {
             background-color: #ffffff;
-            width: 95%;
             border: 1px solid black;
         }
 
@@ -382,17 +379,7 @@
 
 
         <section id="sectionVisualisation" class='tab-pane fade'>
-            <br/>
-            <div id="buttonRezInfo">
-                <h4 id="titleRezInfo">
-                    Bar chart of categories
-                </h4>
-            </div>
-            <div id="sectionVizResult"
-                 style="display:none;
-    overflow: auto;">
-            </div>
-
+            <div id="vizNodeLink"></div>
             <div id="areaNodeLink">
                 <div id="infoVizRelations">
                     <table div='tableInfoViz'>
@@ -459,8 +446,15 @@
                     </table>
                 </div>
             </div>
-            <div id="vizNodeLink"></div>
-
+            <div id="buttonRezInfo">
+                <h4 id="titleRezInfo">
+                    Bar chart of categories
+                </h4>
+            </div>
+            <div id="sectionVizResult"
+                 style="display:none;
+    overflow: auto;">
+            </div>
     </div>
 
     </section>
