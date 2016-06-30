@@ -589,26 +589,27 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	var cptIndex = 0;
 	for (var i in results.data.facet_counts.facet_fields){
 		// only draw cluster if there is more than one node with values in it
-		if (results.data.facet_counts.facet_fields[i][1] != maxAndMinTotal[1]) {
+		if (results.data.facet_counts.facet_fields[i][1] != results.data.response.numFound) {
 		nodeData.facets.push(i);
 		var colorFacet = getRandomColor();
 		for (var j=0; j < results.data.facet_counts.facet_fields[i].length;j++){
-			if (j%2==0 && results.data.facet_counts.facet_fields[i][j+1] > 0 )
+			var count = results.data.facet_counts.facet_fields[i][j+1];
+			if (j%2==0 && count > 0 )
 			{
 				nodeData.nodes.push({
-					"radius": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
-					"r": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
+					"radius": scaleFacet(count),
+					"r": scaleFacet(count),
 					"index":cptIndex,
 					"d":{
 						cluster:results.data.facet_counts.facet_fields[i][0],
-						radius: scaleFacet(results.data.facet_counts.facet_fields[i][j+1]) },
+						radius: scaleFacet(count) },
 					"color" : colorFacet,
 					"type":"nodeFacet",
 					"facet":i,
 					"cluster":results.data.facet_counts.facet_fields[i][0],
-					"readableContent":vm.$options.filters.excerpt(results.data.facet_counts.facet_fields[i][j],200),
+					"readableContent":vm.$options.filters.excerpt(results.data.facet_counts.facet_fields[i][j],200) + " [" + count + "]",
 					"name":results.data.facet_counts.facet_fields[i][j],
-					"value":results.data.facet_counts.facet_fields[i][j+1]
+					"value":count
 				});
 				cptIndex++;
 			}
