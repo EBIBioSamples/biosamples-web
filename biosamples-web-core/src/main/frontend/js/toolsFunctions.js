@@ -350,8 +350,9 @@ function draw(svg,nodeData,vm){
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
-	var heightD3 = widthTitle/2;
-	var height=heightD3;
+	// var heightD3 = widthTitle/2;
+	// var height=heightD3;
+	var height = window.innerHeight * 0.6;
 
 	// Don't mess up with it
 	var force = d3.layout.force()
@@ -475,13 +476,10 @@ function draw(svg,nodeData,vm){
 		d3.event.stopPropagation();
 		// Fill in the infoVizRelations according to data returned
 		document.getElementById("textData").innerHTML='<p>';
-		var url=document.URL;
-		var indexUrl = url.indexOf("/?");
-		url = url.substring(0,indexUrl);
 		var currentAccession = d.accession;
-		var indicationType = "sample";
-		if ( currentAccession.substring(0,5).indexOf("SAMEG") !== -1 ){ indicationType = "group"; }
-		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
+		var indicationType = "samples";
+		if ( currentAccession.substring(0,5).indexOf("SAMEG") !== -1 ){ indicationType = "groups"; }
+		var urlToPoint = "../"+indicationType+"/"+currentAccession;
 	  	document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
 		document.getElementById("textData").innerHTML+='</p>';
 	})
@@ -631,8 +629,9 @@ function drawFacets(svg,nodeData,vm){
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
-	var heightD3 = widthTitle/2;
-	var height=heightD3;
+	// var heightD3 = widthTitle/2;
+	// var height=heightD3;
+	var height = window.innerHeight * 0.6;
 
     var padding = 30; // separation between same-color circles
     var clusterPadding = 50; // separation between different-color circles
@@ -1165,15 +1164,11 @@ function addNode( nodeData,nodeAccession,force,svg ){
 		d3.event.stopPropagation();
 		// Fill in the infoVizRelations according to data returned
 		document.getElementById("textData").innerHTML='<p>';
-		var url=document.URL;
-		var indexUrl = url.indexOf("/?");
-		url = url.substring(0,indexUrl);
 		var currentAccession = d.accession;
-		var indicationType = "sample";
-		if ( currentAccession.substring(0,5).indexOf("SAMEG") !== -1 ){ indicationType = "group"; }
-		var urlToPoint = url+"/"+indicationType+"/"+currentAccession;
+		var indicationType = "samples";
+		if ( currentAccession.substring(0,5).indexOf("SAMEG") !== -1 ){ indicationType = "groups"; }
+		var urlToPoint = "../"+indicationType+"/"+currentAccession;
 		document.getElementById("textData").innerHTML+="<div > <b> Link to the page : </b><a href="+urlToPoint+">"+currentAccession+"</a></div><br/>";
-
 	  	document.getElementById("textData").innerHTML+='</p>';
 	})
 	.on("mouseup",function(d){
@@ -1228,8 +1223,9 @@ function addNode( nodeData,nodeAccession,force,svg ){
 
 	var widthTitle = window.innerWidth;
 	var width = Math.floor((70 * window.innerWidth)/100);
-	var heightD3 = widthTitle/2;
-	var height=heightD3;
+	// var heightD3 = widthTitle/2;
+	// var height=heightD3;
+	var height = window.innerHeight * 0.6;
 
 	force
 	.nodes(nodeData.nodes)
