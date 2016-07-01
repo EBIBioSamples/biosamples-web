@@ -16,6 +16,8 @@
         window.relationsUrl = [[${relationsUrl}]];
         window.accession = [[${group.accession}]];
         window.baseUrl = [[@{/}]];
+        window.table_attrs = [[${table_attrs}]];
+        window.apiUrl = "http://localhost:8080/api/samples/search/findByKeywordsAndGroupsContains";
         /*]]>*/
     </script>
 
@@ -98,37 +100,60 @@
                     <td>
                         <table class="common-attr">
                             <thead>
-                                <tr>
-                                    <th th:each="attr: ${common_attrs}" th:text="${attr.key}">attrname</th>
-                                </tr>
+                            <tr>
+                                <th th:each="attr: ${common_attrs}"
+                                    th:text="${#strings.capitalizeWords(#strings.replace(attr.key,'_',' '))}">attrname</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td th:each="attr: ${common_attrs}" >
-                                        <div class="characteristic-mapping">
-                                            <div class="characteristic-mapping-payload" th:text="${attr.value[0]}">{"foo":"bar"}</div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!--<tr th:each="common_attribute: ${common_attr}" th:unless="not #maps.isEmpty(common_attr)">-->
-                                    <!--<td th:text="${common_attribute}"></td>-->
-                                <!--</tr>-->
+                            <tr>
+                                <td th:each="attr: ${common_attrs}" >
+                                    <div class="characteristic-mapping">
+                                        <div class="characteristic-mapping-payload" th:text="${attr.value[0]}">{"foo":"bar"}</div>
+                                    </div>
+                                </td>
+                            </tr>
                             </tbody>
 
                         </table>
-                                       </td>
-                                    </tr>
+                    </td>
+                </tr>
 
-                                    </tbody>
+                </tbody>
 
-                                    <!-- Samples summary table goes here -->
-                                </table>
-                            </div>
-                        </div>
+                <!-- Samples summary table goes here -->
+            </table>
+        </div>
+    </div>
 
-
+    <div id="app" class="sample-table col-xs-12" v-cloak>
+        <div :class="{loading: isQuerying}"></div>
+        <form class="sample-table__controls" @submit="querySamples">
+            <div class="controls__search-box">
+                <input class="form-control" type="text" style="width:100%" v-model="keyword">
+            </div>
+            <div class="controls__search-btn">
+                <input type="submit" class="btn btn-primary" value="Search">
+            </div>
+            <pagination class="controls__pagination"
+                        :total-results="resultsNumber"
+                        :displayed-results="samplesToRetrieve">
+            </pagination>
+            <items-dropdown class="controls__size-dropdown"
+                            :items-per-page="samplesToRetrieve">
+            </items-dropdown>
+        </form>
+        <div class="row" style="overflow: auto;">
+            <v-table class="sample-table__content listing"
+                     :columns="samplesAttributes"
+                     :data="groupSamples"
+                     :value-function="readValues"
+                     style="white-space: nowrap; border: solid 1px lightgrey;">
+            </v-table>
+        </div>
+    </div>
     <!-- New part Vis-->
-    <div class="relation-graph">
+    <div class="relation-graph col-xs-12">
         <h2 class="relation-graph__title">Group Relations</h2>
         <div id="ontology_vis">
         </div>
@@ -140,7 +165,8 @@
 
 <th:block layout:fragment="custom-endpage-scripts">
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
-    <script th:src="@{/javascript/relationsVis.js}"></script>
+    <!--<script th:src="@{/javascript/relationsVis.js}"></script>-->
+    <script th:src="@{/javascript/samplesInGroup.js}"></script>
 </th:block>
 
 </body>

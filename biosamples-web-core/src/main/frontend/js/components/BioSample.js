@@ -3,7 +3,9 @@
 
 	var _ = require('lodash');
 
-	module.exports = function(solrDocument) {
+	module.exports = function(solrDocument,
+							  summaryFields = ['accession','name','description','updatedate','content_type'],
+							  summaryLabels = ['organism_crt','organ_crt']) {
 
         /**
          * List of keys in the solrDocument we don't want to present
@@ -16,8 +18,9 @@
          * List of keys in the SolR Document we want to use to summarize the document
          * @param summaryFields
          */
-		var summaryFields      = ['accession','name','description','updatedate','content_type'];
-		var summaryLabels      = ['organism_crt','organ_crt'];
+
+		// var summaryFields      = ['accession','name','description','updatedate','content_type'];
+		// var summaryLabels      = ['organism_crt','organ_crt'];
 
 		
 		var completeObj,filteredObj;

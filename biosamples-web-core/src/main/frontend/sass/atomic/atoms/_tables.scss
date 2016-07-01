@@ -1,20 +1,5 @@
 .listing {
 
-  //tr:nth-child(2n) {
-  //  background-color: #c2ccd1;
-  //}
-  //tr:nth-child(2n+1) {
-  //  background-color: $gray-lighter;
-  //}
-
-
-  //tr {
-  //  border-bottom: 1px solid $gray-lighter;
-  //  &:last-of-type{
-  //    border-bottom: none;
-  //  }
-  //}
-
   .details__group {
     margin-right: 0.2em;
   }
@@ -32,4 +17,68 @@
   table.common-attr {
     width: 100%
   }
+}
+
+.sample-table__content {
+  table, th, td {
+    border: 1px solid lightgrey;
+  }
+
+  thead {
+    background-color: $deep-blue;
+    color: white;
+  }
+}
+
+
+.sample-table__controls {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 5px;
+
+  .controls__search-box {
+    flex: 1 0 500px;
+    @media all and (max-width: 600px) {
+      flex: 1 0 100%;
+    }
+  }
+
+  &>* {
+    margin-bottom: 5px;
+  }
+
+  &>*:not(:first-child) {
+    flex: 0;
+    margin-left: 5px;
+  }
+}
+
+.v-table__controls {
+  width: 100%;
+  padding: 5px 0;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+.v-table__controls > * {
+  padding: 5px;
+}
+
+.v-table__controls > *:nth-child(1) {
+  flex: 1 0;
+}
+
+@media all and (max-width: 800px) {
+  .v-table__controls {
+    flex-direction: column;
+  }
+
+  .v-table__controls > *, .v-table__controls > *:nth-child(1) {
+    width: 100%;
+    flex: 1;
+  }
+
 }

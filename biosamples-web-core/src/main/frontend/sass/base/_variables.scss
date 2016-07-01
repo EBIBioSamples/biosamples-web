@@ -2,9 +2,10 @@ $icon-font-path: '../fonts/';
 
 // Colors
 $gray-mid:               #555 !default;
+$aquamarine: hsla(181, 38%, 59%, 1); // #337ab7
+$deep-blue: #2f6fad;
 
-
-$brand-primary:  hsla(181, 38%, 59%, 1); // #337ab7
+$brand-primary: $aquamarine;
 
 $primary-color:   #B6DEDF;
 $highlight-color:  #9CFF0D;

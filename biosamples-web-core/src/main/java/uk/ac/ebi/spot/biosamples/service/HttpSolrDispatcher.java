@@ -82,16 +82,9 @@ public class HttpSolrDispatcher {
         }
     }
 
-    public Set<String> getGroupCommonAttributes(String groupAccession, int facetCount) {
+    public String[] getGroupCommonAttributes(String groupAccession, int facetCount) {
 
-        HttpSolrQuery commonFacetQuery = solrQueryBuilder
-                .createQuery("sample_grp_accessions",groupAccession);
-
-        commonFacetQuery.withPage(0,0);
-        commonFacetQuery.withFacetOn("crt_type_ft");
-        commonFacetQuery.withFacetMinCount(facetCount);
-
-        String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery);
+       String[] possibleAttributes = this.getGroupSampleAttributesWithMinCount(groupAccession,facetCount);
 
         HttpSolrQuery commonAttrQuery = solrQueryBuilder
                 .createQuery("sample_grp_accessions",groupAccession);
@@ -102,8 +95,25 @@ public class HttpSolrDispatcher {
         }
         commonAttrQuery.withFacetMinCount(facetCount);
         return executeAndParseCommonAttributeQuery(commonAttrQuery);
+    }
 
+    public String[] getGroupSamplesAttributes(String groupAccession) {
+        HttpSolrQuery groupSamplesAttributesQuery =
+                solrQueryBuilder.createGroupSampleCharateristicsQuery(groupAccession);
 
+        groupSamplesAttributesQuery.withPage(0,0);
+
+        return executeAndParseFacetQuery(groupSamplesAttributesQuery);
+    }
+
+    public String[] getGroupSampleAttributesWithMinCount(String groupAccession, int minCount) {
+        HttpSolrQuery groupSamplesAttributesQuery =
+                solrQueryBuilder.createGroupSampleCharateristicsQuery(groupAccession);
+
+        groupSamplesAttributesQuery.withPage(0,0);
+        groupSamplesAttributesQuery.withFacetMinCount(minCount);
+
+        return executeAndParseFacetQuery(groupSamplesAttributesQuery);
     }
 
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
@@ -124,6 +134,8 @@ public class HttpSolrDispatcher {
             throw new RuntimeException("Unexpected exception cloning query to determine most used attributes", e);
         }
     }
+    
+
 
     private String[] reduceFacetsNumber(String[] facetsList, int facetLimit) {
         if ( facetsList.length  < facetLimit) {
@@ -211,14 +223,14 @@ public class HttpSolrDispatcher {
     }
 
     //TODO: should I suppose attrQuery has everything I need to get the correct attributes - No check here?
-    private Set<String> executeAndParseCommonAttributeQuery(HttpSolrQuery attrQuery) {
+    private String[] executeAndParseCommonAttributeQuery(HttpSolrQuery attrQuery) {
         try {
             final PipedInputStream in = new PipedInputStream();
             final PipedOutputStream out = new PipedOutputStream(in);
 
             ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
-            Future<Set<String>> ftResults = singleExecutor.submit(() -> {
-                Set<String> commonAttributes = new HashSet<>();
+            Future<String[]> ftResults = singleExecutor.submit(() -> {
+                List<String> commonAttributes = new ArrayList<>();
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(in);
                 JsonNode facetCounts = jsonNode.get("facet_counts");
@@ -237,14 +249,15 @@ public class HttpSolrDispatcher {
                         commonAttributes.add(fieldName);
                     }
                 }
-                return commonAttributes;
+                return commonAttributes.toArray(new String[commonAttributes.size()]);
             });
 
             streamSolrResponse(out, attrQuery);
 
-            long timeout = 600;
+            long timeout = 60;
+            // TODO: refactor to read facets in another (reusable) way
             try {
-                Set<String> results = ftResults.get(timeout, TimeUnit.SECONDS);
+                String[] results = ftResults.get(timeout, TimeUnit.SECONDS);
                 singleExecutor.shutdown();
                 return results;
             }  catch (TimeoutException e) {

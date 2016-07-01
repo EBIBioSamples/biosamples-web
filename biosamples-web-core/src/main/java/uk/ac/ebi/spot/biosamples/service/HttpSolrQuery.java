@@ -170,4 +170,19 @@ public class HttpSolrQuery implements Cloneable {
         clone.queryStringBuilder.append(queryStringBuilder.toString());
         return clone;
     }
+
+    public HttpSolrQuery getGroupSamplesCharacteristics(String groupAccession) {
+        if (!groupAccession.matches("SAMEG\\d+"))
+            { throw new HttpSolrQueryBuildingException("Invalid query - provided accession is not for a group"); }
+
+        queryStringBuilder.append("crt/groupsamples?");
+        try {
+            queryStringBuilder.append("q=").append(URLEncoder.encode(groupAccession, "UTF-8"));
+            this.capturedTerm = true;
+            return this;
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new HttpSolrQueryBuildingException("Failed to set group samples characteristics query", e);
+        }
+    }
 }
