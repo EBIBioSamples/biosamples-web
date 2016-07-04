@@ -1,0 +1,27 @@
+img {
+  margin: 0;
+  max-width: 100%;
+}
+
+a img {
+  border: none;
+}
+
+.cellline-batch-images {
+  @include clearfix();
+  clear: both;
+
+  .image-with-caption {
+    float: left;
+    margin-right: 30px;
+  }
+}
+
+.image-with-caption {
+  margin: 1.5em 0 1.5em 0;
+
+  .caption {
+    font-size: $base_font-size * 0.9;
+    color: $dark-gray;
+  }
+}

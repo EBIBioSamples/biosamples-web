@@ -19,4 +19,9 @@ public interface SampleRepository extends ReadOnlySolrRepository<Sample, String>
     Page<Sample> findByAccessionAndGroupsContains(@Param("accession") String accession, @Param("group") String group, Pageable page);
 
     Page<Sample> findByKeywordsAndGroupsContains(@Param("keyword") String keyword, @Param("group") String group, Pageable page);
+
+    Page<Sample> findByGroups(@Param("group") String group, Pageable page);
+
+    Sample findFirstByGroupsContains(@Param("group") String group);
+
 }

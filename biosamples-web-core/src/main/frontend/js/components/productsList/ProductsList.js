@@ -15,7 +15,7 @@
          * @property elements
          * @type {Array}
          */
-		props: ['elements']
+		props: ['elements','element_class']
 	};
 })();
 

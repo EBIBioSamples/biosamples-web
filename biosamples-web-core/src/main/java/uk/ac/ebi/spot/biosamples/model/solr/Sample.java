@@ -32,6 +32,10 @@ public class Sample {
     @Field("updatedate") String updateDate;
     @Field("releasedate") String releaseDate;
 
+
+
+    @Field("sample_name_crt") List<String> sampleName;
+
     // collection of all text attributes for search
     @JsonIgnore @Field("text") List<String> keywords;
 
@@ -60,6 +64,7 @@ public class Sample {
 
     // XML payload for this sample - don't return in REST API
     @Field("api_xml") @JsonIgnore String xml;
+
 
     public String getAccession() {
         return accession;
@@ -181,5 +186,13 @@ public class Sample {
 
     public void setXml(String xml) {
         this.xml = xml;
+    }
+
+    public List<String> getSampleName() {
+        return sampleName;
+    }
+
+    public void setSampleName(List<String> sampleName) {
+        this.sampleName = sampleName;
     }
 }

@@ -17,6 +17,7 @@ public class HttpSolrQuery implements Cloneable {
     private boolean capturedTerm = false;
     private boolean facetsEnabled = false;
     private boolean facetLimitEnabled = false;
+    private boolean facetMinCountEnabled = false;
     private boolean highlightingEnabled = false;
 
     HttpSolrQuery(String solrBaseUrl) {
@@ -102,6 +103,13 @@ public class HttpSolrQuery implements Cloneable {
         return this;
     }
 
+    public HttpSolrQuery withFacetMinCount(int facetMinCount) {
+        if (facetMinCountEnabled) { throw new HttpSolrQueryBuildingException("Facet minimum count has already been set"); }
+        queryStringBuilder.append("&facet.mincount=").append(facetMinCount);
+        facetMinCountEnabled = true;
+        return this;
+    }
+
     public HttpSolrQuery withFilterOn(String filterField, String filterValue) {
         try {
             queryStringBuilder.append("&fq=")
@@ -161,5 +169,20 @@ public class HttpSolrQuery implements Cloneable {
         clone.queryStringBuilder = new StringBuilder();
         clone.queryStringBuilder.append(queryStringBuilder.toString());
         return clone;
+    }
+
+    public HttpSolrQuery getGroupSamplesCharacteristics(String groupAccession) {
+        if (!groupAccession.matches("SAMEG\\d+"))
+            { throw new HttpSolrQueryBuildingException("Invalid query - provided accession is not for a group"); }
+
+        queryStringBuilder.append("crt/groupsamples?");
+        try {
+            queryStringBuilder.append("q=").append(URLEncoder.encode(groupAccession, "UTF-8"));
+            this.capturedTerm = true;
+            return this;
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new HttpSolrQueryBuildingException("Failed to set group samples characteristics query", e);
+        }
     }
 }

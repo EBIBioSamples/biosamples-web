@@ -85,8 +85,8 @@
 
                 let nodeAccession = params.nodes[0];
                 //Have to be funky and get rid of the last letter, namely an s to turn sampleS/groupS to sample/group
-                let singleContentType = sampleOrGroup(nodeAccession);
-                window.location.href = `../../${singleContentType}/${nodeAccession}`;
+                let singleContentType = sampleOrGroup(nodeAccession).slice(0, -1);
+                window.location = `${originUrl}${singleContentType}/${nodeAccession}`;
 
 
                 //Have to be funky and get rid of the last letter,namly an s to turn sampleS/groupS to sample/group

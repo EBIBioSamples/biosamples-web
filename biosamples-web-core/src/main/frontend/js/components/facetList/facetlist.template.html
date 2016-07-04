@@ -1,13 +1,14 @@
 <div v-if="hasFacets()" class="panel panel-default facet-panel">
     <div class="panel-heading">
-        <h5>{{title | capitalize}}</h5>
+        <h5>{{title | capitalize}}
+            <label style="float: right">Collapse <input type="checkbox" class="btn--collapse" v-model="collapsed"></input></label>
+        </h5>
     </div>
-    <div class="panel-body facet-panel__content">
+    <div class="panel-body facet-panel__content" v-show="!collapsed">
         <ul class="list-group facet-list">
             <li v-for="key in keys" @click="facetSelected(key)"
                 class="list-group-item facet-entry"
-                :class="{'selected': isSelected(key)}"
-                style="display:flex; justify-content:space-between; align-items: center;">
+                :class="{'selected': isSelected(key)}">
                 <div class="facet-name">
                     <span class="h5">{{key}}</span>
                 </div>

@@ -1,0 +1,22 @@
+header {
+  padding: 2em;
+  background-color: $deep-blue;
+  display:flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: white;
+}
+
+.header__brand, .header__brand:hover {
+  color: white;
+  display:flex;
+  align-items: center;
+}
+
+.header__brand > * {
+  margin-right: 1em;
+}
+
+.header__brand-title {
+  font-size: 36px;
+}

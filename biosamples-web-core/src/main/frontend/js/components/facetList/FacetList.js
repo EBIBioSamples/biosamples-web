@@ -51,7 +51,8 @@
 			 * @type {String}
 			 */
 			return  {
-				selected: ''
+				selected: '',
+				collapsed: false
 			};
 
 		},
@@ -86,6 +87,12 @@
 			isSelected: function(facet) {
 				return this.selected === facet;	
 			}
+		},
+		
+		events: {
+			'collapse': function (collapse) {
+				this.collapsed = collapse;
+			}	
 		}
 	};
 })();

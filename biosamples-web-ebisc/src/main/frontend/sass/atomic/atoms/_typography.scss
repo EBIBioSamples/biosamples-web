@@ -1,0 +1,139 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $heading-font-family;
+  font-size: $base-font-size;
+  font-weight: normal;
+  line-height: $heading-line-height;
+  margin: 0 0 $small-spacing;
+
+  color: $color-red-dark;
+
+  small {
+    color: $dark-gray;
+    font-size: 60%;
+  }
+}
+
+h1 {
+  font-size: $base-font-size * 2.4;
+
+  @include breakpoint(map-get($breakpoints, small)) {
+    font-size: $base-font-size * 1.8;
+  }
+}
+
+h2 {
+  margin-top: 1.5em;
+  font-size: $base-font-size * 1.8;
+
+  @include breakpoint(map-get($breakpoints, small)) {
+    font-size: $base-font-size * 1.4;
+  }
+
+  &.no-margin {
+    margin-top: 0;
+  }
+}
+
+h3 {
+  font-size: $base-font-size * 1.1;
+
+  @include breakpoint(map-get($breakpoints, small)) {
+    font-size: $base-font-size * 1;
+  }
+
+  margin: 1em 0 0.5em 0;
+}
+
+p {
+  margin: 0 0 $small-spacing;
+}
+
+a {
+  color: $action-color;
+  text-decoration: none;
+  transition: color 0.1s linear;
+
+  &:active,
+  &:focus,
+  &:hover {
+    color: darken($action-color, 15%);
+  }
+
+  &:active,
+  &:focus {
+    outline: none;
+  }
+}
+
+hr {
+  border-bottom: $base-border;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  margin: $base-spacing 0;
+}
+
+.lead {
+  font-size: $font-size-large * 1.2;
+  color: darken($color-text, 10%);
+  margin: 0 0 1.2em 0;
+
+  @include breakpoint(map-get($breakpoints, small)) {
+    font-size: $font-size-large;
+  }
+}
+
+.large {
+  font-size: $font-size-large;
+  color: darken($color-text, 10%);
+}
+
+.comment {
+  font-style: italic;
+  color: lighten($color-text, 30%);
+}
+
+.light-gray {
+  color: lighten($color-text, 30%);
+}
+
+.light-blue {
+  color: $color-blue-light;
+}
+
+.success {
+  color: darken($color-green, 5%);
+}
+
+.warn {
+  color: lighten($color-brown, 25%);
+}
+
+.error {
+  color: $color-red-dark;
+}
+
+.errorlist {
+  color: $color-red-light;
+}
+
+.highlight {
+  @extend .lead;
+  @extend %card;
+  margin: 2rem 0 1rem 0;
+}
+
+.back-link {
+  margin-top: -1rem;
+  padding-top: 0;
+  padding-bottom: 1.5rem;
+}
+
+.center {
+  text-align: center;
+}

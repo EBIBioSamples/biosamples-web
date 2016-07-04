@@ -38,4 +38,9 @@ public class SolrQueryBuilder {
         HttpSolrQuery q = solrSearchCoreName == null ? new HttpSolrQuery(solrBaseUrl) : new HttpSolrQuery(solrBaseUrl, solrSearchCoreName);
         return q.searchFor(field, query);
     }
+
+    public HttpSolrQuery createGroupSampleCharateristicsQuery(String groupAccession) {
+        HttpSolrQuery q = solrSearchCoreName == null ? new HttpSolrQuery(solrBaseUrl) : new HttpSolrQuery(solrBaseUrl, solrSearchCoreName);
+        return q.getGroupSamplesCharacteristics(groupAccession);
+    }
 }
