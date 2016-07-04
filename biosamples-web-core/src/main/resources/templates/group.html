@@ -18,6 +18,7 @@
         window.baseUrl = [[@{/}]];
         window.table_attrs = [[${table_attrs}]];
         window.apiUrl = "http://localhost:8080/api/samples/search/findByKeywordsAndGroupsContains";
+        window.jQuery = jQuery;
         /*]]>*/
     </script>
 
@@ -25,6 +26,19 @@
 
         table.common-attr {
             width: 100%;
+        }
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: rgba(0,0,0,0.5);
         }
 
 
@@ -125,8 +139,7 @@
             </table>
         </div>
     </div>
-
-    <div id="app" class="sample-table col-xs-12" v-cloak>
+    <div id="app" class="sample-table col-xs-12">
         <div :class="{loading: isQuerying}"></div>
         <form class="sample-table__controls" @submit="querySamples">
             <div class="controls__search-box">
@@ -143,12 +156,16 @@
                             :items-per-page="samplesToRetrieve">
             </items-dropdown>
         </form>
-        <div class="row" style="overflow: auto;">
-            <v-table class="sample-table__content listing"
+        <div class="sample-table__scroll-container">
+            <div class="sample-table__scroller"></div>
+        </div>
+        <div class="sample-table__content" style="overflow: auto;">
+            <v-table class="listing"
                      :columns="samplesAttributes"
                      :data="groupSamples"
                      :value-function="readValues"
-                     style="white-space: nowrap; border: solid 1px lightgrey;">
+                     style="white-space: nowrap; border: solid 1px lightgrey;"
+                     >
             </v-table>
         </div>
     </div>
@@ -164,6 +181,8 @@
 
 
 <th:block layout:fragment="custom-endpage-scripts">
+
+
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
     <!--<script th:src="@{/javascript/relationsVis.js}"></script>-->
     <script th:src="@{/javascript/samplesInGroup.js}"></script>

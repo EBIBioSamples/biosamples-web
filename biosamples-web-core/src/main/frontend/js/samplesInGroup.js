@@ -11,14 +11,19 @@
 
     // Create a plugin and pass the apiUrl using an option
     // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
-    const { apiUrl, baseUrl, table_attrs, accession} = window;
+    const { apiUrl, baseUrl, table_attrs, accession, jQuery} = window;
 
     // Required
     var _           = require("lodash");
-
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Store       = require('./components/Store.js');
+    var $           = jQuery.noConflict();
+
+    // JQuery DOM elements
+    let $scroller, $scrollerContainer, $tableContainer, $table;
+
+
 
     Store.getInstance({
         apiUrl: apiUrl,
@@ -36,6 +41,37 @@
     // Filters & Components
     Vue.component('alert', require('./components/alert/alert.vue'));
     Vue.component('badge', require('./components/badge/Badge.js'));
+
+
+    // JQuery specific functions
+    function $registerElements()  {
+        $scroller = $(".sample-table__scroller");
+        $scrollerContainer = $(".sample-table__scroll-container");
+        $tableContainer = $(".sample-table__content");
+        $table = $tableContainer.find('table');
+    }
+    function $registerHandlers() {
+
+        $table =  $tableContainer.find("table");
+        $table.on('resize', function() {
+            $scroller.width($table.width());
+        });
+        $scrollerContainer.on('scroll', function(e) {
+            $tableContainer.scrollLeft($scrollerContainer.scrollLeft());
+        });
+        $tableContainer.on('scroll', function(e) {
+            $scrollerContainer.scrollLeft($tableContainer.scrollLeft());
+        });
+    }
+    function $setTableAndTopScrollSize() {
+        if ( $tableContainer.width() < $table.width() ) {
+            $table.css("width",'');
+            $scroller.width($table.width());
+        } else {
+            $table.css("width","100%");
+        }
+
+    }
 
     /**
      * Read Solr facets and return them as a key-value pair object
@@ -144,6 +180,9 @@
          * @method ready
          */
         ready: function() {
+            $registerElements();
+            $registerHandlers();
+
             this.registerEventHandlers();
             this.querySamples();
         },
@@ -196,6 +235,7 @@
                     })
                     .then(function() {
                         this.isQuerying = false;
+                        $setTableAndTopScrollSize();
                     });
             },
 
@@ -254,7 +294,6 @@
                     this.querySamples();
                 });
             },
-
 
 
         }
