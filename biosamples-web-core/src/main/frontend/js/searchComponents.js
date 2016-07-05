@@ -199,7 +199,7 @@
 
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                 .then(function(results) {
-                    // displayRevertingFilters(results,this);
+                    displayRevertingFilters(results,this);
                     if (! this.submittedQuery) {
                         this.submittedQuery = true;
                     }
