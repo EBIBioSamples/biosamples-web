@@ -2,6 +2,7 @@
 
 @import "vendor/custom_bootstrap";
 
+@import 'atomic/atoms/scrollbars';
 @import 'atomic/atoms/panels';
 @import 'atomic/atoms/loading';
 @import 'atomic/atoms/alerts';
@@ -16,6 +17,7 @@
 @import 'atomic/organisms/header';
 @import 'atomic/organisms/footer';
 @import 'atomic/organisms/refining-panel';
+@import 'atomic/organisms/facet_visualization';
 
 
 @import 'mixins/flexbox-mixins';

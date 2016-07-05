@@ -1,5 +1,6 @@
 .listing {
 
+
   .details__group {
     margin-right: 0.2em;
   }
@@ -18,6 +19,11 @@
     width: 100%
   }
 }
+
+table.common-attr {
+  width: 100%;
+}
+
 
 .sample-table__content {
   background: radial-gradient(farthest-side at 0% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)), radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)) 100% 0;

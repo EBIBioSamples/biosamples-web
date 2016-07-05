@@ -8,3 +8,7 @@ main {
   border: 1px solid #ccc;
   padding: 1em;
 }
+
+[v-cloak] {
+  display: none;
+}

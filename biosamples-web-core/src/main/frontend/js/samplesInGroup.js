@@ -6,19 +6,18 @@
  * @requires underscore, vue, vue-resource, Biosamples
  * @uses Window
  */
-(function(window){
+(function(window,$){
     "use strict";
 
     // Create a plugin and pass the apiUrl using an option
     // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
-    const { apiUrl, baseUrl, table_attrs, accession, jQuery} = window;
+    const { apiUrl, baseUrl, table_attrs, accession} = window;
 
     // Required
     var _           = require("lodash");
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
     var Store       = require('./components/Store.js');
-    var $           = jQuery.noConflict();
 
     // JQuery DOM elements
     let $scroller, $scrollerContainer, $tableContainer, $table;
@@ -298,7 +297,7 @@
 
         }
     });
-})(window);
+})(window,jQuery);
 
 
 function log(value,context) {

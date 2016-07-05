@@ -24,22 +24,7 @@
 
     <style>
 
-        table.common-attr {
-            width: 100%;
-        }
-        ::-webkit-scrollbar {
-            width: 12px;
-            height: 12px;
-        }
 
-        ::-webkit-scrollbar-track {
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-            background-color: rgba(0,0,0,0.5);
-        }
 
 
     </style>
@@ -52,7 +37,7 @@
 
     <!-- Biosamples specific content goes here -->
     <div id="group_content">
-        <div class="detail_table">
+        <section class="detail_table">
             <h1 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h1>
 
             <table id="bs_results_tablesamplegroupdetail" class="listing">
@@ -137,9 +122,12 @@
 
                 <!-- Samples summary table goes here -->
             </table>
-        </div>
+        </section>
     </div>
-    <div id="app" class="sample-table col-xs-12">
+
+    <section id="app" class="sample-table col-xs-12">
+        <h2>Samples in group</h2>
+
         <div :class="{loading: isQuerying}"></div>
         <form class="sample-table__controls" @submit="querySamples">
             <div class="controls__search-box">
@@ -168,23 +156,22 @@
                      >
             </v-table>
         </div>
-    </div>
+    </section>
+
     <!-- New part Vis-->
-    <div class="relation-graph col-xs-12">
+    <section class="relation-graph col-xs-12">
         <h2 class="relation-graph__title">Group Relations</h2>
         <div id="ontology_vis">
         </div>
-    </div>
+    </section>
 
 
 </main>
 
 
 <th:block layout:fragment="custom-endpage-scripts">
-
-
+    <script th:src="@{/javascript/relationsVis.js}"></script>
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
-    <!--<script th:src="@{/javascript/relationsVis.js}"></script>-->
     <script th:src="@{/javascript/samplesInGroup.js}"></script>
 </th:block>
 

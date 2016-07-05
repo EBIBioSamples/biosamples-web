@@ -68,4 +68,4 @@
             mapping.html(output);
         });
     }
-})(jQuery.noConflict());
+})(jQuery);
