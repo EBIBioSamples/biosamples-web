@@ -7,6 +7,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Error! :-(</title>
+    <style>
+
+    </style>
 </head>
 <body>
 <main layout:fragment="content">
@@ -41,11 +44,11 @@
               th:text="${message}">message ...</span>
         </div>
 
-        <div class="error__details panel panel-default" th:if="${exception != null && exception.stackTrace != null}">
+        <div id="accordion" class="error__details panel panel-default" th:if="${exception != null && exception.stackTrace != null}">
             <div class="panel-heading" role="tab">
                 <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#accordion" href=".error__stacktrace"
-                       aria-expanded="false" aria-controls="stacktrace">
+                    <a role="button" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#stacktrace"
+                       aria-expanded="false">
                         Stack trace
                     </a>
                 </h4>

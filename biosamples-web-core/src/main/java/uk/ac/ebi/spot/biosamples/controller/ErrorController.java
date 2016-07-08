@@ -28,7 +28,7 @@ public class ErrorController {
         return log;
     }
 
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(HtmlContentNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleError(Model model, HttpServletRequest req, Exception exception)
             throws Exception {
