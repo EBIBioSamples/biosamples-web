@@ -9,10 +9,10 @@
             </a>
         </li>
         <li>
-            <span id="inputPageContainer" :class=" {'editMode': editMode }">
-                <input  id="inputPage"  placeholder="Jump to page..." type="text" 
+            <span id="inputPageContainer"  :class=" {'editMode': editMode }">
+                <input  id="inputPage" class="input--stretch" placeholder="Jump to page..." type="text"
                             v-show="editMode"
-                            v-model="currentPage"
+                            v-model="inputPage"
                             @blur="exitEditMode"
                             @keyup.enter="exitEditMode">
                 <span v-show="editMode">/{{totalPages}}</span>

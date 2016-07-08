@@ -8,6 +8,8 @@
 	"use strict";
 
 	var _ =  require('lodash');
+	var stretchy = require('../stretchy/stretchy.js');
+
 
 	module.exports = {
 		template: require('./alternative.pagination.template.html'),
@@ -41,6 +43,8 @@
 				 */
 				currentPage: 1,
 
+				inputPage: 1,
+
 				/**
 				 * True if we are in editing mode and user can type the current page
 				 * @property editMode
@@ -59,23 +63,29 @@
 			totalPages: function() {
 				this.currentPage = 1;
 				return Math.ceil(this.totalResults/this.displayedResults);
-			}
+			},
+
+
+
 
 		},
 
 		ready: function() {
 			console.log(this._getStatus());
+			Stretchy.init();
 		},
 
 		methods: {
 			/**
-			 * Dispatchs the custom event `page-changed` and create the 
+			 * Dispatchs the custom event `page-changed` and create the
 			 * pagination given the currentPage
 			 * @deprecated
 			 * @method createPaginationWith
 			 */
 			createPaginationWith: function(currentPage) {
-				this.$dispatch('page-changed',currentPage);	
+				this.inputPage = currentPage;
+				this.$dispatch('page-changed',currentPage);
+				/*
 				var finalPaginationArray = [];
 				var totalPages = this.totalPages;
 				if (totalPages < 5) {
@@ -84,17 +94,18 @@
 
 					if (currentPage < 5) {
 						return _.range(1,6)
-								.concat(['...',totalPages]);
+							.concat(['...',totalPages]);
 					} else if (currentPage <= totalPages - 4) {
 						return [1,'...',].concat(
-								_.range(currentPage-2,currentPage+3),
-								['...',totalPages]);
+							_.range(currentPage-2,currentPage+3),
+							['...',totalPages]);
 					} else {
 						return [1,'...'].concat(
-								_.range(totalPages-4,totalPages+1));
+							_.range(totalPages-4,totalPages+1));
 					}
 
 				}
+				*/
 			},
 
 			/**
@@ -105,7 +116,7 @@
 				if(!this.isLastPage(this.currentPage)) {
 					this.currentPage++;
 					console.log('Moving to ' + this.currentPage);
-					this.createPaginationWith(this.currentPage);					
+					this.createPaginationWith(this.currentPage);
 				}
 			},
 
@@ -117,7 +128,7 @@
 				if (!this.isFirstPage(this.currentPage)){
 					this.currentPage--;
 					console.log('Moving to ' + this.currentPage);
-					this.createPaginationWith(this.currentPage);					
+					this.createPaginationWith(this.currentPage);
 				}
 			},
 
@@ -128,12 +139,12 @@
 			 */
 			jumpTo: function(page) {
 				if (page <= this.totalPages) {
-					this.currentPage = page;
+					this.currentPage = page > 0 ? page : 1;
 					console.log('Jumping to ' + this.currentPage);
-				} else {
+				} else if (page >= this.totalPages){
 					this.currentPage = this.totalPages;
 				}
-				this.createPaginationWith(this.currentPage);	
+				this.createPaginationWith(this.currentPage);
 			},
 
 			/**
@@ -142,6 +153,7 @@
 			 */
 			enterEditMode: function() {
 				this.editMode = true;
+				this.inputPage = this.currentPage;
 
 			},
 
@@ -151,7 +163,7 @@
 			 */
 			exitEditMode: function() {
 				this.editMode = false;
-				this.jumpTo(this.currentPage);
+				this.jumpTo(parseInt(this.inputPage));
 			},
 
 			/**
@@ -178,7 +190,7 @@
 			 * @method isLastPage
 			 * @param page {Object} the element to check
 			 * @return {Boolean} is `true` if the passed element is the last page
-			 * 
+			 *
 			 */
 			isLastPage: function(page) {
 				return page >= this.totalPages;
@@ -214,7 +226,7 @@
 
 			_getStatus: function() {
 				return 'Pagination:\n[page]:' + this.currentPage + '\n[total results]: ' + this.totalResults +
-					    '\n[results x page]: ' + this.displayedResults + '\n[total pages]: ' + this.totalPages + ';';
+					'\n[results x page]: ' + this.displayedResults + '\n[total pages]: ' + this.totalPages + ';';
 			}
 
 
@@ -222,6 +234,6 @@
 
 
 
-	};	
+	};
 })();
 
