@@ -158,7 +158,7 @@
 
 <th:block layout:fragment="custom-endpage-scripts">
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
-    <script th:src="@{/javascript/relationsVis.js}"></script>
+    <script th:if="${hasRelations}" th:src="@{/javascript/relationsVis.js}"></script>
 </th:block>
 
 </body>

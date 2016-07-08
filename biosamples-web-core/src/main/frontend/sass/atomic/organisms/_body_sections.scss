@@ -9,6 +9,16 @@ main {
   padding: 1em;
 }
 
+section {
+  &:not(:first-of-type) {
+    margin-top: 1em;
+    border-top: 1px solid $gray-lighter;
+  }
+}
 [v-cloak] {
   display: none;
+}
+
+.error__details {
+  margin-top: 1em;
 }

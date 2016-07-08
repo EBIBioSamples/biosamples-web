@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      layout:decorator="__parent_base"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main layout:fragment="content">
+    <section class="error__title">
+        <h1>Uh oh... Something went wrong</h1>
+        <p th:if="${exception}" th:text="${exception.message}"></p>
+    </section>
+
+    <section class="error__summary">
+        <h4>Some more informations:</h4>
+
+        <p th:if="${url}">
+            <b>Page:</b> <span th:text="${url}">Page URL</span>
+        </p>
+
+        <p th:if="${timestamp}" id='created'>
+            <b>Occurred:</b> <span th:text="${timestamp}">Timestamp</span>
+        </p>
+
+        <p th:if="${status}">
+            <b>Response Status:</b> <span th:text="${status}">status-code</span> <span
+                th:if="${error}" th:text="'('+${error}+')'">error ...</span>
+        </p>
+
+        <!--/* ${ex} is set by ourSimpleMappingExceptionResolver,
+               ${exception} or ${message} are set internally by Spring Boot. */-->
+        <div
+                th:if="${ex} or ${exception} or (${message} and ${message.length() != 0})">
+            <b>Cause:</b> <span th:if="${ex}" th:text="${ex}">exception ...</span>
+            <span th:if="${exception}" th:text="${exception}">exception ...</span>
+		<span th:if="${message} and ${message.length() != 0}"
+              th:text="${message}">message ...</span>
+        </div>
+
+        <div class="error__details panel panel-default">
+            <div class="panel-heading" role="tab">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href=".error__stacktrace"
+                       aria-expanded="false" aria-controls="stacktrace">
+                        Stack trace
+                    </a>
+                </h4>
+
+            </div>
+            <div id="stacktrace" class="error__stacktrace collapse panel-body" style="overflow-x: auto">
+                <code class="code--block">
+                    <div th:utext="'Failed URL: ' +  ${url}" th:remove="tag">${url}</div>
+                </code>
+                <br><br>
+                <code class="code--block">
+                    <ul th:remove="tag">
+
+                        <li th:if="${exception}" th:each="ste : ${exception.stackTrace}" th:remove="tag"><span
+                                th:utext="${ste}" th:remove="tag">${ste}</span></li>
+                    </ul>
+                </code>
+            </div>
+        </div>
+    </section>
+
+
+    <section th:unless="${ex} or ${exception} or (${message} and ${message.length() != 0})">
+        <p>Cause unknown (no exception details available)</p>
+    </section>
+
+</main>
+</body>
+</html>

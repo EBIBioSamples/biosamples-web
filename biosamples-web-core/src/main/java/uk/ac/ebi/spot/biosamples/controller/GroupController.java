@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
+import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 import uk.ac.ebi.spot.biosamples.model.solr.Group;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
@@ -59,37 +60,38 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
-        // Sample common attributes
-        String[] tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession,Integer.parseInt(group.getNumberOfSamples()));
-        Sample sample = sampleRepository.findFirstByGroupsContains(accession);
-        Map<String, List<String>> sampleCrts = sample.getCharacteristics();
-        TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
-        for(String attribute: tempSampleCommonCharacteristics) {
-            List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$",""));
-            sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+
+        if (group != null) {
+
+            // Sample common attributes
+            String[] tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession, Integer.parseInt(group.getNumberOfSamples()));
+            Sample sample = sampleRepository.findFirstByGroupsContains(accession);
+            Map<String, List<String>> sampleCrts = sample.getCharacteristics();
+            TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
+            for (String attribute : tempSampleCommonCharacteristics) {
+                List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
+                sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+            }
+
+            String[] allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
+
+            List<String> tableAttributes = new ArrayList<>();
+
+            Arrays.stream(new String[]{"accession", "organism", "name", "description"})
+                    .filter(attr -> !sampleCommonAttributes.containsKey(attr))
+                    .forEach(tableAttributes::add);
+            Arrays.stream(allGroupSamplesCharacteristics)
+                    .map(this::cleanAttributeName)
+                    .filter(attr -> !sampleCommonAttributes.containsKey(attr))
+                    .forEach(tableAttributes::add);
+
+            model.addAttribute("group", group);
+            model.addAttribute("common_attrs", sampleCommonAttributes);
+            model.addAttribute("table_attrs", tableAttributes);
+            return "group";
+        } else {
+            throw new HtmlContentNotFound("No group has been found with accession " + accession);
         }
-
-        String[] allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
-
-        List<String> tableAttributes = new ArrayList<>();
-
-        Arrays.stream(new String[]{"accession", "organism", "name", "description"})
-                .filter(attr -> !sampleCommonAttributes.containsKey(attr))
-                .forEach(tableAttributes::add);
-        Arrays.stream(allGroupSamplesCharacteristics)
-                .map(this::cleanAttributeName)
-                .filter(attr -> !sampleCommonAttributes.containsKey(attr))
-                .forEach(tableAttributes::add);
-
-//        tableAttributes.add("database");
-
-
-
-
-        model.addAttribute("group", group);
-        model.addAttribute("common_attrs", sampleCommonAttributes);
-        model.addAttribute("table_attrs", tableAttributes);
-        return "group";
     }
 
     @RequestMapping(value = "groups/{accession}",

@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
+import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
@@ -49,26 +50,30 @@ public class SampleController {
     @RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String sample(Model model, @PathVariable String accession, HttpServletRequest request) {
         Sample sample = sampleRepository.findOne(accession);
-        model.addAttribute("sample", sample);
 
-        String relationsURL = relationsLinkFactory.createRelationsLinkForSample(sample).getHref();
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            SampleRelationsWrapper result = restTemplate.getForObject(relationsURL, SampleRelationsWrapper.class);
-            Boolean sampleHasRelations = (sample.getGroups() != null && !sample.getGroups().isEmpty() && result.hasRelations());
-            model.addAttribute("derivedFrom", result.getDerivedFrom());
-            model.addAttribute("derivedTo", result.getDerivedTo());
-            model.addAttribute("childOf", result.getChildOf());
-            model.addAttribute("parentOf", result.getParentOf());
-            model.addAttribute("sameAs", result.getSameAs());
-            model.addAttribute("curatedInto", result.getRecuratedInto());
-            model.addAttribute("curatedFrom", result.getRecuratedFrom());
-            model.addAttribute("hasRelations", sampleHasRelations);
+        if (sample != null) {
+            model.addAttribute("sample", sample);
+
+            String relationsURL = relationsLinkFactory.createRelationsLinkForSample(sample).getHref();
+            RestTemplate restTemplate = new RestTemplate();
+            try {
+                SampleRelationsWrapper result = restTemplate.getForObject(relationsURL, SampleRelationsWrapper.class);
+                Boolean sampleHasRelations = (sample.getGroups() != null && !sample.getGroups().isEmpty() && result.hasRelations());
+                model.addAttribute("derivedFrom", result.getDerivedFrom());
+                model.addAttribute("derivedTo", result.getDerivedTo());
+                model.addAttribute("childOf", result.getChildOf());
+                model.addAttribute("parentOf", result.getParentOf());
+                model.addAttribute("sameAs", result.getSameAs());
+                model.addAttribute("curatedInto", result.getRecuratedInto());
+                model.addAttribute("curatedFrom", result.getRecuratedFrom());
+                model.addAttribute("hasRelations", sampleHasRelations);
+            } catch (RestClientException e) {
+                getLog().error("Failed to retrieve relations data from '" + relationsURL + "'", e);
+            }
+            return "sample";
+        } else {
+            throw new HtmlContentNotFound("No sample found with accession " + accession);
         }
-        catch (RestClientException e) {
-            getLog().error("Failed to retrieve relations data from '" + relationsURL + "'", e);
-        }
-        return "sample";
     }
 
     @RequestMapping(value = "samples/{accession}",
@@ -173,8 +178,6 @@ public class SampleController {
         PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
         return sampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession, querySpec);
     }
-
-
 
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
