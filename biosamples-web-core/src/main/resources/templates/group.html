@@ -22,13 +22,6 @@
         /*]]>*/
     </script>
 
-    <style>
-
-
-
-
-    </style>
-
 </head>
 <body>
 
@@ -36,8 +29,8 @@
 <main layout:fragment="content">
 
     <!-- Biosamples specific content goes here -->
-    <div id="group_content">
-        <section class="detail_table">
+    <section id="group_content">
+        <div class="detail_table">
             <h1 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h1>
 
             <table id="bs_results_tablesamplegroupdetail" class="listing">
@@ -122,8 +115,8 @@
 
                 <!-- Samples summary table goes here -->
             </table>
-        </section>
-    </div>
+        </div>
+    </section>
 
     <section id="app" class="sample-table col-xs-12">
         <h2>Samples in group</h2>

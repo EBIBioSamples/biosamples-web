@@ -6,7 +6,7 @@
       th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Error! :-(</title>
 </head>
 <body>
 <main layout:fragment="content">
@@ -41,7 +41,7 @@
               th:text="${message}">message ...</span>
         </div>
 
-        <div class="error__details panel panel-default">
+        <div class="error__details panel panel-default" th:if="${exception != null && exception.stackTrace != null}">
             <div class="panel-heading" role="tab">
                 <h4 class="panel-title">
                     <a role="button" data-toggle="collapse" data-parent="#accordion" href=".error__stacktrace"
@@ -57,11 +57,13 @@
                 </code>
                 <br><br>
                 <code class="code--block">
-                    <ul th:remove="tag">
-
-                        <li th:if="${exception}" th:each="ste : ${exception.stackTrace}" th:remove="tag"><span
-                                th:utext="${ste}" th:remove="tag">${ste}</span></li>
+                    <ul th:remove="tag" >
+                        <li th:each="ste : ${exception.stackTrace}" th:remove="tag">
+                            <span th:utext="${ste}" th:remove="tag">${ste}</span></li>
                     </ul>
+                </code>
+                <code class="code--block" th:unless="${exception != null && exception.stackTrace != null}">
+                    Sorry - No further details are available
                 </code>
             </div>
         </div>
