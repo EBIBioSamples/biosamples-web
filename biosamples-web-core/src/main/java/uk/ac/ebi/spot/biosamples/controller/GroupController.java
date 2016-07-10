@@ -57,12 +57,6 @@ public class GroupController {
         return log;
     }
 
-//    @RequestMapping(value = "groups/", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
-//    public String allGroups(Model model, ) {
-//
-//        return "all_groups";
-//    }
-
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
         Group group = groupRepository.findOne(accession);
