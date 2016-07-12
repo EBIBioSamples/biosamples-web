@@ -63,31 +63,32 @@ public class GroupController {
 
         if (group != null) {
 
-            // Sample common attributes
-            String[] tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession, Integer.parseInt(group.getNumberOfSamples()));
-            Sample sample = sampleRepository.findFirstByGroupsContains(accession);
-            Map<String, List<String>> sampleCrts = sample.getCharacteristics();
-            TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
-            for (String attribute : tempSampleCommonCharacteristics) {
-                List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
-                sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
-            }
-
-            String[] allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
-
-            List<String> tableAttributes = new ArrayList<>();
-
-            Arrays.stream(new String[]{"accession", "organism", "name", "description"})
-                    .filter(attr -> !sampleCommonAttributes.containsKey(attr))
-                    .forEach(tableAttributes::add);
-            Arrays.stream(allGroupSamplesCharacteristics)
-                    .map(this::cleanAttributeName)
-                    .filter(attr -> !sampleCommonAttributes.containsKey(attr))
-                    .forEach(tableAttributes::add);
-
             model.addAttribute("group", group);
-            model.addAttribute("common_attrs", sampleCommonAttributes);
-            model.addAttribute("table_attrs", tableAttributes);
+            if ( group.hasSamples() ) {
+                // Sample common attributes
+                String[] tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession, Integer.parseInt(group.getNumberOfSamples()));
+                Sample sample = sampleRepository.findFirstByGroupsContains(accession);
+                Map<String, List<String>> sampleCrts = sample.getCharacteristics();
+                TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
+                for (String attribute : tempSampleCommonCharacteristics) {
+                    List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
+                    sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+                }
+
+                String[] allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
+
+                List<String> tableAttributes = new ArrayList<>();
+
+                Arrays.stream(new String[]{"accession", "organism", "name", "description"})
+                        .filter(attr -> !sampleCommonAttributes.containsKey(attr))
+                        .forEach(tableAttributes::add);
+                Arrays.stream(allGroupSamplesCharacteristics)
+                        .map(this::cleanAttributeName)
+                        .filter(attr -> !sampleCommonAttributes.containsKey(attr))
+                        .forEach(tableAttributes::add);
+                model.addAttribute("common_attrs", sampleCommonAttributes);
+                model.addAttribute("table_attrs", tableAttributes);
+            }
             return "group";
         } else {
             throw new HtmlContentNotFound("No group has been found with accession " + accession);

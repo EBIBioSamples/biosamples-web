@@ -77,6 +77,8 @@
                     </td>
                 </tr>
 
+
+
                 <!-- start all characteristics -->
                 <tr th:each="characteristic: ${group.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'group_name'  or characteristic.key == 'group_title' or characteristic.key == 'group_description'}">
                     <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
@@ -87,7 +89,27 @@
                     </td>
                 </tr>
                 <!-- end all characteristics -->
+                <tr th:if="${group.hasSamples()}">
+                    <td class="col_title"><b>Samples in group: </b></td>
+                    <td>
+                        <div th:text="${group.numberOfSamples}">#num-of-samples</div>
+                    </td>
+                </tr>
+
                 <tr>
+                    <td class="col_title"><b>External references :</b></td>
+                    <td >
+                        <p th:if="${#strings.isEmpty(group.externalReferences)}">None</p>
+                        <div class="external-references-payload"
+                             th:if="${not #strings.isEmpty(group.externalReferences)}"
+                             th:text="${group.externalReferences}">
+                            [{"name":"bar","acc":"1234","url":"http://www.google.com"},{"name":"foo","acc":"9876","url":"http://www.google.co.uk"}]
+                        </div>
+                    </td>
+                </tr>
+
+
+                <tr th:if="${common_attrs}">
                     <td class="col_title"><b>Common Attributes</b></td>
                     <td>
                         <table class="common-attr">
@@ -118,7 +140,7 @@
         </div>
     </section>
 
-    <section id="app" class="sample-table col-xs-12">
+    <section th:if="${group.hasSamples()}" id="app" class="sample-table col-xs-12">
         <h2>Samples in group</h2>
 
         <div :class="{loading: isQuerying}"></div>
@@ -165,7 +187,7 @@
 <th:block layout:fragment="custom-endpage-scripts">
     <script th:src="@{/javascript/relationsVis.js}"></script>
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
-    <script th:src="@{/javascript/samplesInGroup.js}"></script>
+    <script th:if="${group.hasSamples()}" th:src="@{/javascript/samplesInGroup.js}"></script>
 </th:block>
 
 </body>

@@ -200,4 +200,8 @@ public class Group {
     public void setXml(String xml) {
         this.xml = xml;
     }
+
+    public boolean hasSamples() {
+        return Integer.parseInt(this.getNumberOfSamples()) > 0;
+    }
 }
