@@ -66,7 +66,7 @@ public class GroupController {
             model.addAttribute("group", group);
             if ( group.hasSamples() ) {
                 // Sample common attributes
-                String[] tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession, Integer.parseInt(group.getNumberOfSamples()));
+                Set<String> tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession, Integer.parseInt(group.getNumberOfSamples()));
                 Sample sample = sampleRepository.findFirstByGroupsContains(accession);
                 Map<String, List<String>> sampleCrts = sample.getCharacteristics();
                 TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
@@ -74,19 +74,21 @@ public class GroupController {
                     List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
                     sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
                 }
+                model.addAttribute("common_attrs", sampleCommonAttributes);
 
-                String[] allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
+                // Samples table attributes
+                Set<String> allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
 
                 List<String> tableAttributes = new ArrayList<>();
 
                 Arrays.stream(new String[]{"accession", "organism", "name", "description"})
                         .filter(attr -> !sampleCommonAttributes.containsKey(attr))
                         .forEach(tableAttributes::add);
-                Arrays.stream(allGroupSamplesCharacteristics)
+                allGroupSamplesCharacteristics.stream()
                         .map(this::cleanAttributeName)
                         .filter(attr -> !sampleCommonAttributes.containsKey(attr))
                         .forEach(tableAttributes::add);
-                model.addAttribute("common_attrs", sampleCommonAttributes);
+
                 model.addAttribute("table_attrs", tableAttributes);
             }
             return "group";

@@ -22,7 +22,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,7 +54,7 @@ public class HttpSolrDispatcher {
         return log;
     }
 
-    @Value("${solr.ignoredfacets.file:classpath:ignoredFacets.fields}")
+    @Value("classpath:ignoredFacets.fields")
     private Resource ignoredFacetsResource;
 
     @Autowired
@@ -59,86 +66,89 @@ public class HttpSolrDispatcher {
     private void readIgnoredFacet() {
         ignoredFacets = new HashSet<>();
         ignoredFacets.add("content_type"); // content_type is always returned as facet
-        
+
         if (ignoredFacetsResource != null && ignoredFacetsResource.exists()) {
 
-	        Pattern pattern = Pattern.compile("^(\\w+)\\s*(?:#.*)?$");
-	        try {
-	            BufferedReader br = new BufferedReader(new InputStreamReader(ignoredFacetsResource.getInputStream()));
-	            String line = br.readLine();
-	            while (line != null) {
-	                Matcher matcher = pattern.matcher(line);
-	                if (matcher.find()) {
-	                    ignoredFacets.add(matcher.group(1).trim());
-	                }
-	                line = br.readLine();
-	            }
-	            br.close();
-	        }
-	        catch (IOException e) {
-	            e.printStackTrace();
-	            ignoredFacets.add("content_type");
-	        }
+            Pattern pattern = Pattern.compile("^(\\w+)\\s*(?:#.*)?$");
+            try {
+                BufferedReader br = new BufferedReader(new InputStreamReader(ignoredFacetsResource.getInputStream()));
+                String line = br.readLine();
+                while (line != null) {
+                    Matcher matcher = pattern.matcher(line);
+                    if (matcher.find()) {
+                        String facetName = matcher.group(1).trim();
+                        ignoredFacets.add(facetName);
+                        ignoredFacets.add(facetName + "_ft");
+                    }
+                    line = br.readLine();
+                }
+                br.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                ignoredFacets.add("content_type");
+            }
         }
     }
 
-    public String[] getGroupCommonAttributes(String groupAccession, int facetCount) {
+    public Set<String> getGroupCommonAttributes(String groupAccession, int facetCount) {
 
-       String[] possibleAttributes = this.getGroupSampleAttributesWithMinCount(groupAccession,facetCount);
+        HttpSolrQuery commonFacetQuery = solrQueryBuilder
+                .createQuery("sample_grp_accessions", groupAccession);
+
+        commonFacetQuery.withPage(0, 0);
+        commonFacetQuery.withFacetOn("crt_type_ft");
+        commonFacetQuery.withFacetMinCount(facetCount);
+
+        String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery, Collections.emptySet());
 
         HttpSolrQuery commonAttrQuery = solrQueryBuilder
-                .createQuery("sample_grp_accessions",groupAccession);
+                .createQuery("sample_grp_accessions", groupAccession);
 
-        commonAttrQuery.withPage(0,0);
-        for(String attribute: possibleAttributes) {
+        commonAttrQuery.withPage(0, 0);
+        for (String attribute : possibleAttributes) {
             commonAttrQuery.withFacetOn(attribute);
         }
         commonAttrQuery.withFacetMinCount(facetCount);
         return executeAndParseCommonAttributeQuery(commonAttrQuery);
     }
 
-    public String[] getGroupSamplesAttributes(String groupAccession) {
+    public Set<String> getGroupSamplesAttributes(String groupAccession) {
         HttpSolrQuery groupSamplesAttributesQuery =
                 solrQueryBuilder.createGroupSampleCharateristicsQuery(groupAccession);
 
         groupSamplesAttributesQuery.withPage(0,0);
 
-        return executeAndParseFacetQuery(groupSamplesAttributesQuery);
-    }
-
-    public String[] getGroupSampleAttributesWithMinCount(String groupAccession, int minCount) {
-        HttpSolrQuery groupSamplesAttributesQuery =
-                solrQueryBuilder.createGroupSampleCharateristicsQuery(groupAccession);
-
-        groupSamplesAttributesQuery.withPage(0,0);
-        groupSamplesAttributesQuery.withFacetMinCount(minCount);
-
-        return executeAndParseFacetQuery(groupSamplesAttributesQuery);
+        String[] groupSamplesAttributes = executeAndParseFacetQuery(groupSamplesAttributesQuery, Collections.emptySet());
+        return Arrays.stream(groupSamplesAttributes).collect(Collectors.toSet());
     }
 
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
         try {
             HttpSolrQuery facetQuery = solrQuery.clone();
-            int safeFacetLimit = ignoredFacets.size() - 1 + facetLimit;
+
+            // build the set of facets to exclude
+            final Set<String> excludedFacetsForQuery = new HashSet<>();
+            excludedFacetsForQuery.addAll(ignoredFacets);
+            excludedFacetsForQuery.addAll(facetQuery.getFilteredFields());
+            int facetLimitForQuery = excludedFacetsForQuery.size() + facetLimit;
 
             // we don't need any results here
-            facetQuery.withPage(0,0);
+            facetQuery.withPage(0, 0);
 
             // and we are investigating crt_type_ft
             facetQuery.withFacetOn("crt_type_ft");
-            facetQuery.withFacetLimit(safeFacetLimit);
+            facetQuery.withFacetLimit(facetLimitForQuery);
 
-            return reduceFacetsNumber(executeAndParseFacetQuery(facetQuery),facetLimit);
+            return reduceFacetsNumber(executeAndParseFacetQuery(facetQuery, excludedFacetsForQuery), facetLimit);
         }
         catch (CloneNotSupportedException e) {
             throw new RuntimeException("Unexpected exception cloning query to determine most used attributes", e);
         }
     }
-    
-
 
     private String[] reduceFacetsNumber(String[] facetsList, int facetLimit) {
-        if ( facetsList.length  < facetLimit) {
+        if (facetsList.length < facetLimit) {
             return facetsList;
         }
         String[] reducedFacetList = new String[facetLimit];
@@ -151,8 +161,6 @@ public class HttpSolrDispatcher {
         return Arrays.stream(name.split("_")).map(part -> {
             return part.substring(0, 1).toUpperCase() + part.substring(1, part.length()).toLowerCase();
         }).collect(Collectors.joining(" "));
-
-
     }
 
     public void streamSolrResponse(OutputStream outputStream, HttpSolrQuery solrQuery) throws IOException {
@@ -166,7 +174,7 @@ public class HttpSolrDispatcher {
         }
     }
 
-    private String[] executeAndParseFacetQuery(HttpSolrQuery facetQuery) {
+    private String[] executeAndParseFacetQuery(HttpSolrQuery facetQuery, Collection<String> excludedFacets) {
         try {
             final PipedInputStream in = new PipedInputStream();
             final PipedOutputStream out = new PipedOutputStream(in);
@@ -190,11 +198,11 @@ public class HttpSolrDispatcher {
                 }
                 Iterator<JsonNode> facetNodeIt = facetNodes.elements();
                 while (facetNodeIt.hasNext()) {
-                    String facetName = facetNodeIt.next().asText();
+                    String facetName = String.format("%s_ft", facetNodeIt.next().asText());
                     int facetCount = facetNodeIt.next().asInt();
-                    if (!ignoredFacets.contains(facetName)) {
+                    if (!excludedFacets.contains(facetName)) {
                         getLog().debug("Dynamic facet '" + facetName + "' -> " + facetCount);
-                        dynamicFacets.add(String.format("%s_ft", facetName));
+                        dynamicFacets.add(facetName);
                     }
                 }
                 return dynamicFacets.toArray(new String[dynamicFacets.size()]);
@@ -212,25 +220,28 @@ public class HttpSolrDispatcher {
             }
         }
         catch (InterruptedException e) {
-            throw new RuntimeException("Solr parsing thread was interrupted", e);
+            throw new RuntimeException("Solr parsing thread was interrupted for query '" + facetQuery.stringify() + "'",
+                                       e);
         }
         catch (ExecutionException e) {
-            throw new RuntimeException("Execution of Solr parsing thread failed", e);
+            throw new RuntimeException(
+                    "Execution of Solr parsing thread failed for query '" + facetQuery.stringify() + "'", e);
         }
         catch (IOException e) {
-            throw new RuntimeException("Unable to calculate most commonly used facets", e);
+            throw new RuntimeException(
+                    "Unable to calculate most commonly used facets for query '" + facetQuery.stringify() + "'", e);
         }
     }
 
     //TODO: should I suppose attrQuery has everything I need to get the correct attributes - No check here?
-    private String[] executeAndParseCommonAttributeQuery(HttpSolrQuery attrQuery) {
+    private Set<String> executeAndParseCommonAttributeQuery(HttpSolrQuery attrQuery) {
         try {
             final PipedInputStream in = new PipedInputStream();
             final PipedOutputStream out = new PipedOutputStream(in);
 
             ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
-            Future<String[]> ftResults = singleExecutor.submit(() -> {
-                List<String> commonAttributes = new ArrayList<>();
+            Future<Set<String>> ftResults = singleExecutor.submit(() -> {
+                Set<String> commonAttributes = new HashSet<>();
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(in);
                 JsonNode facetCounts = jsonNode.get("facet_counts");
@@ -242,32 +253,35 @@ public class HttpSolrDispatcher {
                     throw new RuntimeException("Unexpected Solr response - no facet_fields field");
                 }
                 Iterator<String> fieldNamesIt = facetFields.fieldNames();
-                while(fieldNamesIt.hasNext()) {
+                while (fieldNamesIt.hasNext()) {
                     String fieldName = fieldNamesIt.next();
                     JsonNode fieldValue = facetFields.get(fieldName);
-                    if(fieldValue.elements().hasNext()) {
+                    if (fieldValue.elements().hasNext()) {
                         commonAttributes.add(fieldName);
                     }
                 }
-                return commonAttributes.toArray(new String[commonAttributes.size()]);
+                return commonAttributes;
             });
 
             streamSolrResponse(out, attrQuery);
 
-            long timeout = 60;
-            // TODO: refactor to read facets in another (reusable) way
+            long timeout = 600;
             try {
-                String[] results = ftResults.get(timeout, TimeUnit.SECONDS);
+                Set<String> results = ftResults.get(timeout, TimeUnit.SECONDS);
                 singleExecutor.shutdown();
                 return results;
-            }  catch (TimeoutException e) {
+            }
+            catch (TimeoutException e) {
                 throw new RuntimeException("No Solr response acquired in " + timeout + "s.");
             }
-        } catch (InterruptedException e) {
-                throw new RuntimeException("Solr parsing thread was interrupted", e);
-        } catch (ExecutionException e) {
-                throw new RuntimeException("Execution of Solr parsing thread failed", e);
-        } catch (IOException e) {
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException("Solr parsing thread was interrupted", e);
+        }
+        catch (ExecutionException e) {
+            throw new RuntimeException("Execution of Solr parsing thread failed", e);
+        }
+        catch (IOException e) {
             throw new RuntimeException("Unable to calculate most commonly used facets", e);
         }
     }
