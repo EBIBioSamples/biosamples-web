@@ -3,6 +3,10 @@ body {
   margin: 0 auto;
 }
 
+.above-footer {
+  min-height: calc(100vh - #{$footer-height});
+}
+
 main {
   background-color: white;
   border: 1px solid #ccc;

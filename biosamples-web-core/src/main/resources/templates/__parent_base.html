@@ -13,12 +13,13 @@
 <body class="container"><!-- add any of your classes or IDs -->
 
     <!--<div class="container-fluid">-->
-    <header class="row" th:include="fragments/header::header"></header>
+    <div class="above-footer">
+        <header class="row" th:include="fragments/header::header"></header>
 
-    <main id="content" role="main" class="row" layout:fragment="content">
-        Hello World
-    </main>
-
+        <main id="content" role="main" class="row" layout:fragment="content">
+            Hello World
+        </main>
+    </div>
     <footer class="row" th:include="fragments/footer :: footer"></footer>
     <!--</div> &lt;!&ndash;! end of #wrapper &ndash;&gt;-->
 
