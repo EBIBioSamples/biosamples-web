@@ -17,6 +17,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
+import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 import uk.ac.ebi.spot.biosamples.model.solr.Sample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
@@ -57,7 +58,7 @@ public class SampleController {
             RestTemplate restTemplate = new RestTemplate();
             try {
                 SampleRelationsWrapper result = restTemplate.getForObject(relationsURL, SampleRelationsWrapper.class);
-                Boolean sampleHasRelations = (sample.getGroups() != null && !sample.getGroups().isEmpty() && result.hasRelations());
+                Boolean sampleHasRelations = (sample.getGroups() != null && !sample.getGroups().isEmpty()) || result.hasRelations();
                 model.addAttribute("derivedFrom", result.getDerivedFrom());
                 model.addAttribute("derivedTo", result.getDerivedTo());
                 model.addAttribute("childOf", result.getChildOf());
