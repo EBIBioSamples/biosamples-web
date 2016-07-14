@@ -1,0 +1,11 @@
+{
+    "name": "biosamples-web frontend",
+    "description": "The Biosamples-web front ends components",
+    "url": "",
+    "options": {
+        "outdir": "./jsdocs",
+        "paths": "src/main/frontend",
+        "extension": ".js,.vue",
+        "server": true
+    }
+}
