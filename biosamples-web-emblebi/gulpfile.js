@@ -12,9 +12,5 @@ elixir(function(mix) {
                 srcStaticPath + "/**/*.css"
             ]
         })
-	 	.sass('base.scss')
-	 	.browserify('searchComponents.js')
-        .browserify('relationsVis.js')
-        .browserify('samplesInGroup.js')
-	 	.scripts('toolsFunctions.js')
+	 	.sass('search.scss')
 });
