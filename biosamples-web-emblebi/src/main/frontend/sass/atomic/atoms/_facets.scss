@@ -1,0 +1,44 @@
+.facet-panel {
+	margin: 10px 0;
+
+	.panel-heading {
+		padding: $panel-padding 2*$panel-padding;
+	} 
+
+	.panel-body {
+		padding: 2*$panel-padding 4*$panel-padding;
+	}
+}
+
+.facet-list {
+	margin: 0;
+}
+
+.facet-entry{
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-left: 0;
+	border-right: 0;
+
+	&:first-child {
+		border-top: 0;
+	}
+
+	&:last-child {
+		border-bottom: 0;
+	}
+
+
+	&.selected {
+		background-color: $brand-primary;
+		color: white;
+		text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+	}
+
+	.facet-name {
+		padding-right: 1em;
+		word-break: break-all;
+	}
+}

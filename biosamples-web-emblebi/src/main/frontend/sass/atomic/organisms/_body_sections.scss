@@ -1,0 +1,28 @@
+body {
+  max-width: 1170px;
+  margin: 0 auto;
+}
+
+.above-footer {
+  min-height: calc(100vh - #{$footer-height});
+}
+
+main {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 1em;
+}
+
+section {
+  &:not(:first-of-type) {
+    margin-top: 1em;
+    border-top: 1px solid $gray-lighter;
+  }
+}
+[v-cloak] {
+  display: none;
+}
+
+.error__details {
+  margin-top: 1em;
+}

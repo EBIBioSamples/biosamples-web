@@ -1,0 +1,19 @@
+@mixin flex-container($direction) {
+	.flex-#{$direction} {
+		display: flex;
+		flex-direction: $direction;
+	}
+}
+
+@mixin flex-justify($type) {
+	.flex-just-#{$type} {
+		justify-content: #{$type};
+	}
+}
+
+@mixin flex-align($type) {
+	.flex-align-#{$type} {
+		align-items: $type;
+	}
+}
+
