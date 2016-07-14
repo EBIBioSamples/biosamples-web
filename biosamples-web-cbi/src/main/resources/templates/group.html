@@ -1,0 +1,110 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="__parent_base"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'groups', relationsUrl=${@environment.getProperty('relations.server')}">
+<head>
+    <title th:text="${group.accession}">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
+
+    <link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
+
+    <!--/* Pass SPRING variables to Javascript */-->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.relationsUrl = [[${relationsUrl}]];
+        window.accession = [[${group.accession}]];
+        window.baseUrl = [[@{/}]];
+        /*]]>*/
+    </script>
+
+</head>
+<body>
+
+
+<div layout:fragment="content">
+
+    <!-- Biosamples specific content goes here -->
+    <div id="group_content">
+        <div class="detail_table">
+            <h4 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h4>
+
+            <table id="bs_results_tablesamplegroupdetail">
+                <tbody>
+                <!-- Common group attributes -->
+                <tr th:if="${#maps.containsKey(group.characteristics, 'group_name') and #arrays.length(group.characteristics.group_name) > 0}">
+                    <td class="col_title"><b>Group Name : </b></td>
+                    <td>
+                        <div th:each="name: ${group.characteristicsText.group_name}">
+                            <span th:text="${name}"></span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Title :</b></td>
+                    <td th:text="${group.submissionTitle}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Identifier :</b></td>
+                    <td th:text="${group.submissionAccession}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Description :</b></td>
+                    <td th:text="${group.description}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Release Date :</b></td>
+                    <td th:text="${group.releaseDate}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Last Updated :</b></td>
+                    <td th:text="${group.updateDate}"></td>
+                </tr>
+
+
+
+                <!-- Dedicated organism attribute -->
+                <tr th:if="${#maps.containsKey(group.characteristics, 'organism') and #arrays.length(group.characteristics.organism) > 0}" >
+                    <td class="col_title"><b>Organism : </b></td>
+                    <td>
+                        <div class="characteristic-mapping" th:each="organism: ${group.characteristics.get('organism')}">
+                            <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- start all characteristics -->
+                <tr th:each="characteristic: ${group.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'group_name'  or characteristic.key == 'group_title' or characteristic.key == 'group_description'}">
+                    <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
+                    <td th:if="${#maps.containsKey(group.characteristics,characteristic.key)}">
+                        <div class="characteristic-mapping" th:each="value: ${group.characteristics.get(characteristic.key)}">
+                            <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
+                        </div>
+                    </td>
+                </tr>
+                <!-- end all characteristics -->
+
+                </tbody>
+
+                <!-- Samples summary table goes here -->
+            </table>
+        </div>
+    </div>
+    <!-- New part Vis-->
+    <div >
+        <br><br><hr><h4 id="groups">Group Relations</h4>
+        <div id="ontology_vis">
+        </div>
+    </div>
+
+
+</div>
+
+
+<th:block layout:fragment="custom-endpage-scripts">
+    <script th:src="@{/javascript/relationsVis.js}"></script>
+</th:block>
+
+</body>
+</html>

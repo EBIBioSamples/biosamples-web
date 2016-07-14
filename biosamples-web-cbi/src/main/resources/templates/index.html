@@ -1,0 +1,81 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      layout:decorator="__parent_base"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
+<head>
+    <title>Search</title>
+    <link rel="stylesheet"
+          th:href="@{/stylesheets/main_samelf.css}"
+          href="../static/stylesheets/main_samelf.css"
+          type="text/css"
+          media="screen"/>
+</head>
+
+<body id="app">
+
+<main layout:fragment="content">
+    <div v-if="hasAlerts" class="alerts__container">
+        <component v-for="alert in alerts"
+                   is="alert"
+                   v-bind:type="alert.type"
+                   v-bind:timeout="alert.timeout"
+                   v-on:alert-closed="removeAlert(alert)">
+            {{alert.message}}
+        </component>
+    </div>
+
+    <section>
+        <h2>BioSamples for Crop Plant Bioinformatics</h2>
+    </section>
+
+    <!-- search box goes here -->
+    <section>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search BioSamples" id="search-box"/>
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id="search-button">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+
+        <div class="examples">
+            Examples:
+            <a href="search?searchTerm=Arabidopsis%20Thaliana">Arabidopsis Thaliana</a>,
+            <a href="search?searchTerm=root">root</a>,
+            <a href="search?searchTerm=salt%20stress">salt stress</a>,
+            <a href="search?searchTerm=SAMEA3132246">SAMEA3132246</a>,
+        </div>
+    </section>
+
+    <section style="margin-top: 2em;">
+        <p class="intro justify">
+            The BioSamples database is a repository of sample information. BioSamples contains descriptions and metadata
+            on biological source materials. Samples are collected either because they are 'reference' samples (for
+            example, Coriell cell lines or 1000 genome samples) or because they have been used in experiments that has
+            generated data that exists in an assay database such as the <a href="//www.ebi.ac.uk/ena">European Nucleotide Archive</a>,
+            <a href="//www.ebi.ac.uk/arrayexpress">ArrayExpress</a> or <a href="//www.ebi.ac.uk/pride">PRIDE</a>.</p>
+
+        <p>This is a dedicated Crop Informatics instance of Biosamples, and it contains metadata from all publicly
+           available crop plant samples, cross linked to assay data from <a href="//www.ebi.ac.uk/ena">ENA</a>,
+            <a href="//plants.ensembl.org/">Ensembl Plants</a>, <a href="//www.ebi.ac.uk/arrayexpress">ArrayExpress</a>,
+           <a href="//www.ebi.ac.uk/gxa">Expression Atlas</a> and more.
+        </p>
+
+        <p>For more information on this project or the biosamples database, please get in touch by emailing us at <a
+                href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a></p>
+    </section>
+</main>
+
+<th:block layout:fragment="custom-endpage-scripts">
+    <script src="//www.ebi.ac.uk/web_guidelines/js/cookiebanner.js"></script>
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js}"
+            src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
+    <script th:src="@{/javascript/searchComponents.js}" src="../static/javascript/searchComponents.js"></script>
+    <script th:src="@{/javascript/toolsFunctions.js}"></script>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</th:block>
+
+</body>
+</html>

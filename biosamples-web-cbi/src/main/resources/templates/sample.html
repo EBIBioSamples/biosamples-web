@@ -1,0 +1,180 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="__parent_base"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      th:with="currentPage = 'samples', relationsUrl=${@environment.getProperty('relations.server')}">
+<head>
+    <title th:text="${sample.accession}">SAMEAxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
+
+    <link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
+
+    <!--/* Pass SPRING variables to Javascript */-->
+    <script th:if="${hasRelations}" th:inline="javascript">
+        /*<![CDATA[*/
+        window.relationsUrl = [[${relationsUrl}]];
+        window.accession = [[${sample.accession}]];
+        window.baseUrl = [[@{/}]];
+        /*]]>*/
+    </script>
+
+</head>
+<body>
+
+
+
+<main layout:fragment="content">
+
+    <div class="detail_table">
+        <h4 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h4>
+
+        <table id="bs_results_tablesamplegroupdetail">
+            <tbody>
+            <!-- Common sample attributes -->
+            <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_name') and #arrays.length(sample.characteristics.sample_name) > 0}">
+                <td class="col_title"><b>Sample Name : </b></td>
+                <td>
+                    <div th:each="name: ${sample.characteristicsText.sample_name}">
+                        <span th:text="${name}"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_title') and #arrays.length(sample.characteristics.sample_title) > 0}">
+                <td class="col_title"><b>Sample Title : </b></td>
+                <td>
+                    <div th:each="title: ${sample.characteristicsText.sample_title}">
+                        <span th:text="${title}"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_description') and #arrays.length(sample.characteristics.sample_description) > 0}">
+                <td class="col_title"><b>Sample Description : </b></td>
+                <td>
+                    <div th:each="description: ${sample.characteristicsText.sample_description}">
+                        <span th:text="${description}"></span>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- update times metadata -->
+            <tr>
+                <td class="col_title"><b>Release Date :</b></td>
+                <td th:text="${sample.releaseDate}"></td>
+            </tr>
+            <tr>
+                <td class="col_title"><b>Last Updated :</b></td>
+                <td th:text="${sample.updateDate}"></td>
+            </tr>
+
+            <!-- Dedicated organism attribute -->
+            <tr th:if="${#maps.containsKey(sample.characteristics, 'organism') and #arrays.length(sample.characteristics.organism) > 0}">
+                <td class="col_title"><b>Organism : </b></td>
+                <td>
+                    <div class="characteristic-mapping" th:each="organism: ${sample.characteristics.get('organism')}">
+                        <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- start all characteristics -->
+            <tr th:each="characteristic: ${sample.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'sample_name'  or characteristic.key == 'sample_title' or characteristic.key == 'sample_description'}">
+                <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
+                <td th:if="${#maps.containsKey(sample.characteristics,characteristic.key)}">
+                    <div class="characteristic-mapping" th:each="value: ${sample.characteristics.get(characteristic.key)}">
+                        <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
+                    </div>
+                </td>
+            </tr>
+            <!-- end all characteristics -->
+
+			<!-- External links -->
+<!--             <tr> -->
+<!--                 <td class="col_title"><b>External links :</b></td> -->
+<!--                 <td th:if="${#maps.isEmpty(sample.databases)}">None</td> -->
+<!--                 <td th:if="${not #maps.isEmpty(sample.databases)}"> -->
+<!--                     <p th:each="database : ${sample.databases}"> -->
+<!--                         <a th:if="${#strings.containsIgnoreCase(database.value, '/ena/')}" th:href="${database.value}" style="border-bottom: none"> -->
+<!--                             <img th:src="@{/images/dblinks/hipsci_small_logo.png}"> -->
+<!--                         </a> -->
+<!--                         <a th:text="${database.key}" th:href="${database.value}"></a> -->
+<!--                     </p> -->
+<!--                 </td> -->
+<!--             </tr> -->
+
+			<!-- groups containing this sample -->
+            <tr>
+                <td class="col_title"><b>Groups :</b></td>
+                <td th:if="${#lists.isEmpty(sample.groups)}">None</td>
+                <td th:if="${not #lists.isEmpty(sample.groups)}">
+                    <p th:each="group : ${sample.groups}">
+                        <a th:text="${group}" th:href="${'../group/' + group}"></a>
+                    </p>
+                <td/>
+            </tr>
+
+			<!-- relationships via neo -->
+            <tr>
+                <td th:if="${not #lists.isEmpty(sameAs)}">
+                    <b>Same as: </b></td><td>
+                <a th:each="item : ${sameAs}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            
+            <tr>
+                <td th:if="${not #lists.isEmpty(derivedFrom)}">
+                    <b>Derived from: </b></td><td>
+                <a th:each="item : ${derivedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(derivedTo)}">
+                    <b>Derived to: </b></td><td>
+                <a th:each="item : ${derivedTo}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+
+            <tr>
+                <td th:if="${not #lists.isEmpty(childOf)}">
+                    <b>Offspring from</b></td><td>
+                 <a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(parentOf)}">
+                    <b>Offspring to</b></td><td>
+                <a th:each="item : ${parentOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+
+            <tr>
+                <td th:if="${not #lists.isEmpty(recuratedInto)}">
+                    <b>Recurated to: </b></td><td>
+                <a th:each="item : ${recuratedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+            <tr>
+                <td th:if="${not #lists.isEmpty(recuratedFrom)}">
+                    <b>Recurated from: </b></td><td>
+                <a th:each="item : ${recuratedFrom}" th:text="${item}" th:href="@{${item}}">Replaced Text </a>
+            </td>
+            </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+    <div id="samples" th:if="${hasRelations}">
+        <br><br><hr><h4>Samples Relations</h4>
+        <div id="ontology_vis">
+        </div>
+    </div>
+</main>
+
+<th:block layout:fragment="custom-endpage-scripts">
+    <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
+    <script th:src="@{/javascript/relationsVis.js}"></script>
+</th:block>
+
+</body>
+</html>
