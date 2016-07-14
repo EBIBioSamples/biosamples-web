@@ -1,0 +1,30 @@
+<!doctype html>
+<html class="no-js"
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+    th:with="currentPage='home', overrideTitle=false">
+<head>
+    <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
+    <th:block th:include="fragments/head :: head"></th:block>
+</head>
+
+
+<body class="container"><!-- add any of your classes or IDs -->
+
+    <!--<div class="container-fluid">-->
+    <header class="row" th:include="fragments/header::header"></header>
+
+    <main id="content" role="main" class="row" layout:fragment="content">
+        Hello World
+    </main>
+    <footer class="row" th:include="fragments/footer :: footer"></footer>
+    <!--</div> &lt;!&ndash;! end of #wrapper &ndash;&gt;-->
+
+
+<th:block th:include="fragments/common-endpage-scripts :: scripts" th:remove="tag"></th:block>
+
+<th:block layout:fragment="custom-endpage-scripts" th:remove="tag"></th:block>
+
+</body>
+</html>
