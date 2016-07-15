@@ -12,5 +12,5 @@ elixir(function(mix) {
                 srcStaticPath + "/**/*.css"
             ]
         })
-	 	.sass('base.scss')
+	 	.sass('style.scss')
 });

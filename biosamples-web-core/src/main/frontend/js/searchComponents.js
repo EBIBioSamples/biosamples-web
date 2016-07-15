@@ -15,6 +15,7 @@
         window.apiUrl ="http://localhost:8080/biosamples/api/search/";
         window.siteUrl = "http://localhost:8080/biosamples";
     }
+    var doVisualization = window.visualization ? window.visualization : false;
 
 
     // Required
@@ -204,8 +205,10 @@
                         this.submittedQuery = true;
                     }
                     this.consumeResults(results);
-                    if ( typeof loadD3 === "undefined" || loadD3 ){
-                        doD3Stuff(results,apiUrl,this);
+                    if (doVisualization) {
+                        if (typeof loadD3 === "undefined" || loadD3) {
+                            doD3Stuff(results, apiUrl, this);
+                        }
                     }
                 })
                 .catch(function(data){

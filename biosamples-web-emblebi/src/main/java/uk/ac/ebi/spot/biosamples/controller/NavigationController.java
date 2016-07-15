@@ -16,10 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class NavigationController {
     @RequestMapping("/search")
-    public String search(Model model, String searchTerm, HttpServletRequest request) {
+    public String search(Model model, String searchTerm) {
         model.addAttribute("searchTerm", searchTerm);
         return "search";
     }
+
+//    @RequestMapping("/")
+//    public String index(){
+//        return "home";
+//    }
 
     @RequestMapping("/help/{page}")
     public String helpInnerPage(@PathVariable("page") String innerPage) {
