@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bootstrap-sass": "^3.0.0",
+    "color-js": "^1.0.3",
     "flexboxgrid": "^6.3.0",
     "history.js": "^1.8.0",
     "ols-graphview": "^0.1.5",

@@ -34,7 +34,16 @@
     <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
     <div v-bind:class="{loading: isQuerying}"></div>
     <br><br>
-    <div id="displayRemainingFilters" ></div>
+    <!--<div id="displayRemainingFilters" ></div>-->
+    <div>
+        <shield v-for="(key, value) in filterList"
+                :key="key"
+                :value="value"
+                :closable="true"
+                value-color="random"
+                @shield-closed="removeFilter(key)">
+        </shield>
+    </div>
     <ul class="nav nav-tabs col-xs-12">
         <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
         <li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>
