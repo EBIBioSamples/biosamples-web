@@ -28,12 +28,12 @@
             <li th:classappend="${currentPage == 'search'} ? 'active'">
                 <a th:href="@{/search}" href="/search">Search</a>
             </li>
-            <li th:classappend="${currentPage == 'samples'} ? 'active'">
-                <a th:href="@{/samples}" href="/samples" title="Samples">Samples</a>
-            </li>
-            <li th:classappend="${currentPage == 'groups'} ? 'active'">
-                <a th:href="@{/groups}" href="/groups" title="Groups">Sample Groups</a>
-            </li>
+            <!--<li th:classappend="${currentPage == 'samples'} ? 'active'">-->
+                <!--<a th:href="@{/samples}" href="/samples" title="Samples">Samples</a>-->
+            <!--</li>-->
+            <!--<li th:classappend="${currentPage == 'groups'} ? 'active'">-->
+                <!--<a th:href="@{/groups}" href="/groups" title="Groups">Sample Groups</a>-->
+            <!--</li>-->
             <li th:classappend="${currentPage == 'submit'} ? 'active'">
                 <a th:href="@{/help/submit}" href="/help/submit" title="Submit">Submit</a>
             </li>

@@ -5,6 +5,18 @@
       th:with="currentPage = 'groups'">
 <head>
     <title th:text="${group.accession}">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.relationsUrl = [[${relationsUrl}]];
+        window.accession = [[${group.accession}]];
+        window.baseUrl = [[@{/}]];
+        window.table_attrs = [[${table_attrs}]];
+        window.apiUrl = window.baseUrl + "api/samples/search/findByKeywordsAndGroupsContains";
+        window.jQuery = jQuery;
+        /*]]>*/
+    </script>
+
 </head>
 <body>
 

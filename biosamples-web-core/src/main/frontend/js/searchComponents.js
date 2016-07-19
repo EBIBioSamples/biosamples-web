@@ -15,6 +15,7 @@
         window.apiUrl ="http://localhost:8080/biosamples/api/search/";
         window.siteUrl = "http://localhost:8080/biosamples";
     }
+    var doVisualization = window.visualization ? window.visualization : false;
 
 
     // Required
@@ -85,7 +86,6 @@
         data: {
             searchTerm: '',
             queryTerm:'',
-            filterTerm: '',
             useFuzzy: false,
             pageNumber: 1,
             samplesToRetrieve: 10,
@@ -102,7 +102,6 @@
             facetsCollapsed: false
         },
         computed: {
-
             queryTermPresent() {
                 return !_.isEmpty(this.queryTerm);
             },
@@ -114,6 +113,13 @@
             },
             hasAlerts() {
                 return this.alerts.length > 0;
+            },
+            filterList() {
+                return Object.keys(this.filterQuery).reduce((prev,key)=>{
+                    let tempKey = key.replace(/Filter$/,"");
+                    prev[tempKey] = this.filterQuery[key];
+                    return prev;
+                },{});
             }
         },
 
@@ -126,7 +132,8 @@
             'biosamplesList': require('./components/productsList/ProductsList.js'),
             'pagination': require('./components/pagination/Pagination.js'),
             'itemsDropdown': require('./components/itemsDropdown/ItemsDropdown.vue'),
-            'facet': require('./components/facetList/FacetList.js')
+            'facet': require('./components/facetList/FacetList.js'),
+            'shield': require('./components/shield/shield.vue')
         },
         /**
          * What happens when the Vue instance is ready
@@ -199,13 +206,15 @@
 
                 this.$http.get(apiUrl,queryParams,ajaxOptions)
                 .then(function(results) {
-                    displayRevertingFilters(results,this);
+                    // displayRevertingFilters(results,this);
                     if (! this.submittedQuery) {
                         this.submittedQuery = true;
                     }
                     this.consumeResults(results);
-                    if ( typeof loadD3 === "undefined" || loadD3 ){
-                        doD3Stuff(results,apiUrl,this);
+                    if (doVisualization) {
+                        if (typeof loadD3 === "undefined" || loadD3) {
+                            doD3Stuff(results, apiUrl, this);
+                        }
                     }
                 })
                 .catch(function(data){
@@ -344,6 +353,14 @@
             
             removeAlert(item) {
                 this.alerts.$remove(item);
+            },
+
+            removeFilter(item) {
+                let filterKey = `${item}Filter`;
+                let newFilterQuery = _.clone(this.filterQuery);
+                delete newFilterQuery[filterKey];
+                this.$set("filterQuery",newFilterQuery);
+                this.querySamples(undefined);
             },
 
             collapseFacets() {
