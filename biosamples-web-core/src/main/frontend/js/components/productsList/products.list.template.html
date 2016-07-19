@@ -1,6 +1,6 @@
 <div v-for="element in elements" class="list__element" :class="element_class">
 	<component is="biosample"
-			   v-bind:accession="element.summaryObj.accession"
+			   v-bind:subtitle="element.summaryObj.accession"
                v-bind:type="element.summaryObj.content_type"
 			   v-bind:title="element.summaryObj.accession"
 			   v-bind:description="element.summaryObj.description"

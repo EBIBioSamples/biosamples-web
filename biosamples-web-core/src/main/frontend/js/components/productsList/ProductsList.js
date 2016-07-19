@@ -7,7 +7,7 @@
 		template: require('./products.list.template.html'),
 
 		components: {
-			'biosample': require('../product/Product.js')
+			'biosample': require('../product/product.vue')
 		},
 
         /**

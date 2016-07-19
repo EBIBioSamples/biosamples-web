@@ -5,12 +5,12 @@
         <span class="label label-success" v-html="type"></span>
 		<span class="label label-info" v-html="accession"></span>
 		<div class="badge-container">
-			<span v-for="label in simpleLabels">
-				<component is="badge" :key="$key" :value="label" :color="labelColors[$index % labelColors.length]"> </component>
-			</span>
-			<span v-for="pair in labelPairs">
-				<!-- <component is="badge" :key="pair[0]" :value="pair[1]" :color="labelColors[$index]"> </component> -->
-			</span>	
+			<!--<span v-for="label in simpleLabels">-->
+				<!--<component is="badge" :key="$key" :value="label" :color="labelColors[$index % labelColors.length]"> </component>-->
+			<!--</span>-->
+			<!--<span v-for="pair in labelPairs">-->
+				<!--&lt;!&ndash; <component is="badge" :key="pair[0]" :value="pair[1]" :color="labelColors[$index]"> </component> &ndash;&gt;-->
+			<!--</span>	-->
 		</div>
 	</div>
 	<div class="panel-body" v-html="description | excerpt"></div>
