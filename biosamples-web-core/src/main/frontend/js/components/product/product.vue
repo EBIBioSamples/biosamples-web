@@ -1,45 +1,56 @@
 <template>
     <div class="biosample-result panel panel-default">
         <div class="panel-heading">
-            <span class="h3"><a :href="itemPage">{{title}}</a></span>
-            <span class="label label-success">{{type}}</span>
-            <span class="label label-info">{{subtitle}}</span>
+            <span class="h3"><a :href="itemPage">{{product.title}}</a></span>
+            <span class="label label-success">{{product.type}}</span>
+            <span class="label label-info">{{product.subtitle}}</span>
             <div class="badge-container">
-                <shield v-for="(key, value) in badges"
-                        :key="key"
+                <shield v-for="(key, value) in product.badges"
+                        :key="key | characteristic"
                         :value="value">
                 </shield>
             </div>
         </div>
-        <div class="panel-body" v-html="description | excerpt"></div>
+        <div class="panel-body">{{product.description | excerpt}}</div>
         <div class="panel-footer">
-            <span class="small">Last update date: <span v-text="date | solrDate"></span></span>
+            <span class="small">Last update date: {{product.date | solrDate}}</span>
         </div>
     </div>
 </template>
 
 <script>
+    const startCaseFilter = require("../../filters/startCaseFilter.js");
+
     module.exports = {
-        data() {
-          return {
-              badges: {
-                  content_type: "sample",
-                  organism: "Homo sapiens"
-              }
-          }
-        },
 
         components: {
             "shield": require("../shield/shield.vue")
         },
+        computed: {
+           product() { return this.displayFunction(this.content) }
+        },
 
         props: {
-            title: String,
-            type: String,
-            subtitle: String,
-            content: String,
-            date: String
-//            badges: [Array,Object]
+            content: Object,
+            displayFunction: {
+                type: Function,
+                default: function(obj) {
+                    return {
+                        title: obj.title,
+                        subtitle: obj.subtitle,
+                        type: obj.type,
+                        badges: obj.badges,
+                        description: obj.description,
+                        date: obj.date
+                    }
+                }
+            }
+        },
+
+        filters: {
+            characteristic(value) {
+                return startCaseFilter(value.replace(/_crt$/,""))
+            }
         }
     };
 </script>

@@ -24,7 +24,7 @@
     
     var Vue         = require('vue');
     var VueResource = require('vue-resource');
-    var Biosample   = require('./components/BioSample.js');
+    // var Biosample   = require('./components/BioSample.js');
     var Store       = require('./components/Store.js');
     var apiUrl      = window.apiUrl;
 
@@ -72,13 +72,25 @@
         return obj;
     }
 
-    function getErrorBadge(statusCode,responseMessage) {
-        debugger;
-        let alert = document.createElement("component");
-        alert.setAttribute("is","alert");
-        alert.setAttribute("type","danger");
-        alert.textContent = "An error occured while querying biosamples";
-        return alert;
+    var biosampleMap = function(obj) {
+        let badges = {};
+        const facetKeys = obj.dynamicFacets;
+        for ( let i=0, n=facetKeys.length; i < n; i++ ) {
+            let facetKey = facetKeys[i].replace(/_ft$/,"");
+            let facetValue = obj[facetKey];
+            if (facetValue) {
+                badges[facetKey] =
+                    _.isArray(facetValue) ? facetValue[0] : facetValue;
+            }
+        }
+
+        return {
+            title: obj.accession,
+            type: obj.content_type,
+            description: obj.description ? obj.description : "No description provided",
+            date: obj.updatedate,
+            badges
+        }
     }
 
     var vm = new Vue({
@@ -99,7 +111,8 @@
             previousQueryParams: {},
             currentQueryParams: {},
             alerts: [],
-            facetsCollapsed: false
+            facetsCollapsed: false,
+            biosampleMap: biosampleMap
         },
         computed: {
             queryTermPresent() {
@@ -129,7 +142,8 @@
          * @type {Object}
          */
          components: {
-            'biosamplesList': require('./components/productsList/ProductsList.js'),
+            // 'biosamplesList': require('./components/productsList/ProductsList.js'),
+            'biosample': require('./components/product/product.vue'),
             'pagination': require('./components/pagination/Pagination.js'),
             'itemsDropdown': require('./components/itemsDropdown/ItemsDropdown.vue'),
             'facet': require('./components/facetList/FacetList.js'),
@@ -144,7 +158,7 @@
             this.readLocationSearchAndQuerySamples();
         },
 
-        methods: {
+         methods: {
 
             querySamplesOnScratch(e) {
                 console.log('querySamplesOnScratch');
@@ -254,6 +268,17 @@
                     vm.facets[readableKey] = readFacets(dynamicFacets[key]);
                 });
 
+                let dynamicFilter = Object.keys(this.filterList).map(key=>{
+                    if (key !== "content_type") {
+                        return `${key}_crt`
+                    }
+                });
+                let totalFacets = dynamicFilter.reduce((all,value) => {
+                    all.push(value);
+                    return all;
+                }, dynamicFacetsKey);
+
+
                 console.log("vm.facets : ");console.log(vm.facets);
 
                 var docs        = resultsInfo.docs;
@@ -261,10 +286,12 @@
 
                 this.queryTerm        = this.searchTerm;
                 this.resultsNumber    = resultsInfo.numFound;
-                var validDocs = [];
-                for (var i=0, n=hlDocs.length; i<n; i++) {
-                    validDocs.push(new Biosample(hlDocs[i]));
-                }
+
+                let validDocs = hlDocs.reduce((total, singleDoc) => {
+                    total.push(_.assignIn(singleDoc, { dynamicFacets: totalFacets }));
+                    return total;
+                },[]);
+
 
                 this.queryResults = validDocs;
                 this.biosamples = validDocs;

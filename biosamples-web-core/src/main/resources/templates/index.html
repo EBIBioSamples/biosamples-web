@@ -113,9 +113,11 @@
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <component is="biosamples-list"
-                                       v-bind:elements="biosamples">
-                            </component>
+                            <biosample v-for="biosample in biosamples"
+                                       :content="biosample"
+                                       :display-function="biosampleMap">
+
+                            </biosample>
                         </div>
                     </div>
                 </div>
