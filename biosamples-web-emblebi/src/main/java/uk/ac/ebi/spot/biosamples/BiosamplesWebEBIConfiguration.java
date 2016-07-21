@@ -18,5 +18,6 @@ public class BiosamplesWebEBIConfiguration extends WebMvcConfigurerAdapter {
 //        registry.addViewController("/groups").setViewName("groups_home");
         registry.addViewController("/help").setViewName("help");
         registry.addViewController("/about").setViewName("about");
+        registry.addViewController("/error").setViewName("error");
     }
 }
