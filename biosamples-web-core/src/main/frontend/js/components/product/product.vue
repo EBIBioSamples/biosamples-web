@@ -1,7 +1,7 @@
 <template>
     <div class="biosample-result panel panel-default">
         <div class="panel-heading">
-            <span class="h3"><a :href="itemPage">{{product.title}}</a></span>
+            <span class="h3"><a :href="product.link">{{product.title}}</a></span>
             <span class="label label-success">{{product.type}}</span>
             <span class="label label-info">{{product.subtitle}}</span>
             <div class="badge-container">

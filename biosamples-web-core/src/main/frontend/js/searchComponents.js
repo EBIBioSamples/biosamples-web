@@ -86,12 +86,14 @@
             }
         }
 
+
         return {
             title: obj.accession,
             type: obj.content_type,
             description: obj.description ? obj.description : "No description provided",
             date: obj.updatedate,
-            badges
+            badges,
+            link: `${window.baseUrl}${obj.content_type}s/${obj.accession}`
         }
     }
 
