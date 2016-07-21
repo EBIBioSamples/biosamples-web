@@ -76,11 +76,13 @@
         let badges = {};
         const facetKeys = obj.dynamicFacets;
         for ( let i=0, n=facetKeys.length; i < n; i++ ) {
-            let facetKey = facetKeys[i].replace(/_ft$/,"");
-            let facetValue = obj[facetKey];
-            if (facetValue) {
-                badges[facetKey] =
-                    _.isArray(facetValue) ? facetValue[0] : facetValue;
+            if (facetKeys[i]) {
+                let facetKey = facetKeys[i].replace(/_ft$/, "");
+                let facetValue = obj[facetKey];
+                if (facetValue) {
+                    badges[facetKey] =
+                        _.isArray(facetValue) ? facetValue[0] : facetValue;
+                }
             }
         }
 

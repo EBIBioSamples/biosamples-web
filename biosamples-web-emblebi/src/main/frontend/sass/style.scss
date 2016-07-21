@@ -1,5 +1,7 @@
 @import "base/variables";
 
+
+
 @import "vendor/custom_bootstrap";
 
 @import 'atomic/atoms/accordions';
@@ -13,6 +15,7 @@
 @import 'atomic/atoms/tabs';
 @import 'atomic/atoms/type';
 @import 'atomic/atoms/badges';
+@import 'atomic/atoms/vshield';
 @import 'atomic/atoms/pagination';
 
 @import 'atomic/organisms/body_sections';
