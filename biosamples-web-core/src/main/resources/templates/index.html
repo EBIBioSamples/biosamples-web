@@ -55,7 +55,7 @@
                 <div class="row">
                     <h3>
                         No results have been found for <i>{{queryTerm}}</i>
-                        <span class="small"><a href="#" v-on:click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
+                        <span class="small"><a href="#" @click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
                     </h3>
                 </div>
             </div>
@@ -78,33 +78,33 @@
                                             <div class="form-group">
                                                 <label for="fuzzy-search">Search for similar terms</label>
                                                 <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
-                                                       v-model="useFuzzy" v-on:change="querySamples" />
+                                                       v-model="useFuzzy" @change="querySamples" />
                                             </div>
                                             <div class="form-group">
                                                 <label for="collapse-facets">Collapse all facets</label>
                                                 <input type="checkbox" v-model="facetsCollapsed" id="collapse-facets" name="collapse-facets"
-                                                       v-on:change="collapseFacets">
+                                                       @change="collapseFacets">
                                             </div>
                                         </form>
 
                                         <component v-for="(key,facetObj) in facets"
-                                                   is="facet" v-bind:title="key | startCase"
-                                                   v-bind:keys="facetObj.keys"
-                                                   v-bind:values="facetObj.vals"
-                                                   v-bind:facet-id="key + 'Filter'">
+                                                   is="facet" :title="key | startCase"
+                                                   :keys="facetObj.keys"
+                                                   :values="facetObj.vals"
+                                                   :facet-id="key + 'Filter'">
                                         </component>
                                     </div>
                                     <div class="panel-footer">
                                         <!--<div class="row">-->
                                             <!--<div class="col-xs-6">-->
                                                 <component is="pagination"
-                                                           v-bind:total-results="resultsNumber"
-                                                           v-bind:displayed-results="samplesToRetrieve">
+                                                           :total-results="resultsNumber"
+                                                           :displayed-results="samplesToRetrieve">
                                                 </component>
                                             <!--</div>-->
                                             <!--<div class="col-xs-6">-->
                                                 <component is="items-dropdown"
-                                                           v-bind:items-per-page="samplesToRetrieve">
+                                                           :items-per-page="samplesToRetrieve">
                                                 </component>
                                             <!--</div>-->
                                         <!--</div>-->
@@ -127,6 +127,15 @@
 
 
         <section id="sectionVisualisation" class='tab-pane fade'>
+
+            <div v-if="!queryHasResults">
+                <div class="row">
+                    <h3>
+                        No results to visualize for <i>{{queryTerm}}</i>
+                        <span class="small"><a href="#" @click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
+                    </h3>
+                </div>
+            </div>
 
             <div id="buttonRezInfo" style="border:solid; border-radius:1px;visibility:hidden;">
                 <h4 id="titleRezInfo" >

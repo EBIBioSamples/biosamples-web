@@ -213,18 +213,18 @@
 
                 this.setDefaultSearchTerm();
 
-                let queryParams = this.getQueryParameters();
-                // Options passed to ajax request
-                // Timeout set to prevent infinite waiting
-                let ajaxOptions = {
-                    timeout: 200000
+                let requestData = {
+                    params: this.getQueryParameters(),
+                    timeout: 10000
                 };
 
                 this.isQuerying = true;
 
-                this.$http.get(apiUrl,queryParams,ajaxOptions)
-                .then(function(results) {
+                this.$http.get(apiUrl,requestData)
+                .then(function(responseData) {
                     // displayRevertingFilters(results,this);
+                    let results = responseData.json();
+
                     if (! this.submittedQuery) {
                         this.submittedQuery = true;
                     }
@@ -251,14 +251,14 @@
             consumeResults: function(results) {
 
                 log("Consuming ajax results","Consume Results");
-                var resultsInfo      = results.data.response;
+                var resultsInfo      = results.response;
                 if (_.isNull(resultsInfo)) {
                     alert("Request made to server was malformed, please send an email to biosamples@ebi.ac.uk");
                     return;
                 }
 
-                var highLights       = results.data.highlighting;
-                var dynamicFacets    = results.data.facet_counts.facet_fields;
+                var highLights       = results.highlighting;
+                var dynamicFacets    = results.facet_counts.facet_fields;
                 var dynamicFacetsKey = _.keys(dynamicFacets);
                 this.facets          = {};
                 var vm               = this;
@@ -507,7 +507,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
   var heightD3 = widthTitle/2;
 
   document.getElementById("infoVizRelations").style.height = heightD3+'px';
-  if (results.data.response.docs.length == 0  ){
+  if (results.response.docs.length == 0  ){
     // document.getElementById("infoVizRelations").style.visibility='hidden';
     document.getElementById("infoVizRelations").style.display="none";
     // Add display of the filters if there are existing filters ?
@@ -521,13 +521,13 @@ var margin = {top: 10, right: 10, bottom: 10, left: 10};
 
 if (typeof results !== 'undefined'){
     var numberFacetsUnEmpty = {};
-    console.log( "results.data.facet_counts : " );
-    console.log( results.data.facet_counts );
-    for (var u in results.data.facet_counts.facet_fields){
-      if ( results.data.facet_counts.facet_fields[u][1] > 0 ){
+    console.log( "results.facet_counts : " );
+    console.log( results.facet_counts );
+    for (var u in results.facet_counts.facet_fields){
+      if ( results.facet_counts.facet_fields[u][1] > 0 ){
         numberFacetsUnEmpty[u]=0;
-        for (var v=0; v < results.data.facet_counts.facet_fields[u].length;v++){
-            if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){ 
+        for (var v=0; v < results.facet_counts.facet_fields[u].length;v++){
+            if (v%2 === 0 && results.facet_counts.facet_fields[u][v+1] !== 0 ){
               numberFacetsUnEmpty[u]++;
           }
       }
@@ -704,13 +704,13 @@ cpt++;
       cpt++;
   }
   var maxOccurences =[];
-  for (var u in results.data.facet_counts.facet_fields){
+  for (var u in results.facet_counts.facet_fields){
       maxOccurences.push(0);
       var cpt=0;
-      for (var v = 0; v < results.data.facet_counts.facet_fields[u].length ;v++ ){
-        if (typeof results.data.facet_counts.facet_fields[u][v] !== "string" ){
-          if (maxOccurences[ maxOccurences.length-1 ] < results.data.facet_counts.facet_fields[u][v]){
-            maxOccurences[maxOccurences.length-1] = results.data.facet_counts.facet_fields[u][v];
+      for (var v = 0; v < results.facet_counts.facet_fields[u].length ;v++ ){
+        if (typeof results.facet_counts.facet_fields[u][v] !== "string" ){
+          if (maxOccurences[ maxOccurences.length-1 ] < results.facet_counts.facet_fields[u][v]){
+            maxOccurences[maxOccurences.length-1] = results.facet_counts.facet_fields[u][v];
         }
     }
 }
@@ -735,13 +735,13 @@ for (var u in numberFacetsUnEmpty){
 
 var cpt=0;
 for (var u in numberFacetsUnEmpty ){
-  for (var v =0; v < results.data.facet_counts.facet_fields[u].length; v++ ){
-    if (v%2 === 0 && results.data.facet_counts.facet_fields[u][v+1] !== 0 ){
-      dataBars[cpt].push({"content":results.data.facet_counts.facet_fields[u][v],
-        "readableContent":vm.$options.filters.excerpt(results.data.facet_counts.facet_fields[u][v],200),
+  for (var v =0; v < results.facet_counts.facet_fields[u].length; v++ ){
+    if (v%2 === 0 && results.facet_counts.facet_fields[u][v+1] !== 0 ){
+      dataBars[cpt].push({"content":results.facet_counts.facet_fields[u][v],
+        "readableContent":vm.$options.filters.excerpt(results.facet_counts.facet_fields[u][v],200),
         "occurence":0 , "x":Math.floor(v/2) * (widthRectangles[cpt] + 5) +margin.left,
         "index":Math.floor(v/2), "facet":u,  }) ;
-      dataBars[cpt][ dataBars[cpt].length -1 ].occurence=results.data.facet_counts.facet_fields[u][v+1];
+      dataBars[cpt][ dataBars[cpt].length -1 ].occurence=results.facet_counts.facet_fields[u][v+1];
   }
 }
 cpt++;
@@ -1109,9 +1109,9 @@ for (var u in numberFacetsUnEmpty){
       var nameToNodeIndex={};
       var nodeData ={ "stuff":[], "nodes":[],"links":[],"group":[],"color":[] };
 
-      if (results.data.response.docs.length>0){
+      if (results.response.docs.length>0){
           d3.select("#vizSpotRelations").attr("visibility","visible");
-          var numFound = results.data.response.numFound;
+          var numFound = results.response.numFound;
           if ( typeof vm.$data.valueDisplay == 'undefined'){
         // console.log("^^^^ typeof vm.$data.valueDisplay == 'undefined' ^^^^");
         vm.$data.valueDisplay = "Facet";

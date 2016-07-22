@@ -207,21 +207,20 @@
                     return;
                 }
 
-                let queryParams = this.getQueryParameters();
-                // Options passed to ajax request
-                // Timeout set to prevent infinite waiting
-                let ajaxOptions = {
-                    timeout: 5000
+                let requestData = {
+                    params: this.getQueryParameters(),
+                    timeout: 10000
                 };
 
                 this.isQuerying = true;
 
-                this.$http.get(apiUrl,queryParams,ajaxOptions)
-                    .then(function(results) {
-                        // displayRevertingFilters(results,this);
+                this.$http.get(apiUrl,requestData)
+                    .then(function(responseData) {
+                        results = responseData.json();
                         if (! this.submittedQuery) {
                             this.submittedQuery = true;
                         }
+
                         this.consumeResults(results);
                     })
                     .catch(function(data){
@@ -246,8 +245,8 @@
                     throw new Error("No results is available");
                 }
 
-                let paginationInfo = results.data.page;
-                let embeddedObjects = results.data._embedded;
+                let paginationInfo = results.page;
+                let embeddedObjects = results._embedded;
                 if (_.isEmpty(embeddedObjects)) {
                     return {};
                 }

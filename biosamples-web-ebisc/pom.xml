@@ -95,9 +95,8 @@
 							<directory>.</directory>
 							<includes>
 								<include>**/logs/</include>
-<!-- 								<include>**/node/</include> -->
-<!-- 								<include>**/node_modules/</include> -->
-<!-- 								<include>**/bower_components/</include> -->
+								<include>**/node/</include>
+								<include>**/node_modules/</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
