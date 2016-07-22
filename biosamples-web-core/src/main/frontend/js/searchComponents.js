@@ -35,8 +35,8 @@
 
 
     // Vue Configuration
-    Vue.config.debug = false;
-    Vue.config.silent = true;
+    Vue.config.debug = true;
+    Vue.config.silent = false;
 
     // Plugins
     Vue.use(VueResource);
