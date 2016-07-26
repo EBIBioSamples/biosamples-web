@@ -2,13 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org"
       layout:decorator="__parent_base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="currentPage = 'samples'">
+      th:with="currentPage = 'samples', relationsUrl=${@environment.getProperty('relations.server')}">
 <head>
     <title th:text="${sample.accession}">SAMEAxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
 
-    link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"  rel="stylesheet" type="text/css"  />
     <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"  rel="stylesheet" type="text/css"  />
     <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/style.css}" href="/stylesheets/style.css"  rel="stylesheet" type="text/css"  />
 
     <!--/* Pass SPRING variables to Javascript */-->
     <script th:if="${hasRelations}" th:inline="javascript">
@@ -35,7 +36,7 @@
 
     <div id="sample_content">
         <div class="detail_table">
-            <h1 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h1>
+            <h4 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h4>
             <table id="bs_results_tablesamplegroupdetail" class="listing">
                 <tbody>
                 <!-- Common sample attributes -->
