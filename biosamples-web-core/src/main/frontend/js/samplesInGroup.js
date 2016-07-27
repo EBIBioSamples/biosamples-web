@@ -216,7 +216,7 @@
 
                 this.$http.get(apiUrl,requestData)
                     .then(function(responseData) {
-                        results = responseData.json();
+                        const results = responseData.json();
                         if (! this.submittedQuery) {
                             this.submittedQuery = true;
                         }

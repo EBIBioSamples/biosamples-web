@@ -40,12 +40,12 @@ table.common-attr {
     margin-bottom: 0;
   }
 
-  table, th, td {
-    border: 1px solid lightgrey;
-  }
+  //table, th, td {
+  //  border: 1px solid lightgrey;
+  //}
 
   thead {
-    background-color: $deep-blue;
+    background-color: $primary-color;
     color: white;
   }
 }

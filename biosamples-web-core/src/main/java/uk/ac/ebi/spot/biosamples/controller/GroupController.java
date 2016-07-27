@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -51,6 +52,9 @@ public class GroupController {
 
     @Autowired private HttpSolrDispatcher httpSolrDispatcher;
 
+    @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
+    private String relationsServerUrl;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected Logger getLog() {
@@ -64,6 +68,7 @@ public class GroupController {
         if (group != null) {
 
             model.addAttribute("group", group);
+            model.addAttribute("relationsUrl", relationsServerUrl);
             if ( group.hasSamples() ) {
                 // Sample common attributes
                 Set<String> tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession, Integer.parseInt(group.getNumberOfSamples()));

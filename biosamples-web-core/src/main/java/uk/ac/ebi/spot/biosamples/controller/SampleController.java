@@ -3,6 +3,7 @@ package uk.ac.ebi.spot.biosamples.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,6 +42,9 @@ public class SampleController {
 
     @Autowired private RelationsLinkFactory relationsLinkFactory;
 
+    @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
+    private String relationsServerUrl;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected Logger getLog() {
@@ -53,6 +57,7 @@ public class SampleController {
 
         if (sample != null) {
             model.addAttribute("sample", sample);
+            model.addAttribute("relationsUrl", relationsServerUrl);
 
             String relationsURL = relationsLinkFactory.createRelationsLinkForSample(sample).getHref();
             RestTemplate restTemplate = new RestTemplate();

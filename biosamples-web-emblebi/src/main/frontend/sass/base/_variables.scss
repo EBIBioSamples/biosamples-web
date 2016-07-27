@@ -3,11 +3,12 @@ $icon-font-path: '../fonts/';
 // Colors
 $gray-mid:               #555 !default;
 $aquamarine: hsla(181, 38%, 59%, 1); // #337ab7
+$aquamarine2: rgba(112,189,189,0.5); // EMBL-EBI
 $deep-blue: #2f6fad;
 
-$brand-primary: $aquamarine;
+$brand-primary: $aquamarine2;
 
-$primary-color:   $aquamarine;
+$primary-color:   $aquamarine2;
 $highlight-color:  #9CFF0D;
 
 $panel-padding: 5px;

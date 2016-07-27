@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       layout:decorator="__parent_base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="currentPage = 'samples', relationsUrl=${@environment.getProperty('relations.server')}">
+      th:with="currentPage = 'search'">
 <head>
     <title th:text="${sample.accession}">SAMEAxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
 
@@ -34,7 +34,7 @@
     </nav>
 
 
-    <div id="sample_content">
+    <section id="sample_content">
         <div class="detail_table">
             <h4 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h4>
             <table id="bs_results_tablesamplegroupdetail" class="listing">
@@ -156,12 +156,12 @@
                 </tbody>
             </table>
         </div>
-    </div>
-    <div id="samples" class="relation-graph" th:if="${hasRelations}">
-        <h2 class="relation-graph__title">Samples Relations</h2>
+    </section>
+    <section id="samples" class="relation-graph" th:if="${hasRelations}">
+        <h4>Samples Relations</h4>
         <div id="ontology_vis">
         </div>
-    </div>
+    </section>
 </main>
 
 <th:block layout:fragment="custom-endpage-scripts">
