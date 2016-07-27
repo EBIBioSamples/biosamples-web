@@ -18,9 +18,9 @@
     You can add or remove pages form the navigation, remember to update also this documentation
 
 */-->
-<th:block layout:fragment="navigation(entry)">
+<th:block layout:fragment="primaryNav(entry)">
     <!--<nav th:with="navigationPage=${#strings.defaultString(customPage,'home')}">-->
-    <nav>
+    <nav th:with="entry=${#strings.defaultString(entry,'home')}">
         <ul class="grid_24" id="local-nav">
             <li class="first" th:classappend="${entry == 'home'} ? 'active'">
                 <a th:href="@{/}" href="/" title="Biosamples">Home</a>
@@ -29,10 +29,10 @@
                 <a th:href="@{/search}" href="/search">Search</a>
             </li>
             <!--<li th:classappend="${navigationPage == 'samples'} ? 'active'">-->
-                <!--<a th:href="@{/samples}" href="/samples" title="Samples">Samples</a>-->
+            <!--<a th:href="@{/samples}" href="/samples" title="Samples">Samples</a>-->
             <!--</li>-->
             <!--<li th:classappend="${navigationPage == 'groups'} ? 'active'">-->
-                <!--<a th:href="@{/groups}" href="/groups" title="Groups">Sample Groups</a>-->
+            <!--<a th:href="@{/groups}" href="/groups" title="Groups">Sample Groups</a>-->
             <!--</li>-->
             <li th:classappend="${entry == 'submit'} ? 'active'">
                 <a th:href="@{/help/submit}" href="/help/submit" title="Submit">Submit</a>
@@ -47,5 +47,32 @@
         </ul>
     </nav>
 </th:block>
+
+<th:block layout:fragment="secondaryNav(root,entry)">
+    <ul id="secondary-nav" th:with="root=${#strings.defaultString(root,'/help')}">
+        <li class="first" th:classappend="${entry == 'home'} ? 'active'">
+            <a th:href="@{${root}}" title="Help - Home">Help - Home</a>
+        </li>
+        <li class="first" th:classappend="${entry == 'search'} ? 'active'">
+            <a th:href="@{${root + '/search'}}" title="Searching">Searching</a>
+        </li>
+        <li class="first" th:classappend="${entry == 'submitting'} ? 'active'">
+            <a th:href="@{${root + '/submit'}}" title="Submitting">Submitting</a>
+        </li>
+        <li class="first" th:classappend="${entry == 'api'} ? 'active'">
+            <a th:href="@{${root + '/api'}}" title="Programatic interface">Programatic interface</a>
+        </li>
+        <li class="first" th:classappend="${entry == 'faq'} ? 'active'">
+            <a th:href="@{${root + '/faq'}}" title="Frequently Asked Questions">FAQ</a>
+        </li>
+        <li class="first" th:classappend="${entry == 'news'} ? 'active'">
+            <a th:href="@{${root + '/news'}}" title="news">News</a>
+        </li>
+        <li class="first" th:classappend="${entry == 'contactus'} ? 'active'">
+            <a th:href="@{${root + '/contact_us'}}" title="Contact Us">Contact Us</a>
+        </li>
+    </ul>
+</th:block>
+
 </body>
 </html>
