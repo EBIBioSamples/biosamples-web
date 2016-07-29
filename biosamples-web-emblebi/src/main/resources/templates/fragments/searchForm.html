@@ -3,31 +3,30 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Seach Form</title>
+    <title>Search Form</title>
 </head>
 <body>
 
 <!-- Search Input Form - based on Vue.js javascript framework -->
-<form th:fragment="searchInput" id="local-search" name="local-search" method="post" v-on:submit.prevent="querySamples">
+<th:block th:fragment="searchInput" th:with="isSearch = false">
+    <form th:action="@{/search}" id="local-search" name="local-search" method="get" @submit.prevent="querySamples">
+        <fieldset>
+            <div class="left">
+                <label>
+                    <input type="text"
+                           name="searchTerm"
+                           id="local-searchbox"
+                           th:value="${searchTerm}"
+                           placeholder="Start your search"
+                           v-model="searchTerm">
+                </label>
 
-    <fieldset>
-        <div class="left">
-            <label>
-                <input type="text"
-                       th:value="${searchTerm}"
-                       name="first"
-                       id="local-searchbox"
-                       placeholder="Start your search"
-                       v-model="searchTerm">
-            </label>
-
-        </div>
-
-        <div class="right">
-            <input type="submit" name="submit" value="Search" class="submit" />
-        </div>
-    </fieldset>
-
-</form>
+            </div>
+            <div class="right">
+                <input type="submit" value="Search" class="submit" />
+            </div>
+        </fieldset>
+    </form>
+</th:block>
 </body>
 </html>
