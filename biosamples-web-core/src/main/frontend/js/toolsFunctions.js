@@ -1,25 +1,27 @@
 //var Biosample   = require('./components/Biosample.js');
+var Console = require("./utilities/Console.js");
+var d3Console = Console({context: "d3"});
 
 //This is the file to work with for toolsFunctions
-function getRandomColor() {
+var getRandomColor = function() {
   var letters = '0123456789ABCDEF'.split('');
   var color = '#';
-  for (var i = 0; i < 6; i++ ) {
+  for (let i = 0; i < 6; i++ ) {
       color += letters[ 1 + Math.floor(Math.random() * 15)];
   }
   return color;
-}
+};
 
 // TODO Incorporation of code from searchComponents
-function loadBars(width,height,margin,results,dataBars){
+var loadBars = function(width,height,margin,results,dataBars){
 
-}
+};
 
-function getURLsFromObject(objectToRead,prop){
+var getURLsFromObject = function(objectToRead,prop){
 	var arrayUrls = [];
 	var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
 	// Loop through the img file formats, and if found, get the url, then add its display in the text area
-	for (var i =0; i < arrayImgTypes.length;i++){
+	for (let i =0; i < arrayImgTypes.length;i++){
 	  if (typeof objectToRead[prop] == "string" ){
 	    // Loop through different kind of common separators, and turn the string into an array. Then you can use the code previously used to work with an array
 	    var strCutSymbols=[];
@@ -80,10 +82,10 @@ function getURLsFromObject(objectToRead,prop){
 	  }
 	}
 	return arrayUrls;
-}
+};
 
-function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
-	console.log("!!!!!loadDataFromGET !!!!!");
+var loadDataFromGET = function(results, nodeData, vm,apiUrl, nameToNodeIndex){
+	d3Console.group("!!!!!loadDataFromGET !!!!!");
 
 	if (typeof nameToNodeIndex === "undefined"){ nameToNodeIndex = {}; }
 	nodeData.group = [];
@@ -91,76 +93,76 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 	nodeData.accessions="";
 	var groupsReturned = {};
 
-	for (var i=0;i< results.data.response.docs.length;i++){
-		nodeData.accessions+=results.data.response.docs[i].accession+' ';
+	for (let i=0;i< results.response.docs.length;i++){
+		nodeData.accessions+=results.response.docs[i].accession+' ';
 		//Circle Data Set
 		// group
-		if (results.data.response.docs[i].content_type=="group"){
-			if (typeof results.data.response.docs[i].grp_sample_accessions !== 'undefined'){
+		if (results.response.docs[i].content_type=="group"){
+			if (typeof results.response.docs[i].grp_sample_accessions !== 'undefined'){
 			  nodeData.nodes.push({
 			  	"radius": 10,
 			  	"color" : getRandomColor(),
 			  	"type":"group",
-			  	"name":results.data.response.docs[i].accession,
-			  	"accession":results.data.response.docs[i].accession,
-			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
-			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
-			    "grp_sample_accessions":results.data.response.docs[i].grp_sample_accessions,
-			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			  	"name":results.response.docs[i].accession,
+			  	"accession":results.response.docs[i].accession,
+			    "Group_Name_crt": results.response.docs[i].Group_Name_crt, 
+			    "Derived_From_crt": results.response.docs[i].Derived_From_crt,"Same_As_crt": results.response.docs[i].Same_As_crt,"Child_Of_crt": results.response.docs[i].Child_Of_crt,
+			    "grp_sample_accessions":results.response.docs[i].grp_sample_accessions,
+			    "id": results.response.docs[i].id,"responseDoc":results.response.docs[i],
 			  });
-			  groupsReturned[results.data.response.docs[i].Group_Name_crt]=results.data.response.docs[i].grp_sample_accessions;
+			  groupsReturned[results.response.docs[i].Group_Name_crt]=results.response.docs[i].grp_sample_accessions;
 			} else {
 			  nodeData.nodes.push({
 			  	"radius": 10, 
 			  	"color" : getRandomColor(), 
 			  	"type":"group", 
-			  	"name":results.data.response.docs[i].accession,
-			  	"accession":results.data.response.docs[i].accession,
-			    "Group_Name_crt": results.data.response.docs[i].Group_Name_crt, 
-			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
+			  	"name":results.response.docs[i].accession,
+			  	"accession":results.response.docs[i].accession,
+			    "Group_Name_crt": results.response.docs[i].Group_Name_crt, 
+			    "Derived_From_crt": results.response.docs[i].Derived_From_crt,"Same_As_crt": results.response.docs[i].Same_As_crt,"Child_Of_crt": results.response.docs[i].Child_Of_crt,
 			    "grp_sample_accessions":[],
-			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			    "id": results.response.docs[i].id,"responseDoc":results.response.docs[i],
 			  });
-			  groupsReturned[results.data.response.docs[i].Group_Name_crt]=[];
+			  groupsReturned[results.response.docs[i].Group_Name_crt]=[];
 			}
-			nameToNodeIndex[ results.data.response.docs[i].accession ] = nodeData.nodes.length-1;
+			nameToNodeIndex[ results.response.docs[i].accession ] = nodeData.nodes.length-1;
 		} //sample
 		else {
-			if (typeof results.data.response.docs[i].sample_grp_accessions !== 'undefined'){
+			if (typeof results.response.docs[i].sample_grp_accessions !== 'undefined'){
 			  nodeData.nodes.push({ 	
 			  	"radius": 5, 
 			  	"color" : getRandomColor(), 
 			  	"type":"sample", 
-			  	"name":results.data.response.docs[i].accession,
-			  	"accession":results.data.response.docs[i].accession,
-			    "sample_grp_accessions":results.data.response.docs[i].sample_grp_accessions,
-			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
-			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			  	"name":results.response.docs[i].accession,
+			  	"accession":results.response.docs[i].accession,
+			    "sample_grp_accessions":results.response.docs[i].sample_grp_accessions,
+			    "Derived_From_crt": results.response.docs[i].Derived_From_crt,"Same_As_crt": results.response.docs[i].Same_As_crt,"Child_Of_crt": results.response.docs[i].Child_Of_crt,
+			    "id": results.response.docs[i].id,"responseDoc":results.response.docs[i],
 			  });
 
-			  if ( typeof groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]] === 'undefined' ){
-			  	groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]]=[];
+			  if ( typeof groupsReturned[results.response.docs[i].sample_grp_accessions[0]] === 'undefined' ){
+			  	groupsReturned[results.response.docs[i].sample_grp_accessions[0]]=[];
 			  }
-			  groupsReturned[results.data.response.docs[i].sample_grp_accessions[0]].push(results.data.response.docs[i].accession);
+			  groupsReturned[results.response.docs[i].sample_grp_accessions[0]].push(results.response.docs[i].accession);
 			} else {
 			  nodeData.nodes.push({
 			  	"radius": 5,
 			  	"color" : getRandomColor(),
 			  	"type":"sample",
-			  	"accession":results.data.response.docs[i].accession,
-			  	"name":results.data.response.docs[i].accession,
+			  	"accession":results.response.docs[i].accession,
+			  	"name":results.response.docs[i].accession,
 			    "sample_grp_accessions":[],
-			    "Derived_From_crt": results.data.response.docs[i].Derived_From_crt,"Same_As_crt": results.data.response.docs[i].Same_As_crt,"Child_Of_crt": results.data.response.docs[i].Child_Of_crt,
-			    "id": results.data.response.docs[i].id,"responseDoc":results.data.response.docs[i],
+			    "Derived_From_crt": results.response.docs[i].Derived_From_crt,"Same_As_crt": results.response.docs[i].Same_As_crt,"Child_Of_crt": results.response.docs[i].Child_Of_crt,
+			    "id": results.response.docs[i].id,"responseDoc":results.response.docs[i],
 			  });
 			}
 		}
-		nameToNodeIndex[results.data.response.docs[i].accession] = nodeData.nodes.length-1;
+		nameToNodeIndex[results.response.docs[i].accession] = nodeData.nodes.length-1;
 	}
 
 	var accessionToIndex={};
 	// Step 1: save from group to sample in nodes
-	for (var i=0; i < nodeData.nodes.length;i++){
+	for (let i=0; i < nodeData.nodes.length;i++){
 		//nodeData.nodes.push({"name":nodeData.stuff[i].accession[0]});
 		accessionToIndex[nodeData.nodes[i].accession] = i;
 		nodeData.group[i]='';
@@ -231,16 +233,16 @@ function loadDataFromGET(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		}
 	}
 
-	console.log("nodeData : ");console.log(nodeData);
-	console.log("===========================");
+	d3Console.debug("nodeData: ", nodeData);
+	d3Console.groupEnd();
 	return [nodeData,groupsReturned,nameToNodeIndex];
-}
+};
 
-function getSamplesFromGroup(apiUrl,group){
+var getSamplesFromGroup = function(apiUrl,group){
 
-}
+};
 
-function loadDataWithoutRefresh(vm,apiUrl,parameters){	
+var loadDataWithoutRefresh = function(vm,apiUrl,parameters){
   var queryParams = vm.getQueryParameters();
   queryParams.searchTerm = parameters.searchTerm;
 
@@ -252,23 +254,23 @@ function loadDataWithoutRefresh(vm,apiUrl,parameters){
 
 	  var resultsInfo = results.data.response;
 	  var highLights = results.data.highlighting;
-	  var types = results.data.facet_counts.facet_fields.content_type;
-	  var organisms = results.data.facet_counts.facet_fields.organism_crt;
-	  var organs = results.data.facet_counts.facet_fields.organ_crt;
+	  var types = results.facet_counts.facet_fields.content_type;
+	  var organisms = results.facet_counts.facet_fields.organism_crt;
+	  var organs = results.facet_counts.facet_fields.organ_crt;
 	  var docs = resultsInfo.docs;
 	  var hlDocs = vm.associateHighlights(docs, highLights);
 	  
 	  return results;
 	})
 	.catch(function(data,status,response){
-	  console.log("data : ");console.log(data);
+	  d3Console.debug("data: ", data);
 	  console.log("status : ");console.log(status);
 	  console.log("response : ");console.log(response);
 	});
 	return rezToReturn;
-}
+};
 
-function readFacets(facets) {
+var readFacets = function(facets) {
     var obj = _.create({});
     obj.keys = [];
     obj.vals = [];
@@ -280,31 +282,31 @@ function readFacets(facets) {
         }
     }
     return obj;
-}
+};
 
-function popOutDiv(stringDiv){
+var popOutDiv = function(stringDiv){
 	var stringID = '#'+stringDiv;
 	//clearTimeout(stringID);
 	var timeOutHandle = setTimeout(function() {
 	  $(stringID).fadeIn('fast');
 	}, 5); // <-- time in milliseconds
-}
+};
 
-function fadeOutDiv(stringDiv){
+var fadeOutDiv = function(stringDiv){
 	
 	var stringID = '#'+stringDiv;
 	//clearTimeout(stringID);
 	setTimeout(function() {
 	  $(stringID).fadeOut('slow');
 	}, 3500); // <-- time in milliseconds	
-}
+};
 
 
-function changeSpecialCharacters( myid ) { 
+var changeSpecialCharacters = function( myid ) {
     return myid.replace( /(:|\!|\?|\'|\"|\.|\-|\{|\}|\/|\%| |\.|\,|\;|\(|\)|\[|\]|,)/g, "_" );
-}
+};
 
-function showTextSamples(boolValue) {
+var showTextSamples = function(boolValue) {
 	if ( boolValue.checked ){
 		d3.selectAll(".node").selectAll("text").style("visibility","visible");
 	} else {
@@ -316,14 +318,14 @@ function showTextSamples(boolValue) {
 			}
 		});
 	}
-}
+};
 
-function saveURL(e){
+var saveURL = function(e){
 	d3.select("#saveButton")[0][0].textContent=document.URL;
 	d3.select("#saveButton").style("overflow-x ","visible");
-}
+};
 
-function draw(svg,nodeData){
+var draw = function(svg,nodeData){
 
 	document.getElementById("buttons-display").style.display="block";
 
@@ -518,10 +520,10 @@ function draw(svg,nodeData){
 	});
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");
-}
+};
 
 // This function is to load data according to the facets, when the number of nodes would be too high to directly display
-function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
+var loadDataFromFacets = function( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	console.log("!!!!!loadDataFromFacets 1 !!!!!");
 	console.log("loadDataFromFacets in src/main/ressources/static/javascript/toolsFunctions");
 
@@ -536,13 +538,13 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	var maxAndMinFacet = {};
 	var maxAndMinTotal = [];
 	var scaleFacet;
-	for (var i in results.data.facet_counts.facet_fields){
+	for (var i in results.facet_counts.facet_fields){
 		var currentMin,currentMax;
-		for (var j = 1; j<results.data.facet_counts.facet_fields[i].length; j=j+2 ){
-			if ( typeof currentMin === 'undefined' || currentMin > results.data.facet_counts.facet_fields[i][j] )
-				currentMin = results.data.facet_counts.facet_fields[i][j]
-			if ( typeof currentMax === 'undefined' || currentMax < results.data.facet_counts.facet_fields[i][j] )
-						currentMax = results.data.facet_counts.facet_fields[i][j]
+		for (var j = 1; j<results.facet_counts.facet_fields[i].length; j=j+2 ){
+			if ( typeof currentMin === 'undefined' || currentMin > results.facet_counts.facet_fields[i][j] )
+				currentMin = results.facet_counts.facet_fields[i][j]
+			if ( typeof currentMax === 'undefined' || currentMax < results.facet_counts.facet_fields[i][j] )
+						currentMax = results.facet_counts.facet_fields[i][j]
 		}
 		maxAndMinFacet[i] = [ currentMin, currentMax ];
 		if ( maxAndMinTotal.length == 0 ){
@@ -559,33 +561,33 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 		.range([5,50]);
 
 	var cptDomain =0; 
-	for (var i in results.data.facet_counts.facet_fields){ cptDomain++ }
+	for (var i in results.facet_counts.facet_fields){ cptDomain++ }
 	var color = d3.scale.category20()
     	.domain(d3.range( cptDomain ));
 
 	// Calculate how to cut the space facets into nodes
 	var cptNodeToIndex = {};
 	var cptIndex = 0;
-	for (var i in results.data.facet_counts.facet_fields){
+	for (var i in results.facet_counts.facet_fields){
 		nodeData.facets.push(i);
 		var colorFacet = getRandomColor();
-		for (var j=0; j < results.data.facet_counts.facet_fields[i].length;j++){
-			if (j%2==0 && results.data.facet_counts.facet_fields[i][j+1] > 0 )
+		for (var j=0; j < results.facet_counts.facet_fields[i].length;j++){
+			if (j%2==0 && results.facet_counts.facet_fields[i][j+1] > 0 )
 			{
 				nodeData.nodes.push({
-					"radius": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
-					"r": scaleFacet( results.data.facet_counts.facet_fields[i][j+1] ),
+					"radius": scaleFacet( results.facet_counts.facet_fields[i][j+1] ),
+					"r": scaleFacet( results.facet_counts.facet_fields[i][j+1] ),
 					"index":cptIndex,
 					"d":{
-						cluster:results.data.facet_counts.facet_fields[i][0], 
-						radius: scaleFacet(results.data.facet_counts.facet_fields[i][j+1]) },
+						cluster:results.facet_counts.facet_fields[i][0], 
+						radius: scaleFacet(results.facet_counts.facet_fields[i][j+1]) },
 					"color" : colorFacet,
 					"type":"nodeFacet",
 					"facet":i,
-					"cluster":results.data.facet_counts.facet_fields[i][0],
-					"readableContent":vm.$options.filters.excerpt(results.data.facet_counts.facet_fields[i][j],200),
-					"name":results.data.facet_counts.facet_fields[i][j],
-					"value":results.data.facet_counts.facet_fields[i][j+1]
+					"cluster":results.facet_counts.facet_fields[i][0],
+					"readableContent":vm.$options.filters.excerpt(results.facet_counts.facet_fields[i][j],200),
+					"name":results.facet_counts.facet_fields[i][j],
+					"value":results.facet_counts.facet_fields[i][j+1]
 				});
 				cptIndex++;
 			}
@@ -593,9 +595,9 @@ function loadDataFromFacets( results, nodeData, vm,apiUrl, nameToNodeIndex ){
 	}
 
 	return nodeData;
-}
+};
 
-function drawFacets(svg,nodeData,vm){
+var drawFacets = function(svg,nodeData,vm){
 	console.log("function drawFacets");
 
 	document.getElementById("buttons-display").style.display="none";
@@ -847,9 +849,9 @@ function drawFacets(svg,nodeData,vm){
 	});
 
 	d3.select(self.frameElement).style("height", width - 150 + "px");
-}
+};
 
-function displayRevertingFilters( results,vm ){
+var displayRevertingFilters = function( results,vm ){
 	console.log("-- displayRevertingFilters --");
 	// Display the filters in filterEmergencyDisplay 
 	// if we have both filters and empty results
@@ -858,21 +860,21 @@ function displayRevertingFilters( results,vm ){
 	var remainingfilters = {};
 	function infoDisplayFilters (results){
 	    var needToDisplay = false; var arrayFilters = [];
-	    if ( results.data.response.docs.length == 0 ){
-	        for (var i in results.request.params.filters){
-	            var indexPipe = results.request.params.filters[i].indexOf("|");
-	            if ( indexPipe != results.request.params.filters[i].length-1 ){
-	                arrayFilters.push(results.request.params.filters[i]);
+	    if ( results.response.docs.length == 0 ){
+	        for (var i in results.responseHeader.params.filters){
+	            var indexPipe = results.responseHeader.params.filters[i].indexOf("|");
+	            if ( indexPipe != results.responseHeader.params.filters[i].length-1 ){
+	                arrayFilters.push(results.responseHeader.params.filters[i]);
 	                needToDisplay = true;
 	            } 
 	        }
 	    }
 	    // New version with display of filters all the time
 	    else {
-	        for (var i in results.request.params.filters){
-	            var indexPipe = results.request.params.filters[i].indexOf("|");
-	            if ( indexPipe != results.request.params.filters[i].length-1 ){
-	                arrayFilters.push(results.request.params.filters[i]);
+	        for (var i in results.responseHeader.params.filters){
+	            var indexPipe = results.responseHeader.params.filters[i].indexOf("|");
+	            if ( indexPipe != results.responseHeader.params.filters[i].length-1 ){
+	                arrayFilters.push(results.responseHeader.params.filters[i]);
 	                needToDisplay = false;
 	            } 
 	        }
@@ -954,4 +956,23 @@ function displayRevertingFilters( results,vm ){
         d3.selectAll('.crossDelete').style("background-color","white");
         d3.selectAll('.crossDelete').style("color","black");
     });
-}
+};
+
+module.exports = {
+	getRandomColor,
+	loadBars,
+	getURLsFromObject,
+	loadDataFromGET,
+	getSamplesFromGroup,
+	loadDataWithoutRefresh,
+	readFacets,
+	popOutDiv,
+	fadeOutDiv,
+	changeSpecialCharacters,
+	showTextSamples,
+	saveURL,
+	draw,
+	loadDataFromFacets,
+	drawFacets,
+	displayRevertingFilters
+};
