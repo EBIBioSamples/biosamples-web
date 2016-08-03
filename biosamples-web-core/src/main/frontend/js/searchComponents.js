@@ -499,7 +499,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
 })(window);
 
 function doD3Stuff( results, apiUrl, vm=0  ){
-    d3Console.group("______doD3Stuff_______");
+    d3Console.group("doD3Stuff");
     d3Console.debug("results: ", results);
 
     // If existing, clean the visualisation space
@@ -550,7 +550,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                 vm.$emit("displayChanged");
             } else {
                 d3Console.debug(" d3.select('#representationButton').attr('value') == 'Sample' ");
-                d3Console.debug("**** Change to Sample ");
+                d3Console.debug(" Change to Sample ");
                 d3.select('#representationButton').text("Facet");
                 d3.select('#representationButton').attr('value',"Facet");
                 vm.$data.valueDisplay = "Sample";
@@ -686,7 +686,7 @@ function doD3Stuff( results, apiUrl, vm=0  ){
                         .style("border-radius","10px")
                 );
             } else {
-                d3Console.debug("numberFacetsUnEmpty[u] == 0");d3Console.debug(u);
+                d3Console.debug("numberFacetsUnEmpty[u] == 0", u);
             }
             cpt++;
         }
