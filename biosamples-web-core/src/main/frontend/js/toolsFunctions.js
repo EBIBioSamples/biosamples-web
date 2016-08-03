@@ -4,13 +4,12 @@ var d3Console = Console({context: "d3"});
 
 //This is the file to work with for toolsFunctions
 var getRandomColor = function() {
-	d3Console.groupCollapsed("getRandomColor");
+	d3Console.debug("getRandomColor");
 	var letters = '0123456789ABCDEF'.split('');
 	var color = '#';
 	for (let i = 0; i < 6; i++ ) {
 		color += letters[ 1 + Math.floor(Math.random() * 15)];
 	}
-	d3Console.groupEnd();
 	return color;
 };
 
@@ -20,7 +19,7 @@ var loadBars = function(width,height,margin,results,dataBars){
 };
 
 var getURLsFromObject = function(objectToRead,prop){
-	d3Console.groupCollapsed("getURLsFromObject");
+	d3Console.debug("getURLsFromObject");
 
 	var arrayUrls = [];
 	var arrayImgTypes = [".jpg",".png",".jpeg",".tiff",".gif"," .jif",".jfif",".jp2",".jpx",".j2k",".j2c",".fpx",".pcd",".pdf"];
@@ -86,7 +85,6 @@ var getURLsFromObject = function(objectToRead,prop){
 		}
 	}
 
-	d3Console.groupEnd();
 	return arrayUrls;
 };
 
@@ -178,7 +176,7 @@ var loadDataFromGET = function(results, nodeData, vm,apiUrl, nameToNodeIndex){
 	var indexCalculation=0;
 	for (var group in groupsReturned){
 		// TODO: GET request to get the information in global about the samples within the group
-		colorGroup = getRandomColor();
+		let colorGroup = getRandomColor();
 		if ( nodeData.accessions.indexOf( group ) === -1 ){
 			indexCalculation++;
 			nodeData.nodes.push({
@@ -207,7 +205,7 @@ var loadDataFromGET = function(results, nodeData, vm,apiUrl, nameToNodeIndex){
 			nodeData.nodes[ nameToNodeIndex[group] ].groupAttributesToValues = {};
 			nodeData.nodes[ nameToNodeIndex[group] ].groupValuesToSamples = {};
 
-			for (var i=0; i < groupsReturned[group].length; i ++){
+			for (let i=0; i < groupsReturned[group].length; i ++){
 				for (var attr in nodeData.nodes[nameToNodeIndex[group]].responseDoc){
 
 					var attrSample = attr;
@@ -224,7 +222,7 @@ var loadDataFromGET = function(results, nodeData, vm,apiUrl, nameToNodeIndex){
 		}
 
 		// Probably here that we should decide what to get in the new get request
-		for (var i=0; i < groupsReturned[group].length;i++){
+		for (let i=0; i < groupsReturned[group].length;i++){
 			nodeData.group[ nameToNodeIndex[ groupsReturned[group][i]] ] = group;
 
 			if (typeof nameToNodeIndex[ groupsReturned[group][i] ] !== 'undefined'){
@@ -980,12 +978,12 @@ var displayRevertingFilters = function( results,vm ){
 };
 
 module.exports = {
-	getRandomColor,
-	loadBars,
+	// getRandomColor,
+	// loadBars,
 	getURLsFromObject,
 	loadDataFromGET,
 	getSamplesFromGroup,
-	loadDataWithoutRefresh,
+	// loadDataWithoutRefresh,
 	readFacets,
 	popOutDiv,
 	fadeOutDiv,
