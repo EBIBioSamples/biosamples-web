@@ -87,10 +87,12 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
         for ( let i=0, n=facetKeys.length; i < n; i++ ) {
             if (facetKeys[i]) {
                 let facetKey = facetKeys[i].replace(/_ft$/, "");
-                let facetValue = obj[facetKey];
-                if (facetValue) {
-                    badges[facetKey] =
-                        _.isArray(facetValue) ? facetValue[0] : facetValue;
+                if (facetKey.toLowerCase() !== "content_type") {
+                    let facetValue = obj[facetKey];
+                    if (facetValue) {
+                        badges[facetKey] =
+                            _.isArray(facetValue) ? facetValue[0] : facetValue;
+                    }
                 }
             }
         }
