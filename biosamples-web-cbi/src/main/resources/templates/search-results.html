@@ -5,288 +5,23 @@
       th:with="currentPage = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
 <head>
     <title>Search</title>
-    <link rel="stylesheet"
-          th:href="@{/stylesheets/main_samelf.css}"
-          href="../static/stylesheets/main_samelf.css"
-          type="text/css"
-          media="screen"/>
+    <!--<link rel="stylesheet" th:href="@{/stylesheets/main_samelf.css}" href="../static/stylesheets/main_samelf.css" type="text/css" media="screen"/>-->
 
     <style type="text/css">
-        /* You have the option of setting a maximum width for your page, and making sure everything is centered */
-        /* body { max-width: 1600px; margin: 0 auto; } */
-        .node circle {
-            fill: #000;
-            opacity: 0.8;
-        }
 
-        .node text {
-            stroke: #333;
-            cursos: pointer;
-        }
-
-        .node {
-            font: 10px sans-serif;
-        }
-
-        .link {
-            stroke: #aaa;
-            stroke-width: 1.5px;
-            opacity: .6;
-        }
-
-        .text-d3 {
-            border: solid;
-            border-radius: 10px;
-            background-color: green;
-            font-family: arial;
-            font-size: 10px;
-        }
-
-        .text-d3:hover {
-            fill: black;
-        }
-
-        .axis {
-            font: 10px sans-serif;
-        }
-
-        .axis path,
-        .axis line {
-            fill: none;
-            stroke: #000;
-            shape-rendering: crispEdges;
-        }
-
-        .x.axis path {
-            display: none;
-        }
-
-        .hull {
-            fill: steelblue;
-            stroke: steelblue;
-            stroke-width: 32px;
-            stroke-linejoin: round;
-        }
-
-        .crossDelete {
-            border-radius: 50%;
-            behavior: url(PIE.htc); /* remove if you don't care about IE8 */
-            width: 13px;
-            height: 13px;
-            padding: 3px;
-            background: #f5f5f5;
-            border: 1px solid #000;
-            color: #000;
-            text-align: center;
-            font: 13px Arial, sans-serif;
-            cursor: pointer;
-        }
-
-        .crossDelete2 {
-            border-radius: 50%;
-            behavior: url(PIE.htc);
-            width: 25px;
-            height: 25px;
-            padding: 0;
-            margin-right: 25px;
-            float: right;
-            background: #f5f5f5;
-            border: 1px solid #000;
-            color: #000;
-            text-align: center;
-            font: 21px Arial, sans-serif;
-            cursor: pointer;
-        }
-
-        #areaNodeLink {
-            position: relative;
-            width: 100%;
-        }
-
-        #vizNodeLink {
-            width: 100%;
-        }
-
-        #infoVizRelations {
-            height: 190px;
-            border: 1px solid black;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-            border-radius: 4px;
-            border-radius: 4px;
-            background-color: rgba(200, 200, 200, 0.5);
-            display: none;
-        }
-
-        #tableInfoViz {
-            border-spacing: 10px;
-            border-collapse: separate;
-        }
-
-        #vizSpotRelations {
-            background-color: #ffffff;
-            border: 1px solid black;
-        }
-
-        #buttonRezInfo {
-            border: solid;
-            border-radius: 4px;
-            visibility: hidden;
-            border: solid 1px black;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        #indicationButton {
-            cursor: pointer;
-            width: auto;
-            display: none;
-        }
-
-        #indicationButton:hover {
-            color: blue;
-        }
-
-        #indicationWindow {
-            position: absolute;
-            display: none;
-            background-color: white;
-            opacity: .95;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            top: 0;
-            height: 150%;
-            color: black;
-        }
-
-        #indicationWindow:hover {
-        }
-
-        .titleIndication {
-            color: green;
-        }
-
-        #elementHelp {
-            width: 380px;
-            text-align: center;
-            display: none;
-        }
-
-        #textHelp {
-            background: #d3d3d3;
-            width: 380px;
-            color: black;
-            stroke-width: 32px;
-            opacity: 0.9;
-            border: solid 1px black;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        #tableHelp {
-            cellspacing: 1px;
-        }
-
-        #saveButton {
-            border-width: 1px;
-            border-radius: 5px;
-            border-color: black;
-            background-color: white;
-            margin-right: 30%;
-            width: 90%;
-            text-align: center;
-            overflow: scroll;
-            overflow-y: hidden;
-            padding: 6px 12px;
-        }
-
-        #representationButton {
-            height: 34px;
-            border-width: 1px;
-            margin-right: 15%;
-            margin-left: 15%;
-            border-radius: 5px;
-            border: solid 1px black;
-            background-color: white;
-            text-align: center;
-            padding: 6px 12px;
-            font-size: 14px;
-            width: 70%;
-            cursor: pointer;
-        }
-
-        #representationButton:hover {
-            background-color: #f5f5f5;
-        }
-
-        #questionSwitch {
-            border-radius: 50%;
-            behavior: url(PIE.htc);
-            width: 16px;
-            height: 16px;
-            background: #fff;
-            border: 1px solid #000;
-            color: #000;
-            text-align: center;
-            font: 13px Arial, sans-serif;
-            cursor: pointer
-        }
-
-        #questionSwitch:hover {
-            background-color: #ddd;
-        }
-
-        #infoPop {
-            position: fixed;
-            top: 5%;
-            right: 30%;
-            left: 30%;
-            width: 40%;
-            text-align: center;
-            border-radius: 5px;
-            background: black;
-            color: white;
-            stroke: steelblue;
-            stroke-width: 32px;
-            border: 4px solid grey;
-            display: none
-        }
-
-        /* scrollbar */
-        ::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            background-color: #F5F5F5;
-        }
-
-        ::-webkit-scrollbar {
-            width: 12px;
-            background-color: #F5F5F5;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            border-radius: 10px;
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-            background-color: #555;
-        }
-
-        [v-cloak] {
-            display: none;
-        }
     </style>
 
     <script th:inline="javascript">
         /*<![CDATA[*/
         window.apiUrl = [[${apiUrl}]];
         window.baseUrl = [[${baseUrl}]];
-        window.visualization = true;
+        window.visualization = false;
         /*]]>*/
     </script>
 </head>
 <body id="app">
 <main layout:fragment="content">
-    <div v-if="hasAlerts" class="alerts__container">
+    <div v-if="hasAlerts" class="alerts__container" >
         <component v-for="alert in alerts"
                    is="alert"
                    v-bind:type="alert.type"
@@ -298,77 +33,93 @@
 
     <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
     <div v-bind:class="{loading: isQuerying}"></div>
-    <br/><br/>
-    <div id="displayRemainingFilters"></div>
-    <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>
-        <li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>
-    </ul>
+    <br><br>
+    <!--<div id="displayRemainingFilters" ></div>-->
+    <div>
+        <shield v-for="(key, value) in filterList"
+                :key="key"
+                :value="value"
+                :closable="true"
+                value-color="random"
+                @shield-closed="removeFilter(key)">
+        </shield>
+    </div>
+    <!--<ul class="nav nav-tabs col-xs-12">-->
+        <!--<li class="active"><a data-toggle="tab" href="#sectionList">List of results</a></li>-->
+        <!--<li><a data-toggle="tab" href="#sectionVisualisation">Visualisation</a></li>-->
+    <!--</ul>-->
 
-
-    <div class="tab-content">
-        <section id="sectionList" class="container tab-pane fade in active" v-show="queryTermPresent" v-cloak>
-
+    <!--<div class="tab-content col-xs-12">-->
+    <div class="col-xs-12">
+        <!--<section id="sectionList" class="tab-pane fade in active" v-show="submittedQuery" v-cloak>-->
+        <section id="sectionList" v-show="submittedQuery" v-cloak>
             <div v-if="!queryHasResults">
                 <div class="row">
                     <h3>
                         No results have been found for <i>{{queryTerm}}</i>
-                        <span class="small"><a href="#" v-on:click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
+                        <span class="small"><a href="#" @click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
                     </h3>
                 </div>
             </div>
 
             <div v-else="">
-                <div class="row">
+                <div>
                     <div class="col-md-4"></div>
-                    <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i>
-                    </h3></div>
+                    <div class="col-md-8"><h3>Search results for: <i>{{queryTerm}}<span v-if="useFuzzy" class="small"> (and related terms)</span></i></h3></div>
                 </div>
                 <div v-else="">
                     <div class="row">
                         <div class="col-md-4">
                             <div class="row">
-                                <div class="panel panel-default">
+                                <div class="panel panel-default refine-panel">
                                     <div class="panel-heading">
                                         <h3>Refine search results</h3>
                                     </div>
                                     <div class="panel-body">
                                         <form>
-                                            <label for="fuzzy-search">Search for similar terms</label>
-                                            <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
-                                                   v-model="useFuzzy" v-on:change="querySamples"/>
+                                            <div class="form-group">
+                                                <label for="fuzzy-search">Search for similar terms</label>
+                                                <input type="checkbox" id="fuzzy-search" name="fuzzy-search"
+                                                       v-model="useFuzzy" @change="querySamples" />
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="collapse-facets">Collapse all facets</label>
+                                                <input type="checkbox" v-model="facetsCollapsed" id="collapse-facets" name="collapse-facets"
+                                                       @change="collapseFacets">
+                                            </div>
                                         </form>
 
                                         <component v-for="(key,facetObj) in facets"
-                                                   is="facet" v-bind:title="key | startCase"
-                                                   v-bind:keys="facetObj.keys"
-                                                   v-bind:values="facetObj.vals"
-                                                   v-bind:facet-id="key + 'Filter'">
+                                                   is="facet" :title="key | startCase"
+                                                   :keys="facetObj.keys"
+                                                   :values="facetObj.vals"
+                                                   :facet-id="key + 'Filter'">
                                         </component>
                                     </div>
                                     <div class="panel-footer">
-                                        <div class="row">
-                                            <div class="col-md-6">
+                                        <!--<div class="row">-->
+                                            <!--<div class="col-xs-6">-->
                                                 <component is="pagination"
-                                                           v-bind:total-results="resultsNumber"
-                                                           v-bind:displayed-results="samplesToRetrieve"
-                                                           style="float:right">
+                                                           :total-results="resultsNumber"
+                                                           :displayed-results="samplesToRetrieve">
                                                 </component>
-                                            </div>
-                                            <div class="col-md-6">
+                                            <!--</div>-->
+                                            <!--<div class="col-xs-6">-->
                                                 <component is="items-dropdown"
-                                                           v-bind:items-per-page="samplesToRetrieve">
+                                                           :items-per-page="samplesToRetrieve">
                                                 </component>
-                                            </div>
-                                        </div>
+                                            <!--</div>-->
+                                        <!--</div>-->
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <component is="biosamples-list"
-                                       v-bind:elements="biosamples">
-                            </component>
+                            <biosample v-for="biosample in biosamples"
+                                       :content="biosample"
+                                       :display-function="biosampleMap">
+
+                            </biosample>
                         </div>
                     </div>
                 </div>
@@ -376,141 +127,75 @@
             </div>
         </section>
 
-        <div><u><a id="indicationButton">Click here for help with the visualisation</a></u></div>
 
+        <!--<section id="sectionVisualisation" class='tab-pane fade'>-->
 
-        <section id="sectionVisualisation" class='tab-pane fade'>
-            <div id="vizNodeLink"></div>
-            <div id="areaNodeLink">
-                <div id="infoVizRelations">
-                    <table div='tableInfoViz'>
-                        <tr>
-                            <th>
-                                <div id="numberMatches"></div>
-                            </th>
-                            <th>
-                                <div id="vizRepresentation">
-                                    <h5> Switch the display of the results <br/> according to :
-                                        <p style="font-size:large">
-                                        <div id="questionSwitch">?</div>
-                                        </p> </h5>
-                                    <div id="representationButton"
-                                         name="representationButton"
-                                         active="false"
-                                         value="Sample">Sample
-                                    </div>
-                                    <br>
-                                </div>
-                            </th>
-                            <th>
-                                <div id="buttons-display" style="display:none;">
-                                    <h4> Choose the number of elements fully loaded : </h4>
-                                    <li style="list-style:none;">
-                                        <ul>
-                                            <component is="items-dropdown"></component>
-                                        </ul>
-                                        <ul>
-                                            <component is="pagination"
-                                                       v-bind:total-results="resultsNumber"
-                                                       v-bind:displayed-results="samplesToRetrieve">
-                                            </component>
-                                        </ul>
-                                        <ul>
-                                            <h5 style="display:inline"> Display text of all samples </h5>
-                                            <input type="checkbox" onclick='showTextSamples(this)'/>
-                                        </ul>
-                                    </li>
-                                </div>
-                            </th>
-                            <th>
-                                <div id="saveButton" style="display:none;" onclick='saveURL(this)'><p> Get the URL to
-                                                                                                       find back the
-                                                                                                       current filters
-                                    <p/></div>
-                            </th>
-                            <th>
-                                <div id="dynamicText">
-                                    <h4> Clicked element information </h4>
-                                    <div id="textHelp"> Help</div>
-                                </div>
-                            </th>
-                            <th>
-                                <div id="textData" style="overflow:hidden">
-                                </div>
-                            </th>
-                            <th>
-                                <div id="elementHelp">
-                                    <div id="textHelp"></div>
-                                </div>
-                            </th>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div id="buttonRezInfo">
-                <h4 id="titleRezInfo">
-                    Bar chart of categories
-                </h4>
-            </div>
-            <div id="sectionVizResult"
-                 style="display:none;
-    overflow: auto;">
-            </div>
-    </div>
+            <!--<div v-if="!queryHasResults">-->
+                <!--<div class="row">-->
+                    <!--<h3>-->
+                        <!--No results to visualize for <i>{{queryTerm}}</i>-->
+                        <!--<span class="small"><a href="#" @click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>-->
+                    <!--</h3>-->
+                <!--</div>-->
+            <!--</div>-->
 
-    </section>
-    </div>
+            <!--<div id="buttonRezInfo" style="border:solid; border-radius:1px;visibility:hidden;">-->
+                <!--<h4 id="titleRezInfo" >-->
+                    <!--Display result information-->
+                <!--</h4>-->
+            <!--</div>-->
+            <!--<div id="sectionVizResult"-->
+                 <!--style="display:none;-->
+    <!--overflow: auto;" >-->
+            <!--</div>-->
 
-    <div id="infoPop"> Temporary display of information</div>
+            <!--<div id="areaNodeLink">-->
+                <!--<div id= "vizNodeLink"></div>-->
+                <!--<div id="infoVizRelations">-->
+                    <!--<div id="numberMatches">  </div>-->
+                    <!--<div id="vizRepresentation"> <h4> Switch the display of the results according to : <p style="font-size:large"><div id="questionSwitch">?</div></p> </h4>-->
+                        <!--<div id="representationButton" name="representationButton" active="false" value="Sample">Sample</div><br>-->
+                    <!--</div>-->
+                    <!--<div id ="buttons-display" style="display:none;">-->
+                        <!--<h4> Decide the number of elements fully loaded : </h4>-->
+                        <!--<li style="list-style:none;">-->
+                            <!--<ul>-->
+                                <!--<component is="items-dropdown"> </component>-->
+                            <!--</ul>-->
+                            <!--<ul>-->
+                                <!--<component is="pagination" v-bind:total-results="resultsNumber" v-bind:displayed-results="samplesToRetrieve">-->
+                                <!--</component>-->
+                                <!--&lt;!&ndash; style="float:right" &ndash;&gt;-->
+                            <!--</ul>-->
+                            <!--<ul>-->
+                                <!--<h4 style="display:inline"> Display text of all samples </h4>  <input type="checkbox" onclick='showTextSamples(this)' />-->
+                            <!--</ul>-->
+                            <!--<ul>-->
+                                <!--<div id="saveButton" onclick='saveURL(this)'> <p> Get the URL to find back the current filters <p/> </div>-->
+                            <!--</ul>-->
+                        <!--</li>-->
+                        <!--<hr/>-->
+                    <!--</div>-->
+                    <!--<div id="dynamicText">-->
+                        <!--<h3> Clicked element information </h3>-->
+                        <!--<div id="textData" style="overflow:hidden">Click on an element of the diagram to display its information </div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</section>-->
+    <!--</div>-->
 
-    <div id="indicationWindow">
-        <div id="hideIndication" class="crossDelete2">&#10006;</div>
-        <h3 class="titleIndication">Introduction</h3>
-        This visualisation offers the possibility to explore and filter the results of your search according to the
-        categories, or facets, returned. There are two visualisation modes, the "Facet" one, and the "Sample" one:<br/>
-        <ul>
-            <li><b>Facet mode</b>: In this mode the big central square with nodes represents the categories of your
-                                 results, where the size of the nodes indicates how much of the results a category
-                                 represents, and the same color indicates belonging to the same mother category.
-            </li>
-            <li><b>Sample mode</b>: This mode shows samples or groups returned by the search. If samples belong to the
-                                  same group, they are linked to it, and share the same color. Selecting a node allows
-                                  the user to go towards its specific page, where more data is displayed.
-            </li>
-        </ul>
-
-        <h3 class="titleIndication"> Main window </h3>
-        The big rectangle in the center of the page is the main window. According to the mode, it displays either
-        categories of your search results, or samples returned. You can zoom in and out using your mouse wheel, or
-        trackpad. <br/>
-        Double clicking on a category in the Facet mode will filter the results according to it.
-
-        <h3 class="titleIndication"> Bar chart </h3>
-        By clicking on the button on top of the main visualisation, a bar chart appears, displaying for each category
-        returned, the sub categories and how many elements are part of it. The interaction with it is similar to the
-        main visualisation in Facet mode: double clicking on a bar will filter the results according to the category. In
-        Sample mode, clicking on a bar once highlights the nodes which contain the term in their data.
-
-        <h3 class="titleIndication"> Purpose of the visualisation </h3>
-        The purpose of this visualisation is to provide a way to browse through the data in a new way, by focusing on
-        filtering the categories, so that the number of elements returned is small enough for the user to analyse them
-        into details. If the user hesitates about the value of a group or a sample, clicking on it creates a link to its
-        personal page, where the user can in detail read the sample data.
-
-        <!--   <h3 class="titleIndication"> Video of explanation </h3>
-          This video illustrates an example on how to use the visualisation.<br/> -->
-        <!--     <iframe width="420" height="315" src="https://www.youtube.com/embed/mpe1R6veuBw" frameborder="0" allowfullscreen>
-            </iframe> -->
-
-    </div>
+    <!--<div id="elementHelp">-->
+        <!--<div id="textHelp"> Help</div>-->
+    <!--</div>-->
+    <!--<div id="infoPop"> Temporary display of information </div>-->
 
 </main>
 
 <th:block layout:fragment="custom-endpage-scripts">
-    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js}"
-            src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
-    <script th:src="@{/javascript/searchComponents.js}" src="../static/javascript/searchComponents.js"></script>
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js}" src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
     <script th:src="@{/javascript/toolsFunctions.js}"></script>
+    <script th:src="@{/javascript/searchComponents.js}" src="../static/javascript/searchComponents.js"></script>
     <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </th:block>
 
