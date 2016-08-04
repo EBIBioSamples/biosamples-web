@@ -4,18 +4,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
@@ -26,8 +37,13 @@ import uk.ac.ebi.spot.biosamples.model.xml.SampleResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 import uk.ac.ebi.spot.biosamples.service.RelationsLinkFactory;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Javadocs go here!
@@ -45,10 +61,27 @@ public class SampleController {
     @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
     private String relationsServerUrl;
 
+    private RestTemplate restTemplate;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected Logger getLog() {
-        return log;
+    @PostConstruct
+    private void createObjectMapper() {
+
+        restTemplate = new RestTemplate();            
+		//need to create a new message converter to handle hal+json
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.registerModule(new Jackson2HalModule());
+		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+		converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
+		converter.setObjectMapper(mapper);
+
+		//add the new converters to the restTemplate
+		//but make sure it is BEFORE the existing converters
+		List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
+		converters.add(0,converter);
+		restTemplate.setMessageConverters(converters);
     }
 
     @RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
@@ -60,10 +93,30 @@ public class SampleController {
             model.addAttribute("relationsUrl", relationsServerUrl);
 
             String relationsURL = relationsLinkFactory.createRelationsLinkForSample(sample).getHref();
-            RestTemplate restTemplate = new RestTemplate();
-            try {
-                SampleRelationsWrapper result = restTemplate.getForObject(relationsURL, SampleRelationsWrapper.class);
-                Boolean sampleHasRelations = (sample.getGroups() != null && !sample.getGroups().isEmpty()) || result.hasRelations();
+            log.info("Getting relations from "+relationsURL);
+    		
+            
+            
+            
+            try {            	
+				ResponseEntity<Resource<SampleRelationsWrapper>> response = restTemplate.exchange(relationsURL, 
+						HttpMethod.GET, null, new ParameterizedTypeReference<Resource<SampleRelationsWrapper>>(){});
+				
+				log.info("reponse = "+response);
+				log.info("reponse.getBody() = "+response.getBody());
+				
+				for (Link link : response.getBody().getLinks()) {
+					log.info("Found link "+link);
+				}				
+				
+				for (String target : getLinksByType(response.getBody(), "derivedTo")) {
+					log.info(target);
+				}				
+				
+				SampleRelationsWrapper result = response.getBody().getContent();
+				log.info("SampleRelationshipWrapper = "+result+" "+result.getAccession());
+				
+				/*
                 model.addAttribute("derivedFrom", result.getDerivedFrom());
                 model.addAttribute("derivedTo", result.getDerivedTo());
                 model.addAttribute("childOf", result.getChildOf());
@@ -71,14 +124,24 @@ public class SampleController {
                 model.addAttribute("sameAs", result.getSameAs());
                 model.addAttribute("curatedInto", result.getRecuratedInto());
                 model.addAttribute("curatedFrom", result.getRecuratedFrom());
-                model.addAttribute("hasRelations", sampleHasRelations);
+                */
             } catch (RestClientException e) {
-                getLog().error("Failed to retrieve relations data from '" + relationsURL + "'", e);
+                log.error("Failed to retrieve relations data from '" + relationsURL + "'", e);
             }
+            log.info("Model is "+model);
             return "sample";
         } else {
             throw new HtmlContentNotFound("No sample found with accession " + accession);
         }
+    }
+    
+    private List<String> getLinksByType(Resource<?> resource, String type) {
+    	List<String> out = new ArrayList<>();
+    	resource.getLinks().stream()
+    			.filter((link) -> type.equals(link.getRel()))
+    			.forEach((link) -> out.add(link.getHref()));
+    	//now that there are hrefs for the linktype page, each separate link needs to be got
+		return out;
     }
 
     @RequestMapping(value = "samples/{accession}",
@@ -189,7 +252,7 @@ public class SampleController {
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleNPE(NullPointerException e) {
-        getLog().error("There is no data available for this accession - return NOT_FOUND response", e);
+        log.error("There is no data available for this accession - return NOT_FOUND response", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>("There is no data available for this accession: " + e.getMessage(),
@@ -200,7 +263,7 @@ public class SampleController {
     @ExceptionHandler(APIXMLNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleAXNFE(NullPointerException e) {
-        getLog().error("There is no XML available for this accession - return NOT_FOUND response", e);
+        log.error("There is no XML available for this accession - return NOT_FOUND response", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>("There is no XML available for this accession: " + e.getMessage(),
@@ -211,7 +274,7 @@ public class SampleController {
     @ExceptionHandler(RequestParameterSyntaxException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleRPSE(RequestParameterSyntaxException e) {
-        getLog().error("Failed to parse legacy query request", e);
+        log.error("Failed to parse legacy query request", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
         return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(),
