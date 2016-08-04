@@ -15,12 +15,7 @@
 <main layout:fragment="content">
     <section class="error__title">
         <h1>Uh oh... Something went wrong</h1>
-        <p th:if="${exception}"
-           th:with="defaultErrorMessage = 'An error occured while processing your request'"
-           th:text="${exception.message}"
-        >
-            <!--th:text="#strings.defaultString(${exception.message},${defaultErrorMessage})"-->
-        </p>
+        <p th:if="${exception}" th:text="${exception}"></p> <!--th:text="#strings.defaultString(${exception.message},${defaultErrorMessage})"-->
     </section>
 
     <section class="error__summary">

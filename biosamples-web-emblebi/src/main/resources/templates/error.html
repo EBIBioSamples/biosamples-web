@@ -15,9 +15,7 @@
 <main layout:fragment="content">
     <section class="error__title">
         <h2>Uh oh... Something went wrong</h2>
-        <h3 th:if="${exception}"
-            th:text="${exception}">
-            </h3>
+        <h3 th:if="${exception}" th:text="${exception}"></h3>
     </section>
 
     <section class="error__summary">
