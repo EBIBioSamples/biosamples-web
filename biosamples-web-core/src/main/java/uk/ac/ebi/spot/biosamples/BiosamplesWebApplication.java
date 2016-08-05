@@ -1,12 +1,12 @@
 package uk.ac.ebi.spot.biosamples;
 
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.hateoas.Resource;
@@ -37,8 +37,8 @@ public class BiosamplesWebApplication {
     }
 
     @Bean
-    public SolrServer solrServer() {
-        return new HttpSolrServer(solrServerUrl);
+    public SolrClient solrClient() {
+        return new HttpSolrClient(solrServerUrl);
     }
 
     @Bean
