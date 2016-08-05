@@ -44,32 +44,36 @@
               th:text="${message}">message ...</span>
         </div>
 
-        <div id="accordion" class="error__details panel panel-default" th:if="${exception != null && exception.stackTrace != null}">
-            <div class="panel-heading" role="tab">
-                <h4 class="panel-title">
-                    <a role="button" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#stacktrace"
-                       aria-expanded="false">
-                        Stack trace
-                    </a>
-                </h4>
+        <!-- /*
+        <th:block th:if="${exception}">
+            <div id="accordion" class="error__details panel panel-default" th:if="${exception != null}">
+                <div class="panel-heading" role="tab">
+                    <h4 class="panel-title">
+                        <a role="button" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#stacktrace"
+                           aria-expanded="false">
+                            Stack trace
+                        </a>
+                    </h4>
 
+                </div>
+                <div id="stacktrace" class="error__stacktrace collapse panel-body" style="overflow-x: auto">
+                    <code class="code--block">
+                        <div th:utext="'Failed URL: ' +  ${url}" th:remove="tag">${url}</div>
+                    </code>
+                    <br><br>
+                    <code class="code--block">
+                        <ul th:remove="tag" >
+                            <li th:each="ste : ${exception.stackTrace}" th:remove="tag">
+                                <span th:utext="${ste}" th:remove="tag">${ste}</span></li>
+                        </ul>
+                    </code>
+                    <code class="code--block" th:unless="${exception != null && exception.stackTrace != null}">
+                        Sorry - No further details are available
+                    </code>
+                </div>
             </div>
-            <div id="stacktrace" class="error__stacktrace collapse panel-body" style="overflow-x: auto">
-                <code class="code--block">
-                    <div th:utext="'Failed URL: ' +  ${url}" th:remove="tag">${url}</div>
-                </code>
-                <br><br>
-                <code class="code--block">
-                    <ul th:remove="tag" >
-                        <li th:each="ste : ${exception.stackTrace}" th:remove="tag">
-                            <span th:utext="${ste}" th:remove="tag">${ste}</span></li>
-                    </ul>
-                </code>
-                <code class="code--block" th:unless="${exception != null && exception.stackTrace != null}">
-                    Sorry - No further details are available
-                </code>
-            </div>
-        </div>
+        </th:block>
+        */ -->
     </section>
 
 
