@@ -17,16 +17,20 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
 
 import uk.ac.ebi.spot.biosamples.filter.ResourceAwareUrlRewriteFilter;
-import uk.ac.ebi.spot.biosamples.model.ne4j.Group;
-import uk.ac.ebi.spot.biosamples.model.ne4j.Sample;
+import uk.ac.ebi.spot.biosamples.model.ne4j.NeoGroup;
+import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
+import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;
+import uk.ac.ebi.spot.biosamples.repository.solr.SolrSampleRepository;
 import uk.ac.ebi.spot.biosamples.service.ApiLinkFactory;
 import uk.ac.ebi.spot.biosamples.service.RelationsLinkFactory;
 
 import javax.validation.constraints.NotNull;
 
 @SpringBootApplication
+@EnableSolrRepositories(basePackageClasses=SolrSampleRepository.class, multicoreSupport = true)
+@EnableNeo4jRepositories(basePackageClasses=NeoSampleRepository.class)
 public class BiosamplesWebApplication extends SpringBootServletInitializer {
     @NotNull @Value("${rewrite.filter.name:rewriteFilter}")
     private String rewriteFilterName;
@@ -88,10 +92,10 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
 
     // This function adds a Link to the Sample resource
     @Bean
-    public ResourceProcessor<Resource<Sample>> sampleProcessor() {
-        return new ResourceProcessor<Resource<Sample>>() {
+    public ResourceProcessor<Resource<NeoSample>> sampleProcessor() {
+        return new ResourceProcessor<Resource<NeoSample>>() {
             @Override
-            public Resource<Sample> process(Resource<Sample> sampleResource) {
+            public Resource<NeoSample> process(Resource<NeoSample> sampleResource) {
                 sampleResource.add(apiLinkFactory.createApiLinkForSample(sampleResource.getContent()));
                 sampleResource.add(new Link(sampleResource.getLink("self").getHref() + "/graph", "graph"));
                 return sampleResource;
@@ -101,10 +105,10 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
     
     //This function adds a Link to the Group resource
     @Bean
-    public ResourceProcessor<Resource<Group>> groupProcessor() {
-        return new ResourceProcessor<Resource<Group>>() {
+    public ResourceProcessor<Resource<NeoGroup>> groupProcessor() {
+        return new ResourceProcessor<Resource<NeoGroup>>() {
             @Override
-            public Resource<Group> process(Resource<Group> groupResource) {
+            public Resource<NeoGroup> process(Resource<NeoGroup> groupResource) {
                 groupResource.add(apiLinkFactory.createApiLinkForGroup(groupResource.getContent()));
                 groupResource.add(new Link(groupResource.getLink("self").getHref() + "/graph", "graph"));
                 return groupResource;

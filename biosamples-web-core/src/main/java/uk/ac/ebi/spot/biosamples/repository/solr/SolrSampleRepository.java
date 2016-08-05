@@ -5,14 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
+import uk.ac.ebi.spot.biosamples.repository.ReadOnlyRepository;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 10/02/16
- */
-public interface SolrSampleRepository extends ReadOnlySolrRepository<SolrSample, String> {
+public interface SolrSampleRepository extends ReadOnlyRepository<SolrSample, String> {
     Page<SolrSample> findByAccession(@Param("accession") String accession, Pageable page);
 
     Page<SolrSample> findByKeywords(@Param("keyword") String keyword, Pageable page);

@@ -8,7 +8,6 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
-@EnableSolrRepositories(multicoreSupport = true)
 public class BiosamplesWebCoreConfiguration extends WebMvcConfigurerAdapter {
     @Override public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");

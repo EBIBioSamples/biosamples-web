@@ -8,8 +8,8 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Relationship;
 
-@NodeEntity
-public class Sample {
+@NodeEntity(label="Sample")
+public class NeoSample {
 
 	@GraphId
 	private Long id;
@@ -19,37 +19,37 @@ public class Sample {
 
 	/* Same as is the only unidirected relationship of the project */
 	@Relationship(type = "SAMEAS", direction = Relationship.UNDIRECTED)
-	private Set<Sample> sameAs;
+	private Set<NeoSample> sameAs;
 
 	@Relationship(type = "DERIVATION", direction = Relationship.OUTGOING)
-	private Set<Sample> derivedTo;
+	private Set<NeoSample> derivedTo;
 
 	@Relationship(type = "DERIVATION", direction = Relationship.INCOMING)
-	private Set<Sample> derivedFrom;
+	private Set<NeoSample> derivedFrom;
 
 	@Relationship(type = "RECURATION", direction = Relationship.OUTGOING)
-	private Set<Sample> recuratedTo;
+	private Set<NeoSample> recuratedTo;
 
 	@Relationship(type = "RECURATION", direction = Relationship.INCOMING)
-	private Set<Sample> recuratedFrom;
+	private Set<NeoSample> recuratedFrom;
 
 	@Relationship(type = "CHILDOF", direction = Relationship.OUTGOING)
-	private Set<Sample> childOf;
+	private Set<NeoSample> childOf;
 
 	@Relationship(type = "CHILDOF", direction = Relationship.INCOMING)
-	private Set<Sample> parentOf;
+	private Set<NeoSample> parentOf;
 
 	/* Outgoing relationships */
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.OUTGOING)
-	private Set<Group> groups;
+	private Set<NeoGroup> groups;
 
 	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
-	private Submission owner;
+	private NeoSubmission owner;
 
 	@Relationship(type = "HASLINK", direction = Relationship.OUTGOING)
-	private Set<ExternalLink> externalLinks;
+	private Set<NeoExternalLink> externalLinks;
 
-	private Sample() {
+	private NeoSample() {
 	};
 
 	public Long getId() {
@@ -60,40 +60,40 @@ public class Sample {
 		return accession;
 	}
 
-	public Submission getOwner() {
+	public NeoSubmission getOwner() {
 		return owner;
 	}
 
-	public Set<Group> getGroups() {
+	public Set<NeoGroup> getGroups() {
 		return groups;
 	}
 	
-	public Set<ExternalLink> getExternalLinks() {
+	public Set<NeoExternalLink> getExternalLinks() {
 		return externalLinks;
 	}
 
-	public Set<Sample> getDerivedFrom() {
+	public Set<NeoSample> getDerivedFrom() {
 		return derivedFrom;
 	}
-	public Set<Sample> getDerivedTo() {
+	public Set<NeoSample> getDerivedTo() {
 		return derivedTo;
 	}
 
-	public Set<Sample> getSameAs() {
+	public Set<NeoSample> getSameAs() {
 		return sameAs;
 	}
 
-	public Set<Sample> getParentOf() {
+	public Set<NeoSample> getParentOf() {
 		return parentOf;
 	}
-	public Set<Sample> getChildOf() {
+	public Set<NeoSample> getChildOf() {
 		return childOf;
 	}
 
-	public Set<Sample> getRecuratedTo() {
+	public Set<NeoSample> getRecuratedTo() {
 		return recuratedTo;
 	}
-	public Set<Sample> getRecuratedFrom() {
+	public Set<NeoSample> getRecuratedFrom() {
 		return recuratedFrom;
 	}
 

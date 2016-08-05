@@ -19,9 +19,6 @@ import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
-/**
- * Created by lucacherubin on 2016/07/06.
- */
 @ControllerAdvice
 public class ErrorController {
 
@@ -48,19 +45,24 @@ public class ErrorController {
 
     @ExceptionHandler(value = Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+
+        log.error("Encountered error when handling request "+req.getRequestURL(), e);
+    	    	
         // If the exception is annotated with @ResponseStatus rethrow it and let
-        // the framework handle it - like the OrderNotFoundException example
-        // at the start of this post.
+        // the framework handle it.
         // AnnotationUtils is a Spring Framework utility class.
-        if (AnnotationUtils.findAnnotation
-                (e.getClass(), ResponseStatus.class) != null)
-        throw e;
+        //if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null) {
+        // 	throw e;
+        //}
+        
+        
 
         // Otherwise setup and send the user to a default error-view.
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", e);
         mav.addObject("url", req.getRequestURL());
         mav.setViewName("error");
+        mav.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         return mav;
     }
 

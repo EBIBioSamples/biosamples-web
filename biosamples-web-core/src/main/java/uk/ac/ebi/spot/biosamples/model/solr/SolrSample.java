@@ -14,12 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 10/02/16
- */
 @SolrDocument(solrCoreName = "samples")
 public class SolrSample {
     private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -31,8 +25,6 @@ public class SolrSample {
 
     @Field("updatedate") String updateDate;
     @Field("releasedate") String releaseDate;
-
-
 
     @Field("sample_name_crt") List<String> sampleName;
 

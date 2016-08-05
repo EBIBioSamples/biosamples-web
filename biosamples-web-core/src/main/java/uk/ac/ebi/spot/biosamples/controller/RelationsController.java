@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import uk.ac.ebi.spot.biosamples.model.ne4j.Group;
-import uk.ac.ebi.spot.biosamples.model.ne4j.Sample;
+import uk.ac.ebi.spot.biosamples.model.ne4j.NeoGroup;
+import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoGroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;
 
@@ -45,7 +45,7 @@ public class RelationsController {
 	@RequestMapping(path = "groups/{accession}/graph", produces = {
 			MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 	public JSONObject group(@PathVariable("accession") String accession) {
-		Group tmp = groupRepository.findOneByAccession(accession);
+		NeoGroup tmp = groupRepository.findOneByAccession(accession);
 
 		List<Map<String, String>> nodes = new ArrayList<>();
 		List<Map<String, String>> edges = new ArrayList<>();
@@ -54,7 +54,7 @@ public class RelationsController {
 		nodes.add(constructNode(accession, accession, "groups"));
 
 		if (!tmp.getSamples().isEmpty()) {
-			for (Sample sample : tmp.getSamples()) {
+			for (NeoSample sample : tmp.getSamples()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "MEMBERSHIP"));
 			}
@@ -82,7 +82,7 @@ public class RelationsController {
 	@RequestMapping(path = "samples/{accession}/graph", produces = {
 			MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 	public JSONObject sample(@PathVariable("accession") String accession) {
-		Sample tmp = sampleRepository.findOneByAccession(accession);
+		NeoSample tmp = sampleRepository.findOneByAccession(accession);
 		List<Map<String, String>> nodes = new ArrayList<>();
 		List<Map<String, String>> edges = new ArrayList<>();
 
@@ -91,7 +91,7 @@ public class RelationsController {
 
 		/* Get derivedFrom data */
 		if (tmp.getDerivedFrom() != null) {
-			for (Sample sample : tmp.getDerivedFrom()) {
+			for (NeoSample sample : tmp.getDerivedFrom()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(sample.getAccession(), accession, "DERIVATION"));
 			}
@@ -100,7 +100,7 @@ public class RelationsController {
 
 		/* Get derivedTo data */
 		if (tmp.getDerivedTo() != null) {
-			for (Sample sample : tmp.getDerivedTo()) {
+			for (NeoSample sample : tmp.getDerivedTo()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "DERIVATION"));
 			}
@@ -108,7 +108,7 @@ public class RelationsController {
 
 		/* Get sameAs data */
 		if (tmp.getSameAs() != null) {
-			for (Sample sample : tmp.getSameAs()) {
+			for (NeoSample sample : tmp.getSameAs()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "SAMEAS"));
 			}
@@ -116,7 +116,7 @@ public class RelationsController {
 
 		/* Get childOf data */
 		if (tmp.getChildOf() != null) {
-			for (Sample sample : tmp.getChildOf()) {
+			for (NeoSample sample : tmp.getChildOf()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "OFFSPRING"));
 			}
@@ -124,7 +124,7 @@ public class RelationsController {
 
 		/* Get Parent data */
 		if (tmp.getParentOf() != null) {
-			for (Sample sample : tmp.getParentOf()) {
+			for (NeoSample sample : tmp.getParentOf()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(sample.getAccession(), accession, "OFFSPRING"));
 			}
@@ -133,7 +133,7 @@ public class RelationsController {
 
 		/* Get RecuratedFrom data */
 		if (tmp.getRecuratedFrom() != null) {
-			for (Sample sample : tmp.getRecuratedFrom()) {
+			for (NeoSample sample : tmp.getRecuratedFrom()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(sample.getAccession(), accession, "RECURATED"));
 			}
@@ -141,7 +141,7 @@ public class RelationsController {
 
 		/* Get RecuratedInto data */
 		if (tmp.getRecuratedTo() != null) {
-			for (Sample sample : tmp.getRecuratedTo()) {
+			for (NeoSample sample : tmp.getRecuratedTo()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "RECURATED"));
 			}
@@ -150,7 +150,7 @@ public class RelationsController {
 
 		/* Get the group the sample is member of */
 		if (tmp.getGroups() != null) {
-			for (Group group : tmp.getGroups()) {
+			for (NeoGroup group : tmp.getGroups()) {
 				nodes.add(constructNode(group.getAccession(), group.getAccession(), "groups"));
 				edges.add(constructEdge(accession, group.getAccession(), "MEMBERSHIP"));
 			}
@@ -180,13 +180,13 @@ public class RelationsController {
 	public JSONObject biosamplesWeb(@PathVariable("accession") String accession) {
 
 		JSONObject json = new JSONObject();
-		Sample sample = sampleRepository.findOneByAccession(accession);
+		NeoSample sample = sampleRepository.findOneByAccession(accession);
 
 		ArrayList<String> list = new ArrayList<String>();
 
 		// Adding derivedFrom to the json reply
 		if (sample != null && sample.getDerivedFrom() != null) {
-			for (Sample tmpSample : sample.getDerivedFrom()) {
+			for (NeoSample tmpSample : sample.getDerivedFrom()) {
 				list.add(tmpSample.getAccession());
 			}
 		}
@@ -195,7 +195,7 @@ public class RelationsController {
 		list = new ArrayList<String>();
 		// Adding derivedTo to the json reply
 		if (sample != null && sample.getDerivedTo() != null) {
-			for (Sample tmpSample : sample.getDerivedTo()) {
+			for (NeoSample tmpSample : sample.getDerivedTo()) {
 				list.add(tmpSample.getAccession());
 			}
 		}
@@ -204,7 +204,7 @@ public class RelationsController {
 		list = new ArrayList<String>();
 		// Adding childOf to the json reply
 		if (sample != null && sample.getChildOf() != null) {
-			for (Sample tmpSample : sample.getChildOf()) {
+			for (NeoSample tmpSample : sample.getChildOf()) {
 				list.add(tmpSample.getAccession());
 			}
 		}
@@ -213,7 +213,7 @@ public class RelationsController {
 		list = new ArrayList<String>();
 		// Adding parentOf to json reply
 		if (sample != null && sample.getParentOf() != null) {
-			for (Sample tmpSample : sample.getParentOf()) {
+			for (NeoSample tmpSample : sample.getParentOf()) {
 				list.add(tmpSample.getAccession());
 			}
 
@@ -223,7 +223,7 @@ public class RelationsController {
 		list = new ArrayList<String>();
 		// Adding sameAs to the json reply
 		if (sample != null && sample.getSameAs() != null) {
-			for (Sample tmpSample : sample.getSameAs()) {
+			for (NeoSample tmpSample : sample.getSameAs()) {
 				list.add(tmpSample.getAccession());
 			}
 		}
@@ -232,7 +232,7 @@ public class RelationsController {
 		list = new ArrayList<String>();
 		// Adding curatedInto the json reply
 		if (sample != null && sample.getRecuratedTo() != null) {
-			for (Sample tmpSample : sample.getRecuratedTo()) {
+			for (NeoSample tmpSample : sample.getRecuratedTo()) {
 				list.add(tmpSample.getAccession());
 			}
 		}
@@ -241,7 +241,7 @@ public class RelationsController {
 		list = new ArrayList<String>();
 		// Adding recuratedFrom to the json reply
 		if (sample != null && sample.getRecuratedFrom() != null) {
-			for (Sample tmpSample : sample.getRecuratedFrom()) {
+			for (NeoSample tmpSample : sample.getRecuratedFrom()) {
 				list.add(tmpSample.getAccession());
 			}
 		}

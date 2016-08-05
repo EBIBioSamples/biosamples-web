@@ -13,12 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 10/02/16
- */
 @SolrDocument(solrCoreName = "groups")
 public class SolrGroup {
     private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -8,11 +8,8 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by tliener on 20/04/2016.
- */
-@NodeEntity
-public class Submission {
+@NodeEntity(label="Submission")
+public class NeoSubmission {
 
 	@GraphId
 	private Long id;
@@ -21,12 +18,12 @@ public class Submission {
 	private String submissionId;
 
 	@Relationship(type = "OWNERSHIP", direction = Relationship.INCOMING)
-	private Set<Sample> samples;
+	private Set<NeoSample> samples;
 
 	@Relationship(type = "OWNERSHIP", direction = Relationship.INCOMING)
-	private Set<Group> groups;
+	private Set<NeoGroup> groups;
 
-	public Submission() {
+	public NeoSubmission() {
 	};
 
 	public Long getId() {
@@ -37,11 +34,11 @@ public class Submission {
 		return submissionId;
 	}
 
-	public Set<Sample> getSamples() {
+	public Set<NeoSample> getSamples() {
 		return samples;
 	}
 
-	public Set<Group> getGroups() {
+	public Set<NeoGroup> getGroups() {
 		return groups;
 	}
 }

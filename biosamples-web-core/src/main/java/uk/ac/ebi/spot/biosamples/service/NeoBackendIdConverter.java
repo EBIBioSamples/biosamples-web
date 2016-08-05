@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 import org.springframework.stereotype.Component;
 
-import uk.ac.ebi.spot.biosamples.model.ne4j.Group;
-import uk.ac.ebi.spot.biosamples.model.ne4j.Sample;
-import uk.ac.ebi.spot.biosamples.model.ne4j.Submission;
+import uk.ac.ebi.spot.biosamples.model.ne4j.NeoGroup;
+import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSample;
+import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSubmission;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoGroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSubmissionRepository;
@@ -20,7 +20,7 @@ import java.io.Serializable;
 * to a certain sample/group/submission instead of having kind of random internal (neo) ids.
 * */
 @Component
-public class CustomBackendIdConverter implements BackendIdConverter {
+public class NeoBackendIdConverter implements BackendIdConverter {
 
 	@Autowired
 	private NeoSampleRepository sampleRepository;
@@ -31,28 +31,24 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 	@Autowired
 	private NeoSubmissionRepository submissionRepository;
 
-
-	/*
-	* This function returns the graphid, given a certain accession
-	* */
 	@Override
 	public Serializable fromRequestId(String id, Class<?> entityType) {
-		if (entityType.equals(Sample.class)) {
-			Sample sample = sampleRepository.findOneByAccession(id);
+		if (entityType.equals(NeoSample.class)) {
+			NeoSample sample = sampleRepository.findOneByAccession(id);
 			if (sample == null) { 
 				return -1;
 			} else {
 				return sample.getId();
 			}
-		} else if (entityType.equals(Group.class)) {
-			Group group = groupRepository.findOneByAccession(id);
+		} else if (entityType.equals(NeoGroup.class)) {
+			NeoGroup group = groupRepository.findOneByAccession(id);
 			if (group == null) {
 				return -1;
 			} else {
 				return group.getId();
 			}
-		} else if (entityType.equals(Submission.class)) {
-			Submission submission = submissionRepository.findOneBySubmissionId(id);
+		} else if (entityType.equals(NeoSubmission.class)) {
+			NeoSubmission submission = submissionRepository.findOneBySubmissionId(id);
 			if (submission == null) {
 				return -1;
 			} else {
@@ -63,27 +59,24 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 		}
 	}
 
-	/*
-	* This function returns the accession to a given graphid
-	*/
 	@Override
 	public String toRequestId(Serializable id, Class<?> entityType) {
-		if (entityType.equals(Sample.class)) {
-			Sample sample = sampleRepository.findOne((Long)id);
+		if (entityType.equals(NeoSample.class)) {
+			NeoSample sample = sampleRepository.findOne((Long)id);
 			if (sample == null) { 
 				return null;
 			} else {
 				return sample.getAccession();
 			}
-		} else if (entityType.equals(Group.class)) {
-			Group group = groupRepository.findOne((Long)id);
+		} else if (entityType.equals(NeoGroup.class)) {
+			NeoGroup group = groupRepository.findOne((Long)id);
 			if (group == null) { 
 				return null;
 			} else {
 				return group.getAccession();
 			}
-		} else if (entityType.equals(Submission.class)) {
-			Submission submission = submissionRepository.findOne((Long)id);
+		} else if (entityType.equals(NeoSubmission.class)) {
+			NeoSubmission submission = submissionRepository.findOne((Long)id);
 			if (submission == null) { 
 				return null;
 			} else {
@@ -94,17 +87,13 @@ public class CustomBackendIdConverter implements BackendIdConverter {
 		}
 
 	}
-
-	/*
-	* Has to be overwritten for the whole thing to work, the sprin docs tell us
-	* */
 	@Override
 	public boolean supports(Class<?> delimiter) {
-		if (delimiter.equals(Sample.class)) {
+		if (delimiter.equals(NeoSample.class)) {
 			return true;
-		} else if (delimiter.equals(Group.class)) {
+		} else if (delimiter.equals(NeoGroup.class)) {
 			return true;
-		} else if (delimiter.equals(Submission.class)) {
+		} else if (delimiter.equals(NeoSubmission.class)) {
 			return true;
 		} else {
 			return false;

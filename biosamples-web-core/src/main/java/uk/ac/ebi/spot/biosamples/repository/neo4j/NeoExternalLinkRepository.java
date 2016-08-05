@@ -1,9 +1,9 @@
 package uk.ac.ebi.spot.biosamples.repository.neo4j;
 
-import uk.ac.ebi.spot.biosamples.model.ne4j.ExternalLink;
+import uk.ac.ebi.spot.biosamples.model.ne4j.NeoExternalLink;
 
-public interface NeoExternalLinkRepository extends ReadOnlyNeoRepository<ExternalLink> {
+public interface NeoExternalLinkRepository extends ReadOnlyNeoRepository<NeoExternalLink> {
 	
-	public ExternalLink findOneByUrl(String Url);
+	public NeoExternalLink findOneByUrl(String Url);
 	
 }

@@ -1,4 +1,4 @@
-package uk.ac.ebi.spot.biosamples.repository.solr;
+package uk.ac.ebi.spot.biosamples.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.Repository;
 import java.io.Serializable;
 
 @NoRepositoryBean
-public interface ReadOnlySolrRepository<T, ID extends Serializable> extends Repository<T, ID> {
+public interface ReadOnlyRepository<T, ID extends Serializable> extends Repository<T, ID> {
 
     /**
      * Retrieves an entity by its id.

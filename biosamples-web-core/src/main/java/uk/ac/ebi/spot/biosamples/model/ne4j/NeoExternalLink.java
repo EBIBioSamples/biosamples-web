@@ -8,8 +8,8 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.HashSet;
 import java.util.Set;
 
-@NodeEntity
-public class ExternalLink {
+@NodeEntity(label="ExternalLink")
+public class NeoExternalLink {
 
 	@GraphId
 	private Long id;
@@ -18,12 +18,12 @@ public class ExternalLink {
 	private String url;
 
 	@Relationship(type = "HASLINK", direction = Relationship.INCOMING)
-	private Set<Sample> samples;
+	private Set<NeoSample> samples;
 
 	@Relationship(type = "HASLINK", direction = Relationship.INCOMING)
-	private Set<Group> groups;
+	private Set<NeoGroup> groups;
 
-	public ExternalLink() {
+	public NeoExternalLink() {
 	};
 
 	public Long getId() {
@@ -34,11 +34,11 @@ public class ExternalLink {
 		return url;
 	}
 
-	public Set<Sample> getSamples() {
+	public Set<NeoSample> getSamples() {
 		return samples;
 	}
 
-	public Set<Group> getGroups() {
+	public Set<NeoGroup> getGroups() {
 		return groups;
 	}
 

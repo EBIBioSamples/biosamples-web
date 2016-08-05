@@ -152,10 +152,10 @@ public class SampleController {
     }
 
     @RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String sampleXml(@PathVariable String accession) {
+    public @ResponseBody String sampleXml(@PathVariable String accession) throws APIXMLNotFoundException {
         SolrSample sample = sampleRepository.findOne(accession);
         if (sample == null) {
-            throw new NullPointerException("Accession '" + accession + "' not found");
+            throw new APIXMLNotFoundException("Accession '" + accession + "' not found");
         }
         if (sample.getXml() == null || sample.getXml().isEmpty()) {
             throw new APIXMLNotFoundException("No XML available for accession '" + accession + "'");
@@ -178,12 +178,12 @@ public class SampleController {
     }
 
     @RequestMapping(value = "xml/samples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String hybridSampleXml(@PathVariable String accession) {
+    public @ResponseBody String hybridSampleXml(@PathVariable String accession) throws APIXMLNotFoundException {
         return sampleXml(accession);
     }
 
     @RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String legacySampleXml(@PathVariable String accession) {
+    public @ResponseBody String legacySampleXml(@PathVariable String accession) throws APIXMLNotFoundException {
         return sampleXml(accession);
     }
 
@@ -248,21 +248,9 @@ public class SampleController {
     }
 
 
-
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleNPE(NullPointerException e) {
-        log.error("There is no data available for this accession - return NOT_FOUND response", e);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>("There is no data available for this accession: " + e.getMessage(),
-                                    headers,
-                                    HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler(APIXMLNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleAXNFE(NullPointerException e) {
+    public ResponseEntity<String> handleAXNFE(APIXMLNotFoundException e) {
         log.error("There is no XML available for this accession - return NOT_FOUND response", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);

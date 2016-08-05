@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
+import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
@@ -38,142 +39,143 @@ import java.util.*;
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
 public class GroupController {
-    @Autowired private SolrGroupRepository groupRepository;
+	@Autowired
+	private SolrGroupRepository solrGroupRepository;
 
-    @Autowired private SolrSampleRepository sampleRepository;
+	@Autowired
+	private SolrSampleRepository solrSampleRepository;
 
-    @Autowired private HttpSolrDispatcher httpSolrDispatcher;
+	@Autowired
+	private HttpSolrDispatcher httpSolrDispatcher;
 
-    @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
-    private String relationsServerUrl;
+	@Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
+	private String relationsServerUrl;
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected Logger getLog() {
-        return log;
-    }
+	protected Logger getLog() {
+		return log;
+	}
 
-    @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
-    public String group(Model model, @PathVariable String accession) {
-        SolrGroup group = groupRepository.findOne(accession);
+	@RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
+	public String group(Model model, @PathVariable String accession) {
+		
+		SolrGroup group = solrGroupRepository.findOne(accession);
+		
+		//Page<SolrGroup> groupPage = solrGroupRepository.findByAccession(accession, new PageRequest(0,1));
+		//SolrGroup group = groupPage.getContent().get(0);
 
-        if (group != null) {
-            model.addAttribute("group", group);
-            model.addAttribute("groupSize", group.getSamples().size());
-            model.addAttribute("relationsUrl", relationsServerUrl);
-            if ( group.hasSamples() ) {
-                // Sample common attributes
-                Set<String> tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession, Integer.parseInt(group.getNumberOfSamples()));
-                SolrSample sample = sampleRepository.findFirstByGroupsContains(accession);
-                Map<String, List<String>> sampleCrts = sample.getCharacteristics();
-                TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
-                for (String attribute : tempSampleCommonCharacteristics) {
-                    List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
-                    sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
-                }
-                model.addAttribute("common_attrs", sampleCommonAttributes);
+		if (group != null) {
+			model.addAttribute("group", group);
+			model.addAttribute("groupSize", group.getSamples().size());
+			model.addAttribute("relationsUrl", relationsServerUrl);
+			if (group.hasSamples()) {
+				// Sample common attributes
+				Set<String> tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession,
+						Integer.parseInt(group.getNumberOfSamples()));
+				SolrSample sample = solrSampleRepository.findFirstByGroupsContains(accession);
+				Map<String, List<String>> sampleCrts = sample.getCharacteristics();
+				TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
+				for (String attribute : tempSampleCommonCharacteristics) {
+					List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
+					sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+				}
+				model.addAttribute("common_attrs", sampleCommonAttributes);
 
-                // Samples table attributes
-                Set<String> allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
+				// Samples table attributes
+				Set<String> allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
 
-                List<String> tableAttributes = new ArrayList<>();
+				List<String> tableAttributes = new ArrayList<>();
 
-                Arrays.stream(new String[]{"accession", "organism", "name", "description"})
-                        .filter(attr -> !sampleCommonAttributes.containsKey(attr))
-                        .forEach(tableAttributes::add);
-                allGroupSamplesCharacteristics.stream()
-                        .map(this::cleanAttributeName)
-                        .filter(attr -> !sampleCommonAttributes.containsKey(attr))
-                        .forEach(tableAttributes::add);
+				Arrays.stream(new String[] { "accession", "organism", "name", "description" })
+						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).forEach(tableAttributes::add);
+				allGroupSamplesCharacteristics.stream().map(this::cleanAttributeName)
+						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).forEach(tableAttributes::add);
 
-                model.addAttribute("table_attrs", tableAttributes);
-            }
-            return "group";
-        } else {
-            throw new HtmlContentNotFound("No group has been found with accession " + accession);
-        }
-    }
+				model.addAttribute("table_attrs", tableAttributes);
+			}
+			return "group";
+		} else {
+			throw new HtmlContentNotFound("No group has been found with accession " + accession);
+		}
+	}
 
-    @RequestMapping(value = "groups/{accession}",
-                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
-                    method = RequestMethod.GET)
-    public @ResponseBody SolrGroup groupJson(@PathVariable String accession) {
-        return groupRepository.findOne(accession);
-    }
+	@RequestMapping(value = "groups/{accession}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET)
+	public @ResponseBody SolrGroup groupJson(@PathVariable String accession) {
+		return solrGroupRepository.findOne(accession);
+	}
 
-    @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String groupXml(@PathVariable String accession) {
-        SolrGroup group = groupRepository.findOne(accession);
+	@RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+	public @ResponseBody String groupXml(@PathVariable String accession) throws APIXMLNotFoundException {
+		SolrGroup group = solrGroupRepository.findOne(accession);
 
-        if (group.getXml().isEmpty()) {
-            throw new NullPointerException("No XML present for " + group.getAccession());
-        }
-        else {
-            return group.getXml();
-        }
-    }
+		if (group.getXml() == null || group.getXml().isEmpty()) {
+			throw new APIXMLNotFoundException("No XML present for " + group.getAccession());
+		} else {
+			return group.getXml();
+		}
+	}
 
-    @RequestMapping(value = "xml/groups", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String groupXmlQuery(
-            @RequestParam(value = "query") String searchTerm,
-            @RequestParam(value = "sortby", defaultValue = "score") String sortBy,
-            @RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
-            @RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
-            @RequestParam(value = "page", defaultValue = "0") int page) {
-        Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
-        PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
-        Page<SolrGroup> results = groupRepository.findByKeywords(searchTerm,querySpec);
-        ResultQuery rq = new GroupResultQuery(results);
-        return rq.renderDocument();
-    }
+	@RequestMapping(value = "xml/groups", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+	public @ResponseBody String groupXmlQuery(@RequestParam(value = "query") String searchTerm,
+			@RequestParam(value = "sortby", defaultValue = "score") String sortBy,
+			@RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
+			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
+			@RequestParam(value = "page", defaultValue = "0") int page) {
+		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
+		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
+		Page<SolrGroup> results = solrGroupRepository.findByKeywords(searchTerm, querySpec);
+		ResultQuery rq = new GroupResultQuery(results);
+		return rq.renderDocument();
+	}
 
-    @RequestMapping(value = "xml/groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String hybridGroupXml(@PathVariable String accession) {
-        return groupXml(accession);
-    }
+	@RequestMapping(value = "xml/groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+	public @ResponseBody String hybridGroupXml(@PathVariable String accession) throws APIXMLNotFoundException {
+		return groupXml(accession);
+	}
 
-    @RequestMapping(value = "xml/group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String legacyGroupXml(@PathVariable String accession) {
-        return groupXml(accession);
-    }
+	@RequestMapping(value = "xml/group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+	public @ResponseBody String legacyGroupXml(@PathVariable String accession) throws APIXMLNotFoundException {
+		return groupXml(accession);
+	}
 
-    @RequestMapping(value = "xml/groups/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-    public @ResponseBody String legacyGroupXmlQueryRedirect(@PathVariable String query){
-        Map<String,String> paramMap = LegacyApiQueryParser.parseLegacyQueryFormat(query);
-        return groupXmlQuery(
-                paramMap.get("query"),
-                paramMap.get("sortby"),
-                paramMap.get("sortorder"),
-                Integer.parseInt(paramMap.get("pagesize")),
-                Integer.parseInt(paramMap.get("page")));
+	@RequestMapping(value = "xml/groups/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+	public @ResponseBody String legacyGroupXmlQueryRedirect(@PathVariable String query) {
+		Map<String, String> paramMap = LegacyApiQueryParser.parseLegacyQueryFormat(query);
+		return groupXmlQuery(paramMap.get("query"), paramMap.get("sortby"), paramMap.get("sortorder"),
+				Integer.parseInt(paramMap.get("pagesize")), Integer.parseInt(paramMap.get("page")));
 
-    }
+	}
 
-    @ExceptionHandler(NullPointerException.class)
+
+    @ExceptionHandler(APIXMLNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleNPE(NullPointerException e) {
-        getLog().error("There is no XML available for this accession - return NOT_FOUND response", e);
+    public ResponseEntity<String> handleAXNFE(APIXMLNotFoundException e) {
+        log.error("There is no XML available for this accession - return NOT_FOUND response", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>("There is no XML available for this accession", headers, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("There is no XML available for this accession: " + e.getMessage(),
+                                    headers,
+                                    HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(RequestParameterSyntaxException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleRPSE(RequestParameterSyntaxException e) {
-        getLog().error("Failed to parse legacy query request", e);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.TEXT_PLAIN);
-        return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(), headers, HttpStatus.BAD_REQUEST);
-    }
+	@ExceptionHandler(RequestParameterSyntaxException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<String> handleRPSE(RequestParameterSyntaxException e) {
+		getLog().error("Failed to parse legacy query request", e);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.TEXT_PLAIN);
+		return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(), headers,
+				HttpStatus.BAD_REQUEST);
+	}
 
-    private String cleanAttributeName(String name) {
-        name = name.substring(0, name.indexOf("_crt_ft"));
-        return name;
-        /*
-        return Arrays.stream(name.split("_")).map(part -> {
-            return part.substring(0, 1).toUpperCase() + part.substring(1, part.length()).toLowerCase();
-        }).collect(Collectors.joining(" "));
-        */
-    }
+	private String cleanAttributeName(String name) {
+		name = name.substring(0, name.indexOf("_crt_ft"));
+		return name;
+		/*
+		 * return Arrays.stream(name.split("_")).map(part -> { return
+		 * part.substring(0, 1).toUpperCase() + part.substring(1,
+		 * part.length()).toLowerCase(); }).collect(Collectors.joining(" "));
+		 */
+	}
 }
