@@ -7,12 +7,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 10/02/16
- */
 @Configuration
 @EnableAutoConfiguration
 @EnableSolrRepositories(multicoreSupport = true)
