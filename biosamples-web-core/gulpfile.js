@@ -16,5 +16,5 @@ elixir(function(mix) {
 	 	.browserify('searchComponents.js')
         .browserify('relationsVis.js')
         .browserify('samplesInGroup.js')
-	 	.scripts('toolsFunctions.js')
+	 	.browserify('toolsFunctions.js')
 });
