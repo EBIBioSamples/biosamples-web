@@ -31,10 +31,10 @@ import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
-import uk.ac.ebi.spot.biosamples.model.solr.Sample;
+import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.SampleResultQuery;
-import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
+import uk.ac.ebi.spot.biosamples.repository.solr.SolrSampleRepository;
 import uk.ac.ebi.spot.biosamples.service.RelationsLinkFactory;
 
 import javax.annotation.PostConstruct;
@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
 public class SampleController {
-    @Autowired private SampleRepository sampleRepository;
+    @Autowired private SolrSampleRepository sampleRepository;
 
     @Autowired private RelationsLinkFactory relationsLinkFactory;
 
@@ -86,7 +86,7 @@ public class SampleController {
 
     @RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String sample(Model model, @PathVariable String accession, HttpServletRequest request) {
-        Sample sample = sampleRepository.findOne(accession);
+        SolrSample sample = sampleRepository.findOne(accession);
 
         if (sample != null) {
             model.addAttribute("sample", sample);
@@ -147,13 +147,13 @@ public class SampleController {
     @RequestMapping(value = "samples/{accession}",
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
                     method = RequestMethod.GET)
-    public @ResponseBody Sample sampleJson(@PathVariable String accession) {
+    public @ResponseBody SolrSample sampleJson(@PathVariable String accession) {
         return sampleRepository.findOne(accession);
     }
 
     @RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String sampleXml(@PathVariable String accession) {
-        Sample sample = sampleRepository.findOne(accession);
+        SolrSample sample = sampleRepository.findOne(accession);
         if (sample == null) {
             throw new NullPointerException("Accession '" + accession + "' not found");
         }
@@ -172,7 +172,7 @@ public class SampleController {
             @RequestParam(value = "page", defaultValue = "0") int page) {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
         PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
-        Page<Sample> results = sampleRepository.findByAccession(searchTerm, querySpec);
+        Page<SolrSample> results = sampleRepository.findByAccession(searchTerm, querySpec);
         ResultQuery rq = new SampleResultQuery(results);
         return rq.renderDocument();
     }
@@ -225,7 +225,7 @@ public class SampleController {
             @RequestParam(value = "page", defaultValue = "0") int page) {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
         PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
-        Page<Sample> results = sampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession, querySpec);
+        Page<SolrSample> results = sampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession, querySpec);
         ResultQuery rq = new SampleResultQuery(results);
         return rq.renderDocument();
     }
@@ -234,7 +234,7 @@ public class SampleController {
                     produces = MediaType.APPLICATION_JSON_VALUE,
                     method = RequestMethod.GET)
     public @ResponseBody
-    Page<Sample> samplesInGroup(
+    Page<SolrSample> samplesInGroup(
             @PathVariable(value = "accession") String groupAccession,
             @RequestParam(value = "query", defaultValue = "*:*") String searchTerm,
             @RequestParam(value = "sortby", defaultValue = "score") String sortBy,

@@ -1,7 +1,8 @@
 package uk.ac.ebi.spot.biosamples.model.xml;
 
 import org.springframework.data.domain.Page;
-import uk.ac.ebi.spot.biosamples.model.solr.Group;
+
+import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
 
 /**
  * Javadocs go here!
@@ -9,16 +10,16 @@ import uk.ac.ebi.spot.biosamples.model.solr.Group;
  * @author Tony Burdett
  * @date 03/06/16
  */
-public class GroupResultQuery extends ResultQuery<Group> {
-    public GroupResultQuery(Page<Group> results) {
+public class GroupResultQuery extends ResultQuery<SolrGroup> {
+    public GroupResultQuery(Page<SolrGroup> results) {
         super(results);
     }
 
-    @Override protected String getDocumentType(Group result) {
+    @Override protected String getDocumentType(SolrGroup result) {
         return "BioSampleGroup";
     }
 
-    @Override protected String getAccession(Group result) {
+    @Override protected String getAccession(SolrGroup result) {
         return result.getAccession();
     }
 }

@@ -39,24 +39,39 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-rest</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-solr</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<artifactId>spring-boot-starter-data-neo4j</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-rest-hal-browser</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		
+		<!-- mark tomcat as provided so we can deploy to tomcat -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -67,6 +82,7 @@
 			<artifactId>spring-restdocs-mockmvc</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
@@ -92,6 +108,19 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		
+		<!-- Add the embedded driver to the project -->
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-ogm-embedded-driver</artifactId>
+			<version>${neo4j-ogm.version}</version>
+		</dependency>
+
+		<!-- Dependency FOR JSON simple, used in the controller -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -131,6 +160,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			
 			<plugin>
 				<!-- make sure clean cleans temporary and generated files too -->
 				<artifactId>maven-clean-plugin</artifactId>
@@ -140,12 +170,22 @@
 							<directory>.</directory>
 							<includes>
 								<include>**/logs/</include>
-								<include>**/node/</include>
-								<include>**/node_modules/</include>
+<!-- 								<include>**/node/</include> -->
+<!-- 								<include>**/node_modules/</include> -->
 							</includes>
 							<followSymlinks>false</followSymlinks>
 						</fileset>
 					</filesets>
+				</configuration>
+			</plugin>
+			
+			<!-- Need to pass this argument to the compiler so that custom repository 
+				searches work -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<compilerArgument>-parameters</compilerArgument>
 				</configuration>
 			</plugin>
 

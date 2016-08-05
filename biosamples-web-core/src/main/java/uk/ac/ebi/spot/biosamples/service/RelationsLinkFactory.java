@@ -3,8 +3,9 @@ package uk.ac.ebi.spot.biosamples.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
-import uk.ac.ebi.spot.biosamples.model.solr.Group;
-import uk.ac.ebi.spot.biosamples.model.solr.Sample;
+
+import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
+import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 
 /**
  * Javadocs go here!
@@ -17,13 +18,13 @@ public class RelationsLinkFactory {
     @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
     private String relationsServerUrl;
 
-    public Link createRelationsLinkForSample(Sample sample) {
+    public Link createRelationsLinkForSample(SolrSample sample) {
         String url = relationsServerUrl + (relationsServerUrl.endsWith("/") ? "samples/" : "/samples/") +
                 sample.getAccession();
         return new Link(url, "relations");
     }
 
-    public Link createRelationsLinkForGroup(Group group) {
+    public Link createRelationsLinkForGroup(SolrGroup group) {
         String url =
                 relationsServerUrl + (relationsServerUrl.endsWith("/") ? "groups/" : "/groups/") + group.getAccession();
         return new Link(url, "relations");

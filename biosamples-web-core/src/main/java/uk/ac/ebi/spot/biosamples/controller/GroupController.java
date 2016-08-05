@@ -21,15 +21,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
 import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
-import uk.ac.ebi.spot.biosamples.model.solr.Group;
-import uk.ac.ebi.spot.biosamples.model.solr.Sample;
+import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
+import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
-import uk.ac.ebi.spot.biosamples.repository.GroupRepository;
-import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
+import uk.ac.ebi.spot.biosamples.repository.solr.SolrGroupRepository;
+import uk.ac.ebi.spot.biosamples.repository.solr.SolrSampleRepository;
 import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 
 import java.util.*;
@@ -37,9 +38,9 @@ import java.util.*;
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
 public class GroupController {
-    @Autowired private GroupRepository groupRepository;
+    @Autowired private SolrGroupRepository groupRepository;
 
-    @Autowired private SampleRepository sampleRepository;
+    @Autowired private SolrSampleRepository sampleRepository;
 
     @Autowired private HttpSolrDispatcher httpSolrDispatcher;
 
@@ -54,7 +55,7 @@ public class GroupController {
 
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
     public String group(Model model, @PathVariable String accession) {
-        Group group = groupRepository.findOne(accession);
+        SolrGroup group = groupRepository.findOne(accession);
 
         if (group != null) {
 
@@ -63,7 +64,7 @@ public class GroupController {
             if ( group.hasSamples() ) {
                 // Sample common attributes
                 Set<String> tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession, Integer.parseInt(group.getNumberOfSamples()));
-                Sample sample = sampleRepository.findFirstByGroupsContains(accession);
+                SolrSample sample = sampleRepository.findFirstByGroupsContains(accession);
                 Map<String, List<String>> sampleCrts = sample.getCharacteristics();
                 TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
                 for (String attribute : tempSampleCommonCharacteristics) {
@@ -96,13 +97,13 @@ public class GroupController {
     @RequestMapping(value = "groups/{accession}",
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
                     method = RequestMethod.GET)
-    public @ResponseBody Group groupJson(@PathVariable String accession) {
+    public @ResponseBody SolrGroup groupJson(@PathVariable String accession) {
         return groupRepository.findOne(accession);
     }
 
     @RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
     public @ResponseBody String groupXml(@PathVariable String accession) {
-        Group group = groupRepository.findOne(accession);
+        SolrGroup group = groupRepository.findOne(accession);
 
         if (group.getXml().isEmpty()) {
             throw new NullPointerException("No XML present for " + group.getAccession());
@@ -121,7 +122,7 @@ public class GroupController {
             @RequestParam(value = "page", defaultValue = "0") int page) {
         Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder),sortBy);
         PageRequest querySpec = new PageRequest(page,pageSize,sortingMethod);
-        Page<Group> results = groupRepository.findByKeywords(searchTerm,querySpec);
+        Page<SolrGroup> results = groupRepository.findByKeywords(searchTerm,querySpec);
         ResultQuery rq = new GroupResultQuery(results);
         return rq.renderDocument();
     }

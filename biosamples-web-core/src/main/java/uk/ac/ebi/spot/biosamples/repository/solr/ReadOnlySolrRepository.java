@@ -1,4 +1,4 @@
-package uk.ac.ebi.spot.biosamples.repository;
+package uk.ac.ebi.spot.biosamples.repository.solr;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,9 +1,9 @@
 package uk.ac.ebi.spot.biosamples.controller.utils;
 
-import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 
 /**
  * Javadocs go here!

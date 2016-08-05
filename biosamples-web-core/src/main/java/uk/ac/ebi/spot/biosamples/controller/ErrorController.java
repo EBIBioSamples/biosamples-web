@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
 import org.thymeleaf.exceptions.TemplateProcessingException;
+
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 
 import javax.servlet.http.HttpServletRequest;
