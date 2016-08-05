@@ -74,7 +74,6 @@
 		<dependency>
 			<groupId>nz.net.ultraq.thymeleaf</groupId>
 			<artifactId>thymeleaf-layout-dialect</artifactId>
-			<version>1.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jdom</groupId>
@@ -93,7 +92,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
-			</dependency>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -141,24 +140,10 @@
 							<directory>.</directory>
 							<includes>
 								<include>**/logs/</include>
-								 <include>**/node/</include>
-								 <include>**/node_modules/</include>
+								<include>**/node/</include>
+								<include>**/node_modules/</include>
 							</includes>
 							<followSymlinks>false</followSymlinks>
-						</fileset>
-						<fileset>
-							<directory>src/main/resources/static/stylesheets/</directory>
-							<includes>
-								<include>flexboxgrid.css</include>
-								<include>main_samelf.css</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>src/main/resources/static/javascript/</directory>
-							<includes>
-								<include>searchComponents.js</include>
-								<include>searchComponents.js.map</include>
-							</includes>
 						</fileset>
 					</filesets>
 				</configuration>
@@ -167,6 +152,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<layout>MODULE</layout>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
