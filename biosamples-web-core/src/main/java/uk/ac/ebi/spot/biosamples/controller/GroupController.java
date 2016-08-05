@@ -1,6 +1,5 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.solr.server.support.HttpSolrServerFactoryBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,14 +33,7 @@ import uk.ac.ebi.spot.biosamples.repository.SampleRepository;
 import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 25/02/16
- */
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
 public class GroupController {
