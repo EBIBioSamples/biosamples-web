@@ -7,12 +7,6 @@ import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 15/06/16
- */
 @Component
 public class RelationsLinkFactory {
     @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")

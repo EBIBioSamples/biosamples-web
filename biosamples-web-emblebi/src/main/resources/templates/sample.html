@@ -12,7 +12,7 @@
     <link th:href="@{/stylesheets/style.css}" href="/stylesheets/style.css"  rel="stylesheet" type="text/css"  />
 
     <!--/* Pass SPRING variables to Javascript */-->
-    <script th:if="${hasRelations}" th:inline="javascript">
+    <script th:inline="javascript">
         /*<![CDATA[*/
         window.relationsUrl = [[${relationsUrl}]];
         window.accession = [[${sample.accession}]];
@@ -120,6 +120,13 @@
                 </tr>
 
                 <!-- relationships via neo -->
+                
+                <tr>
+                    <td><b>Example: </b></td>
+                    <td><a th:text="${relations}">example</a></td>
+                </tr>
+                
+                
                 <tr th:if="${not #lists.isEmpty(sameAs)}">
                     <td><b>Same as: </b></td>
                     <td><a th:each="item : ${sameAs}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
@@ -135,17 +142,17 @@
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(childOf)}">
-                    <td><b>Offspring from</b></td>
+                    <td><b>Child of:</b></td>
                     <td><a th:each="item : ${childOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(parentOf)}">
-                    <td><b>Offspring to</b></td>
+                    <td><b>Parent of:</b></td>
                     <td><a th:each="item : ${parentOf}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(recuratedInto)}">
                     <td><b>Recurated to: </b></td>
-                    <td><a th:each="item : ${recuratedInto }" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
+                    <td><a th:each="item : ${recuratedInto}" th:text="${item}" th:href="@{${item}}">Replaced Text </a></td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(recuratedFrom)}">
                     <td><b>Recurated from: </b></td>
@@ -157,7 +164,7 @@
             </table>
         </div>
     </section>
-    <section id="samples" class="relation-graph" th:if="${hasRelations}">
+    <section id="samples" class="relation-graph" >
         <h4>Samples Relations</h4>
         <div id="ontology_vis">
         </div>
@@ -166,7 +173,7 @@
 
 <th:block layout:fragment="custom-endpage-scripts">
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
-    <script th:if="${hasRelations}" th:src="@{/javascript/relationsVis.js}"></script>
+    <script th:src="@{/javascript/relationsVis.js}"></script>
 </th:block>
 
 </body>

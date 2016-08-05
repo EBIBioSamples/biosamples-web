@@ -61,11 +61,9 @@ public class GroupController {
 	public String group(Model model, @PathVariable String accession) {
 		
 		SolrGroup group = solrGroupRepository.findOne(accession);
-		
-		//Page<SolrGroup> groupPage = solrGroupRepository.findByAccession(accession, new PageRequest(0,1));
-		//SolrGroup group = groupPage.getContent().get(0);
 
 		if (group != null) {
+			
 			model.addAttribute("group", group);
 			model.addAttribute("groupSize", group.getSamples().size());
 			model.addAttribute("relationsUrl", relationsServerUrl);
