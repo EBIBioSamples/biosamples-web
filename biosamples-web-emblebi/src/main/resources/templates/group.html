@@ -182,12 +182,13 @@
     <!-- New part Vis-->
     <section class="relation-graph col-xs-12">
         <h4>Group Relations</h4>
-        <div id="ontology_vis"></div>
+        <div th:if="${groupSize < 100}" id="ontology_vis"></div>
+        <h3 th:unless="${groupSize < 100}">Too many relationships to display</h3>
     </section>
 </main>
 
 <th:block layout:fragment="custom-endpage-scripts">
-    <script th:src="@{/javascript/relationsVis.js}"></script>
+    <script th:if="${groupSize < 100}" th:src="@{/javascript/relationsVis.js}"></script>
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
     <script th:if="${group.hasSamples()}" th:src="@{/javascript/samplesInGroup.js}"></script>
 </th:block>
