@@ -17,8 +17,8 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
 
 import uk.ac.ebi.spot.biosamples.filter.ResourceAwareUrlRewriteFilter;
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoGroup;
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSample;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoGroup;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;

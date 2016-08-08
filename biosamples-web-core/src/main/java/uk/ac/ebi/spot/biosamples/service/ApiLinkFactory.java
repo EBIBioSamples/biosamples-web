@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoGroup;
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSample;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoGroup;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
 
 /**
  * Javadocs go here!

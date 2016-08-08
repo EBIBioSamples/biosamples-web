@@ -1,4 +1,4 @@
-package uk.ac.ebi.spot.biosamples.model.ne4j;
+package uk.ac.ebi.spot.biosamples.model.neo4j;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
@@ -20,9 +20,6 @@ public class NeoGroup {
 	@Relationship(type = "MEMBERSHIP", direction = Relationship.INCOMING)
 	private Set<NeoSample> samples;
 
-	@Relationship(type = "OWNERSHIP", direction = Relationship.OUTGOING)
-	private NeoSubmission owner;
-
 	@Relationship(type = "HASLINK", direction = Relationship.OUTGOING)
 	private Set<NeoExternalLink> externalLinks;
 
@@ -35,10 +32,6 @@ public class NeoGroup {
 
 	public String getAccession() {
 		return accession;
-	}
-
-	public NeoSubmission getOwner() {
-		return owner;
 	}
 
 	public Set<NeoSample> getSamples() {

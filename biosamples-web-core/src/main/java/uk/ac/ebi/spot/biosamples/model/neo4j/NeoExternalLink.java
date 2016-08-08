@@ -1,4 +1,4 @@
-package uk.ac.ebi.spot.biosamples.model.ne4j;
+package uk.ac.ebi.spot.biosamples.model.neo4j;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;

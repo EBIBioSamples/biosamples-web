@@ -31,7 +31,7 @@ import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSample;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.SampleResultQuery;
@@ -64,7 +64,6 @@ public class SampleController {
 
 		if (solrSample != null) {
 			model.addAttribute("sample", solrSample);
-
 		} else {
 			throw new HtmlContentNotFound("No sample found with accession " + accession);
 		}
@@ -75,14 +74,53 @@ public class SampleController {
 		if (neoSample != null) {
 			model.addAttribute("hasRelations", true);
 			model.addAttribute("relations", neoSample);
+			
+			if (neoSample.getDerivedFrom() != null) {
+				model.addAttribute("derivedFrom", neoSample.getDerivedFrom()
+						.stream()
+						.map((s)->s.getAccession())
+						.collect(Collectors.toList()));
+			}
+			if (neoSample.getDerivedTo() != null) {
+				model.addAttribute("derivedTo", neoSample.getDerivedTo()
+						.stream()
+						.map((s)->s.getAccession())
+						.collect(Collectors.toList()));
+			}
+			
+			if (neoSample.getChildOf() != null) {
+				model.addAttribute("childOf", neoSample.getChildOf()
+						.stream()
+						.map((s)->s.getAccession())
+						.collect(Collectors.toList()));
+			}
+			if (neoSample.getParentOf() != null) {
+				model.addAttribute("parentOf", neoSample.getParentOf()
+						.stream()
+						.map((s)->s.getAccession())
+						.collect(Collectors.toList()));
+			}
 
-			model.addAttribute("derivedFrom", neoSample.getDerivedFrom());
-			model.addAttribute("derivedTo", neoSample.getDerivedTo());
-			model.addAttribute("childOf", neoSample.getChildOf());
-			model.addAttribute("parentOf", neoSample.getParentOf());
-			model.addAttribute("sameAs", neoSample.getSameAs());
-			model.addAttribute("recuratedInto", neoSample.getRecuratedTo());
-			model.addAttribute("recuratedFrom", neoSample.getRecuratedFrom());
+			if (neoSample.getSameAs() != null) {
+				model.addAttribute("sameAs", neoSample.getSameAs()
+						.stream()
+						.map((s)->s.getAccession())
+						.collect(Collectors.toList()));
+			}
+
+
+			if (neoSample.getRecuratedTo() != null) {
+				model.addAttribute("recuratedInto", neoSample.getRecuratedTo()
+						.stream()
+						.map((s)->s.getAccession())
+						.collect(Collectors.toList()));
+			}
+			if (neoSample.getRecuratedFrom() != null) {
+				model.addAttribute("recuratedFrom", neoSample.getRecuratedFrom()
+						.stream()
+						.map((s)->s.getAccession())
+						.collect(Collectors.toList()));
+			}
 		}
 
 		log.info("Model is " + model);

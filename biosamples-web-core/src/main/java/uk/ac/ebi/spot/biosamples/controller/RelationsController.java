@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoGroup;
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSample;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoGroup;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoGroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;
 

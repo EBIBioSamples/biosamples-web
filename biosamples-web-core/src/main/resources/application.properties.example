@@ -4,9 +4,7 @@ solr.server.search.core-name        CORE
 #file describing which facets to ignore
 #solr.ignoredfacets.file				
 
-relations.server					http://HOSTNAME:PORT/PATH/
 spring.data.neo4j.uri				PATH_to_File
-
 
 spring.data.rest.base-path          /api
 spring.data.rest.default-page-size  50

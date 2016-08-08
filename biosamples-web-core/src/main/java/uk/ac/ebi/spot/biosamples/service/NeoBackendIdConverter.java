@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.spi.BackendIdConverter;
 import org.springframework.stereotype.Component;
 
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoGroup;
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSample;
-import uk.ac.ebi.spot.biosamples.model.ne4j.NeoSubmission;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoGroup;
+import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoGroupRepository;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;
-import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSubmissionRepository;
 
 import java.io.Serializable;
 
@@ -28,9 +26,6 @@ public class NeoBackendIdConverter implements BackendIdConverter {
 	@Autowired
 	private NeoGroupRepository groupRepository;
 
-	@Autowired
-	private NeoSubmissionRepository submissionRepository;
-
 	@Override
 	public Serializable fromRequestId(String id, Class<?> entityType) {
 		if (entityType.equals(NeoSample.class)) {
@@ -46,13 +41,6 @@ public class NeoBackendIdConverter implements BackendIdConverter {
 				return -1;
 			} else {
 				return group.getId();
-			}
-		} else if (entityType.equals(NeoSubmission.class)) {
-			NeoSubmission submission = submissionRepository.findOneBySubmissionId(id);
-			if (submission == null) {
-				return -1;
-			} else {
-				return submission.getId();
 			}
 		} else {
 			throw new IllegalArgumentException("Unrecognized class " + entityType);
@@ -75,13 +63,6 @@ public class NeoBackendIdConverter implements BackendIdConverter {
 			} else {
 				return group.getAccession();
 			}
-		} else if (entityType.equals(NeoSubmission.class)) {
-			NeoSubmission submission = submissionRepository.findOne((Long)id);
-			if (submission == null) { 
-				return null;
-			} else {
-				return submission.getSubmissionId();
-			}
 		} else {
 			throw new IllegalArgumentException("Unrecognized class " + entityType);
 		}
@@ -92,8 +73,6 @@ public class NeoBackendIdConverter implements BackendIdConverter {
 		if (delimiter.equals(NeoSample.class)) {
 			return true;
 		} else if (delimiter.equals(NeoGroup.class)) {
-			return true;
-		} else if (delimiter.equals(NeoSubmission.class)) {
 			return true;
 		} else {
 			return false;
