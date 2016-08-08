@@ -7,7 +7,7 @@
     var accession = window.accession;
     var relationsUrl = window.relationsUrl;
     var originUrl = window.baseUrl ? window.baseUrl : window.location.origin;
-    
+
 
     function buildGraphUrl(baseUrl,accession) {
         return `${baseUrl}${sampleOrGroup(accession)}/${accession}/graph`;
@@ -24,8 +24,8 @@
     }
 
     function isCluster(parameter){
-        console.log(parameter)
-        console.log(parameter.indexOf("__"))
+        console.log(parameter);
+        console.log(parameter.indexOf("__"));
         if (parameter.indexOf("__")===-1)
         {
             return false;
