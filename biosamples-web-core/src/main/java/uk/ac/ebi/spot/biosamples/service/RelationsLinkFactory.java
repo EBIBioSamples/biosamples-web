@@ -2,6 +2,8 @@ package uk.ac.ebi.spot.biosamples.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.mvc.BasicLinkBuilder;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
@@ -9,18 +11,12 @@ import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 
 @Component
 public class RelationsLinkFactory {
-    @Value("${relations.server:http://www.ebi.ac.uk/biosamples/relations}")
-    private String relationsServerUrl;
 
-    public Link createRelationsLinkForSample(SolrSample sample) {
-        String url = relationsServerUrl + (relationsServerUrl.endsWith("/") ? "samples/" : "/samples/") +
-                sample.getAccession();
-        return new Link(url, "relations");
+    public Link createRelationsLinkForSample(SolrSample sample) {    	
+    	return BasicLinkBuilder.linkToCurrentMapping().slash("api").slash("samplesrelations").slash(sample.getAccession()).withRel("relations");
     }
 
     public Link createRelationsLinkForGroup(SolrGroup group) {
-        String url =
-                relationsServerUrl + (relationsServerUrl.endsWith("/") ? "groups/" : "/groups/") + group.getAccession();
-        return new Link(url, "relations");
+    	return BasicLinkBuilder.linkToCurrentMapping().slash("api").slash("groupsrelations").slash(group.getAccession()).withRel("relations");
     }
 }
