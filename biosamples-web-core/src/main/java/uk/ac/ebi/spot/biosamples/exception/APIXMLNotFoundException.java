@@ -1,11 +1,5 @@
 package uk.ac.ebi.spot.biosamples.exception;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 13/06/16
- */
 public class APIXMLNotFoundException extends RuntimeException {
     public APIXMLNotFoundException() {
         super();

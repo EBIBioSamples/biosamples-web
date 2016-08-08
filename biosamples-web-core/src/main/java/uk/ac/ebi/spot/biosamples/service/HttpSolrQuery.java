@@ -1,13 +1,13 @@
 package uk.ac.ebi.spot.biosamples.service;
 
-import uk.ac.ebi.spot.biosamples.exception.HttpSolrQueryBuildingException;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import uk.ac.ebi.spot.biosamples.exception.HttpSolrQueryBuildingException;
 
 /**
  * Javadocs go here!

@@ -9,7 +9,7 @@ import org.springframework.data.repository.Repository;
 import java.io.Serializable;
 
 @NoRepositoryBean
-public interface ReadOnlySolrRepository<T, ID extends Serializable> extends Repository<T, ID> {
+public interface ReadOnlyRepository<T, ID extends Serializable> extends Repository<T, ID> {
 
     /**
      * Retrieves an entity by its id.

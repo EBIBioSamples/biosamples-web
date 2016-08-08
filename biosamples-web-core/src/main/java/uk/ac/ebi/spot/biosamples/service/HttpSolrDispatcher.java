@@ -214,20 +214,16 @@ public class HttpSolrDispatcher {
                 String[] result = fResult.get(timeout, TimeUnit.SECONDS);
                 singleExecutor.shutdown();
                 return result;
-            }
-            catch (TimeoutException e) {
+            } catch (TimeoutException e) {
                 throw new RuntimeException("No Solr response acquired in " + timeout + "s.");
             }
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException("Solr parsing thread was interrupted for query '" + facetQuery.stringify() + "'",
                                        e);
-        }
-        catch (ExecutionException e) {
+        } catch (ExecutionException e) {
             throw new RuntimeException(
                     "Execution of Solr parsing thread failed for query '" + facetQuery.stringify() + "'", e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(
                     "Unable to calculate most commonly used facets for query '" + facetQuery.stringify() + "'", e);
         }
@@ -270,18 +266,14 @@ public class HttpSolrDispatcher {
                 Set<String> results = ftResults.get(timeout, TimeUnit.SECONDS);
                 singleExecutor.shutdown();
                 return results;
-            }
-            catch (TimeoutException e) {
+            } catch (TimeoutException e) {
                 throw new RuntimeException("No Solr response acquired in " + timeout + "s.");
             }
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new RuntimeException("Solr parsing thread was interrupted", e);
-        }
-        catch (ExecutionException e) {
+        } catch (ExecutionException e) {
             throw new RuntimeException("Execution of Solr parsing thread failed", e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Unable to calculate most commonly used facets", e);
         }
     }

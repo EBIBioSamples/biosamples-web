@@ -6,7 +6,6 @@ import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -14,14 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 10/02/16
- */
-@SolrDocument(solrCoreName = "samples")
-public class Sample {
+@SolrDocument(solrCoreName = "groups")
+public class SolrGroup {
     private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Id @Field("accession") String id;
@@ -31,10 +24,6 @@ public class Sample {
 
     @Field("updatedate") String updateDate;
     @Field("releasedate") String releaseDate;
-
-
-
-    @Field("sample_name_crt") List<String> sampleName;
 
     // collection of all text attributes for search
     @JsonIgnore @Field("text") List<String> keywords;
@@ -55,8 +44,9 @@ public class Sample {
     @Field("external_references_json")
     String externalReferences;
 
-    // group metadata
-    @Field("sample_grp_accessions") List<String> groups;
+    // sample metadata
+    @Field("number_of_samples") String numberOfSamples;
+    @Field("grp_sample_accessions") List<String> samples;
 
     // submission metadata
     @Field("submission_acc") String submissionAccession;
@@ -64,7 +54,6 @@ public class Sample {
 
     // XML payload for this sample - don't return in REST API
     @Field("api_xml") @JsonIgnore String xml;
-
 
     public String getAccession() {
         return accession;
@@ -90,16 +79,16 @@ public class Sample {
         this.description = description;
     }
 
-    public LocalDate getUpdateDate() throws ParseException {
-        return updateDate == null ? null : LocalDate.from(solrDateFormatter.parse(updateDate));
+    public LocalDate getUpdateDate() {
+        return updateDate == null ? null : LocalDate.from(solrDateFormatter.parse(this.updateDate));
     }
 
     public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 
-    public LocalDate getReleaseDate() throws ParseException {
-        return releaseDate == null ? null : LocalDate.from(solrDateFormatter.parse(releaseDate));
+    public LocalDate getReleaseDate() {
+        return releaseDate == null ? null : LocalDate.from(solrDateFormatter.parse(this.releaseDate));
     }
 
     public void setReleaseDate(String releaseDate) {
@@ -117,10 +106,15 @@ public class Sample {
     public Map<String, List<String>> getCharacteristicsText() {
         // create a sorted, unmodifiable clone of this map (sorted by natural key order)
         TreeMap<String, List<String>> result = new TreeMap<>();
-        for (String key : characteristicsText.keySet()) {
-            result.put(key.replace("_crt", ""), characteristicsText.get(key));
+        if (characteristicsText != null) {
+            for (String key : characteristicsText.keySet()) {
+                result.put(key.replace("_crt", ""), characteristicsText.get(key));
+            }
+            return Collections.unmodifiableMap(result);
         }
-        return Collections.unmodifiableMap(result);
+        else {
+            return null;
+        }
     }
 
     public void setCharacteristicsText(Map<String, List<String>> characteristicsText) {
@@ -130,10 +124,15 @@ public class Sample {
     public Map<String, List<String>> getCharacteristics() {
         // create a sorted, unmodifiable clone of this map (sorted by natural key order)
         TreeMap<String, List<String>> result = new TreeMap<>();
-        for (String key : characteristics.keySet()) {
-            result.put(key.replace("_crt_json", ""), characteristics.get(key));
+        if (characteristics != null) {
+            for (String key : characteristics.keySet()) {
+                result.put(key.replace("_crt_json", ""), characteristics.get(key));
+            }
+            return Collections.unmodifiableMap(result);
         }
-        return Collections.unmodifiableMap(result);
+        else {
+            return null;
+        }
     }
 
     public void setCharacteristics(Map<String, List<String>> characteristics) {
@@ -156,12 +155,20 @@ public class Sample {
         this.externalReferences = externalReferences;
     }
 
-    public List<String> getGroups() {
-        return groups;
+    public String getNumberOfSamples() {
+        return numberOfSamples;
     }
 
-    public void setGroups(List<String> groups) {
-        this.groups = groups;
+    public void setNumberOfSamples(String numberOfSamples) {
+        this.numberOfSamples = numberOfSamples;
+    }
+
+    public List<String> getSamples() {
+        return samples;
+    }
+
+    public void setSamples(List<String> samples) {
+        this.samples = samples;
     }
 
     public String getSubmissionAccession() {
@@ -188,11 +195,7 @@ public class Sample {
         this.xml = xml;
     }
 
-    public List<String> getSampleName() {
-        return sampleName;
-    }
-
-    public void setSampleName(List<String> sampleName) {
-        this.sampleName = sampleName;
+    public boolean hasSamples() {
+        return Integer.parseInt(this.getNumberOfSamples()) > 0;
     }
 }

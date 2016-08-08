@@ -15,12 +15,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.io.InputStream;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 21/06/16
- */
 
 public class ResourceAwareUrlRewriteFilter extends UrlRewriteFilter {
     private final ResourceLoader resourceLoader;

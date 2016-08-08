@@ -1,6 +1,3 @@
-/**
- * Created by tliener on 24/05/2016.
- */
 (function(window) {
     var app = require("ols-graphview");
     
@@ -10,7 +7,8 @@
 
 
     function buildGraphUrl(baseUrl,accession) {
-        return `${baseUrl}${sampleOrGroup(accession)}/${accession}/graph`;
+        //return `${baseUrl}${sampleOrGroup(accession)}/${accession}/graph`;
+        return `./${accession}/graph`;
     }
 
     function sampleOrGroup(accession) {
