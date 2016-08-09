@@ -8,7 +8,7 @@
 
     function buildGraphUrl(baseUrl,accession) {
         //return `${baseUrl}${sampleOrGroup(accession)}/${accession}/graph`;
-        return `./${accession}/graph`;
+        return `../${sampleOrGroup(accession)}/${accession}/graph`;
     }
 
     function sampleOrGroup(accession) {
