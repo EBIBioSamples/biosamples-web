@@ -1,4 +1,4 @@
-package uk.ac.ebi.spot.biosamples.service.mail;
+package uk.ac.ebi.spot.biosamples.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +19,7 @@ public class MailConfig {
 
 
     @Bean
-    JavaMailSenderImpl mailSender() {
+    JavaMailSenderImpl getMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setJavaMailProperties(getMailProperties());
         mailSender.setHost(host);

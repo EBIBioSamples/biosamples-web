@@ -378,8 +378,12 @@ width: 583px;
 #ae-feedback {
 left: 51%;
 background-color: #FFE0B1;
+display: none;
 }
 
+#ae-feedback.feedback-open {
+display: block;
+}
 
 
 form input.submit {

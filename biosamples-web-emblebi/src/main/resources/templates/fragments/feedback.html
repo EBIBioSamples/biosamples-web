@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<section id="ae-feedback" th:fragment="feedback-section">
+<section id="ae-feedback" th:fragment="dialog">
     <h3>
         Have your say<a id="ae-feedback-close" href="#" class="icon icon-functional" data-icon="x"></a>
     </h3>
@@ -21,7 +21,9 @@
                 share this address with anyone else.
             </label><input id="ae-email-field" name="e" maxlength="50">
         </fieldset>
-        <input type="hidden" name="p" value="http://www.ebi.ac.uk/biosamples/?null"><input type="hidden" name="r" value="http://www.ebi.ac.uk/biosamples"><input class="submit" type="submit" value="Send">
+        <input type="hidden" name="p" th:value="${#httpServletRequest.requestURI}" value="http://www.ebi.ac.uk/biosamples/?null">
+        <input type="hidden" name="r" value="http://www.ebi.ac.uk/biosamples">
+        <input class="submit" type="submit" value="Send">
     </form>
 </section>
 </body>

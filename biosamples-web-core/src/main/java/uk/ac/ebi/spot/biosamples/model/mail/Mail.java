@@ -3,7 +3,7 @@ package uk.ac.ebi.spot.biosamples.model.mail;
 /**
  * Created by lucacherubin on 2016/08/09.
  */
-public class FeedbackMail {
+public class Mail {
 
     private String to;
 
@@ -15,7 +15,7 @@ public class FeedbackMail {
 
     private String body;
 
-    public FeedbackMail(){
+    public Mail(){
 
     }
 
@@ -60,7 +60,8 @@ public class FeedbackMail {
     }
 
     public void addToBody(String textToAdd) {
-        String newBody = getBody() + textToAdd;
+        String oldBody = getBody() == null ? "" : getBody();
+        String newBody = oldBody + textToAdd;
         setBody(newBody);
     }
 

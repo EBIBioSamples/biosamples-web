@@ -11,14 +11,14 @@ import uk.ac.ebi.spot.biosamples.model.mail.FeedbackMail;
 import uk.ac.ebi.spot.biosamples.model.mail.Mail;
 
 @Service
-public class FeedbackMailService {
+public class MailService {
 
     @Value("${mail.from}")
     private String from;
     @Value("${mail.to}")
     private String to;
 
-    @Value("${mail.feedback.subject}")
+    @Value("${mail.feedback.subject:Feedback email}")
     private String feedbackSubject;
 
 
