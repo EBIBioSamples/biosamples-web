@@ -23,16 +23,12 @@ public class ErrorController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    protected Logger getLog() {
-        return log;
-    }
-
     @ExceptionHandler(HtmlContentNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFoundError(Model model, HttpServletRequest req, Exception exception)
             throws Exception {
 
-        getLog().error("Request: " + req.getRequestURI() + " raised " + exception);
+        log.error("Problem with: " + req.getRequestURI(), exception);
         model.addAttribute("exception", exception);
         model.addAttribute("url", req.getRequestURL());
         model.addAttribute("timestamp", new Date().toString());
@@ -43,20 +39,20 @@ public class ErrorController {
 
 
     @ExceptionHandler(value = Exception.class)
-    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception exception) throws Exception {
 
-        getLog().error("Request: " + req.getRequestURI() + " raised " + e);
+        log.error("Problem with: " + req.getRequestURI(), exception);
         // If the exception is annotated with @ResponseStatus rethrow it and let
         // the framework handle it - like the OrderNotFoundException example
         // at the start of this post.
         // AnnotationUtils is a Spring Framework utility class.
         if (AnnotationUtils.findAnnotation
-                (e.getClass(), ResponseStatus.class) != null)
-        throw e;
+                (exception.getClass(), ResponseStatus.class) != null)
+        throw exception;
 
         // Otherwise setup and send the user to a default error-view.
         ModelAndView mav = new ModelAndView();
-        mav.addObject("exception", e);
+        mav.addObject("exception", exception);
         mav.addObject("url", req.getRequestURL());
         mav.setViewName("error");
         return mav;
