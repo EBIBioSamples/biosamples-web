@@ -14,6 +14,7 @@ spring.thymeleaf.mode               LEGACYHTML5
 mail.host                           YOUR_HOSTNAME
 mail.port                           YOUR_HOSTPORT
 mail.protocol                       SMTP
-mail.to                             name@service.com
-mail.from                           name@service.com
 
+biosamples.feedback.mail.to         name@service.com
+biosamples.feedback.mail.from       name@service.com
+biosamples.feedback.mail.subject    Your Subject

@@ -1,19 +1,18 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import uk.ac.ebi.spot.biosamples.service.mail.MailService;
+import uk.ac.ebi.spot.biosamples.service.mail.FeedbackMailService;
 
 @Controller
 public class SupportController {
 
     @Autowired
-    private MailService mailService;
+    private FeedbackMailService mailService;
 
     @RequestMapping(value="/feedback", method = RequestMethod.POST)
     @ResponseBody
