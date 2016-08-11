@@ -76,29 +76,42 @@
                 }).join(" ");
             },
 
-            dataFilter(value) {
-                try {
-                    let jsonValue = JSON.parse(value);
-                    if (jsonValue.hasOwnProperty('ontology_terms')) {
-                        let textValue = jsonValue.text;
-                        let ontology_terms = jsonValue['ontology_terms'];
-                        if (ontology_terms[0]) {
-                            let link = olsSearchLink + encodeURIComponent(ontology_terms[0]);
-                            return `<a href=${link} target='_blank'>${textValue}</a>`
-                        } else {
-                            console.log("Something went wrong - ontology_terms collection present but no first element?");
-                        }
-                    }
-                } catch (e) {
-                    if (value) {
-                        if (value.match(/(?:SAM(N|E|)A?\d+|SAMEG\d+)/)) {
-                            return renderAccession(value);
-                        }
+            /*
+            this function render the values inside the table.
+             */
+            dataFilter(value, separator = ", ") {
+                try { // necessary to handle null values
 
-                        if (value.match(/https?:\/\//)) {
-                            return renderLink(value);
+                    //Check if multiple value is present
+                    let valArray = value.split(separator);
+                    let mapArray = valArray.map(value => {
+                        try { // check if value has ontology associated
+                            let jsonValue = JSON.parse(value);
+                            if (jsonValue.hasOwnProperty('ontology_terms')) {
+                                let textValue = jsonValue.text;
+                                let ontology_terms = jsonValue['ontology_terms'];
+                                if (ontology_terms[0]) { // build the OLS link for the ontology mapped value
+                                    let link = olsSearchLink + encodeURIComponent(ontology_terms[0]);
+                                    return `<a href=${link} target='_blank'>${textValue}</a>`
+                                } else { //something wrong happened
+                                    console.log("Something went wrong - ontology_terms collection present but no first element?");
+                                }
+                            }
+                        } catch (e) {
+                            if (value) { // value is not a json object
+                                // Other value rendering functions
+                                if (value.match(/(?:SAM(N|E|)A?\d+|SAMEG\d+)/)) {
+                                    return renderAccession(value);
+                                }
+                                if (value.match(/https?:\/\//)) {
+                                    return renderLink(value);
+                                }
+                            }
+                            return value;
                         }
-                    }
+                    });
+                    return mapArray.slice(1).reduce((complete, part) => `${complete}${separator}${part}`, mapArray[0]);
+                } catch (e) {
                     return value;
                 }
             }
