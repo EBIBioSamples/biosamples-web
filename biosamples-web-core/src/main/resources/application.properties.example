@@ -11,9 +11,8 @@ spring.data.rest.default-page-size  50
 spring.thymeleaf.mode               LEGACYHTML5
 
 # Mail informations
-mail.host                           YOUR_HOSTNAME
-mail.port                           YOUR_HOSTPORT
-mail.protocol                       SMTP
+spring.mail.host                    YOUR_HOSTNAME
+spring.mail.port                    YOUR_HOSTPORT
 
 biosamples.feedback.mail.to         name@service.com
 biosamples.feedback.mail.from       name@service.com
