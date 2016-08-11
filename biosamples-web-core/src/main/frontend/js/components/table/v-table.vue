@@ -45,6 +45,17 @@
         return finalValue;
     }
 
+    function renderOntologyTerm(jsonValue) {
+        let textValue = jsonValue.text;
+        let ontology_terms = jsonValue['ontology_terms'];
+        if (ontology_terms[0]) { // build the OLS link for the ontology mapped value
+            let link = olsSearchLink + encodeURIComponent(ontology_terms[0]);
+            return `<a href=${link} target='_blank'>${textValue}</a>`
+        } else { //something wrong happened
+            console.log("Something went wrong - ontology_terms collection present but no first element?");
+        }
+    }
+
     module.exports = {
         props: {
             columns: {
@@ -88,15 +99,9 @@
                         try { // check if value has ontology associated
                             let jsonValue = JSON.parse(value);
                             if (jsonValue.hasOwnProperty('ontology_terms')) {
-                                let textValue = jsonValue.text;
-                                let ontology_terms = jsonValue['ontology_terms'];
-                                if (ontology_terms[0]) { // build the OLS link for the ontology mapped value
-                                    let link = olsSearchLink + encodeURIComponent(ontology_terms[0]);
-                                    return `<a href=${link} target='_blank'>${textValue}</a>`
-                                } else { //something wrong happened
-                                    console.log("Something went wrong - ontology_terms collection present but no first element?");
-                                }
+                                return renderOntologyTerm(jsonValue);
                             }
+                            return jsonValue;
                         } catch (e) {
                             if (value) { // value is not a json object
                                 // Other value rendering functions
