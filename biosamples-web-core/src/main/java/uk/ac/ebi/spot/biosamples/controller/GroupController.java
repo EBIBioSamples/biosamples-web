@@ -65,7 +65,11 @@ public class GroupController {
 		if (group != null) {
 			
 			model.addAttribute("group", group);
-			model.addAttribute("groupSize", group.getSamples().size());
+			if (group.getSamples() == null) {
+				model.addAttribute("groupSize", 0);
+			} else {
+				model.addAttribute("groupSize", group.getSamples().size());
+			}	
 			model.addAttribute("relationsUrl", relationsServerUrl);
 			if (group.hasSamples()) {
 				// Sample common attributes

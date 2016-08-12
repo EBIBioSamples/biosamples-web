@@ -121,6 +121,8 @@ public class SampleController {
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
 			}
+		} else {
+			model.addAttribute("hasRelations", false);			
 		}
 
 		log.info("Model is " + model);

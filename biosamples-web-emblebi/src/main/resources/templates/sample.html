@@ -182,8 +182,8 @@
     </section>
     <section id="samples" class="relation-graph" >
         <h4>Samples Relations</h4>
-        <div id="ontology_vis">
-        </div>
+        <div th:if="${hasRelations}" id="ontology_vis" ></div>
+        <h3 th:unless="${hasRelations}" >No relationships available for this sample.</h3>
     </section>
 </main>
 
