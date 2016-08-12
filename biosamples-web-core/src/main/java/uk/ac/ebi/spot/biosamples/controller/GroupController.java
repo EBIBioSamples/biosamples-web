@@ -35,6 +35,7 @@ import uk.ac.ebi.spot.biosamples.repository.solr.SolrSampleRepository;
 import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
@@ -85,14 +86,10 @@ public class GroupController {
 				model.addAttribute("common_attrs", sampleCommonAttributes);
 
 				// Samples table attributes
-				Set<String> allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
+				List<String> allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
 
-				List<String> tableAttributes = new ArrayList<>();
-
-				Arrays.stream(new String[] { "accession", "organism", "name", "description" })
-						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).forEach(tableAttributes::add);
-				allGroupSamplesCharacteristics.stream().map(this::cleanAttributeName)
-						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).forEach(tableAttributes::add);
+				List<String> tableAttributes = allGroupSamplesCharacteristics.stream().map(this::cleanAttributeName)
+						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).collect(Collectors.toList());
 
 				model.addAttribute("table_attrs", tableAttributes);
 			}
@@ -172,7 +169,7 @@ public class GroupController {
 	}
 
 	private String cleanAttributeName(String name) {
-		name = name.substring(0, name.indexOf("_crt_ft"));
+		name = name.replaceFirst("_crt_ft$","");
 		return name;
 		/*
 		 * return Arrays.stream(name.split("_")).map(part -> { return

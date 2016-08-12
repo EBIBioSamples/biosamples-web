@@ -1,0 +1,20 @@
+@mixin external-reference {
+  content: "";
+  padding: 10px 25px 10px 0;
+}
+a.external-reference:after {
+  @include external-reference;
+  font-family: 'EBI-Generic';
+  content: "x";
+
+}
+
+a[href*="ebi.ac.uk/ena"]:after {
+  @include external-reference;
+  background: transparent url(../images/ena_logo.gif) no-repeat center right;
+}
+
+a[href*="ebi.ac.uk/arrayexpress"]:after {
+  @include external-reference;
+  background: transparent url(../images/arrayexpress_logo.gif) no-repeat center right;
+}

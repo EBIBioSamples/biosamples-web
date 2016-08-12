@@ -113,14 +113,14 @@ public class HttpSolrDispatcher {
         return executeAndParseCommonAttributeQuery(commonAttrQuery);
     }
 
-    public Set<String> getGroupSamplesAttributes(String groupAccession) {
+    public List<String> getGroupSamplesAttributes(String groupAccession) {
         HttpSolrQuery groupSamplesAttributesQuery =
                 solrQueryBuilder.createGroupSampleCharateristicsQuery(groupAccession);
 
         groupSamplesAttributesQuery.withPage(0,0);
 
-        String[] groupSamplesAttributes = executeAndParseFacetQuery(groupSamplesAttributesQuery, Collections.emptySet());
-        return Arrays.stream(groupSamplesAttributes).collect(Collectors.toSet());
+        String[] groupSamplesAttributes = executeAndParseGroupSampleTableFacet(groupSamplesAttributesQuery, Collections.emptySet());
+        return Arrays.asList(groupSamplesAttributes);
     }
 
     public String[] getMostUsedFacets(HttpSolrQuery solrQuery, int facetLimit) {
@@ -275,6 +275,90 @@ public class HttpSolrDispatcher {
             throw new RuntimeException("Execution of Solr parsing thread failed", e);
         } catch (IOException e) {
             throw new RuntimeException("Unable to calculate most commonly used facets", e);
+        }
+    }
+
+    private String[] executeAndParseGroupSampleTableFacet(HttpSolrQuery facetQuery, Collection<String> excludedFacets) {
+        /*
+            TODO: not really happy with this method, is not generic as I really want to. We are hard-writing which fields
+            we are using, we are manually mutating one of them into a different one (external references). There is for
+            sure a better solution to deal with this;
+        */
+        try {
+            final PipedInputStream in = new PipedInputStream();
+            final PipedOutputStream out = new PipedOutputStream(in);
+
+            ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
+            Future<String[]> fResult = singleExecutor.submit(() -> {
+                List<String> dynamicFacets = new ArrayList<>();
+
+                // Add default facets
+                dynamicFacets.add("accession");
+
+                // Check for optional facets
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(in);
+                JsonNode facetCounts = jsonNode.get("facet_counts");
+                if (facetCounts == null) {
+                    throw new RuntimeException("Unexpected Solr response - no facet_counts field");
+                }
+                JsonNode facetFields = facetCounts.get("facet_fields");
+                if (facetFields == null) {
+                    throw new RuntimeException("Unexpected Solr response - no facet_fields field");
+                }
+
+                JsonNode facetNodes = facetFields.get("description");
+                if (facetNodes == null) {
+                    throw new RuntimeException("Unexpected Solr response - no description field");
+                }
+                if (facetNodes.elements().hasNext()){
+                    dynamicFacets.add("description");
+                }
+
+                // Get characteristics
+                facetNodes = facetFields.get("crt_type_ft");
+                if (facetNodes == null) {
+                    throw new RuntimeException("Unexpected Solr response - no crt_type_ft field");
+                }
+                Iterator<JsonNode> facetNodeIt = facetNodes.elements();
+                while (facetNodeIt.hasNext()) {
+                    String facetName = String.format("%s_ft", facetNodeIt.next().asText());
+                    int facetCount = facetNodeIt.next().asInt();
+                    if (!excludedFacets.contains(facetName)) {
+                        getLog().debug("Dynamic facet '" + facetName + "' -> " + facetCount);
+                        dynamicFacets.add(facetName);
+                    }
+                }
+
+                facetNodes = facetFields.get("external_references_url");
+                if (facetNodes == null) {
+                    throw new RuntimeException("Unexpected Solr response - no external_references_url field");
+                }
+                if (facetNodes.elements().hasNext()) {
+                    dynamicFacets.add("external_references_url");
+                }
+
+                return dynamicFacets.toArray(new String[dynamicFacets.size()]);
+            });
+            streamSolrResponse(out, facetQuery);
+
+            long timeout = 60;
+            try {
+                String[] result = fResult.get(timeout, TimeUnit.SECONDS);
+                singleExecutor.shutdown();
+                return result;
+            } catch (TimeoutException e) {
+                throw new RuntimeException("No Solr response acquired in " + timeout + "s.");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Solr parsing thread was interrupted for query '" + facetQuery.stringify() + "'",
+                    e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(
+                    "Execution of Solr parsing thread failed for query '" + facetQuery.stringify() + "'", e);
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "Unable to calculate most commonly used facets for query '" + facetQuery.stringify() + "'", e);
         }
     }
 

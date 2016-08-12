@@ -111,6 +111,10 @@
             }
         }
 
+        function readExternalReference(value) {
+            return `<a class="external-reference" target="_blank" href="${value.URL}"></a>`;
+        }
+
         let value = "";
         if (sample.hasOwnProperty(field)) {
             return value = sample[field];
@@ -125,6 +129,12 @@
                 return multiValueField.slice(1).reduce(function(finalString,valueField) {
                     return `${finalString}, ${readAnnotatedValue(valueField)}`;
                 }, readAnnotatedValue(multiValueField[0]));
+            } else if (field === "external_references_url" &&
+                       sample.hasOwnProperty("externalReferences") && sample.externalReferences !== null) {
+                let externalReferences = sample.externalReferences;
+                return externalReferences.slice(1).reduce(function(finalString, valueField) {
+                    return `${finalString}, ${readExternalReference(valueField)}`;
+                }, readExternalReference(externalReferences[0]));
             }
         }
         return "";

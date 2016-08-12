@@ -21,6 +21,18 @@
     const Store = require("../Store.js");
     const olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
 
+    const accessionRegExp = "(?:SAM[NE]A?\\d+|SAMEG\\d+)";
+    const accessionInHref = `http(s)?:\/{2}.+(?:SAM[NE]A?\\d+|SAMEG\\d+)"${accessionRegExp}`;
+
+
+    function matchAccession(value) {
+        return value.match(RegExp(accessionRegExp));
+    }
+
+    function matchAccessionInLink(value) {
+        return value.match(RegExp(accessionInHref));
+    }
+
     function renderAccession(value) {
         let type = "samples";
         if (value.match(/^SAMEG\d+/)) {
@@ -82,9 +94,14 @@
 
         filters: {
             headFilter(value) {
-                return value.split("_").map(function(value){
-                    return value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
-                }).join(" ");
+                switch(value) {
+                    case "external_references_url":
+                        return "Link";
+                    default:
+                        return value.split("_").map(function (value) {
+                            return value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
+                        }).join(" ");
+                }
             },
 
             /*
@@ -105,7 +122,7 @@
                         } catch (e) {
                             if (value) { // value is not a json object
                                 // Other value rendering functions
-                                if (value.match(/(?:SAM(N|E|)A?\d+|SAMEG\d+)/)) {
+                                if (matchAccession(value)) {
                                     return renderAccession(value);
                                 }
                                 if (value.match(/https?:\/\//)) {
