@@ -5,14 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
-/**
- * Javadocs go here!
- *
- * @author lucacherubin
- * @date 18/03/2016
- */
+
 @Controller
 public class NavigationController {
     @RequestMapping("/search")
@@ -26,8 +21,13 @@ public class NavigationController {
 //        return "home";
 //    }
 
-    @RequestMapping("/help/{page}")
-    public String helpInnerPage(@PathVariable("page") String innerPage) {
-        return "help_" + innerPage;
+    @RequestMapping(value = {"/help/{page}", "/help"})
+    public String helpInnerPage(@PathVariable("page") Optional<String> innerPage) {
+        if (innerPage.isPresent()) {
+            return "help/" + innerPage.get();
+        } else {
+            return "help/index";
+        }
+
     }
 }

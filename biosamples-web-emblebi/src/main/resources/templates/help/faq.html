@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="__parent_help"
+      th:with="helpNavigationEntry = 'faq'">
+<head>
+    <title>FAQ &lt; Help &lt;</title>
+</head>
+<body>
+<div layout:fragment="content">
+            <section id="ae-help" class="grid_18 alpha">
+                <h2>Frequently Asked Questions (FAQ)</h2>
+                <p>If you cannot find the answer to your question in this FAQ or the <a th:href="@{/help}" href="index.html">BioSamples Database help pages</a> then please email us at <a href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a>.</p>
+
+                <ul>
+                    <li>
+                        <h3>How frequent are updates?</h3>
+                        <p>BioSamples Database content is updated daily. Information directly submitted or updated in a source should be reflected within 48 hours.</p>
+                        <p>The software powering BioSamples is updated at the start of each month.</p>
+                    </li>
+                    <li>
+                        <h3>What pattern do BioSamples accessions follow?</h3>
+                        <p>BioSample accessions always begin with SAM. The next letter is either E or N depending if the sample information was originally submitted to EBI or NCBI respectively. After that, there may be an A or a G to denote an Assay sample or a Group of samples. Finally there is a numeric component that may or may not be zero-padded.</p>
+                    </li>
+                </ul>
+
+            </section>
+        </div>
+    </body>
+</html>

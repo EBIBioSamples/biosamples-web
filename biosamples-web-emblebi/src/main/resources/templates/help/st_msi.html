@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org/"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="__parent_help"
+      th:with="navigationEntry='submit',helpNavigationEntry='submit'">
+<head>
+    <title>API &lt; Help &lt;</title>
+</head>
+<body>
+<div layout:fragment="content">
+            <section id="bsd-help" class="grid_18 alpha">
+
+                <h2>SampleTab MSI section</h2>
+
+                <p>The MSI (Meta-submission information) is based on rows. The first column specifies a key and subsequent columns the values. There are 6 sections, described below. All MSI sections are block based; entries in the same column within the same section are related, but the order of the rows is not important. The start of the MSI section is denoted by "[MSI]" on a line by itself.</p>
+
+                <h3>Submission</h3>
+                <p>The submission block describes overall features of the submission and its associated samples.</p>
+                <table summary="MSI Submission Tags">
+                    <thead>
+                      <tr><th>Tag</th><th>Count</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody >
+                      <tr><td>Submission Title</td><td>x1 required</td><td>Short title, 50 characters approx.</td></tr>
+                      <tr><td>Submission Identifier</td><td>Must be blank</td><td>Assigned by BioSamples Database</td></tr>
+                      <tr><td>Submission Description</td><td>x1 required</td><td>Short description, one paragraph.</td></tr>
+                      <tr><td>Submission Version</td><td>x1 optional</td><td>Version of SampleTab specification (currently 1.2)</td></tr>
+                      <tr><td>Submission Reference Layer</td><td>Must be blank</td><td>If this submission is part of the reference layer, this will be "true". Otherwise it will be "false".</td></tr>
+                      <tr><td>Submission Update Date</td><td>x1 optional</td><td>Date this submission was last modified. Must be in a YYYY-MM-DD format.</td></tr>
+                      <tr><td>Submission Release Date</td><td>x1 optional</td><td>Date to be made public on. If blank, it will be public immediately. Must be in a YYYY-MM-DD format.</td></tr>
+                    </tbody>
+                </table>
+                <img src="../images/help/msi_sub.png" alt="Screenshot of MSI Submission section" class="screenshot">
+
+                <h3>Person</h3>
+                <p>The Person section contains information describing who supplied the sample information. Note that the Organization section also supplies this information on a per-organization basis.</p>
+                <p>Although there are both Organization and Person sections, the entries do not correlate; e.g. the first person is not necessarily affiliated with the first organization.</p>
+                <table summary="MSI Person Tags">
+                    <thead>
+                      <tr><th>Tag</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Person Last Name</td><td>Required</td></tr>
+                      <tr><td>Person Initials</td><td>Either middle initial or first initial depending if a first name is present</td></tr>
+                      <tr><td>Person First Name</td><td></td></tr>
+                      <tr><td>Person Email</td><td></td></tr>
+                      <tr><td>Person Role</td><td>Should be a child of role in <a href="http://www.ebi.ac.uk/efo/EFO_0002012">EFO</a></td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Organization</h3>
+                <p>The Organization section contains information describing who supplied the sample information. Note that the Person section also supplies this information on a per-individual basis. 
+                </p><p>Although there are both Organization and Person sections, the entries do not correlate; e.g. the first person is not necessarily affiliated with the first organization.</p>
+                <table summary="MSI Organization Tags">
+                    <thead>
+                      <tr><th>Tag</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Organization Name</td><td>Required</td></tr>
+                      <tr><td>Organization Address</td><td>One line, comma separated</td></tr>
+                      <tr><td>Organization URI</td><td>Web site.</td></tr>
+                      <tr><td>Organization Role</td><td>Should be a child of role in <a href="http://www.ebi.ac.uk/efo/EFO_0002012">EFO</a></td></tr>
+                    </tbody>
+                </table>
+                <img src="../images/help/msi_organization.png" alt="Screenshot of MSI Organization section" class="screenshot">
+
+                <h3>Publication</h3>
+                <p>Publication section links to papers and other published materials describing these samples, in particular how they were created and treated.</p>
+                <table summary="MSI Publication Tags">
+                    <thead>
+                      <tr><th>Tag</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Publication PubMed ID</td><td>Valid PubMed ID, numeric only</td></tr>
+                      <tr><td>Publication DOI</td><td>Valid Digital Object Identifier</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Database</h3>
+                <p>The database section provides links to other databases that have data associated with this submission. Note that where per-sample links are possible they should be provided in the SCD section. Every combination of Database Name and Database ID must be unique to each entry in the database section.</p>
+                <table summary="MSI Database Tags">
+                    <thead>
+                      <tr><th>Tag</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Database Name</td><td></td></tr>
+                      <tr><td>Database ID</td><td></td></tr>
+                      <tr><td>Database URI</td><td>Database URI for this entry, typically a web page.</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>Term Source</h3>
+                <p>The Term Source section is used to specify ontologies or controlled vocabularies (i.e. NCBI Taxonomy) that are used in the SCD section. Each Term Source Name must be referenced by at least one Term Source REF attribute modifier in the SCD section (see Term Source) and every Term Source REF attribute modifier must reference a valid Term Source Name in the MSI section.</p>
+                <table summary="MSI Term Source Tags">
+                    <thead>
+                      <tr><th>Tag</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Term Source Name</td><td>Each value must be unique</td></tr>
+                      <tr><td>Term Source URI</td><td>Each value must be unique and an valid URL</td></tr>
+                      <tr><td>Term Source Version</td><td>If version is unknown, then last access date should be provided. If no date is provided, one will be assigned at submission.</td></tr>
+                    </tbody>
+                </table>
+                
+            </section>
+        </div>
+    </body>
+</html>
