@@ -164,12 +164,12 @@ public class SampleController {
 		return sampleXml(accession);
 	}
 
-	@RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-	public @ResponseBody String legacySampleXml(@PathVariable String accession) throws APIXMLNotFoundException {
-		return sampleXml(accession);
-	}
+//	@RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+//	public @ResponseBody String legacySampleXml(@PathVariable String accession) throws APIXMLNotFoundException {
+//		return sampleXml(accession);
+//	}
 
-	@RequestMapping(value = "xml/sample/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+	@RequestMapping(value = "xml/samples/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
 	public @ResponseBody String legacySampleXmlQueryRedirect(@PathVariable String query) {
 		Map<String, String> paramMap = LegacyApiQueryParser.parseLegacyQueryFormat(query);
 		return sampleXmlQuery(paramMap.get("query"), paramMap.get("sortby"), paramMap.get("sortorder"),

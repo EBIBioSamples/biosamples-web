@@ -136,10 +136,10 @@ public class GroupController {
 		return groupXml(accession);
 	}
 
-	@RequestMapping(value = "xml/group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-	public @ResponseBody String legacyGroupXml(@PathVariable String accession) throws APIXMLNotFoundException {
-		return groupXml(accession);
-	}
+//	@RequestMapping(value = "xml/group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+//	public @ResponseBody String legacyGroupXml(@PathVariable String accession) throws APIXMLNotFoundException {
+//		return groupXml(accession);
+//	}
 
 	@RequestMapping(value = "xml/groups/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
 	public @ResponseBody String legacyGroupXmlQueryRedirect(@PathVariable String query) {
