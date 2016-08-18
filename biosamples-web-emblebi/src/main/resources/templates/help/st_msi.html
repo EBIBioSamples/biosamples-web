@@ -31,7 +31,7 @@
                       <tr><td>Submission Release Date</td><td>x1 optional</td><td>Date to be made public on. If blank, it will be public immediately. Must be in a YYYY-MM-DD format.</td></tr>
                     </tbody>
                 </table>
-                <img src="../images/help/msi_sub.png" alt="Screenshot of MSI Submission section" class="screenshot">
+                <img th:src="@{/images/help/msi_sub.png}" src="../images/help/msi_sub.png" alt="Screenshot of MSI Submission section" class="screenshot">
 
                 <h3>Person</h3>
                 <p>The Person section contains information describing who supplied the sample information. Note that the Organization section also supplies this information on a per-organization basis.</p>
@@ -45,7 +45,7 @@
                       <tr><td>Person Initials</td><td>Either middle initial or first initial depending if a first name is present</td></tr>
                       <tr><td>Person First Name</td><td></td></tr>
                       <tr><td>Person Email</td><td></td></tr>
-                      <tr><td>Person Role</td><td>Should be a child of role in <a href="http://www.ebi.ac.uk/efo/EFO_0002012">EFO</a></td></tr>
+                      <tr><td>Person Role</td><td>Should be a child of role in <a href="//www.ebi.ac.uk/efo/EFO_0002012">EFO</a></td></tr>
                     </tbody>
                 </table>
 
@@ -60,10 +60,10 @@
                       <tr><td>Organization Name</td><td>Required</td></tr>
                       <tr><td>Organization Address</td><td>One line, comma separated</td></tr>
                       <tr><td>Organization URI</td><td>Web site.</td></tr>
-                      <tr><td>Organization Role</td><td>Should be a child of role in <a href="http://www.ebi.ac.uk/efo/EFO_0002012">EFO</a></td></tr>
+                      <tr><td>Organization Role</td><td>Should be a child of role in <a href="//www.ebi.ac.uk/efo/EFO_0002012">EFO</a></td></tr>
                     </tbody>
                 </table>
-                <img src="../images/help/msi_organization.png" alt="Screenshot of MSI Organization section" class="screenshot">
+                <img th:src="@{/images/help/msi_organization.png}" src="../images/help/msi_organization.png" alt="Screenshot of MSI Organization section" class="screenshot">
 
                 <h3>Publication</h3>
                 <p>Publication section links to papers and other published materials describing these samples, in particular how they were created and treated.</p>

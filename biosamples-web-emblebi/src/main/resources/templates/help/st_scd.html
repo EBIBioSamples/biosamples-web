@@ -28,7 +28,7 @@
                     <li><a></a>Relationships. These are key : value pairs where the value is a different sample or group. This includes family relationships and assertions of equivalence and/or derivation.</li>
                 </ul>
               
-                <a href="scd_overview.png" ><img src="../images/help/scd_overview.png" alt="Screenshot of SCD section" class="screenshot" style="width: 100%"/></a>
+                <a th:href="@{/images/help/scd_overview.png}" href="scd_overview.png" ><img th:src="@{/images/help/scd_overview.png}" src="../images/help/scd_overview.png" alt="Screenshot of SCD section" class="screenshot" style="width: 100%"/></a>
 
                 <h2>Object Definitions</h2>
 
@@ -89,7 +89,7 @@
 
                 <p>A Term Source modifier is used to link the value of an attribute to an external reference, such as an ontology or other controlled vocabulary such as a taxonomy. The most common uses are for organisms (species) in NCBI Taxonomy and terms in the Experimental Factor Ontology. It is intended that the value of an attribute with a Term Source modifier should be equal to the label of any associated ontology terms, however this may not be practical in all cases.</p> 
 
-                <p>A Term Source modifier is composed of two columns immediately to the right of the attribute being modified. These columns are <em>Term Source REF</em> and <em>Term Source ID</em>. The value in the Term Source REF column for a term Source modifier must correspond to a Term Source Name in the <a href="st_msi.html">MSI</a> section of the same SampleTab document.</p>
+                <p>A Term Source modifier is composed of two columns immediately to the right of the attribute being modified. These columns are <em>Term Source REF</em> and <em>Term Source ID</em>. The value in the Term Source REF column for a term Source modifier must correspond to a Term Source Name in the <a th:href="@{/help/st}" href="st_msi.html">MSI</a> section of the same SampleTab document.</p>
 
                 <p>A Unit modifier is used to specify the units used for a numeric value. For example to clarify if an age is specified in years, months, or weeks. The unit should follow the same guidelines as keys and values --- lowercase American English without abbreviations composed only of letters and numbers. Additionally, units should always be expressed as a singular rather than a plural i.e. "year" not "years". Compound units should contain plurals however, e.g. "micromoles per liter". Where possible, SI units should be used (e.g. "centimeter" rather than "inch"). Some commonly used units are:</p>      
 
