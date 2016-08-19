@@ -70,9 +70,9 @@ public class SampleController {
 		
 		NeoSample neoSample = neoSampleRepository.findOneByAccession(accession);
 		log.info("neoSample = "+neoSample);
+		model.addAttribute("hasRelations", false);	
 		
 		if (neoSample != null) {
-			model.addAttribute("hasRelations", true);
 			model.addAttribute("relations", neoSample);
 			
 			if (neoSample.getDerivedFrom() != null) {
@@ -80,12 +80,14 @@ public class SampleController {
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
+				model.addAttribute("hasRelations", true);
 			}
 			if (neoSample.getDerivedTo() != null) {
 				model.addAttribute("derivedTo", neoSample.getDerivedTo()
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
+				model.addAttribute("hasRelations", true);
 			}
 			
 			if (neoSample.getChildOf() != null) {
@@ -93,12 +95,14 @@ public class SampleController {
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
+				model.addAttribute("hasRelations", true);
 			}
 			if (neoSample.getParentOf() != null) {
 				model.addAttribute("parentOf", neoSample.getParentOf()
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
+				model.addAttribute("hasRelations", true);
 			}
 
 			if (neoSample.getSameAs() != null) {
@@ -106,6 +110,7 @@ public class SampleController {
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
+				model.addAttribute("hasRelations", true);
 			}
 
 
@@ -114,17 +119,18 @@ public class SampleController {
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
+				model.addAttribute("hasRelations", true);
 			}
 			if (neoSample.getRecuratedFrom() != null) {
 				model.addAttribute("recuratedFrom", neoSample.getRecuratedFrom()
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
+				model.addAttribute("hasRelations", true);
 			}
-		} else {
-			model.addAttribute("hasRelations", false);			
 		}
 
+		
 		log.info("Model is " + model);
 		return "sample";
 	}
