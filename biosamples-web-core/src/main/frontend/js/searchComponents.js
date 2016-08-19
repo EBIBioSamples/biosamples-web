@@ -223,7 +223,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
 
                 let requestData = {
                     params: this.getQueryParameters(),
-                    timeout: 10000
+                    // timeout: 10000
                 };
 
                 this.isQuerying = true;
