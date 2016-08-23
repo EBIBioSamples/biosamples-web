@@ -185,14 +185,17 @@ public class HttpSolrDispatcher {
                 JsonNode jsonNode = objectMapper.readTree(in);
                 JsonNode facetCounts = jsonNode.get("facet_counts");
                 if (facetCounts == null) {
+                	log.error("Unexpected Solr response - no facet_counts field "+facetQuery.stringify());
                     throw new RuntimeException("Unexpected Solr response - no facet_counts field");
                 }
                 JsonNode facetFields = facetCounts.get("facet_fields");
                 if (facetFields == null) {
+                	log.error("Unexpected Solr response - no facet_fields field "+facetQuery.stringify());
                     throw new RuntimeException("Unexpected Solr response - no facet_fields field");
                 }
                 JsonNode facetNodes = facetFields.get("crt_type_ft");
                 if (facetNodes == null) {
+                	log.error("Unexpected Solr response - no crt_type_ft field "+facetQuery.stringify());
                     throw new RuntimeException("Unexpected Solr response - no crt_type_ft field");
                 }
                 Iterator<JsonNode> facetNodeIt = facetNodes.elements();
