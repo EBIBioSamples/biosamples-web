@@ -175,9 +175,8 @@ public class HttpSolrDispatcher {
     }
 
     private String[] executeAndParseFacetQuery(HttpSolrQuery facetQuery, Collection<String> excludedFacets) {
-        try {
-            final PipedInputStream in = new PipedInputStream();
-            final PipedOutputStream out = new PipedOutputStream(in);
+        try (final PipedInputStream in = new PipedInputStream();
+        		final PipedOutputStream out = new PipedOutputStream(in)) {
 
             ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
             Future<String[]> fResult = singleExecutor.submit(() -> {
@@ -215,15 +214,18 @@ public class HttpSolrDispatcher {
                 singleExecutor.shutdown();
                 return result;
             } catch (TimeoutException e) {
-                throw new RuntimeException("No Solr response acquired in " + timeout + "s.");
+            	log.error("No Solr response acquired in " + timeout + "s.", e);
+                throw new RuntimeException("No Solr response acquired in " + timeout + "s.", e);
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException("Solr parsing thread was interrupted for query '" + facetQuery.stringify() + "'",
-                                       e);
+        	log.error("Solr parsing thread was interrupted for query '" + facetQuery.stringify() + "'", e);
+            throw new RuntimeException("Solr parsing thread was interrupted for query '" + facetQuery.stringify() + "'", e);
         } catch (ExecutionException e) {
+        	log.error("Execution of Solr parsing thread failed for query '" + facetQuery.stringify() + "'", e);
             throw new RuntimeException(
                     "Execution of Solr parsing thread failed for query '" + facetQuery.stringify() + "'", e);
         } catch (IOException e) {
+        	log.error("Unable to calculate most commonly used facets for query '" + facetQuery.stringify() + "'", e);
             throw new RuntimeException(
                     "Unable to calculate most commonly used facets for query '" + facetQuery.stringify() + "'", e);
         }
@@ -231,9 +233,8 @@ public class HttpSolrDispatcher {
 
     //TODO: should I suppose attrQuery has everything I need to get the correct attributes - No check here?
     private Set<String> executeAndParseCommonAttributeQuery(HttpSolrQuery attrQuery) {
-        try {
-            final PipedInputStream in = new PipedInputStream();
-            final PipedOutputStream out = new PipedOutputStream(in);
+        try(final PipedInputStream in = new PipedInputStream();
+        		final PipedOutputStream out = new PipedOutputStream(in)) {
 
             ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
             Future<Set<String>> ftResults = singleExecutor.submit(() -> {
@@ -267,13 +268,17 @@ public class HttpSolrDispatcher {
                 singleExecutor.shutdown();
                 return results;
             } catch (TimeoutException e) {
-                throw new RuntimeException("No Solr response acquired in " + timeout + "s.");
+            	log.error("No Solr response acquired in " + timeout + "s.", e);
+                throw new RuntimeException("No Solr response acquired in " + timeout + "s.", e);
             }
         } catch (InterruptedException e) {
+        	log.error("Solr parsing thread was interrupted", e);
             throw new RuntimeException("Solr parsing thread was interrupted", e);
         } catch (ExecutionException e) {
+        	log.error("Execution of Solr parsing thread failed", e);
             throw new RuntimeException("Execution of Solr parsing thread failed", e);
         } catch (IOException e) {
+        	log.error("Unable to calculate most commonly used facets", e);
             throw new RuntimeException("Unable to calculate most commonly used facets", e);
         }
     }
