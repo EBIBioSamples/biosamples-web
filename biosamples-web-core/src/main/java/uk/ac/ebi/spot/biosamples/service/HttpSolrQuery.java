@@ -26,13 +26,13 @@ public class HttpSolrQuery implements Cloneable {
 
     private final Set<String> filteredFields;
 
-    HttpSolrQuery(String solrBaseUrl) {
+    public HttpSolrQuery(String solrBaseUrl) {
         this.filteredFields = new HashSet<>();
         this.queryStringBuilder = new StringBuilder();
         queryStringBuilder.append(solrBaseUrl);
     }
 
-    HttpSolrQuery(String solrBaseUrl, String solrSearchCoreName) {
+    public HttpSolrQuery(String solrBaseUrl, String solrSearchCoreName) {
         this(solrBaseUrl);
         if (!queryStringBuilder.toString().endsWith("/")) { queryStringBuilder.append("/"); }
         queryStringBuilder.append(solrSearchCoreName);
