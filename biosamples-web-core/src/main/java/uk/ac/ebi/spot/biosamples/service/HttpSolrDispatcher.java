@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
@@ -40,12 +41,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 29/04/16
- */
 @Service
 public class HttpSolrDispatcher {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -54,11 +49,14 @@ public class HttpSolrDispatcher {
         return log;
     }
 
-    @Value("classpath:ignoredFacets.fields")
-    private Resource ignoredFacetsResource;
+    @Value("${solr.ignoredfacets.file}")
+    private String ignoredFacetsFilename;
 
     @Autowired
     private SolrQueryBuilder solrQueryBuilder;
+    
+    @Autowired
+    private ApplicationContext ctx;
 
     private Set<String> ignoredFacets;
 
@@ -67,8 +65,12 @@ public class HttpSolrDispatcher {
         ignoredFacets = new HashSet<>();
         ignoredFacets.add("content_type"); // content_type is always returned as facet
 
+        log.info("Looking for ignored facets file at "+ignoredFacetsFilename);
+        
+        Resource ignoredFacetsResource = ctx.getResource(ignoredFacetsFilename);
+        
         if (ignoredFacetsResource != null && ignoredFacetsResource.exists()) {
-
+        	
             Pattern pattern = Pattern.compile("^(\\w+)\\s*(?:#.*)?$");
             try {
                 BufferedReader br = new BufferedReader(new InputStreamReader(ignoredFacetsResource.getInputStream()));
@@ -79,15 +81,17 @@ public class HttpSolrDispatcher {
                         String facetName = matcher.group(1).trim();
                         ignoredFacets.add(facetName);
                         ignoredFacets.add(facetName + "_ft");
+                        log.info("Ignoring facet "+facetName);
                     }
                     line = br.readLine();
                 }
                 br.close();
             }
             catch (IOException e) {
-                e.printStackTrace();
-                ignoredFacets.add("content_type");
+                log.error("Unable to read facets", e);
             }
+        } else {
+        	log.info("did not find ignoredFacetsResource"); 
         }
     }
 
