@@ -63,7 +63,7 @@ public class HttpSolrQuery implements Cloneable {
             queryStringBuilder.append("q=")
                     .append(URLEncoder.encode(field, "UTF-8"))
                     .append(":")
-                    .append(URLEncoder.encode(term, "UTF-8"));
+                    .append(URLEncoder.encode(String.format("\"%s\"",term), "UTF-8"));
             capturedTerm = true;
             return this;
         }
@@ -130,7 +130,7 @@ public class HttpSolrQuery implements Cloneable {
             queryStringBuilder.append("&fq=")
                     .append(URLEncoder.encode(filterField, "UTF-8"))
                     .append(":")
-                    .append(URLEncoder.encode(filterValue, "UTF-8"));
+                    .append(URLEncoder.encode(String.format("\"%s\"",filterValue), "UTF-8"));
         }
         catch (UnsupportedEncodingException e) {
             throw new HttpSolrQueryBuildingException("Failed to set filter arguments", e);

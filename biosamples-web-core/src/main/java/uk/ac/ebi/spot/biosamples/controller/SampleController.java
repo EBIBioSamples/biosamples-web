@@ -206,18 +206,18 @@ public class SampleController {
 		return rq.renderDocument();
 	}
 
-	@RequestMapping(value = "groupsamples/{accession}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-	public @ResponseBody Page<SolrSample> samplesInGroup(@PathVariable(value = "accession") String groupAccession,
-			@RequestParam(value = "query", defaultValue = "*:*") String searchTerm,
-			@RequestParam(value = "sortby", defaultValue = "score") String sortBy,
-			@RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
-			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
-			@RequestParam(value = "page", defaultValue = "0") int page) {
-
-		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
-		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
-		return solrSampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession, querySpec);
-	}
+//	@RequestMapping(value = "groupsamples/{accession}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+//	public @ResponseBody Page<SolrSample> samplesInGroup(@PathVariable(value = "accession") String groupAccession,
+//			@RequestParam(value = "query", defaultValue = "*:*") String searchTerm,
+//			@RequestParam(value = "sortby", defaultValue = "score") String sortBy,
+//			@RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
+//			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
+//			@RequestParam(value = "page", defaultValue = "0") int page) {
+//
+//		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
+//		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
+//		return solrSampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession, querySpec);
+//	}
 
 	@ExceptionHandler(APIXMLNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
