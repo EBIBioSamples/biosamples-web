@@ -88,14 +88,17 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             if (facetKeys[i]) {
                 let facetKey = facetKeys[i].replace(/_ft$/, "");
                 if (facetKey.toLowerCase() !== "content_type") {
-                    let facetValue = obj[facetKey];
-                    if (facetValue) {
-                        badges[facetKey] =
-                            _.isArray(facetValue) ? facetValue[0] : facetValue;
+                    let facetValues = obj[facetKey];
+                    if (facetValues) {
+                        // This is problematic because is getting just the firt value
+                        badges[facetKey] = facetValues;
+                            // _.isArray(facetValue) ? facetValue[0] : facetValue;
                     }
                 }
             }
         }
+
+        console.log(badges);
 
 
         return {
@@ -374,13 +377,12 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             },
 
             deserializeFilterQuery: function(filtersArray) {
-                // let re = new RegExp("(\w+)Filter\|(\w+)");
                 let filtersObj = {};
+                // This is a little bit cumbersome, make it clearer with "Optional" object
+                if ( !_.isNil(filtersArray) && !_.isArray(filtersArray) ) {
+                    filtersArray = [filtersArray];
+                }
                 _(filtersArray).forEach(function (value) {
-                    // var tuple = re.exec(value);
-                    // if (tuple.length == 2) {
-                    //     self.filterQuery[tuple[0]] = tuple[1];
-                    // }
                     let [filterKey,filterValue] = value.split("Filter|");
                     if (!_.isEmpty(filterKey)) {
                         filtersObj[`${filterKey}Filter`] = filterValue;

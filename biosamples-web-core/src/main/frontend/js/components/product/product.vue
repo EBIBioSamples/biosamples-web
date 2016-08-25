@@ -5,10 +5,10 @@
             <span class="label label-success">{{product.type}}</span>
             <span class="label label-info">{{product.subtitle}}</span>
             <div class="badge-container">
-                <shield v-for="(key, value) in product.badges"
-                        :key="key | characteristic"
-                        :value="value">
-                </shield>
+                    <shield v-for="badge in badgeArray"
+                            :key="badge.key | characteristic"
+                            :value="badge.value">
+                    </shield>
             </div>
         </div>
         <div class="panel-body">{{product.description | excerpt}}</div>
@@ -27,7 +27,16 @@
             "shield": require("../shield/shield.vue")
         },
         computed: {
-           product() { return this.displayFunction(this.content) }
+           product() { return this.displayFunction(this.content) },
+           badgeArray() {
+               let badges = this.product.badges;
+               return Object.keys(badges).reduce((all, key) => {
+                  for (let val of badges[key]) {
+                     all.push({"key": key, "value": val});
+                  }
+                  return all;
+               },[])
+           }
         },
 
         props: {
@@ -52,5 +61,6 @@
                 return startCaseFilter(value.replace(/_crt$/,""))
             }
         }
+
     };
 </script>
