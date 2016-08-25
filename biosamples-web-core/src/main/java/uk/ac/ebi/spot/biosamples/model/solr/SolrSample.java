@@ -1,11 +1,16 @@
 package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.solr.client.solrj.beans.Field;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,6 +21,9 @@ import java.util.TreeMap;
 
 @SolrDocument(solrCoreName = "samples")
 public class SolrSample {
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Id @Field("accession") String id;
@@ -42,8 +50,24 @@ public class SolrSample {
     // collection of all external reference names
     @JsonIgnore @Field("external_references_name") List<String> externalReferencesNames;
 
+    // contact informations
+    @JsonSerialize(using = JsonGenericSerializer.class)
+    @Field("contact_json")
+    String contact;
+
+    // organization informations
+    @JsonSerialize(using = OrganizationSerializer.class)
+    @Field("org_json")
+    String organization;
+
+
+    // publication informations
+    @JsonSerialize(using = JsonGenericSerializer.class)
+    @Field("pub_json")
+    String publications;
+
     // external references
-    @JsonSerialize(using = ExternalReferencesSerializer.class)
+    @JsonSerialize(using = JsonGenericSerializer.class)
     @Field("external_references_json")
     String externalReferences;
 
@@ -186,5 +210,29 @@ public class SolrSample {
 
     public void setSampleName(List<String> sampleName) {
         this.sampleName = sampleName;
+    }
+
+    public String getOrganization() throws IOException {
+        return SerializationUtils.organizationSerializer(this.organization).toString();
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getPublications() {
+        return publications;
+    }
+
+    public void setPublications(String publications) {
+        this.publications = publications;
     }
 }

@@ -67,6 +67,20 @@
                     <td th:text="${sample.updateDate}"></td>
                 </tr>
 
+                <tr th:if="${sample.organization}">
+                    <td class="col_title"><b>Organization:</b></td>
+                    <td class="organization-field-content" th:text="${sample.organization}"></td>
+                </tr>
+                <tr th:if="${sample.contact}">
+                    <td class="col_title"><b>Contact:</b></td>
+                    <td class="contact-field-content" th:text="${sample.contact}"></td>
+                </tr>
+                <tr th:if="${sample.publications}">
+                    <td class="col_title"><b>Publications:</b></td>
+                    <td class="publications-field-content" th:text="${sample.publications}"></td>
+                </tr>
+
+
                 <!-- Dedicated organism attribute -->
                 <tr th:if="${#maps.containsKey(sample.characteristics, 'organism') and #arrays.length(sample.characteristics.organism) > 0}">
                     <td class="col_title"><b>Organism : </b></td>

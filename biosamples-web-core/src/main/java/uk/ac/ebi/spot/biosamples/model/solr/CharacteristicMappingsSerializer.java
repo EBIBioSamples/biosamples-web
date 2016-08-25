@@ -23,17 +23,6 @@ public class CharacteristicMappingsSerializer extends JsonSerializer<Map<String,
     public void serialize(Map<String, List<String>> characteristicMappings,
                           JsonGenerator jsonGenerator,
                           SerializerProvider serializerProvider) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode object = mapper.createObjectNode();
-        for (String crt : characteristicMappings.keySet()) {
-            ArrayNode array = mapper.createArrayNode();
-            for (String jsonFromSolr : characteristicMappings.get(crt)) {
-                // parse json from solr
-                JsonNode json = mapper.readTree(jsonFromSolr);
-                array.add(json);
-            }
-            object.set(crt, array);
-        }
-        jsonGenerator.writeObject(object);
+        jsonGenerator.writeObject(SerializationUtils.characteristicsSerializer(characteristicMappings));
     }
 }

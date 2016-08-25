@@ -13,12 +13,11 @@ import java.io.IOException;
  * @author Tony Burdett
  * @date 03/06/16
  */
-public class ExternalReferencesSerializer extends JsonSerializer<String> {
+public class JsonGenericSerializer extends JsonSerializer<String> {
     @Override
-    public void serialize(String externalReferences,
+    public void serialize(String fieldContent,
                           JsonGenerator jsonGenerator,
                           SerializerProvider serializerProvider) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        jsonGenerator.writeObject(mapper.readTree(externalReferences));
+        jsonGenerator.writeObject(SerializationUtils.genericSerializer(fieldContent));
     }
 }

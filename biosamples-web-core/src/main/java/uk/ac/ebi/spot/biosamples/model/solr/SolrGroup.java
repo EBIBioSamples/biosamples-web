@@ -6,6 +6,7 @@ import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -40,9 +41,24 @@ public class SolrGroup {
     @JsonIgnore @Field("external_references_name") List<String> externalReferencesNames;
 
     // external references
-    @JsonSerialize(using = ExternalReferencesSerializer.class)
+    @JsonSerialize(using = JsonGenericSerializer.class)
     @Field("external_references_json")
     String externalReferences;
+
+    // contact
+    @JsonSerialize(using = JsonGenericSerializer.class)
+    @Field("contact_json")
+    String contact;
+
+    // organization informations
+    @JsonSerialize(using = OrganizationSerializer.class)
+    @Field("org_json")
+    String organization;
+
+    // publication informations
+    @JsonSerialize(using = JsonGenericSerializer.class)
+    @Field("pub_json")
+    String publications;
 
     // sample metadata
     @Field("number_of_samples") String numberOfSamples;
@@ -197,5 +213,29 @@ public class SolrGroup {
 
     public boolean hasSamples() {
         return Integer.parseInt(this.getNumberOfSamples()) > 0;
+    }
+    
+    public String getOrganization() throws IOException {
+        return SerializationUtils.organizationSerializer(this.organization).toString();
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getPublications() {
+        return publications;
+    }
+
+    public void setPublications(String publications) {
+        this.publications = publications;
     }
 }
