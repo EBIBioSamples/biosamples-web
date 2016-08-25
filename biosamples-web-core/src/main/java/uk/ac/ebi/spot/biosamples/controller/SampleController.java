@@ -69,7 +69,7 @@ public class SampleController {
 		}
 		
 		NeoSample neoSample = neoSampleRepository.findOneByAccession(accession);
-		log.info("neoSample = "+neoSample);
+		log.trace("neoSample = "+neoSample);
 		model.addAttribute("hasRelations", false);	
 		
 		if (neoSample != null) {
@@ -131,7 +131,7 @@ public class SampleController {
 		}
 
 		
-		log.info("Model is " + model);
+		log.trace("Model is " + model);
 		return "sample";
 	}
 
