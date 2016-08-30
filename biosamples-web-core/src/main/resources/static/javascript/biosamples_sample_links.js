@@ -1,6 +1,4 @@
-/**
- * Created by tburdett on 24/02/16.
- */
+
 (function($){
     var olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
 
@@ -23,19 +21,29 @@
                     jsonStr = quotedPayload;
                 }
                 var json = jQuery.parseJSON(jsonStr);
+                
                 if (json.ontology_terms) {
                     console.log("Found ontology term for '" + json.text + "': " + json.ontology_terms);
                     if (json.ontology_terms[0]) {
                         var link = olsSearchLink + encodeURIComponent(json.ontology_terms[0]);
-                        mapping.html("<a href=\"" + link + "\" target='_blank'>" + json.text + "</a>");
+                        if (json.unit) {
+                        	mapping.html(json.text + "( <a href=\"" + link + "\" target='_blank'>"+json.unit+"</a> )");
+                        } else {
+                        	mapping.html("<a href=\"" + link + "\" target='_blank'>" + json.text + "</a>");                        	
+                        }
                     }
                     else {
                         console.log("Something went wrong - ontology_terms collection present but no first element?");
                     }
                 }
                 else {
-                    console.log("No ontology term for '" + json.text + "'");
-                    mapping.text(json.text);
+                	if (json.unit) {
+	                    console.log("No ontology term for '" + json.text + "'");
+	                    mapping.text(json.text+" ("+json.unit+")");                		
+                	} else {
+	                    console.log("No ontology term for '" + json.text + "'");
+	                    mapping.text(json.text);
+                	}
                 }
             });
         });
