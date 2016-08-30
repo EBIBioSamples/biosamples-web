@@ -37,7 +37,7 @@ public class SolrSample {
     @Field("sample_name_crt") List<String> sampleName;
 
     // collection of all text attributes for search
-    @JsonIgnore @Field("text") List<String> keywords;
+    @JsonIgnore @Field List<String> text;
 
     // collection of all characteristics as key/list of value pairs
     @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
@@ -122,12 +122,12 @@ public class SolrSample {
         this.releaseDate = releaseDate;
     }
 
-    public List<String> getKeywords() {
-        return keywords;
+    public List<String> getText() {
+        return text;
     }
 
-    public void setKeywords(List<String> keywords) {
-        this.keywords = keywords;
+    public void setText(List<String> text) {
+        this.text = text;
     }
 
     public Map<String, List<String>> getCharacteristicsText() {

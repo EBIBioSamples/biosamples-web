@@ -94,7 +94,6 @@ public class SampleController {
 				model.addAttribute("hasRelations", true);
 			}
 
-
 			if (neoSample.getRecuratedTo() != null) {
 				model.addAttribute("recuratedInto", neoSample.getRecuratedTo()
 						.stream()
@@ -181,7 +180,7 @@ public class SampleController {
 			@RequestParam(value = "page", defaultValue = "0") int page) {
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
 		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
-		Page<SolrSample> results = solrSampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession,
+		Page<SolrSample> results = solrSampleRepository.findByTextAndGroups(searchTerm, groupAccession,
 				querySpec);
 		ResultQuery rq = new SampleResultQuery(results);
 		return rq.renderDocument();

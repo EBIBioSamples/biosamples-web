@@ -13,13 +13,15 @@ import uk.ac.ebi.spot.biosamples.repository.ReadOnlyRepository;
 public interface SolrSampleRepository extends ReadOnlyRepository<SolrSample, String> {
     Page<SolrSample> findByAccession(@Param("accession") String accession, Pageable page);
 
-    Page<SolrSample> findByKeywords(@Param("keyword") String keyword, Pageable page);
+    Page<SolrSample> findByText(@Param("text") String text, Pageable page);
 
-    Page<SolrSample> findByAccessionAndGroupsContains(@Param("accession") String accession, @Param("group") String group, Pageable page);
+    @RestResource(path = "findByAccessionAndGroup")
+    Page<SolrSample> findByAccessionAndGroups(@Param("accession") String accession, @Param("group") String group, Pageable page);
 
-    @RestResource(path = "samplesInGroupWithKeyword")
-    Page<SolrSample> findByKeywordsAndGroupsContains(@Param(value = "keyword") String keyword, @Param("group") String group, Pageable page);
+    @RestResource(path = "findByTextAndGroup")
+    Page<SolrSample> findByTextAndGroups(@Param("text") String text, @Param("group") String group, Pageable page);
 
+    @RestResource(path = "findByGroup")
     Page<SolrSample> findByGroups(@Param("group") String group, Pageable page);
 
     SolrSample findFirstByGroupsContains(@Param("group") String group);
