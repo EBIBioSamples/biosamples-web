@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.solr.repository.config.EnableSolrRepositories;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
 
@@ -24,7 +23,6 @@ import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;
 import uk.ac.ebi.spot.biosamples.repository.solr.SolrSampleRepository;
 import uk.ac.ebi.spot.biosamples.service.ApiLinkFactory;
-import uk.ac.ebi.spot.biosamples.service.RelationsLinkFactory;
 
 import javax.validation.constraints.NotNull;
 
@@ -44,9 +42,6 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
     
     @Autowired
     private ApiLinkFactory apiLinkFactory;
-    
-    @Autowired
-    private RelationsLinkFactory relationsLinkFactory;
 
     public static void main(String[] args) {
         SpringApplication.run(BiosamplesWebApplication.class, args);
@@ -74,7 +69,7 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
     public ResourceProcessor<Resource<SolrSample>> solrSampleProcessor() {
         return new ResourceProcessor<Resource<SolrSample>>() {
             @Override public Resource<SolrSample> process(Resource<SolrSample> sampleResource) {
-                sampleResource.add(relationsLinkFactory.createRelationsLinkForSample(sampleResource.getContent()));
+                sampleResource.add(apiLinkFactory.createRelationsLinkForSample(sampleResource.getContent()));
                 return sampleResource;
             }
         };
@@ -84,7 +79,7 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
     public ResourceProcessor<Resource<SolrGroup>> solrGroupProcessor() {
         return new ResourceProcessor<Resource<SolrGroup>>() {
             @Override public Resource<SolrGroup> process(Resource<SolrGroup> groupResource) {
-                groupResource.add(relationsLinkFactory.createRelationsLinkForGroup(groupResource.getContent()));
+                groupResource.add(apiLinkFactory.createRelationsLinkForGroup(groupResource.getContent()));
                 return groupResource;
             }
         };
@@ -96,8 +91,8 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
         return new ResourceProcessor<Resource<NeoSample>>() {
             @Override
             public Resource<NeoSample> process(Resource<NeoSample> sampleResource) {
-                sampleResource.add(apiLinkFactory.createApiLinkForSample(sampleResource.getContent()));
-                sampleResource.add(new Link(sampleResource.getLink("self").getHref() + "/graph", "graph"));
+                sampleResource.add(apiLinkFactory.createDetailsLinkForSample(sampleResource.getContent()));
+                //sampleResource.add(new Link(sampleResource.getLink("self").getHref() + "/graph", "graph"));
                 return sampleResource;
             }
         };
@@ -109,8 +104,8 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
         return new ResourceProcessor<Resource<NeoGroup>>() {
             @Override
             public Resource<NeoGroup> process(Resource<NeoGroup> groupResource) {
-                groupResource.add(apiLinkFactory.createApiLinkForGroup(groupResource.getContent()));
-                groupResource.add(new Link(groupResource.getLink("self").getHref() + "/graph", "graph"));
+                groupResource.add(apiLinkFactory.createDetailsLinkForGroup(groupResource.getContent()));
+                //groupResource.add(new Link(groupResource.getLink("self").getHref() + "/graph", "graph"));
                 return groupResource;
             }
         };
