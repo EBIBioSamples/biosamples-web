@@ -89,7 +89,7 @@
                     output += value.Name;
                 }
                 if (value.Role) {
-                    output += " <sup>(" + value.Role.trim() + ")</sup>";
+                    output += " (" + value.Role.trim() + ")";
                 }
 
                 if (index < json.length - 1) {
