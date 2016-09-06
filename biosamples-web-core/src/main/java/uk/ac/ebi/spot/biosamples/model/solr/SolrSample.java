@@ -1,6 +1,7 @@
 package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -213,15 +214,25 @@ public class SolrSample {
     }
 
     public String getOrganization() throws IOException {
-        return SerializationUtils.organizationSerializer(this.organization).toString();
+    	JsonNode node = SerializationUtils.organizationSerializer(this.organization);
+    	if (node == null) {
+    		return null;
+    	} else {
+    		return node.toString();
+    	}
     }
 
     public void setOrganization(String organization) {
         this.organization = organization;
     }
 
-    public String getContact() {
-        return contact;
+    public String getContact() throws IOException {
+    	JsonNode node = SerializationUtils.contactSerializer(this.contact);
+    	if (node == null) {
+    		return null;
+    	} else {
+    		return node.toString();
+    	}
     }
 
     public void setContact(String contact) {

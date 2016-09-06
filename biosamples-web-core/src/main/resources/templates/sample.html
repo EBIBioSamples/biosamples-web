@@ -67,11 +67,11 @@
                     <td th:text="${sample.updateDate}"></td>
                 </tr>
 
-                <tr th:if="${sample.organization}">
+                <tr th:if="${#strings.isEmpty(sample.organization)}">
                     <td class="col_title"><b>Organization:</b></td>
                     <td class="organization-field-content" th:text="${sample.organization}"></td>
                 </tr>
-                <tr th:if="${sample.contact}">
+                <tr th:if="${#strings.isEmpty(sample.contact)}">
                     <td class="col_title"><b>Contact:</b></td>
                     <td class="contact-field-content" th:text="${sample.contact}"></td>
                 </tr>

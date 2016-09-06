@@ -223,8 +223,8 @@ public class SolrGroup {
         this.organization = organization;
     }
 
-    public String getContact() {
-        return contact;
+    public String getContact() throws IOException {
+        return SerializationUtils.contactSerializer(this.contact).toString();
     }
 
     public void setContact(String contact) {

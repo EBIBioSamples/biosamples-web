@@ -14,18 +14,31 @@ public class SerializationUtils {
 
 
     public static JsonNode organizationSerializer(String fieldContent) throws IOException {
-
+        //if (fieldContent == null) return null;
+        
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode newNode = mapper.createArrayNode();
-        ArrayNode oldNode = (ArrayNode) mapper.readTree(fieldContent);
-        oldNode.forEach(jsonNode -> {
-            ObjectNode orgObject = ((ObjectNode) jsonNode).deepCopy();
-            orgObject.remove("E-mail");
+        if (fieldContent != null) {
+	        ArrayNode oldNode = (ArrayNode) mapper.readTree(fieldContent);
+	        oldNode.forEach(jsonNode -> {
+	            ObjectNode orgObject = ((ObjectNode) jsonNode).deepCopy();
+	            orgObject.remove("E-mail");
+	
+	            newNode.add(orgObject);
+	        });
+	        return newNode;
+        } else {
+        	return null;
+        }
 
-            newNode.add(orgObject);
-        });
+    }
 
-        return newNode;
+    public static JsonNode contactSerializer(String fieldContent) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        if (fieldContent == null) {
+        	return null;
+        }
+        return mapper.readTree(fieldContent);
     }
 
     public static JsonNode genericSerializer(String fieldContent) throws IOException {
