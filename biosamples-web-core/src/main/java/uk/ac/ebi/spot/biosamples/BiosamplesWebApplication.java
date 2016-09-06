@@ -14,6 +14,9 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.solr.repository.config.EnableSolrRepositories;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import uk.ac.ebi.spot.biosamples.filter.ResourceAwareUrlRewriteFilter;
 import uk.ac.ebi.spot.biosamples.model.neo4j.NeoGroup;
@@ -64,6 +67,22 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
         reg.addInitParameter("logLevel", "WARN");
         return reg;
     }
+    
+    
+    //Spring Data REST doesn't support controller annotations or overriding addCorsMappings on WebMvcConfigurerAdapter
+    //so we have to do it as a filter instead
+    //By default all origins and GET, HEAD, and POST methods are allowed.
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("GET");
+        source.registerCorsConfiguration("/api/**", config);
+        return new CorsFilter(source);
+    }
+    
 
     @Bean
     public ResourceProcessor<Resource<SolrSample>> solrSampleProcessor() {
