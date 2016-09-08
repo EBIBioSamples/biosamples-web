@@ -182,7 +182,7 @@ public class SampleController {
 		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
 		Page<SolrSample> results = solrSampleRepository.findByTextAndGroups(searchTerm, groupAccession,
 				querySpec);
-		ResultQuery rq = new SampleResultQuery(results);
+		ResultQuery<SolrSample> rq = new SampleResultQuery(results);
 		return rq.renderDocument();
 	}
 
