@@ -8,9 +8,6 @@ import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by lucacherubin on 2016/05/06.
- */
 public abstract class ResultQuery<T> {
 
     private final Namespace XMLNS = Namespace.getNamespace("http://www.ebi.ac.uk/biosamples/ResultQuery1.0");
@@ -45,7 +42,7 @@ public abstract class ResultQuery<T> {
         long totalElementsValue = results.getTotalElements();
         int pageNumberValue = results.getNumber();
         int pageSizeValue = results.getSize();
-        int resultsFromValue = pageSizeValue * pageNumberValue + 1;
+        int resultsFromValue = (pageSizeValue * pageNumberValue) + 1;
         int pageEndValue = (pageNumberValue + 1) * pageSizeValue;
         long resultsToValue = totalElementsValue < pageEndValue ? totalElementsValue : pageEndValue;
 

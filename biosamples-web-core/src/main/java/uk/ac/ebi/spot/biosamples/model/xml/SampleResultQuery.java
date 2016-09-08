@@ -4,12 +4,6 @@ import org.springframework.data.domain.Page;
 
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 
-/**
- * Javadocs go here!
- *
- * @author Tony Burdett
- * @date 03/06/16
- */
 public class SampleResultQuery extends ResultQuery<SolrSample> {
     public SampleResultQuery(Page<SolrSample> results) {
         super(results);
