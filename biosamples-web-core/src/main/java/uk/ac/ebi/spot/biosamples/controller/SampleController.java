@@ -140,6 +140,12 @@ public class SampleController {
 			@RequestParam(value = "page", defaultValue = "0") int page) {
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
 		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
+		
+		//if the search term is blank, default to matching everything
+		if (searchTerm == null || searchTerm.trim().length() == 0) {
+			searchTerm = "*";
+		}
+		
 		Page<SolrSample> results = solrSampleRepository.findByText(searchTerm, querySpec);
 		ResultQuery<SolrSample> rq = new SampleResultQuery(results);
 		return rq.renderDocument();
