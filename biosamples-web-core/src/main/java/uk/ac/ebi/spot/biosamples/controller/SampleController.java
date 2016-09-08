@@ -140,8 +140,8 @@ public class SampleController {
 			@RequestParam(value = "page", defaultValue = "0") int page) {
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
 		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
-		Page<SolrSample> results = solrSampleRepository.findByAccession(searchTerm, querySpec);
-		ResultQuery rq = new SampleResultQuery(results);
+		Page<SolrSample> results = solrSampleRepository.findByText(searchTerm, querySpec);
+		ResultQuery<SolrSample> rq = new SampleResultQuery(results);
 		return rq.renderDocument();
 	}
 
