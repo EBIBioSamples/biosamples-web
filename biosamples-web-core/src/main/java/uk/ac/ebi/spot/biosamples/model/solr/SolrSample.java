@@ -22,8 +22,6 @@ import java.util.TreeMap;
 
 @SolrDocument(solrCoreName = "samples")
 public class SolrSample {
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -34,9 +32,7 @@ public class SolrSample {
 
     @Field("updatedate") String updateDate;
     @Field("releasedate") String releaseDate;
-
-    @Field("sample_name_crt") List<String> sampleName;
-
+    
     // collection of all text attributes for search
     @JsonIgnore @Field List<String> text;
 
@@ -203,14 +199,6 @@ public class SolrSample {
 
     public void setXml(String xml) {
         this.xml = xml;
-    }
-
-    public List<String> getSampleName() {
-        return sampleName;
-    }
-
-    public void setSampleName(List<String> sampleName) {
-        this.sampleName = sampleName;
     }
 
     public String getOrganization() throws IOException {
