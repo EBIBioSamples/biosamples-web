@@ -1,6 +1,7 @@
 package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -25,55 +26,74 @@ public class SolrSample {
 
     private final DateTimeFormatter solrDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Id @Field("accession") String id;
-    @Field String accession;
-    @Field String name;
-    @Field String description;
+    @Id @Field("accession") private String id;
+    @Field private String accession;
+    @Field private String name;
+    @Field private String description;
 
-    @Field("updatedate") String updateDate;
-    @Field("releasedate") String releaseDate;
+    @Field("updatedate") private String updateDate;
+    @Field("releasedate") private String releaseDate;
     
     // collection of all text attributes for search
-    @JsonIgnore @Field List<String> text;
+    @JsonIgnore 
+    @Field 
+    private List<String> text;
 
     // collection of all characteristics as key/list of value pairs
-    @JsonIgnore @Field("*_crt") Map<String, List<String>> characteristicsText;
+    @JsonIgnore 
+    @Field("*_crt") 
+    private Map<String, List<String>> characteristicsText;
 
     // TODO - if this becomes a read/write API, we will also need a JsonDeserializer
     @JsonSerialize(using = CharacteristicMappingsSerializer.class)
     @Field("*_crt_json")
-    Map<String, List<String>> characteristics;
+    private Map<String, List<String>> characteristics;
 
     // collection of all external reference names
-    @JsonIgnore @Field("external_references_name") List<String> externalReferencesNames;
+    @JsonIgnore 
+    @Field("external_references_name") 
+    private List<String> externalReferencesNames;
 
     // contact informations
-    @JsonSerialize(using = JsonGenericSerializer.class)
+    @JsonSerialize(using = OrganizationSerializer.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field("contact_json")
-    String contact;
+    private String contact;
 
     // organization informations
     @JsonSerialize(using = OrganizationSerializer.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field("org_json")
-    String organization;
+    private String organization;
 
 
     // publication informations
     @JsonSerialize(using = JsonGenericSerializer.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field("pub_json")
-    String publications;
+    private String publications;
 
     // external references
-    @JsonSerialize(using = JsonGenericSerializer.class)
+    //@JsonSerialize(using = JsonGenericSerializer.class)
+    //@JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field("external_references_json")
-    String externalReferences;
+    //don't output in json, will get via _links via relations
+    @JsonIgnore
+    private String externalReferences;
 
     // group metadata
-    @Field("sample_grp_accessions") List<String> groups;
+    //don't output in json, will get via _links via relations
+    @JsonIgnore
+    @Field("sample_grp_accessions") 
+    private List<String> groups;
 
     // submission metadata
-    @Field("submission_acc") String submissionAccession;
-    @Field("submission_title") String submissionTitle;
+    @JsonIgnore
+    @Field("submission_acc") 
+    private String submissionAccession;
+    @JsonIgnore
+    @Field("submission_title") 
+    private String submissionTitle;
 
     // XML payload for this sample - don't return in REST API
     @Field("api_xml") @JsonIgnore String xml;
@@ -215,7 +235,7 @@ public class SolrSample {
     }
 
     public String getContact() throws IOException {
-    	JsonNode node = SerializationUtils.contactSerializer(this.contact);
+    	JsonNode node = SerializationUtils.organizationSerializer(this.contact);
     	if (node == null) {
     		return null;
     	} else {

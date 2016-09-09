@@ -3,6 +3,7 @@ package uk.ac.ebi.spot.biosamples.model.solr;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class SerializationUtils {
     public static JsonNode contactSerializer(String fieldContent) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         if (fieldContent == null) {
+        	//consider also using nullnode or missingnode instead
         	return null;
         }
         return mapper.readTree(fieldContent);

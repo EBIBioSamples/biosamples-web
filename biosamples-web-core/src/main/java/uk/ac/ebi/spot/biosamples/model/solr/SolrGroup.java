@@ -1,6 +1,7 @@
 package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
@@ -46,17 +47,20 @@ public class SolrGroup {
     String externalReferences;
 
     // contact
-    @JsonSerialize(using = JsonGenericSerializer.class)
+    @JsonSerialize(using = OrganizationSerializer.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field("contact_json")
     String contact;
 
     // organization informations
     @JsonSerialize(using = OrganizationSerializer.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field("org_json")
     String organization;
 
     // publication informations
     @JsonSerialize(using = JsonGenericSerializer.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field("pub_json")
     String publications;
 
@@ -65,8 +69,12 @@ public class SolrGroup {
     @Field("grp_sample_accessions") List<String> samples;
 
     // submission metadata
-    @Field("submission_acc") String submissionAccession;
-    @Field("submission_title") String submissionTitle;
+    @JsonIgnore
+    @Field("submission_acc") 
+    private String submissionAccession;
+    @JsonIgnore
+    @Field("submission_title") 
+    private String submissionTitle;
 
     // XML payload for this sample - don't return in REST API
     @Field("api_xml") @JsonIgnore String xml;
@@ -224,7 +232,8 @@ public class SolrGroup {
     }
 
     public String getContact() throws IOException {
-        return SerializationUtils.contactSerializer(this.contact).toString();
+        return SerializationUtils.organizationSerializer(this.contact).toString();    	
+        //return SerializationUtils.contactSerializer(this.contact).toString();
     }
 
     public void setContact(String contact) {
