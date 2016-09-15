@@ -2,10 +2,12 @@ package uk.ac.ebi.spot.biosamples.model.solr;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
+import org.springframework.data.solr.core.query.result.PageKey;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -224,7 +226,12 @@ public class SolrGroup {
     }
     
     public String getOrganization() throws IOException {
-        return SerializationUtils.organizationSerializer(this.organization).toString();
+        JsonNode node = SerializationUtils.organizationSerializer(this.organization);
+        if (node == null) {
+            return null;
+        } else {
+            return node.toString();
+        }
     }
 
     public void setOrganization(String organization) {
@@ -232,8 +239,12 @@ public class SolrGroup {
     }
 
     public String getContact() throws IOException {
-        return SerializationUtils.organizationSerializer(this.contact).toString();    	
-        //return SerializationUtils.contactSerializer(this.contact).toString();
+        JsonNode node = SerializationUtils.organizationSerializer(this.contact);
+        if (node == null) {
+            return null;
+        } else {
+            return node.toString();
+        }
     }
 
     public void setContact(String contact) {

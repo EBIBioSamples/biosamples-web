@@ -65,15 +65,15 @@
                     <td th:text="${group.updateDate}"></td>
                 </tr>
 
-                <tr th:if="${group.organization}">
+                <tr th:if="${!#strings.isEmpty(group.organization)}">
                     <td class="col_title"><b>Organization:</b></td>
                     <td class="organization-field-content" th:text="${group.organization}"></td>
                 </tr>
-                <tr th:if="${group.contact}">
+                <tr th:if="${!#strings.isEmpty(group.contact)}">
                     <td class="col_title"><b>Contact:</b></td>
                     <td class="contact-field-content" th:text="${group.contact}"></td>
                 </tr>
-                <tr th:if="${group.publications}">
+                <tr th:if="${!#strings.isEmpty(group.publications)}">
                     <td class="col_title"><b>Publications:</b></td>
                     <td class="publications-field-content" th:text="${group.publications}"></td>
                 </tr>

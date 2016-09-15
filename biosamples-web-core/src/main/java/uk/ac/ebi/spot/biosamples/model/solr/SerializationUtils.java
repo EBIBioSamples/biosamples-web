@@ -10,13 +10,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class SerializationUtils {
+class SerializationUtils {
 
+    static JsonNode organizationSerializer(String fieldContent) throws IOException {
 
-
-    public static JsonNode organizationSerializer(String fieldContent) throws IOException {
-        //if (fieldContent == null) return null;
-        
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode newNode = mapper.createArrayNode();
         if (fieldContent != null) {
@@ -24,17 +21,15 @@ public class SerializationUtils {
 	        oldNode.forEach(jsonNode -> {
 	            ObjectNode orgObject = ((ObjectNode) jsonNode).deepCopy();
 	            orgObject.remove("E-mail");
-	
 	            newNode.add(orgObject);
 	        });
-	        return newNode;
+            return newNode;
         } else {
-        	return null;
+            return null;
         }
-
     }
 
-    public static JsonNode contactSerializer(String fieldContent) throws IOException {
+    static JsonNode contactSerializer(String fieldContent) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         if (fieldContent == null) {
         	//consider also using nullnode or missingnode instead
@@ -43,7 +38,7 @@ public class SerializationUtils {
         return mapper.readTree(fieldContent);
     }
 
-    public static JsonNode genericSerializer(String fieldContent) throws IOException {
+    static JsonNode genericSerializer(String fieldContent) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.valueToTree(fieldContent);
     }
