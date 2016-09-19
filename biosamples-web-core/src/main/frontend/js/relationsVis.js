@@ -24,13 +24,7 @@
     function isCluster(parameter){
         console.log(parameter);
         console.log(parameter.indexOf("__"));
-        if (parameter.indexOf("__")===-1)
-        {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return !(parameter.indexOf("__") == -1);
     }
 
     var graphURL = buildGraphUrl(relationsUrl,accession);
@@ -51,31 +45,32 @@
         },
         
         callbacks: {
+            __changingPage: false,
+            onClick: function (params) {
 
-            onSelectNode: function (params) {
+                if (this.__changingPage) {
+                    return;
+                }
                 let nodeAccession = params.nodes[0];
-                console.log(params);
+                let singleClick = params.event.tapCount == 1;
+                console.log("Parameters:", params);
                 console.log(params.nodes[0]);
                 console.log("Selected");
+
                 if (!isCluster(nodeAccession)) {
-                    instance.fetchNewGraphData(buildGraphUrl(relationsUrl, nodeAccession));
+                    if (!singleClick) {
+                        let singleContentType = sampleOrGroup(nodeAccession).slice(0, -1);
+                        window.location = `${originUrl}${singleContentType}/${nodeAccession}`;
+                        this.__changingPage = true;
+                        return;
+                    } else {
+                        instance.fetchNewGraphData(buildGraphUrl(relationsUrl, nodeAccession));
+                    }
+                }
+                else{
+                    instance.unclusterANode(nodeAccession)
                 }
             },
-            onDoubleClick: function (params) {
-                console.log("Double click!");
-
-                let nodeAccession = params.nodes[0];
-                if (!isCluster(nodeAccession)) {
-                    //Have to be funky and get rid of the last letter, namely an s to turn sampleS/groupS to sample/group
-                    let singleContentType = sampleOrGroup(nodeAccession).slice(0, -1);
-                    window.location = `${originUrl}${singleContentType}/${nodeAccession}`;
-                }
-
-
-
-            },
-            onSelectEdge: function (params) {
-            }
         },
         loadingBar: {
             pictureURL: "../images/loading.gif",
