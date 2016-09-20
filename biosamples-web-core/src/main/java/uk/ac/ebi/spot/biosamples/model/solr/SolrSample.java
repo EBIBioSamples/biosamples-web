@@ -68,7 +68,7 @@ public class SolrSample {
 
 
     // publication informations
-    @JsonSerialize(using = JsonGenericSerializer.class)
+    @JsonSerialize(using = OrganizationSerializer.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @Field("pub_json")
     private String publications;

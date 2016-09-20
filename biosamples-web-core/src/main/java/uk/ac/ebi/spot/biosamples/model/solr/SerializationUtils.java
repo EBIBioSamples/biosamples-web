@@ -12,11 +12,11 @@ import java.util.Map;
 
 class SerializationUtils {
 
-    static JsonNode organizationSerializer(String fieldContent) throws IOException {
+    public static JsonNode organizationSerializer(String fieldContent) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode newNode = mapper.createArrayNode();
-        if (fieldContent != null) {
+        if (fieldContent != null && fieldContent.trim().length() > 0) {
 	        ArrayNode oldNode = (ArrayNode) mapper.readTree(fieldContent);
 	        oldNode.forEach(jsonNode -> {
 	            ObjectNode orgObject = ((ObjectNode) jsonNode).deepCopy();
@@ -29,7 +29,7 @@ class SerializationUtils {
         }
     }
 
-    static JsonNode contactSerializer(String fieldContent) throws IOException {
+    public static JsonNode contactSerializer(String fieldContent) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         if (fieldContent == null) {
         	//consider also using nullnode or missingnode instead
@@ -38,12 +38,12 @@ class SerializationUtils {
         return mapper.readTree(fieldContent);
     }
 
-    static JsonNode genericSerializer(String fieldContent) throws IOException {
+    public static JsonNode genericSerializer(String fieldContent) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.valueToTree(fieldContent);
     }
 
-    static JsonNode characteristicsSerializer(Map<String, List<String>> characteristicMappings) throws IOException {
+    public static JsonNode characteristicsSerializer(Map<String, List<String>> characteristicMappings) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode object = mapper.createObjectNode();
         for (String crt : characteristicMappings.keySet()) {
