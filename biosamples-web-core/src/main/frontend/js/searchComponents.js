@@ -84,6 +84,9 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
     var biosampleMap = function(obj) {
         let badges = {};
         const facetKeys = obj.dynamicFacets;
+        let sampleName = obj["sample_name_crt"];
+        if (sampleName)
+            badges["sample_name_crt"] = sampleName;
         for ( let i=0, n=facetKeys.length; i < n; i++ ) {
             if (facetKeys[i]) {
                 let facetKey = facetKeys[i].replace(/_ft$/, "");
