@@ -71,6 +71,9 @@
                     instance.unclusterANode(nodeAccession)
                 }
             },
+            onSelectNode: function() {
+                console.log("onSelectedNode");
+            }
         },
         loadingBar: {
             pictureURL: "../images/loading.gif",
