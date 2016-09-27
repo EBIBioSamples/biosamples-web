@@ -128,7 +128,7 @@
                     if (pub) {
                         console.log(output);
                         output +=
-                           "<a href='www.ebi.ac.uk/europmc/abstract/" + pub.source + "/" + pub.pmid + "' target='_blank'>"
+                           "<a href='//www.europepmc.org/abstract/" + pub.source + "/" + pub.pmid + "' target='_blank'>"
                             + pub.title +
                            "</a>";
                         if (index < json.length - 1) {
