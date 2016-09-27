@@ -263,7 +263,7 @@
              */
             getQueryParameters: function() {
                 return {
-                    'keyword': this.keyword ? this.keyword : '*',
+                    'text': this.keyword ? this.keyword : '*',
                     'group': this.group,
                     'size': this.samplesToRetrieve,
                     'page': this.pageNumber - 1
