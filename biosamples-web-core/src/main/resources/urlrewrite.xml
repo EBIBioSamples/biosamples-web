@@ -16,21 +16,31 @@
         <to type="permanent-redirect" last="true">%{context-path}/samples/$1</to>
     </rule>
     <rule>
-        <name>Redirect to samples xml</name>
-        <note>Redirect legacy xml/sample to new xml/samples</note>
-        <from>^/xml/sample/(.*)$</from>
-        <to type="permanent-redirect" last="true">%{context-path}/xml/samples/$1</to>
-    </rule>
-    <rule>
         <name>Redirect to groups</name>
         <note>Redirect legacy /group to new /groups</note>
         <from>^/group/(.*)$</from>
         <to type="permanent-redirect" last="true">%{context-path}/groups/$1</to>
     </rule>
     <rule>
+        <name>Redirect to samples xml</name>
+        <note>Redirect legacy xml/sample to new xml/samples</note>
+        <from>^/xml/sample/(.*)$</from>
+        <to type="permanent-redirect" last="true">%{context-path}/xml/samples/$1</to>
+    </rule>
+    <rule>
         <name>Redirect to groups xml</name>
         <note>Redirect legacy xml/group to new xml/groups</note>
         <from>^/xml/group/(.*)$</from>
         <to type="permanent-redirect" last="true">%{context-path}/xml/groups/$1</to>
+    </rule>
+    <rule>
+        <note>Redirect legacy xml/v1.0/group to new xml/groups</note>
+        <from>^/xml/v1.0/group/(.*)$</from>
+        <to type="forward">%{context-path}/xml/groups/$1</to>
+    </rule>
+    <rule>
+        <note>Redirect legacy xml/v1.0/sample to new xml/samples</note>
+        <from>^/xml/v1.0/sample/(.*)$</from>
+        <to type="forward">%{context-path}/xml/samples/$1</to>
     </rule>
 </urlrewrite>
