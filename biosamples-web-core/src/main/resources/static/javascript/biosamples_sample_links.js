@@ -146,7 +146,7 @@
         });
 
         function getEuropePmcUrl(pubmed_id) {
-            return "http://www.ebi.ac.uk/europepmc/webservices/rest/search?query=ext_id:" + pubmed_id + "&format=JSON";
+            return "//www.ebi.ac.uk/europepmc/webservices/rest/search?query=ext_id:" + pubmed_id + "&format=JSON";
         }
 
         function getPublicationsWithId(id, publications) {
