@@ -1,3 +1,9 @@
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position){
+        position = position || 0;
+        return this.substr(position, searchString.length) === searchString;
+    };
+}
 
 (function($){
     var olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
@@ -11,41 +17,51 @@
         $(".characteristic-mapping").each(function(){
             // get JSON payload for each element
             var mapping = $(this);
-            mapping.children(".characteristic-mapping-payload").each(function() {
-                var quotedPayload = $(this).html();
-                var jsonStr;
-                if (quotedPayload.charAt(0) === '"' && quotedPayload.charAt(str.length -1) === '"'){
-                    jsonStr = quotedPayload.substr(1, str.length-2);
-                }
-                else {
-                    jsonStr = quotedPayload;
-                }
-                var json = jQuery.parseJSON(jsonStr);
-                
-                if (json.ontology_terms) {
-                    console.log("Found ontology term for '" + json.text + "': " + json.ontology_terms);
-                    if (json.ontology_terms[0]) {
-                        var link = olsSearchLink + encodeURIComponent(json.ontology_terms[0]);
-                        if (json.unit) {
-                        	mapping.html(json.text + "( <a href=\"" + link + "\" target='_blank'>"+json.unit+"</a> )");
-                        } else {
-                        	mapping.html("<a href=\"" + link + "\" target='_blank'>" + json.text + "</a>");                        	
+            var mappingChildren = mapping.children(".characteristic-mapping-payload");
+            if (mappingChildren.length > 0) {
+                mappingChildren.each(function () {
+                    var quotedPayload = $(this).html();
+                    var jsonStr;
+                    if (quotedPayload.charAt(0) === '"' && quotedPayload.charAt(str.length - 1) === '"') {
+                        jsonStr = quotedPayload.substr(1, str.length - 2);
+                    }
+                    else {
+                        jsonStr = quotedPayload;
+                    }
+                    var json = jQuery.parseJSON(jsonStr);
+
+                    if (json.ontology_terms) {
+                        console.log("Found ontology term for '" + json.text + "': " + json.ontology_terms);
+                        if (json.ontology_terms[0]) {
+                            var link = olsSearchLink + encodeURIComponent(json.ontology_terms[0]);
+                            if (json.unit) {
+                                mapping.html(json.text + "( <a href=\"" + link + "\" target='_blank'>" + json.unit + "</a> )");
+                            } else {
+                                mapping.html("<a href=\"" + link + "\" target='_blank'>" + json.text + "</a>");
+                            }
+                        }
+                        else {
+                            console.log("Something went wrong - ontology_terms collection present but no first element?");
                         }
                     }
                     else {
-                        console.log("Something went wrong - ontology_terms collection present but no first element?");
+                        if (json.unit) {
+                            console.log("No ontology term for '" + json.text + "'");
+                            mapping.text(json.text + " (" + json.unit + ")");
+                        } else if (isALink(json.text)) {
+                            console.log("No ontology term for '" + json.text + "'");
+                            mapping.html("<a href=\"" + json.text + "\" target=\"_blank\">" + json.text + "</a>");
+                        } else {
+                            console.log("No ontology term for '" + json.text + "'");
+                            mapping.text(json.text);
+                        }
                     }
-                }
-                else {
-                	if (json.unit) {
-	                    console.log("No ontology term for '" + json.text + "'");
-	                    mapping.text(json.text+" ("+json.unit+")");                		
-                	} else {
-	                    console.log("No ontology term for '" + json.text + "'");
-	                    mapping.text(json.text);
-                	}
-                }
-            });
+                });
+            } else {
+                let originalText = mapping.text();
+                let expandedText = findAndUpdateLinks(originalText);
+                mapping.html(expandedText);
+            }
         });
 
         console.log("Checking external-references-payload");
@@ -165,5 +181,36 @@
             return searchedResult;
         }
 
+
+    }
+
+    function findAndUpdateLinks(value) {
+        let words = value.split(" ");
+        let expandedWords = words.map(el => {
+            if (isALink(el)) {
+                return "<a href=\"" + el + "\" target=\"_blank\">" + el + "</a>";
+            }
+            return el;
+        });
+        return expandedWords.join(" ");
+    }
+
+    function isALink(value) {
+        const possibleLinks = ["ftp://","http://","https://"];
+        return possibleLinks.filter(el => value.startsWith(el)).length > 0;
+    }
+
+    function isJSON(value) {
+        if (typeof value !== "string") {
+            return false;
+        }
+
+        try {
+            let parsed = JSON.parse(value);
+            if (parsed) return true;
+        } catch (err) {
+            console.debug("Passed value is not a JSON string");
+        }
+        return false;
     }
 })(jQuery);
