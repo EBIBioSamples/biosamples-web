@@ -72,6 +72,7 @@ public class SearchController {
         httpSolrDispatcher.streamSolrResponse(response.getOutputStream(), solrQuery);
     }
 
+
     private Map<String, String> parseFilters(String... filters) {
         // Setup filters
         Map<String, String> results = new HashMap<>();
