@@ -1,59 +1,59 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
-	layout:decorator="__parent_base"
-	xmlns:layout="http://www.w3.org/1999/xhtml"
-	th:with="navigationEntry = 'home', overrideTitle = true">
+	  layout:decorator="__parent_base"
+	  xmlns:layout="http://www.w3.org/1999/xhtml"
+	  th:with="navigationEntry = 'home', overrideTitle = true">
 <head>
-<title>Biosamples &lt; EMBL-EBI</title>
+	<title>Biosamples &lt; EMBL-EBI</title>
 </head>
 <body>
 
-	<div layout:fragment="content">
+<div layout:fragment="content">
 
-		<div id="bs_content">
-			<section>
-				<h2>BioSamples - database of sample descriptions</h2>
-				<p class="intro justify">
-					The BioSamples database aggregates sample information for reference
-					samples (e.g. Coriell Cell lines) and samples for which data exist
-					in one of the EBI&#39;s assay databases such as <a
-						href="//www.ebi.ac.uk/arrayexpress">ArrayExpress</a>, the <a
-						href="//www.ebi.ac.uk/ena">European Nucleotide Archive</a> or <a
-						href="//www.ebi.ac.uk/pride">PRIDE</a>. It provides links to
-					assays for specific samples, and accepts direct submissions of
-					samples information.
-				</p>
-			</section>
+	<div id="bs_content">
+		<section>
+			<h2>BioSamples - database of sample descriptions</h2>
+			<p class="intro justify">
+				The BioSamples database aggregates sample information for reference
+				samples (e.g. Coriell Cell lines) and samples for which data exist
+				in one of the EBI&#39;s assay databases such as <a
+					href="//www.ebi.ac.uk/arrayexpress">ArrayExpress</a>, the <a
+					href="//www.ebi.ac.uk/ena">European Nucleotide Archive</a> or <a
+					href="//www.ebi.ac.uk/pride">PRIDE</a>. It provides links to
+				assays for specific samples, and accepts direct submissions of
+				samples information.
+			</p>
+		</section>
 
-			<div class="grid_12 alpha">
-				<h3 class="icon icon-generic" data-icon="L">Info</h3>
-				<ul>
-					<li><a href="help/index.html">Help pages</a> about how to
-						search BioSamples, how to submit data, and FAQ.</li>
-					<li><a href="help/api.html">Programmatic access</a> to query
-						and download data using web services.</li>
-					<li>Contact us by emailing <a
+		<div class="grid_12 alpha">
+			<h3 class="icon icon-generic" data-icon="L">Info</h3>
+			<ul>
+				<li><a href="help/index.html">Help pages</a> about how to
+					search BioSamples, how to submit data, and FAQ.</li>
+				<li><a href="help/api.html">Programmatic access</a> to query
+					and download data using web services.</li>
+				<li>Contact us by emailing <a
 						href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a></li>
-				</ul>
-			</div>
-			<div class="grid_12 omega">
-				<h3 class="icon icon-generic" data-icon="g">Data Content</h3>
-				<div class="grid_7 alpha">
-					<a href="search?searchTerm=ebisc" ><img
-						src="images/dblinks/ebisc_logo.png" alt="EBiSC" title="EBiSC" /></a>
-				</div>
-				<div class="grid_7">
-					<a href="search?searchTerm=faang" ><img
-						src="images/dblinks/faang_logo.png" alt="FAANG" title="FAANG" /></a>
-				</div>
-				<div class="grid_7 omega">
-					<a href="search?searchTerm=hipsci" ><img
-						src="images/dblinks/hipsci_small_logo.png" alt="HipSci"
-						title="HipSci" /></a>
-				</div>
+			</ul>
+		</div>
+		<div class="grid_12 omega">
+			<h3 class="icon icon-generic" data-icon="g">Data Content</h3>
+			<div class="grid_24">
+				<table class="data-content">
+					<tr>
+						<td><a href="search?searchTerm=ebisc" ><img
+								src="images/dblinks/ebisc_logo.png" alt="EBiSC" title="EBiSC" /></a></td>
+						<td><a href="search?searchTerm=faang" ><img
+								src="images/dblinks/faang_logo.png" alt="FAANG" title="FAANG" /></a></td>
+						<td><a href="search?searchTerm=hipsci" ><img
+								src="images/dblinks/hipsci_small_logo.png" alt="HipSci"
+								title="HipSci" /></a></td>
+					</tr>
+				</table>
 			</div>
 		</div>
-
 	</div>
+
+</div>
 </body>
 </html>
