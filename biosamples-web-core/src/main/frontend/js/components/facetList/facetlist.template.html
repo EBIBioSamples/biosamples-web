@@ -7,8 +7,8 @@
     <div class="panel-body facet-panel__content" v-show="!collapsed">
         <ul class="list-group facet-list">
             <li v-for="key in keys" @click="facetSelected(key)"
-                class="list-group-item facet-entry"
-                :class="{'selected': isSelected(key)}">
+                class="list-group-item facet-entry">
+                <!--:class="{'selected': isSelected(key)}">-->
                 <div class="facet-name">
                     <span class="h5">{{key}}</span>
                 </div>
