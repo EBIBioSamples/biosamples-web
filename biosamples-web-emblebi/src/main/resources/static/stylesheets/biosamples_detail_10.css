@@ -421,3 +421,10 @@ overflow-x: scroll; overflow-y:hidden;}
 /*}*/
 
 /*second scrollbar on top*/
+table.data-content {
+	border: 0;
+}
+table.data-content td {
+	border: 0;
+	vertical-align:middle;
+}

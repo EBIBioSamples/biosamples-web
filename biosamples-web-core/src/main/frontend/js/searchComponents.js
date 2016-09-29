@@ -477,7 +477,9 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
                     //TODO In this case the string is not properly read (filters is not read as an array)
                 } else {
                     vueConsole.debug("No Parameters");
-                    return;
+                    urlParam = {
+                        "searchTearm": "*:*"
+                    }
                 }
 
                 this.populateDataWithUrlParameter(urlParam);
