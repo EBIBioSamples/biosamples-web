@@ -1,21 +1,33 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org/"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorator="__parent_help"
-      th:with="helpNavigationEntry = 'contactus'">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+	xmlns:layout="http://www.w3.org/1999/xhtml"
+	layout:decorator="__parent_help"
+	th:with="helpNavigationEntry = 'contactus'">
 <head>
-    <title>Contact Us &lt; Help &lt;</title>
+<title>Contact Us &lt; Help</title>
 </head>
 <body>
-<div layout:fragment="content">
-            <section id="ae-help" class="grid_18 alpha">
-                <h2 class='icon icon-generic' data-icon='E'>Submission queries? Still lost after reading help pages? Email us!</h2>
-                <p> Please email us at <a href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a>.</p>
-                <p> We welcome enquiries on data submission and data access, as well as more technical issues, e.g. integration with other data bases, linked open data, etc. We aim to respond to all emails within 1 working day.</p>
-                <h2 class='icon icon-generic' data-icon='m'>Mailing list for announcements</h2>
-                <p>If you use the Biosamples Database regularly, or maintain software that interacts with it, you may want to keep up to date with any changes and extensions to the functionalities by <a href="//listserver.ebi.ac.uk/mailman/listinfo/biosamples-announce">subscribing to the announcement mailing list</a>.</p>
-            </section>
-        </div>
-    </body>
+	<div layout:fragment="content">
+		<section id="ae-help" class="grid_18 alpha">
+			<h2 class='icon icon-generic' data-icon='E'>Submission queries?
+				Still lost after reading help pages? Email us!</h2>
+			<p>
+				Please email us at <a href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a>.
+			</p>
+			<p>We welcome enquiries on data submission and data access, as
+				well as more technical issues, e.g. integration with other data
+				bases, linked open data, etc. We aim to respond to all emails within
+				1 working day.</p>
+			<h2 class='icon icon-generic' data-icon='m'>Mailing list for
+				announcements</h2>
+			<p>
+				If you use the Biosamples Database regularly, or maintain software
+				that interacts with it, you may want to keep up to date with any
+				changes and extensions to the functionalities by <a
+					href="//listserver.ebi.ac.uk/mailman/listinfo/biosamples-announce">subscribing
+					to the announcement mailing list</a>.
+			</p>
+		</section>
+	</div>
+</body>
 </html>

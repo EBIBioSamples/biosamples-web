@@ -1,46 +1,44 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org/"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorator="__parent_help"
-      th:with="helpNavigationEntry = 'api'">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+	xmlns:layout="http://www.w3.org/1999/xhtml"
+	layout:decorator="__parent_help" th:with="helpNavigationEntry = 'api'">
 <head>
-    <title>API &lt; Help &lt;</title>
+<title>API &lt; Help</title>
 </head>
 <body>
-<div layout:fragment="content">
-        <section id="ae-help" class="grid_18 alpha">
-            <h2 id="SampleAccession">
-                Sample Accession
-            </h2>
-            <p></p>
-            <ul>
-                <li>It returns all information about a Sample;</li>
-                <li>E.g. <a class="ext-link"
-                    th:href="@{/xml/sample/SAME546131}"><span class="icon" href="/biosamples/xml/sample/SAME546131"><span class="icon">&nbsp;</span><th:span th:remove="tag" th:text="@{/xml/sample/SAME546131}">/biosamples/xml/sample/SAME546131</th:span></a>;
-                </li>
-            </ul>
-            <p>
-                <br>
-            </p>
-            <h4 id="Authentication">Authentication</h4>
-            <p>N/A</p>
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="Arguments">Arguments</h4>
-            <p>sampleAccession (required) 
-            <br/>groupslist (optional - default=false)
-                <br> <br>
-            </p>
-            <h4 id="ExampleRequest">Example Request</h4>
-            <pre class="wiki">Get /xml/sample/SAME546131
+	<div layout:fragment="content">
+		<section id="ae-help" class="grid_18 alpha">
+			<h2 id="SampleAccession">Sample Accession</h2>
+			<p></p>
+			<ul>
+				<li>It returns all information about a Sample;</li>
+				<li>E.g. <a class="ext-link"
+					th:href="@{/xml/sample/SAME546131}"><span class="icon"
+						href="/biosamples/xml/sample/SAME546131"><span class="icon">&nbsp;</span>
+						<th:span th:remove="tag" th:text="@{/xml/sample/SAME546131}">/biosamples/xml/sample/SAME546131</th:span></a>;
+				</li>
+			</ul>
+			<p>
+				<br>
+			</p>
+			<h4 id="Authentication">Authentication</h4>
+			<p>N/A</p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="Arguments">Arguments</h4>
+			<p>
+				sampleAccession (required) <br />groupslist (optional -
+				default=false) <br> <br>
+			</p>
+			<h4 id="ExampleRequest">Example Request</h4>
+			<pre class="wiki">Get /xml/sample/SAME546131
 </pre>
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="ExampleResponse">Example Response</h4>
-<pre class="wiki">&lt;BioSample xmlns="http://www.ebi.ac.uk/biosamples/SampleGroupExport" id="SAME315173"&gt;
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="ExampleResponse">Example Response</h4>
+			<pre class="wiki">&lt;BioSample xmlns="http://www.ebi.ac.uk/biosamples/SampleGroupExport" id="SAME315173"&gt;
 &lt;Property class="Sample Name" characteristic="true" comment="false" type="STRING"&gt;
 &lt;QualifiedValue&gt;
 &lt;Value&gt;STOCK Dbp&lt;tm1Schb&gt; Hlf&lt;tm1Schb&gt; Tef&lt;tm1Schb&gt;/Cnrm&lt;/Value&gt;
@@ -150,27 +148,30 @@ http://www.findmice.org/summary?query=STOCK+Dbp%3Ctm1Schb%3E+Hlf%3Ctm1Schb%3E+Te
 &lt;/BioSample&gt;
 </pre>
 
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="ErrorCodes">Error Codes</h4>
-            <p>N/A</p>
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="XSD-XmlSchemaDefinition">XSD - Xml Schema Definition</h4>
-            <ul>
-                <li><a class="ext-link"
-                    th:href="@{/assets/xsd/BioSDSchema.xsd}" href="/biosamples/assets/xsd/BioSDSchema.xsd"><span
-                        class="icon">&nbsp;</span><th:span th:remove="tag" th:text="@{/assets/xsd/BioSDSchema.xsd}">/biosamples/assets/xsd/BioSDSchema.xsd</th:span></a></li>
-            </ul>
-            <p>
-                <img th:src="@{/images/api/BioSDSchema_BioSample.png}" src="../images/api/BioSDSchema_BioSample.png"
-                    alt="BioSamplesSample XSD" title="BioSamplesSample XSD">
-            </p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="ErrorCodes">Error Codes</h4>
+			<p>N/A</p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="XSD-XmlSchemaDefinition">XSD - Xml Schema Definition</h4>
+			<ul>
+				<li><a class="ext-link"
+					th:href="@{/assets/xsd/BioSDSchema.xsd}"
+					href="/biosamples/assets/xsd/BioSDSchema.xsd"><span
+						class="icon">&nbsp;</span>
+					<th:span th:remove="tag" th:text="@{/assets/xsd/BioSDSchema.xsd}">/biosamples/assets/xsd/BioSDSchema.xsd</th:span></a></li>
+			</ul>
+			<p>
+				<img th:src="@{/images/api/BioSDSchema_BioSample.png}"
+					src="../images/api/BioSDSchema_BioSample.png"
+					alt="BioSamplesSample XSD" title="BioSamplesSample XSD">
+			</p>
 
 
-        </section>
-    </div>
+		</section>
+	</div>
 </body>
 </html>

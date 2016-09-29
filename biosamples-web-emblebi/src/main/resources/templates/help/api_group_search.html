@@ -1,59 +1,59 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org/"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorator="__parent_help"
-      th:with="helpNavigationEntry = 'api'">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+	xmlns:layout="http://www.w3.org/1999/xhtml"
+	layout:decorator="__parent_help" th:with="helpNavigationEntry = 'api'">
 <head>
-    <title>API &lt; Help &lt;</title>
+<title>API &lt; Help</title>
 </head>
 <body>
-<div layout:fragment="content">
-        <section id="ae-help" class="grid_18 alpha">
-            <h2 id="GroupSearch">
-                Group Search
-            </h2>
-            <p></p>
-            <ul>
-                <li>It returns all the groups that match the query (e.g. <a
-                    class="ext-link" th:href="@{/xml/group/query=cancer}" href="/biosamples/xml/group/query=cancer"><span
-                        class="icon">&nbsp;</span><th:span th:remove="tag" th:text="@{/xml/group/query=cancer}">/biosamples/xml/group/query=cancer</th:span></a>);
-                </li>
-                <li>It is possible to use paging and sorting (e.g. <a
-                    class="ext-link"
-                    th:href="@{/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50}" href="/biosamples/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50"><span
-                        class="icon">&nbsp;</span><th:span th:remove="tag" th:text="@{/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50}">/biosamples/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50</th:span></a>);
-                </li>
-                <li>Always return a result summary information;</li>
-            </ul>
-            <p></p>
-            <p>
-                <br>
-            </p>
-            <h4 id="Authentication">Authentication</h4>
-            <p>N/A</p>
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="Arguments">Arguments</h4>
-            <p>
-                query (required) <br> sortby (optional - default
-                    value=relevance) <br> sortorder (optional - default
-                        value=descending; maximum value=500) <br> page (optional -
-                            default value=50) <br> pagesize (optional - default value=1)
-                        
-            </p>
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="ExampleRequest">Example Request</h4>
-            <pre class="wiki">Get /xml/group/query=cancer&amp;page=2
+	<div layout:fragment="content">
+		<section id="ae-help" class="grid_18 alpha">
+			<h2 id="GroupSearch">Group Search</h2>
+			<p></p>
+			<ul>
+				<li>It returns all the groups that match the query (e.g. <a
+					class="ext-link" th:href="@{/xml/group/query=cancer}"
+					href="/biosamples/xml/group/query=cancer"><span class="icon">&nbsp;</span>
+					<th:span th:remove="tag" th:text="@{/xml/group/query=cancer}">/biosamples/xml/group/query=cancer</th:span></a>);
+				</li>
+				<li>It is possible to use paging and sorting (e.g. <a
+					class="ext-link"
+					th:href="@{/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50}"
+					href="/biosamples/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50"><span
+						class="icon">&nbsp;</span>
+					<th:span th:remove="tag"
+							th:text="@{/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50}">/biosamples/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50</th:span></a>);
+				</li>
+				<li>Always return a result summary information;</li>
+			</ul>
+			<p></p>
+			<p>
+				<br>
+			</p>
+			<h4 id="Authentication">Authentication</h4>
+			<p>N/A</p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="Arguments">Arguments</h4>
+			<p>
+				query (required) <br> sortby (optional - default
+				value=relevance) <br> sortorder (optional - default
+				value=descending; maximum value=500) <br> page (optional -
+				default value=50) <br> pagesize (optional - default value=1)
+
+			</p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="ExampleRequest">Example Request</h4>
+			<pre class="wiki">Get /xml/group/query=cancer&amp;page=2
 </pre>
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="ExampleResponse">Example Response</h4>
-            <pre class="wiki">&lt;ResultQuery&gt;
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="ExampleResponse">Example Response</h4>
+			<pre class="wiki">&lt;ResultQuery&gt;
 &lt;SummaryInfo&gt;
 &lt;Total&gt;7766&lt;/Total&gt;
 &lt;From&gt;51&lt;/From&gt;
@@ -114,27 +114,30 @@
 &lt;/ResultQuery&gt;
   
 </pre>
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="ErrorCodes">Error Codes</h4>
-            <p>N/A</p>
-            <p>
-                <br> <br>
-            </p>
-            <h4 id="XSD-XmlSchemaDefinition">XSD - Xml Schema Definition</h4>
-            <ul>
-                <li><a class="ext-link"
-                    th:href="@{/assets/xsd/ResultQuerySampleGroupSchema.xsd}" href="/biosamples/assets/xsd/ResultQuerySampleGroupSchema.xsd"><span
-                        class="icon">&nbsp;</span><th:span th:remove="tag" th:text="@{/assets/xsd/BioSDSchema.xsd}">/biosamples/assets/xsd/BioSDSchema.xsd</th:span></a>
-                </li>
-            </ul>
-            <p>
-                <img th:src="@{/images/api/ResultQuerySampleGroup_schema.png}" src="../images/api/ResultQuerySampleGroup_schema.png"
-                    alt="BioSamples Search Groups XSD"
-                    title="BioSamples Search Groups XSD">
-            </p>
-        </section>
-    </div>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="ErrorCodes">Error Codes</h4>
+			<p>N/A</p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="XSD-XmlSchemaDefinition">XSD - Xml Schema Definition</h4>
+			<ul>
+				<li><a class="ext-link"
+					th:href="@{/assets/xsd/ResultQuerySampleGroupSchema.xsd}"
+					href="/biosamples/assets/xsd/ResultQuerySampleGroupSchema.xsd"><span
+						class="icon">&nbsp;</span>
+					<th:span th:remove="tag" th:text="@{/assets/xsd/BioSDSchema.xsd}">/biosamples/assets/xsd/BioSDSchema.xsd</th:span></a>
+				</li>
+			</ul>
+			<p>
+				<img th:src="@{/images/api/ResultQuerySampleGroup_schema.png}"
+					src="../images/api/ResultQuerySampleGroup_schema.png"
+					alt="BioSamples Search Groups XSD"
+					title="BioSamples Search Groups XSD">
+			</p>
+		</section>
+	</div>
 </body>
 </html>

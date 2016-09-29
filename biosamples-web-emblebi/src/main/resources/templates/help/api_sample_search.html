@@ -1,58 +1,55 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org/"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorator="__parent_help"
-      th:with="helpNavigationEntry = 'api'">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+	xmlns:layout="http://www.w3.org/1999/xhtml"
+	layout:decorator="__parent_help" th:with="helpNavigationEntry = 'api'">
 <head>
-    <title>API &lt; Help &lt;</title>
+<title>API &lt; Help</title>
 </head>
 <body>
-<div layout:fragment="content">
-  <section id="ae-help" class="grid_18 alpha">
-        <h2 id="SampleSearchinsideaSampleGroup">
-            Sample Search inside a SampleGroup 
-        </h2>
-        <p></p>
-        <ul>
-            <li>It returns all the samples that match the
-                query(e.g. <a class="ext-link"
-                th:href="@{/xml/sample/query=leukemia}" href="/biosamples/xml/sample/query=leukemia"><span
-                    class="icon">&nbsp;</span>/biosamples/xml/sample/query=leukemia</a>);
-            </li>
-            <li>It is possible to use paging ( <a class="ext-link"
-                th:href="@{/xml/sample/query=leukemia&amp;page=3&amp;pagesize=10}" href="/biosamples/xml/sample/query=leukemia&amp;page=3&amp;pagesize=10"><span
-                    class="icon">&nbsp;</span>e.g./biosamples/xml/sample/query=leukemia&amp;page=3&amp;pagesize=10</a>);
-            </li>
-            <li>Always return a result summary information;</li>
-        </ul>
-        <p></p>
-        <p>
-            <br>
-        </p>
-        <h4 id="Authentication">Authentication</h4>
-        <p>N/A</p>
-        <p>
-            <br> <br>
-        </p>
-        <h4 id="Arguments">Arguments</h4>
-        <p>
-            query (required) <br> sortby (optional - default
-                value=relevance) <br> sortorder (optional - default
-                    value=descending) <br> page (optional - default value=10; maximum value=500) <br>
-                            pagesize (optional - default value=1) 
-        </p>
-        <p>
-            <br> <br>
-        </p>
-        <h4 id="ExampleRequest">Example Request</h4>
-        <pre class="wiki">Get /biosamples/xml/sample/query=leukemia&amp;page=2&amp;pagesize=10
+	<div layout:fragment="content">
+		<section id="ae-help" class="grid_18 alpha">
+			<h2 id="SampleSearchinsideaSampleGroup">Sample Search inside a
+				SampleGroup</h2>
+			<p></p>
+			<ul>
+				<li>It returns all the samples that match the query(e.g. <a
+					class="ext-link" th:href="@{/xml/sample/query=leukemia}"
+					href="/biosamples/xml/sample/query=leukemia"><span class="icon">&nbsp;</span>/biosamples/xml/sample/query=leukemia</a>);
+				</li>
+				<li>It is possible to use paging ( <a class="ext-link"
+					th:href="@{/xml/sample/query=leukemia&amp;page=3&amp;pagesize=10}"
+					href="/biosamples/xml/sample/query=leukemia&amp;page=3&amp;pagesize=10"><span
+						class="icon">&nbsp;</span>e.g./biosamples/xml/sample/query=leukemia&amp;page=3&amp;pagesize=10</a>);
+				</li>
+				<li>Always return a result summary information;</li>
+			</ul>
+			<p></p>
+			<p>
+				<br>
+			</p>
+			<h4 id="Authentication">Authentication</h4>
+			<p>N/A</p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="Arguments">Arguments</h4>
+			<p>
+				query (required) <br> sortby (optional - default
+				value=relevance) <br> sortorder (optional - default
+				value=descending) <br> page (optional - default value=10;
+				maximum value=500) <br> pagesize (optional - default value=1)
+			</p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="ExampleRequest">Example Request</h4>
+			<pre class="wiki">Get /biosamples/xml/sample/query=leukemia&amp;page=2&amp;pagesize=10
 </pre>
-        <p>
-            <br> <br>
-        </p>
-        <h4 id="ExampleResponse">Example Response</h4>
-        <pre class="wiki">&lt;ResultQuery&gt;
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="ExampleResponse">Example Response</h4>
+			<pre class="wiki">&lt;ResultQuery&gt;
 &lt;SummaryInfo&gt;
 &lt;Total&gt;205139&lt;/Total&gt; 
 &lt;From&gt;11&lt;/From&gt;
@@ -72,27 +69,30 @@
 &lt;BioSample id="SAME809493"/&gt;
 &lt;/ResultQuery&gt;
 </pre>
-        <p>
-            <br> <br>
-        </p>
-        <h4 id="ErrorCodes">Error Codes</h4>
-        <p>N/A</p>
-        <p>
-            <br> <br>
-        </p>
-        <h4 id="XSD-XmlSchemaDefinition">XSD - Xml Schema Definition</h4>
-        <ul>
-            <li><a class="ext-link"
-                th:href="@{/assets/xsd/ResultQuerySampleSchema.xsd}" href="/biosamples/assets/xsd/ResultQuerySampleSchema.xsd"><span
-                    class="icon">&nbsp;</span><th:span th:remove="tag" th:text="@{/assets/xsd/BioSDSchema.xsd}">/biosamples/assets/xsd/BioSDSchema.xsd</th:span></a>
-            </li>
-        </ul>
-        <p>
-            <img th:src="@{/images/api/ResultQuerySample_schema.png}" src="../images/api/ResultQuerySample_schema.png"
-                alt="BioSamples Search Samples XSD"
-                title="BioSamples Search Samples XSD">
-        </p>
-    </section>
-    </div>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="ErrorCodes">Error Codes</h4>
+			<p>N/A</p>
+			<p>
+				<br> <br>
+			</p>
+			<h4 id="XSD-XmlSchemaDefinition">XSD - Xml Schema Definition</h4>
+			<ul>
+				<li><a class="ext-link"
+					th:href="@{/assets/xsd/ResultQuerySampleSchema.xsd}"
+					href="/biosamples/assets/xsd/ResultQuerySampleSchema.xsd"><span
+						class="icon">&nbsp;</span>
+					<th:span th:remove="tag" th:text="@{/assets/xsd/BioSDSchema.xsd}">/biosamples/assets/xsd/BioSDSchema.xsd</th:span></a>
+				</li>
+			</ul>
+			<p>
+				<img th:src="@{/images/api/ResultQuerySample_schema.png}"
+					src="../images/api/ResultQuerySample_schema.png"
+					alt="BioSamples Search Samples XSD"
+					title="BioSamples Search Samples XSD">
+			</p>
+		</section>
+	</div>
 </body>
 </html>

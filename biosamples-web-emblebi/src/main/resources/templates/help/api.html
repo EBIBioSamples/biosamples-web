@@ -1,70 +1,111 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org/"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
-      layout:decorator="__parent_help"
-      th:with="helpNavigationEntry = 'api'">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+	xmlns:layout="http://www.w3.org/1999/xhtml"
+	layout:decorator="__parent_help" th:with="helpNavigationEntry = 'api'">
 <head>
-    <title>API &lt; Help &lt;</title>
+<title>API &lt; Help</title>
 </head>
 <body>
-<div layout:fragment="content">
-    <section id="bsd-help" class="grid_18 alpha">
-        <h2>Programmatic Interface</h2>
+	<div layout:fragment="content">
+		<section id="bsd-help" class="grid_18 alpha">
+			<h2>Programmatic Interface</h2>
 
-        <p>BioSamples Database provides an interface that is suitable for programmatic queries. This consists of four entry point URLs ( descibed below), each of which returns an XML response.</p>
+			<p>BioSamples Database provides an interface that is suitable for
+				programmatic queries. This consists of four entry point URLs (
+				descibed below), each of which returns an XML response.</p>
 
-        <p>If you have any problems or suggestions please <a href="mailto:biosamples@ebi.ac.uk" class="icon icon-generic" data-icon="E">contact us</a>.</p>
+			<p>
+				If you have any problems or suggestions please <a
+					href="mailto:biosamples@ebi.ac.uk" class="icon icon-generic"
+					data-icon="E">contact us</a>.
+			</p>
 
 
-        <h3>Sample Accession</h3>
-        <ul>
-            <li>Returns information about a single specified sample.</li>
-            <li><code>/biosamples/xml/samples/ACCESSION</code> where ACCESSION is the BioSample Database accession of the sample of interest.</li>
-            <li>e.g. <a th:href="@{/xml/samples/SAME315173}" href="/biosamples/xml/samples/SAME315173">/biosamples/xml/samples/SAME315173</a></li>
-            <li><a class="wiki" th:href="@{/help/api_sample_accession}" href="api_sample_accession.html">more information</a></li>
-        </ul>
+			<h3>Sample Accession</h3>
+			<ul>
+				<li>Returns information about a single specified sample.</li>
+				<li><code>/biosamples/xml/samples/ACCESSION</code> where
+					ACCESSION is the BioSample Database accession of the sample of
+					interest.</li>
+				<li>e.g. <a th:href="@{/xml/samples/SAME315173}"
+					href="/biosamples/xml/samples/SAME315173">/biosamples/xml/samples/SAME315173</a></li>
+				<li><a class="wiki" th:href="@{/help/api_sample_accession}"
+					href="api_sample_accession.html">more information</a></li>
+			</ul>
 
-        <h3>Group Accession</h3>
-        <ul>
-            <li>Returns information about a specified group.</li>
-            <li><code>/biosamples/xml/groups/ACCESSION</code> where ACCESSION is the BioSample Database accession of the group of interest.</li>
-            <li>e.g. <a th:href="@{/xml/groups/SAMEG82620}" href="/biosamples/xml/group/SAMEG82620" th:text="@{/xml/groups/SAMEG82620}">/biosamples/xml/groups/SAMEG82620</a></li>
-            <li><a class="wiki" th:href="@{/help/api_group_accession}" href="api_group_accession.html">more information</a></li>
-        </ul>
+			<h3>Group Accession</h3>
+			<ul>
+				<li>Returns information about a specified group.</li>
+				<li><code>/biosamples/xml/groups/ACCESSION</code> where
+					ACCESSION is the BioSample Database accession of the group of
+					interest.</li>
+				<li>e.g. <a th:href="@{/xml/groups/SAMEG82620}"
+					href="/biosamples/xml/group/SAMEG82620"
+					th:text="@{/xml/groups/SAMEG82620}">/biosamples/xml/groups/SAMEG82620</a></li>
+				<li><a class="wiki" th:href="@{/help/api_group_accession}"
+					href="api_group_accession.html">more information</a></li>
+			</ul>
 
-        <h3>Find Groups</h3>
-        <ul>
-            <li>Returns group accessions that match the specified search query.</li>
-            <li><code>/biosamples/xml/groups/query=QUERY</code> where QUERY is the term to query for</li>
-            <li>e.g. <a th:ref="@{/xml/groups/query=leukemia}" href="/biosamples/xml/groups/query=leukemia" th:text="@{/xml/groups/query=leukemia}">/biosamples/xml/groups/query=leukemia</a></li>
-            <li>Results are returned in one or more pages and will always return result summary information.</li>
-            <li>Can use <a th:href="@{/help/search#advanced}" href="search.html#advanced">advanced query features</a>.</li>
-            <li><a class="wiki" th:href="@{/help/api_group_accession}" href="api_group_search.html">more information</a></li>
-        </ul>
+			<h3>Find Groups</h3>
+			<ul>
+				<li>Returns group accessions that match the specified search
+					query.</li>
+				<li><code>/biosamples/xml/groups/query=QUERY</code> where QUERY
+					is the term to query for</li>
+				<li>e.g. <a th:ref="@{/xml/groups/query=leukemia}"
+					href="/biosamples/xml/groups/query=leukemia"
+					th:text="@{/xml/groups/query=leukemia}">/biosamples/xml/groups/query=leukemia</a></li>
+				<li>Results are returned in one or more pages and will always
+					return result summary information.</li>
+				<li>Can use <a th:href="@{/help/search#advanced}"
+					href="search.html#advanced">advanced query features</a>.
+				</li>
+				<li><a class="wiki" th:href="@{/help/api_group_accession}"
+					href="api_group_search.html">more information</a></li>
+			</ul>
 
-        <h3>Find Samples Within a Group</h3>
-        <ul>
-            <li>Returns sample accessions that match the specified search query and are in the specified group.</li>
-            <li><code>/biosamples/xml/groupsamples/ACCESSION/query=QUERY</code> where ACCESSION is the group to query within and QUERY is the term to query for.</li>
-            <li>e.g. <a th:href="@{/xml/groupsamples/SAMEG82620}" href="/biosamples/xml/groupsamples/SAMEG82620/query=leukemia" th:text="@{/xml/groupsamples/SAMEG82620}">/biosamples/xml/groupsamples/SAMEG82620/query=leukemia</a></li>
-            <li>Results are returned in one or more pages and will always return result summary information.</li>
-            <li>Can use <a th:href="@{/help/search#advanced}" href="search.html#advanced">advanced query features</a>.</li>
-            <li>If query is blank, all samples within that group are matched.</li>
-            <li><a class="wiki" th:href="@{/help/api_sample_search_insidegroup}" href="api_sample_search_insidegroup.html">more information</a></li>
-        </ul>
+			<h3>Find Samples Within a Group</h3>
+			<ul>
+				<li>Returns sample accessions that match the specified search
+					query and are in the specified group.</li>
+				<li><code>/biosamples/xml/groupsamples/ACCESSION/query=QUERY</code>
+					where ACCESSION is the group to query within and QUERY is the term
+					to query for.</li>
+				<li>e.g. <a th:href="@{/xml/groupsamples/SAMEG82620}"
+					href="/biosamples/xml/groupsamples/SAMEG82620/query=leukemia"
+					th:text="@{/xml/groupsamples/SAMEG82620}">/biosamples/xml/groupsamples/SAMEG82620/query=leukemia</a></li>
+				<li>Results are returned in one or more pages and will always
+					return result summary information.</li>
+				<li>Can use <a th:href="@{/help/search#advanced}"
+					href="search.html#advanced">advanced query features</a>.
+				</li>
+				<li>If query is blank, all samples within that group are
+					matched.</li>
+				<li><a class="wiki"
+					th:href="@{/help/api_sample_search_insidegroup}"
+					href="api_sample_search_insidegroup.html">more information</a></li>
+			</ul>
 
-        <h3>Find Samples</h3>
-        <ul>
-            <li>Returns sample accessions that match the specified search query.</li>
-            <li><code>/biosamples/xml/samples/query=QUERY</code> where QUERY is the term to query for.</li>
-            <li>e.g. <a th:href="@{xml/samples/query=leukemia}" href="/biosamples/xml/samples/query=leukemia" th:text="@{/xml/samples/query=leukemia}">/biosamples/xml/samples/query=leukemia</a></li>
-            <li>Results are returned in one or more pages and will always return result summary information.</li>
-            <li>Can use <a th:href="@{/help/search#advanced}" href="search.html#advanced">advanced query features</a>.</li>
-            <li>If query is blank, all samples within that group are matched.</li>
-            <li><a class="wiki" th:href="@{help/api_sample_search.html}" href="api_sample_search.html">more information</a></li>
-        </ul>
-    </section>
-</div>
+			<h3>Find Samples</h3>
+			<ul>
+				<li>Returns sample accessions that match the specified search
+					query.</li>
+				<li><code>/biosamples/xml/samples/query=QUERY</code> where
+					QUERY is the term to query for.</li>
+				<li>e.g. <a th:href="@{xml/samples/query=leukemia}"
+					href="/biosamples/xml/samples/query=leukemia"
+					th:text="@{/xml/samples/query=leukemia}">/biosamples/xml/samples/query=leukemia</a></li>
+				<li>Results are returned in one or more pages and will always
+					return result summary information.</li>
+				<li>Can use <a th:href="@{/help/search#advanced}"
+					href="search.html#advanced">advanced query features</a>.
+				</li>
+				<li>If query is blank, all samples within that group are
+					matched.</li>
+				<li><a class="wiki" th:href="@{help/api_sample_search.html}"
+					href="api_sample_search.html">more information</a></li>
+			</ul>
+		</section>
+	</div>
 </body>
 </html>

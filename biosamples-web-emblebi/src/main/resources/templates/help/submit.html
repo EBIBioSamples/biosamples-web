@@ -1,68 +1,145 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
-      layout:decorator="__parent_help"
-      xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="navigationEntry='submit', helpNavigationEntry='submit'">
+	layout:decorator="__parent_help"
+	xmlns:layout="http://www.w3.org/1999/xhtml"
+	th:with="navigationEntry='submit', helpNavigationEntry='submit'">
 <head>
-    <title>Submit < Help </title>
+<title>Submit &lt; Help</title>
 </head>
 <body>
 
-<div layout:fragment="content">
+	<div layout:fragment="content">
 
-    <section id="bsd-help" class="grid_18 alpha">
+		<section id="bsd-help" class="grid_18 alpha">
 
-        <h2>What is a BioSample?</h2>
-        <p>The definition of a BioSample is deliberately flexible in order to accommodate a wide range of uses. Typically each BioSample corresponds to a discrete physical object that is composed of live biological material.</p>
-        <p>In most cases BioSample entities are self-evident; such as a blood sample, cell culture or an individual organism. However, a BioSample can also be an environmental sample (e.g. for meta-genomic analysis), a hybrid between two species, parasite infected cell culture, etc.</p>
+			<h2>What is a BioSample?</h2>
+			<p>The definition of a BioSample is deliberately flexible in
+				order to accommodate a wide range of uses. Typically each BioSample
+				corresponds to a discrete physical object that is composed of live
+				biological material.</p>
+			<p>In most cases BioSample entities are self-evident; such as a
+				blood sample, cell culture or an individual organism. However, a
+				BioSample can also be an environmental sample (e.g. for meta-genomic
+				analysis), a hybrid between two species, parasite infected cell
+				culture, etc.</p>
 
-        <p>Some highly-curated and highly-referenced submissions may become part of the <em>reference layer</em>, for example <a href="//www.genome.gov/10005107/">ENCODE</a> and <a href="//www.1000genomes.org/">1000 Genomes Project</a>. These are BioSamples that are of significant interest and value.</p>
+			<h3>How are BioSamples described?</h3>
 
-        <h3>How are BioSamples described?</h3>
+			<p>
+				The basic structure for describing BioSamples is an <em>attribute</em>
+				which is composed of a <em>key</em> and a <em>value</em> (a
+				key/value pair), as well as optional modifiers.
+			</p>
+			<p>
+				A BioSample is described by a set of attributes. BioSamples may be
+				collected together into one or more <em>Groups(s)</em>, which may
+				also have attributes.
+			</p>
+			<p>A SampleTab file contains BioSamples, any Groups containing
+				them, and the attributes describing those BioSamples and Groups. A
+				SampleTab file also contains general information, such as contact
+				information and any publications related to the BioSamples.</p>
+			<p>
+				<em>Some key/value pairs examples:</em>
+			</p>
+			<table cellspacing="0" cellpadding="0" width="30%">
+				<colgroup>
+					<col>
+					<col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th>Key</th>
+						<th>Value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Organism</td>
+						<td>Homo sapiens</td>
+					</tr>
+					<tr>
+						<td>Sex</td>
+						<td>Female</td>
+					</tr>
+					<tr>
+						<td>Cell Type</td>
+						<td>Fibroblast</td>
+					</tr>
+					<tr>
+						<td>Race</td>
+						<td>Caucasian</td>
+					</tr>
+				</tbody>
+			</table>
 
-        <p>The basic structure for describing BioSamples is an <em>attribute</em> which is composed of a <em>key</em> and a <em>value</em> (a key/value pair), as well as optional modifiers.</p>
-        <p>A BioSample is described by a set of attributes. BioSamples are collected together into one or more <em>Groups(s)</em>, which may also have attributes.</p>
-        <p>A SampleTab file contains one or more Groups, any BioSamples contained in those groups, and the attributes describing those BioSamples and Groups. A SampleTab file also contains general information, such as contact information and any publications related to the BioSamples.</p>
-        <p><em>Some key/value pairs examples:</em></p>
-        <table cellspacing="0" cellpadding="0" width="30%">
-            <colgroup>
-                <col><col>
-            </colgroup>
-            <thead>
-            <tr> <th>Key</th><th>Value</th> </tr>
-            </thead>
-            <tbody>
-            <tr> <td>Organism</td><td>Homo sapiens</td> </tr>
-            <tr> <td>Sex</td><td>Female</td> </tr>
-            <tr> <td>Cell Type</td><td>Fibroblast</td> </tr>
-            <tr> <td>Race</td><td>Caucasian</td> </tr>
-            </tbody>
-        </table>
-
-        <p></p>
-        <h2>What should be submitted to BioSamples Database?</h2>
-        <p>The BioSamples Database is a suitable repository for pre-registering multi-omic submissions (e.g. <a href="//www.hipsci.org/">http://www.hipsci.org/</a>).</p>
-        <p>Samples that do not have associated data in other EBI databases may also be suitable for submission.</p>
-        <p>When submitting to other EBI databases (e.g. <a href="//www.ebi.ac.uk/ena/">ENA</a> or <a href="//www.ebi.ac.uk/arrayexpress/">ArrayExpress</a>), please note that these share sample information with BioSamples Database. Therefore sample information from submitters may be present in BioSamples Database even if the information was not submitted directly to BioSamples Database.</p>
+			<p></p>
+			<h2>What should be submitted to BioSamples Database?</h2>
+			<p>
+				The BioSamples Database is a suitable repository for pre-registering
+				multi-omic submissions (e.g. <a href="//www.hipsci.org/">http://www.hipsci.org/</a>).
+			</p>
+			<p>Samples that do not have associated data in other EBI
+				databases may also be suitable for submission.</p>
+			<p>
+				When submitting to other EBI databases (e.g. <a
+					href="//www.ebi.ac.uk/ena/">ENA</a> or <a
+					href="//www.ebi.ac.uk/arrayexpress/">ArrayExpress</a>), please note
+				that these share sample information with BioSamples Database.
+				Therefore sample information from submitters may be present in
+				BioSamples Database even if the information was not submitted
+				directly to BioSamples Database.
+			</p>
 
 
-        <h2>How to submit BioSamples Database?</h2>
-        <p>Submissions to BioSamples Database should be in <a th:href="@{/help/st}" href="st.html">SampleTab file format</a>. This is a tab-separated spreadsheet-like text format compatible with popular office tools.</p>
-        <p>All of the existing samples in the BioSamples database are vailable in SampleTab format <a href="//ftp.ebi.ac.uk/pub/databases/biosamples/">here</a></p>
-        <p>Once you have a SampleTab file, you can use the <a th:href="@{/sampletab/validation}" href="/biosamples/sampletab/validation.html">online validation service</a> to ensure it is correct. This will also apply common corrections and ontology mappings that are used to standardize the data.</p>
-        <p>You can send the validated and corrected SampleTab file by email to <a href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a>. We aim to respond to submissions within one working day.</p>
+			<h2>How to submit BioSamples Database?</h2>
+			<p>
+				Submissions to BioSamples Database should be in <a
+					th:href="@{/help/st}" href="st.html">SampleTab file format</a>.
+				This is a tab-separated spreadsheet-like text format compatible with
+				popular office tools.
+			</p>
+			<p>
+				Once you have a SampleTab file, you can use the <a
+					th:href="@{/sampletab/validation}"
+					href="/biosamples/sampletab/validation.html">online validation
+					service</a> to ensure it is correct. This will also apply common
+				corrections and ontology mappings that are used to standardise the
+				data.
+			</p>
+			<p>
+				You can send the validated and corrected SampleTab file by email to
+				<a href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a>. We
+				aim to respond to submissions within one working day.
+			</p>
 
-        <h3>Web Services</h3>
-        <p>There are several services provided for programatically sending sample information to the BioSamples Database. These are:</p>
-        <ul>
-            <li><a th:href="@{/sampletab/submission}" href="/biosamples/sampletab/submission.html">Submission service</a> for submitting SampleTab files. Please note that they will not be immediately visible in the web interface, but the assigned accession will be returned immediately as a SampleTab file after the submission.</li>
-            <li><a th:href="@{/sampletab/validation}" href="/biosamples/sampletab/validation.html">Validation service</a> for validating SampleTab files without submitting them.</li>
-            <li><a th:href="@{/sampletab/accession}" href="/biosamples/sampletab/accession.html">Accessioning service</a> for assigning accessions to samples and groups. Please note that this does not submit any sample information to the database, but will return the assigned accessions immediately.</li>
-        </ul>
-        <p>If you have any questions about these services or would like more information, please contact us at <a href="mailto:biosamples@ebi.ac.uk?Subject=SampleTab+Web+Services">biosamples@ebi.ac.uk</a>.</p>
+			<h3>Web Services</h3>
+			<p>There are several services provided for programmatically
+				sending sample information to the BioSamples Database. These are:</p>
+			<ul>
+				<li><a th:href="@{/sampletab/submission}"
+					href="/biosamples/sampletab/submission.html">Submission service</a>
+					for submitting SampleTab files. Please note that they will not be
+					immediately visible in the web interface, but the assigned
+					accession will be returned immediately as a SampleTab file after
+					the submission.</li>
+				<li><a th:href="@{/sampletab/validation}"
+					href="/biosamples/sampletab/validation.html">Validation service</a>
+					for validating SampleTab files without submitting them.</li>
+				<li><a th:href="@{/sampletab/accession}"
+					href="/biosamples/sampletab/accession.html">Accessioning
+						service</a> for assigning accessions to samples and groups. Please
+					note that this does not submit any sample information to the
+					database, but will return the assigned accessions immediately.</li>
+			</ul>
+			<p>
+				If you have any questions about these services or would like more
+				information, please contact us at <a
+					href="mailto:biosamples@ebi.ac.uk?Subject=SampleTab+Web+Services">biosamples@ebi.ac.uk</a>.
+			</p>
 
-    </section>
+		</section>
 
-</div>
+	</div>
 </body>
 </html>
