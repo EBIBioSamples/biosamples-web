@@ -1,30 +1,28 @@
-@import "base/variables";
+.bootstrap_scope {
+  @import "base/variables";
 
+  @import "vendor/custom_bootstrap";
 
+  @import 'atomic/atoms/accordions';
+  @import 'atomic/atoms/scrollbars';
+  @import 'atomic/atoms/panels';
+  @import 'atomic/atoms/loading';
+  @import 'atomic/atoms/alerts';
+  @import 'atomic/atoms/search';
+  @import 'atomic/atoms/graphs';
+  @import 'atomic/atoms/tables';
+  @import 'atomic/atoms/tabs';
+  @import 'atomic/atoms/type';
+  @import 'atomic/atoms/badges';
+  @import 'atomic/atoms/vshield';
+  @import 'atomic/atoms/pagination';
 
-@import "vendor/custom_bootstrap";
+  @import 'atomic/organisms/body_sections';
+  //@import 'atomic/organisms/header';
+  //@import 'atomic/organisms/footer';
+  @import 'atomic/organisms/refining-panel';
+  @import 'atomic/organisms/facet_visualization';
 
-@import 'atomic/atoms/accordions';
-@import 'atomic/atoms/scrollbars';
-@import 'atomic/atoms/panels';
-@import 'atomic/atoms/loading';
-@import 'atomic/atoms/alerts';
-@import 'atomic/atoms/search';
-@import 'atomic/atoms/graphs';
-@import 'atomic/atoms/tables';
-@import 'atomic/atoms/tabs';
-@import 'atomic/atoms/type';
-@import 'atomic/atoms/badges';
-@import 'atomic/atoms/vshield';
-@import 'atomic/atoms/pagination';
-
-@import 'atomic/organisms/body_sections';
-//@import 'atomic/organisms/header';
-//@import 'atomic/organisms/footer';
-@import 'atomic/organisms/refining-panel';
-@import 'atomic/organisms/facet_visualization';
-
-
-@import 'mixins/flexbox-mixins';
-@import 'grid/flexbox';
-
+  @import 'mixins/flexbox-mixins';
+  @import 'grid/flexbox';
+}
