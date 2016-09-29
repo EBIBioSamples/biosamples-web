@@ -22,7 +22,7 @@
       th:with="navigationEntry='help', overrideTitle=false, helpNavigationEntry='home'">
 <!--<![endif]-->
 <head>
-    <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> &lt; BioSamples &lt; EMBL-EBI</title>
+    <title th:text="${#bools.isTrue(overrideTitle) ? '' : '&lt; BioSamples &lt; EMBL-EBI'}" layout:title-pattern="$CONTENT_TITLE $DECORATOR_TITLE"> BioSamples &lt; EMBL-EBI</title>
     <!--<object th:include="fragments/head :: head" th:remove="tag"></object>-->
     <!--<th:block th:include="${fragment_dir + /head :: head}"></th:block>-->
     <th:block th:include="fragments/head :: head"></th:block>
