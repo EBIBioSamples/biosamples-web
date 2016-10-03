@@ -58,7 +58,7 @@
                 <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_description') and #arrays.length(sample.characteristics.sample_description) > 0}">
                     <td class="col_title"><b>Sample Description : </b></td>
                     <td>
-                        <div th:each="description: ${sample.characteristicsText.sample_description}">
+                        <div class="characteristic-mapping" th:each="description: ${sample.characteristicsText.sample_description}">
                             <span th:text="${description}"></span>
                         </div>
                     </td>
