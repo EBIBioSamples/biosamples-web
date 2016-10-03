@@ -56,14 +56,14 @@ public class SampleController {
 		if (neoSample != null) {
 			model.addAttribute("relations", neoSample);
 			
-			if (neoSample.getDerivedFrom() != null) {
+			if (neoSample.getDerivedFrom() != null && neoSample.getDerivedFrom().size() > 0) {
 				model.addAttribute("derivedFrom", neoSample.getDerivedFrom()
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
 				model.addAttribute("hasRelations", true);
 			}
-			if (neoSample.getDerivedTo() != null) {
+			if (neoSample.getDerivedTo() != null && neoSample.getDerivedFrom().size() > 0) {
 				model.addAttribute("derivedTo", neoSample.getDerivedTo()
 						.stream()
 						.map((s)->s.getAccession())
@@ -71,14 +71,14 @@ public class SampleController {
 				model.addAttribute("hasRelations", true);
 			}
 			
-			if (neoSample.getChildOf() != null) {
+			if (neoSample.getChildOf() != null && neoSample.getChildOf().size() > 0) {
 				model.addAttribute("childOf", neoSample.getChildOf()
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
 				model.addAttribute("hasRelations", true);
 			}
-			if (neoSample.getParentOf() != null) {
+			if (neoSample.getParentOf() != null && neoSample.getParentOf().size() > 0) {
 				model.addAttribute("parentOf", neoSample.getParentOf()
 						.stream()
 						.map((s)->s.getAccession())
@@ -86,7 +86,7 @@ public class SampleController {
 				model.addAttribute("hasRelations", true);
 			}
 
-			if (neoSample.getSameAs() != null) {
+			if (neoSample.getSameAs() != null && neoSample.getSameAs().size() > 0) {
 				model.addAttribute("sameAs", neoSample.getSameAs()
 						.stream()
 						.map((s)->s.getAccession())
@@ -94,18 +94,22 @@ public class SampleController {
 				model.addAttribute("hasRelations", true);
 			}
 
-			if (neoSample.getRecuratedTo() != null) {
+			if (neoSample.getRecuratedTo() != null && neoSample.getRecuratedTo().size() > 0) {
 				model.addAttribute("recuratedInto", neoSample.getRecuratedTo()
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
 				model.addAttribute("hasRelations", true);
 			}
-			if (neoSample.getRecuratedFrom() != null) {
+			if (neoSample.getRecuratedFrom() != null && neoSample.getRecuratedFrom().size() > 0) {
 				model.addAttribute("recuratedFrom", neoSample.getRecuratedFrom()
 						.stream()
 						.map((s)->s.getAccession())
 						.collect(Collectors.toList()));
+				model.addAttribute("hasRelations", true);
+			}
+			
+			if (neoSample.getGroups() != null && neoSample.getDerivedFrom().size() > 0) {
 				model.addAttribute("hasRelations", true);
 			}
 		}
