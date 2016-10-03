@@ -8,7 +8,7 @@ if (!String.prototype.startsWith) {
 (function($){
     var olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
 
-    $(document).ready(function(){
+    $(document).ready(function() {
         initializeLinks();
     });
 
@@ -47,13 +47,13 @@ if (!String.prototype.startsWith) {
                     else {
                         if (json.unit) {
                             console.log("No ontology term for '" + json.text + "'");
-                            mapping.text(json.text + " (" + json.unit + ")");
+                            mapping.html(json.text + " (" + json.unit + ")");
                         } else if (isALink(json.text)) {
                             console.log("No ontology term for '" + json.text + "'");
                             mapping.html("<a href=\"" + json.text + "\" target=\"_blank\">" + json.text + "</a>");
                         } else {
                             console.log("No ontology term for '" + json.text + "'");
-                            mapping.text(json.text);
+                            mapping.html(json.text);
                         }
                     }
                 });
