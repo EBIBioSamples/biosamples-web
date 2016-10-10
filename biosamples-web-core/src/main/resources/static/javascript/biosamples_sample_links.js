@@ -10,7 +10,40 @@ if (!String.prototype.startsWith) {
 
     $(document).ready(function() {
         initializeLinks();
+        normalizeCrtNames();
     });
+
+    function normalizeCrtNames() {
+        console.log("Normalizing characteristic names");
+        $(".col_title").each(function() {
+            // Split this in a recursive call to avoid the update of inner tags attributes
+            var capitalizeFirstLetter = true;
+            normalizeField(this, capitalizeFirstLetter);
+        })
+    }
+
+    function normalizeField(field, capitalizeFirstLetter) {
+        var $field = $(field);
+        if ($field.children().length > 0) {
+            $(field).children().each(function () {
+                normalizeField(this)
+            })
+        } else {
+            $field[0].textContent = camelCaseSplit($field[0].textContent, capitalizeFirstLetter);
+        }
+    }
+
+    function camelCaseSplit(value, capitalizeFirstLetter) {
+        var camelCaseSplitRegex = /(([a-z])(?=[A-Z])|([A-Z])(?=[A-Z][a-z]))/g;
+        var camelCaseSplitSub = '$1 ';
+        var newString = value.replace(camelCaseSplitRegex,camelCaseSplitSub);
+        if (! capitalizeFirstLetter ) {
+            return newString;
+        }
+        return newString.charAt(0).toUpperCase() + newString.substring(1);
+    }
+
+
 
     function initializeLinks() {
         console.log("Checking characteristic-mappings");
