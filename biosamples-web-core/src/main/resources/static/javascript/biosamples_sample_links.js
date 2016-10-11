@@ -37,6 +37,7 @@ if (!String.prototype.startsWith) {
         var camelCaseSplitRegex = /(([a-z])(?=[A-Z])|([A-Z])(?=[A-Z][a-z]))/g;
         var camelCaseSplitSub = '$1 ';
         var newString = value.replace(camelCaseSplitRegex,camelCaseSplitSub);
+        newString = newString.toLowerCase();
         if (! capitalizeFirstLetter ) {
             return newString;
         }
