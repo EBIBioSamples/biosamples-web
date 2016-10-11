@@ -26,7 +26,7 @@ if (!String.prototype.startsWith) {
         var $field = $(field);
         if ($field.children().length > 0) {
             $(field).children().each(function () {
-                normalizeField(this)
+                normalizeField(this, capitalizeFirstLetter);
             })
         } else {
             $field[0].textContent = camelCaseSplit($field[0].textContent, capitalizeFirstLetter);
@@ -64,7 +64,10 @@ if (!String.prototype.startsWith) {
                     }
                     var json = jQuery.parseJSON(jsonStr);
 
-                    if (json.ontology_terms) {
+                    if (isALink(json.text)) {
+                        console.log("No ontology term for '" + json.text + "'");
+                        mapping.html("<a href=\"" + json.text + "\" target=\"_blank\">" + json.text + "</a>");
+                    } else if (json.ontology_terms) {
                         console.log("Found ontology term for '" + json.text + "': " + json.ontology_terms);
                         if (json.ontology_terms[0]) {
                             var link = olsSearchLink + encodeURIComponent(json.ontology_terms[0]);
@@ -77,18 +80,12 @@ if (!String.prototype.startsWith) {
                         else {
                             console.log("Something went wrong - ontology_terms collection present but no first element?");
                         }
-                    }
-                    else {
-                        if (json.unit) {
-                            console.log("No ontology term for '" + json.text + "'");
-                            mapping.html(json.text + " (" + json.unit + ")");
-                        } else if (isALink(json.text)) {
-                            console.log("No ontology term for '" + json.text + "'");
-                            mapping.html("<a href=\"" + json.text + "\" target=\"_blank\">" + json.text + "</a>");
-                        } else {
-                            console.log("No ontology term for '" + json.text + "'");
-                            mapping.html(json.text);
-                        }
+                    } else if (json.unit) {
+                        console.log("No ontology term for '" + json.text + "'");
+                        mapping.html(json.text + " (" + json.unit + ")");
+                    } else {
+                        console.log("No ontology term for '" + json.text + "'");
+                        mapping.html(json.text);
                     }
                 });
             } else {
@@ -99,6 +96,7 @@ if (!String.prototype.startsWith) {
         });
 
         console.log("Checking external-references-payload");
+
         $(".external-references-payload").each(function(){
             // get JSON payload
             var quotedPayload = $(this).html();
