@@ -131,15 +131,15 @@
                 <!-- relationships via neo -->
                                 
                 <tr th:if="${not #lists.isEmpty(sameAs)}">
-                    <td><b>Same as: </b></td>
+                    <td class="col_title"><b>Same as: </b></td>
                     <td th:each="item,iterStat :${sameAs}" >
-                    	<a th:if="${not iterStat.last}"th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
+                    	<a th:if="${not iterStat.last}" th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
                     	<a th:if="${iterStat.last}" th:text="${item}" th:href="@{${item}}">Replaced Text</a>
                     </td>
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(derivedFrom)}">
-                    <td><b>Derived From: </b></td>
+                    <td class="col_title"><b>Derived From: </b></td>
                     <td>
                     	<th:span th:each="item,iterStat : ${derivedFrom}" th:remove="tag">
 	                    	<a th:text="${item}" th:href="@{${item}}">Replaced Text</a><th:span th:unless="${iterStat.last}" th:remove="tag">, </th:span>
@@ -147,7 +147,7 @@
                     </td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(derivedTo)}">
-                    <td><b>Derived To: </b></td>
+                    <td class="col_title"><b>Derived To: </b></td>
                     <td>
                     	<th:span th:each="item,iterStat : ${derivedTo}" th:remove="tag">
 	                    	<a th:text="${item}" th:href="@{${item}}">Replaced Text</a><th:span th:unless="${iterStat.last}" th:remove="tag">, </th:span>
@@ -156,31 +156,31 @@
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(childOf)}">
-                    <td><b>Child Of:</b></td>
+                    <td class="col_title"><b>Child Of:</b></td>
                     <td th:each="item,iterStat : ${childOf}" >
-                    	<a th:if="${not iterStat.last}"th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
+                    	<a th:if="${not iterStat.last}" th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
                     	<a th:if="${iterStat.last}" th:text="${item}" th:href="@{${item}}">Replaced Text</a>
                     </td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(parentOf)}">
-                    <td><b>Parent Of:</b></td>
+                    <td class="col_title"><b>Parent Of:</b></td>
                     <td th:each="item,iterStat : ${parentOf}" >
-                    	<a th:if="${not iterStat.last}"th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
+                    	<a th:if="${not iterStat.last}" th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
                     	<a th:if="${iterStat.last}" th:text="${item}" th:href="@{${item}}">Replaced Text</a>
                     </td>
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(recuratedInto)}">
-                    <td><b>Recurated Into: </b></td>
+                    <td class="col_title"><b>Recurated To: </b></td>
                     <td th:each="item,iterStat : ${recuratedInto}" >
-                    	<a th:if="${not iterStat.last}"th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
+                    	<a th:if="${not iterStat.last}" th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
                     	<a th:if="${iterStat.last}" th:text="${item}" th:href="@{${item}}">Replaced Text</a>
                     </td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(recuratedFrom)}">
-                    <td><b>Recurated From: </b></td>
+                    <td class="col_title"><b>Recurated From: </b></td>
                     <td th:each="item,iterStat : ${recuratedFrom}" >
-                    	<a th:if="${not iterStat.last}"th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
+                    	<a th:if="${not iterStat.last}" th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
                     	<a th:if="${iterStat.last}" th:text="${item}" th:href="@{${item}}">Replaced Text</a>
                     </td>
                 </tr>
