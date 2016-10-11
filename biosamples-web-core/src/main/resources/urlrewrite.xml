@@ -36,11 +36,11 @@
     <rule>
         <note>Redirect legacy xml/v1.0/group to new xml/groups</note>
         <from>^/xml/v1.0/group/(.*)$</from>
-        <to type="forward">%{context-path}/xml/groups/$1</to>
+        <to type="redirect">%{context-path}/xml/groups/$1</to>
     </rule>
     <rule>
         <note>Redirect legacy xml/v1.0/sample to new xml/samples</note>
         <from>^/xml/v1.0/sample/(.*)$</from>
-        <to type="forward">%{context-path}/xml/samples/$1</to>
+        <to type="redirect">%{context-path}/xml/samples/$1</to>
     </rule>
 </urlrewrite>
