@@ -188,6 +188,12 @@ public class SampleController {
 			@RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
 			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
 			@RequestParam(value = "page", defaultValue = "0") int page) {
+		
+		//if a blank query is used, default to match all
+		if (searchTerm.trim().length()==0) {
+			searchTerm = "*:*";
+		}
+		
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
 		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
 		Page<SolrSample> results = solrSampleRepository.findByTextAndGroups(searchTerm, groupAccession,
