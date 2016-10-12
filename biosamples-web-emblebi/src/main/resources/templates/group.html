@@ -44,10 +44,10 @@
             <table id="bs_results_tablesamplegroupdetail" class="listing">
                 <tbody>
                 <!-- Common group attributes -->
-                <tr th:if="${#maps.containsKey(group.characteristics, 'group_name') and #arrays.length(group.characteristics.group_name) > 0}">
+                <tr th:if="${#maps.containsKey(group.characteristics, 'GroupName') and #arrays.length(group.characteristics.GroupName) > 0}">
                     <td class="col_title"><b>Group Name : </b></td>
                     <td>
-                        <div th:each="name: ${group.characteristicsText.group_name}">
+                        <div th:each="name: ${group.characteristicsText.GroupName}">
                             <span th:text="${name}"></span>
                         </div>
                     </td>
