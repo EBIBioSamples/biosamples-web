@@ -4,8 +4,6 @@
 <!--
     Configuration file for UrlRewriteFilter. See:
     http://www.tuckey.org/urlrewrite/
-    http://urlrewritefilter.googlecode.com/svn/trunk/src/doc/manual/4.0/guide.html
-    http://urlrewritefilter.googlecode.com/svn/trunk/src/doc/manual/4.0/index.html
     http://localhost:8080/rewrite-status (only works when running locally)
 -->
 <urlrewrite>
@@ -41,6 +39,16 @@
     <rule>
         <note>Redirect legacy xml/v1.0/sample to new xml/samples</note>
         <from>^/xml/v1.0/sample/(.*)$</from>
+        <to type="redirect">%{context-path}/xml/samples/$1</to>
+    </rule>
+    <rule>
+        <note>Redirect legacy xml/v1.0/group to new xml/groups</note>
+        <from>^/xml/v1.0/groups/(.*)$</from>
+        <to type="redirect">%{context-path}/xml/groups/$1</to>
+    </rule>
+    <rule>
+        <note>Redirect legacy xml/v1.0/sample to new xml/samples</note>
+        <from>^/xml/v1.0/samples/(.*)$</from>
         <to type="redirect">%{context-path}/xml/samples/$1</to>
     </rule>
 </urlrewrite>
