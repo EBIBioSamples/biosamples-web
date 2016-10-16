@@ -5,24 +5,33 @@
 	  th:with="navigationEntry = 'home', overrideTitle = true">
 <head>
 	<title>Biosamples &lt; EMBL-EBI</title>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		window.apiUrl = [[${apiUrl}]];
+		window.baseUrl = [[${baseUrl}]];
+		window.searchUrl = [[@{/search}]];
+		/*]]>*/
+	</script>
 </head>
 <body>
 
 <div layout:fragment="content">
 
 	<div id="bs_content">
-		<section>
-			<h2>BioSamples - database of sample descriptions</h2>
+		<section class="grid_4">&nbsp;</section>
+		<section class="grid_16">
+			<th:block th:replace="fragments/searchForm::searchInput"></th:block>
+		</section>
+		<section class="grid_4">&nbsp;</section>
+
+
+		<section class="grid_24" style="margin-top: 2em;">
 			<p class="intro justify">
-				The BioSamples database aggregates sample information for reference
-				samples (e.g. Coriell Cell lines) and samples for which data exist
-				in one of the EBI&#39;s assay databases such as <a
-					href="//www.ebi.ac.uk/arrayexpress">ArrayExpress</a>, the <a
-					href="//www.ebi.ac.uk/ena">European Nucleotide Archive</a> or <a
-					href="//www.ebi.ac.uk/pride">PRIDE</a>. It provides links to
-				assays for specific samples, and accepts direct submissions of
-				samples information.
-			</p>
+				The BioSamples database is a repository of sample information. BioSamples contains descriptions and metadata
+				on biological source materials. Samples are collected either because they are 'reference' samples (for
+				example, Coriell cell lines or 1000 genome samples) or because they have been used in experiments that has
+				generated data that exists in an assay database such as the <a href="//www.ebi.ac.uk/ena">European Nucleotide Archive</a>,
+				<a href="//www.ebi.ac.uk/arrayexpress">ArrayExpress</a> or <a href="//www.ebi.ac.uk/pride">PRIDE</a>.</p>
 		</section>
 
 		<div class="grid_12 alpha">
@@ -53,7 +62,6 @@
 			</div>
 		</div>
 	</div>
-
 </div>
 </body>
 </html>

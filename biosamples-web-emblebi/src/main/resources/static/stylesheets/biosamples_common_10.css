@@ -473,8 +473,58 @@ overflow: auto;
 	border: none;
 }
 
+#local_search div.left {
+    position: relative;
+    margin-right: 2px;
+}
+#local_search .as__input--main, .as__input--main {
+    width: 100%;
+}
 
+#local_search .as__items, .as__items {
+    position: absolute;
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: -1px;
+    margin-left: 5px;
+    background-color: white;
+    z-index: 9999;
+    border: 1px solid #A1BEDF;
+    width: calc(100% - 5px);
+}
 
+#local_search .as__items li, .as__items li {
+    padding: 3px;
+    padding-right: 0;
+    float: none;
+    list-style: none;
+}
+
+#local_search .as__items li.active, .as__items .active {
+    background-color: #006666;
+    color: white;
+}
+
+#local_search .as__items li:nth-child(n+2), .as__items li:nth-child(n+2) {
+    border-top: 1px solid #A1BEDF;
+}
+
+.as__layout {
+    border: 0;
+    padding: 0;
+}
+
+.as__layout td {
+    border: 0;
+    vertical-align: middle;
+    width: 100%;
+    padding: 0 5px;
+
+}
+
+.as__layout td:first-child {
+    position:relative;
+}
 
 
 

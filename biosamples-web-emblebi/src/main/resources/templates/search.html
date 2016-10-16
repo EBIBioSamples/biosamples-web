@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       layout:decorator="__parent_base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="navigationEntry = 'search', apiUrl = @{/api/search}, baseUrl = @{/}">
+      th:with="navigationEntry = 'search', apiUrl = @{/api}, baseUrl = @{/}">
 <head>
 
     <title>Search</title>
@@ -286,12 +286,9 @@
 
                 <th:block layout:fragment="custom-endpage-scripts">
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled-uncompressed/html4+html5/native.history.js"></script>
-                    <script>
-
-                    </script>
-                    <script th:src="@{/javascript/searchComponents.js}"></script>
-                    <script th:src="@{/javascript/toolsFunctions.js}"></script>
-                    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+                    <!--<script th:src="@{/javascript/searchComponents.js}"></script>-->
+                    <!--<script th:src="@{/javascript/toolsFunctions.js}"></script>-->
+                    <!--<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>-->
 
                 </th:block>
 

@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
-import uk.ac.ebi.spot.biosamples.service.HttpSolrQuery;
-import uk.ac.ebi.spot.biosamples.service.SolrQueryBuilder;
+import uk.ac.ebi.spot.biosamples.service.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +24,9 @@ public class SearchController {
 
     @Autowired
     private SolrQueryBuilder solrQueryBuilder;
+
+    @Autowired
+    private AutoSuggestQueryBuilder autoSuggestQueryBuilder;
 
     @CrossOrigin(methods = RequestMethod.GET)
     @RequestMapping(value = "/api/search")
@@ -72,6 +74,13 @@ public class SearchController {
         httpSolrDispatcher.streamSolrResponse(response.getOutputStream(), solrQuery);
     }
 
+
+    @CrossOrigin(methods = RequestMethod.GET)
+    @RequestMapping(value = "/api/suggest")
+    public void autoSuggest(@RequestParam("term") String searchTerm, HttpServletResponse response) throws IOException {
+        AutoSuggestSolrQuery suggestions = autoSuggestQueryBuilder.createQuery(searchTerm);
+        httpSolrDispatcher.streamSolrResponse(response.getOutputStream(), suggestions);
+    }
 
     private Map<String, String> parseFilters(String... filters) {
         // Setup filters

@@ -133,7 +133,8 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             currentQueryParams: {},
             alerts: [],
             facetsCollapsed: false,
-            biosampleMap: biosampleMap
+            biosampleMap: biosampleMap,
+            suggestedTerms: []
         },
         computed: {
             queryTermPresent() {
@@ -168,7 +169,8 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             'pagination': require('./components/pagination/Pagination.js'),
             'itemsDropdown': require('./components/itemsDropdown/ItemsDropdown.vue'),
             'facet': require('./components/facetList/FacetList.js'),
-            'shield': require('./components/shield/shield.vue')
+            'shield': require('./components/shield/shield.vue'),
+            'autosuggest': require('./components/autosuggest/autosuggest.vue')
         },
         /**
          * What happens when the Vue instance is ready
@@ -234,7 +236,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
 
                 this.isQuerying = true;
 
-                this.$http.get(apiUrl,requestData)
+                this.$http.get(`${apiUrl}/search`,requestData)
                     .then(function(responseData) {
                         // displayRevertingFilters(results,this);
                         let results = responseData.json();

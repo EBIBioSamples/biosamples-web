@@ -178,6 +178,17 @@ public class HttpSolrDispatcher {
         }
     }
 
+    public void streamSolrResponse(OutputStream outputStream, AutoSuggestSolrQuery solrQuery) throws IOException {
+        String requestUrl = solrQuery.stringify();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpGet getRequest = new HttpGet(requestUrl);
+        try (CloseableHttpResponse httpResponse = httpClient.execute(getRequest)) {
+            HttpEntity entity = httpResponse.getEntity();
+            entity.writeTo(outputStream);
+            EntityUtils.consume(entity);
+        }
+    }
+
     private String[] executeAndParseFacetQuery(HttpSolrQuery facetQuery, Collection<String> excludedFacets) {
         try (final PipedInputStream in = new PipedInputStream();
         		final PipedOutputStream out = new PipedOutputStream(in)) {

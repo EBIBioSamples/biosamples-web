@@ -12,12 +12,18 @@
 <form th:fragment="searchInput" method="post" v-on:submit.prevent="querySamplesOnScratch" class="biosample-search">
 
         <div class="col-md-10">
-                <input type="text"
-                       th:value="${searchTerm}"
-                       name="first"
-                       id="local-searchbox"
-                       placeholder="Start your search"
-                       v-model="searchTerm"/>
+
+                </component>
+                <!--<input type="text"-->
+                       <!--@keyUp="getSuggestedTerms"-->
+                       <!--th:value="${searchTerm}"-->
+                       <!--name="first"-->
+                       <!--id="local-searchbox"-->
+                       <!--placeholder="Start your search"-->
+                       <!--v-model="searchTerm"/>-->
+                <!--<ul>-->
+                    <!--<li v-for="item of suggestedTerms">{{item}}</li>-->
+                <!--</ul>-->
         </div>
 
         <div class="col-md-2">

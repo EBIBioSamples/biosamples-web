@@ -1,0 +1,14 @@
+.as__items {
+  border: 1px solid $gray-lighter;
+  padding-left: 0.3em;
+
+  li {
+    list-style: none;
+    list-style-position: inside;
+  }
+
+  .active {
+    background-color: $primary-color;
+    color: white;
+  }
+}
