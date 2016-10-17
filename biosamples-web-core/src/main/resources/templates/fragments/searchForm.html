@@ -13,7 +13,13 @@
 
         <div class="col-md-10">
 
-                </component>
+            <component is="autosuggest"
+                       name="searchTerm"
+                       :search-term.sync="searchTerm"
+                       th:attr="src=@{/api/suggest}"
+                       query-param-name="term"
+                       :min-chars="0"
+                       :limit="5"></component>
                 <!--<input type="text"-->
                        <!--@keyUp="getSuggestedTerms"-->
                        <!--th:value="${searchTerm}"-->

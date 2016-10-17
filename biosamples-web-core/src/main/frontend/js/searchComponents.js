@@ -37,6 +37,10 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
     var Store       = require('./components/Store.js');
     var apiUrl      = window.apiUrl;
 
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
     Store.getInstance({
         apiUrl: window.apiUrl,
         baseUrl: window.baseUrl
@@ -214,7 +218,6 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
              * @method querySamples
              * @param  e {Event} the click event
              */
-
             querySamples: function(e) {
                 vueConsole.debug("Query Samples", {foo: "foo", bar: "bar"});
 
@@ -462,6 +465,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
                     this.querySamples();
                 });
 
+
             },
 
             /**
@@ -507,6 +511,11 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             }
         }
     });
+
+    window.addEventListener('popstate', e => {
+        e.preventDefault();
+        vm.readLocationSearchAndQuerySamples();
+    })
 })(window);
 
 function doD3Stuff( results, apiUrl, vm=0  ){
