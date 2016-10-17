@@ -8,7 +8,7 @@ public class AutoSuggestQueryBuilder {
     @Value("${solr.server}")
     private String solrBaseUrl;
 
-    @Value("${solr.server.autosuggest.core-name}")
+    @Value("${solr.server.autosuggest.core-name:autosuggest}")
     private String solrSearchCoreName;
 
     public AutoSuggestQueryBuilder() {
