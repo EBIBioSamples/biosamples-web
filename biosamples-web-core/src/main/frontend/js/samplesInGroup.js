@@ -104,7 +104,7 @@
     function readValues(sample,field) {
 
         function readAnnotatedValue(value) {
-            if (value.hasOwnProperty("ontology_terms")) {
+            if (value.hasOwnProperty("ontologyTerms")) {
                 return JSON.stringify(value);
             } else {
                 return value.text;

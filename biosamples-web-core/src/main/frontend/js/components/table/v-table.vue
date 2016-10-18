@@ -47,12 +47,12 @@
 
     function renderOntologyTerm(jsonValue) {
         let textValue = jsonValue.text;
-        let ontology_terms = jsonValue['ontology_terms'];
-        if (ontology_terms[0]) { // build the OLS link for the ontology mapped value
-            let link = olsSearchLink + encodeURIComponent(ontology_terms[0]);
+        let ontologyTerms = jsonValue['ontologyTerms'];
+        if (ontologyTerms[0]) { // build the OLS link for the ontology mapped value
+            let link = olsSearchLink + encodeURIComponent(ontologyTerms[0]);
             return `<a href=${link} target='_blank'>${textValue}</a>`
         } else { //something wrong happened
-            console.log("Something went wrong - ontology_terms collection present but no first element?");
+            console.log("Something went wrong - ontologyTerms collection present but no first element?");
         }
     }
 

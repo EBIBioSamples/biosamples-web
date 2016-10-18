@@ -67,10 +67,10 @@ if (!String.prototype.startsWith) {
                     if (isALink(json.text)) {
                         console.log("No ontology term for '" + json.text + "'");
                         mapping.html("<a href=\"" + json.text + "\" target=\"_blank\">" + json.text + "</a>");
-                    } else if (json.ontology_terms) {
-                        console.log("Found ontology term for '" + json.text + "': " + json.ontology_terms);
-                        if (json.ontology_terms[0]) {
-                            var link = olsSearchLink + encodeURIComponent(json.ontology_terms[0]);
+                    } else if (json.ontologyTerms) {
+                        console.log("Found ontology term for '" + json.text + "': " + json.ontologyTerms);
+                        if (json.ontologyTerms[0]) {
+                            var link = olsSearchLink + encodeURIComponent(json.ontologyTerms[0]);
                             if (json.unit) {
                                 mapping.html(json.text + "( <a href=\"" + link + "\" target='_blank'>" + json.unit + "</a> )");
                             } else {
@@ -78,7 +78,7 @@ if (!String.prototype.startsWith) {
                             }
                         }
                         else {
-                            console.log("Something went wrong - ontology_terms collection present but no first element?");
+                            console.log("Something went wrong - ontologyTerms collection present but no first element?");
                         }
                     } else if (json.unit) {
                         console.log("No ontology term for '" + json.text + "'");
