@@ -168,6 +168,8 @@ public class HttpSolrDispatcher {
     }
 
     public void streamSolrResponse(OutputStream outputStream, HttpSolrQuery solrQuery) throws IOException {
+    	log.info("Getting solrReponse for "+solrQuery.stringify());
+    	
         String requestUrl = solrQuery.stringify();
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet getRequest = new HttpGet(requestUrl);
@@ -261,11 +263,11 @@ public class HttpSolrDispatcher {
                 JsonNode jsonNode = objectMapper.readTree(in);
                 JsonNode facetCounts = jsonNode.get("facet_counts");
                 if (facetCounts == null) {
-                    throw new RuntimeException("Unexpected Solr response - no facet_counts field");
+                    return commonAttributes;
                 }
                 JsonNode facetFields = facetCounts.get("facet_fields");
                 if (facetFields == null) {
-                    throw new RuntimeException("Unexpected Solr response - no facet_fields field");
+                    return commonAttributes;
                 }
                 Iterator<String> fieldNamesIt = facetFields.fieldNames();
                 while (fieldNamesIt.hasNext()) {

@@ -73,17 +73,21 @@ public class GroupController {
 			model.addAttribute("relationsUrl", relationsServerUrl);
 			if (group.hasSamples()) {
 				// Sample common attributes
+				//first get the types of all attributes where the number of hits is equal to the number of samples
 				Set<String> tempSampleCommonCharacteristics = httpSolrDispatcher.getGroupCommonAttributes(accession,
-						Integer.parseInt(group.getNumberOfSamples()));
-				SolrSample sample = solrSampleRepository.findFirstByGroupsContains(accession);
-				Map<String, List<String>> sampleCrts = sample.getCharacteristics();
+						group.getSamples().size());
+				//now that we have the attribute types, we need to go get the attribute values
 				TreeMap<String, List<String>> sampleCommonAttributes = new TreeMap<>();
-				for (String attribute : tempSampleCommonCharacteristics) {
-					List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
-					sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+				SolrSample sample = solrSampleRepository.findFirstByGroupsContains(accession);
+				if (sample != null) {
+					Map<String, List<String>> sampleCrts = sample.getCharacteristics();
+					for (String attribute : tempSampleCommonCharacteristics) {
+						List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
+						sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+					}
 				}
 				model.addAttribute("common_attrs", sampleCommonAttributes);
-
+				
 				// Samples table attributes
 				Set<String> allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
 

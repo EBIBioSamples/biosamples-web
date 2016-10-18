@@ -44,13 +44,9 @@
             <table id="bs_results_tablesamplegroupdetail" class="listing">
                 <tbody>
                 <!-- Common group attributes -->
-                <tr th:if="${#maps.containsKey(group.characteristics, 'GroupName') and #arrays.length(group.characteristics.GroupName) > 0}">
+                <tr ">
                     <td class="col_title"><b>Group Name : </b></td>
-                    <td>
-                        <div th:each="name: ${group.characteristicsText.GroupName}">
-                            <span th:text="${name}"></span>
-                        </div>
-                    </td>
+                    <td th:text="${group.name}">
                 </tr>
                 <tr>
                     <td class="col_title"><b>Submission Title :</b></td>
@@ -88,14 +84,14 @@
 
 
                 <!-- Dedicated organism attribute -->
-                <tr th:if="${#maps.containsKey(group.characteristics, 'organism') and #arrays.length(group.characteristics.organism) > 0}" >
-                    <td class="col_title"><b>Organism : </b></td>
-                    <td>
-                        <div class="characteristic-mapping" th:each="organism: ${group.characteristics.get('organism')}">
-                            <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
-                        </div>
-                    </td>
-                </tr>
+<!--                 <tr th:if="${#maps.containsKey(group.characteristics, 'organism') and #arrays.length(group.characteristics.organism) > 0}" > -->
+<!--                     <td class="col_title"><b>Organism : </b></td> -->
+<!--                     <td> -->
+<!--                         <div class="characteristic-mapping" th:each="organism: ${group.characteristics.get('organism')}"> -->
+<!--                             <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div> -->
+<!--                         </div> -->
+<!--                     </td> -->
+<!--                 </tr> -->
 
 
 
@@ -112,7 +108,7 @@
                 <tr th:if="${group.hasSamples()}">
                     <td class="col_title"><b>Samples in group: </b></td>
                     <td>
-                        <div th:text="${group.numberOfSamples}">#num-of-samples</div>
+                        <div th:text="${#arrays.length(group.samples)}">#num-of-samples</div>
                     </td>
                 </tr>
 

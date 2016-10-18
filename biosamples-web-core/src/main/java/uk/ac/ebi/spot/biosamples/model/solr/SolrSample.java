@@ -147,6 +147,10 @@ public class SolrSample {
         this.text = text;
     }
 
+    /**
+     *  return the value string for all characteristics
+     * 
+     */
     public Map<String, List<String>> getCharacteristicsText() {
         // create a sorted, unmodifiable clone of this map (sorted by natural key order)
         TreeMap<String, List<String>> result = new TreeMap<>();
@@ -160,6 +164,9 @@ public class SolrSample {
         this.characteristicsText = characteristicsText;
     }
 
+    /**
+     * return the JSON for all characteristics
+     */
     public Map<String, List<String>> getCharacteristics() {
         // create a sorted, unmodifiable clone of this map (sorted by natural key order)
         TreeMap<String, List<String>> result = new TreeMap<>();

@@ -67,7 +67,6 @@ public class SolrGroup {
     String publications;
 
     // sample metadata
-    @Field("number_of_samples") String numberOfSamples;
     @Field("grp_sample_accessions") List<String> samples;
 
     // submission metadata
@@ -181,14 +180,6 @@ public class SolrGroup {
         this.externalReferences = externalReferences;
     }
 
-    public String getNumberOfSamples() {
-        return numberOfSamples;
-    }
-
-    public void setNumberOfSamples(String numberOfSamples) {
-        this.numberOfSamples = numberOfSamples;
-    }
-
     public List<String> getSamples() {
         return samples;
     }
@@ -222,7 +213,7 @@ public class SolrGroup {
     }
 
     public boolean hasSamples() {
-        return Integer.parseInt(this.getNumberOfSamples()) > 0;
+        return samples.size() > 0;
     }
     
     public String getOrganization() throws IOException {
