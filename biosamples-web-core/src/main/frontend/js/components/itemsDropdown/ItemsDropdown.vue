@@ -16,7 +16,7 @@
     <span class="caret"></span></button>
     <ul class="dropdown-menu" aria-labelledby="itemsPerPageMenu">
         <li v-for="choice in choices">
-            <a href="#" v-on:click.prevent="updateItemsPerPage(choice)">{{choice}}</a>
+            <a href="#" @click.prevent="updateItemsPerPage(choice)">{{choice}}</a>
         </li>                         
     </ul>
 </div> 
