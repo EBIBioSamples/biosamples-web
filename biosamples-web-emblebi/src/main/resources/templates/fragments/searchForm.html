@@ -24,10 +24,9 @@
                 </table>
                 <div class="examples">
                     Examples:
-                    <a href="search?searchTerm=Arabidopsis%20Thaliana">Arabidopsis Thaliana</a>,
-                    <a href="search?searchTerm=root">root</a>,
-                    <a href="search?searchTerm=salt%20stress">salt stress</a>,
-                    <a href="search?searchTerm=SAMEA3132246">SAMEA3132246</a>,
+                    <a th:href="@{/search(searchTerm='stem cell')}" href="/biosamples/search?searchTerm=stem%20cell">stem cell</a>,
+                    <a th:href="@{/search(searchTerm='AML')}" href="search?searchTerm=AML">AML</a>,
+                    <a th:href="@{/search(searchTerm='shoot')}" href="search?searchTerm=shoot">shoot</a>
                 </div>
             </fieldset>
         </form>
