@@ -16,10 +16,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @SolrDocument(solrCoreName = "samples")
 public class SolrSample {
@@ -154,7 +152,9 @@ public class SolrSample {
     public Map<String, List<String>> getCharacteristicsText() {
         // create a sorted, unmodifiable clone of this map (sorted by natural key order)
         TreeMap<String, List<String>> result = new TreeMap<>();
-        for (String key : characteristicsText.keySet()) {
+        Set<String> filteredCharacterstics = characteristics.keySet().stream()
+                .filter(el -> !SolrIgnoredField.SAMPLE.isIgnored(el)).collect(Collectors.toSet());
+        for (String key : filteredCharacterstics ) {
             result.put(key.replace("_crt", ""), characteristicsText.get(key));
         }
         return Collections.unmodifiableMap(result);
@@ -170,7 +170,9 @@ public class SolrSample {
     public Map<String, List<String>> getCharacteristics() {
         // create a sorted, unmodifiable clone of this map (sorted by natural key order)
         TreeMap<String, List<String>> result = new TreeMap<>();
-        for (String key : characteristics.keySet()) {
+        Set<String> filteredCharacterstics = characteristics.keySet().stream()
+                .filter(el -> !SolrIgnoredField.SAMPLE.isIgnored(el)).collect(Collectors.toSet());
+        for (String key : filteredCharacterstics ) {
             result.put(key.replace("_crt_json", ""), characteristics.get(key));
         }
         return Collections.unmodifiableMap(result);

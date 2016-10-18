@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class SerializationUtils {
 
@@ -46,7 +48,9 @@ class SerializationUtils {
     public static JsonNode characteristicsSerializer(Map<String, List<String>> characteristicMappings) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode object = mapper.createObjectNode();
-        for (String crt : characteristicMappings.keySet()) {
+        Set<String> filteredCharacterstics = characteristicMappings.keySet().stream()
+                .filter(el->!SolrIgnoredField.SAMPLE.isIgnored(el)).collect(Collectors.toSet());
+        for (String crt : filteredCharacterstics) {
             ArrayNode array = mapper.createArrayNode();
             for (String jsonFromSolr : characteristicMappings.get(crt)) {
                 // parse json from solr
