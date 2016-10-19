@@ -15,32 +15,16 @@
 
     // Required
     var _           = require("lodash");
-    var Vue         = require('vue');
-    var VueResource = require('vue-resource');
+    var Vue         = window.Vue;
     var Store       = require('./components/Store.js');
 
     // JQuery DOM elements
     let $scroller, $scrollerContainer, $tableContainer, $table;
 
-
-
     Store.getInstance({
         apiUrl: apiUrl,
         baseUrl: baseUrl
     });
-
-
-    // Vue Configuration
-    Vue.config.debug = false;
-    Vue.config.silent = true;
-
-    // Plugins
-    Vue.use(VueResource);
-
-    // Filters & Components
-    Vue.component('alert', require('./components/alert/alert.vue'));
-    Vue.component('badge', require('./components/badge/Badge.js'));
-
 
     // JQuery specific functions
     function $registerElements()  {
@@ -168,12 +152,6 @@
          * @property {Object} components
          * @type {Object}
          */
-        components: {
-            'biosample': require('./components/product/Product.js'),
-            'v-table': require('./components/table/v-table.vue'),
-            'pagination': require('./components/pagination/Pagination.js'),
-            'itemsDropdown': require('./components/itemsDropdown/ItemsDropdown.vue'),
-        },
         /**
          * What happens when the Vue instance is ready
          * @method ready

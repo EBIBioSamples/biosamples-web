@@ -167,23 +167,23 @@
             <div class="controls__search-btn">
                 <input type="submit" class="btn btn-primary" value="Search">
             </div>
-            <pagination class="controls__pagination"
+            <component is="pagination" class="controls__pagination"
                         :total-results="resultsNumber"
                         :displayed-results="samplesToRetrieve">
-            </pagination>
-            <items-dropdown class="controls__size-dropdown"
+            </component>
+            <component is="items-dropdown" class="controls__size-dropdown"
                             :items-per-page="samplesToRetrieve">
-            </items-dropdown>
+            </component>
         </form>
         <div class="sample-table__scroll-container">
             <div class="sample-table__scroller"></div>
         </div>
         <div class="sample-table__content" style="overflow: auto;">
-            <v-table class="listing"
+            <component is="v-table" class="listing"
                      :columns="samplesAttributes"
                      :data="groupSamples"
                      :value-function="readValues">
-            </v-table>
+            </component>
         </div>
     </section>
 

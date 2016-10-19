@@ -13,6 +13,7 @@ elixir(function(mix) {
             ]
         })
 	 	.sass('base.scss')
+        .browserify('init.js')
 	 	.browserify('searchComponents.js')
         .browserify('relationsVis.js')
         .browserify('samplesInGroup.js')

@@ -24,46 +24,18 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
         window.siteUrl = "http://localhost:8080/biosamples";
     }
     var doVisualization = window.visualization ? window.visualization : false;
-
-
-    // Required
-
-    var _           = require("lodash");
-    var _mixins     = require("./utilities/lodash-addons");
-
-    var Vue         = require('vue');
-    var VueResource = require('vue-resource');
-    // var Biosample   = require('./components/BioSample.js');
-    var Store       = require('./components/Store.js');
     var apiUrl      = window.apiUrl;
 
-    if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
-    }
+    // Required
+    var _           = require("lodash");
+    var _mixins     = require("./utilities/lodash-addons");
+    var Vue         = window.Vue;
+    var Store       = require('./components/Store.js');
 
     Store.getInstance({
         apiUrl: window.apiUrl,
         baseUrl: window.baseUrl
     });
-
-
-    // Vue Configuration
-    Vue.config.debug = true;
-    Vue.config.silent = false;
-
-    // Plugins
-    Vue.use(VueResource);
-
-    // Filters & Components
-    Vue.filter('excerpt',require('./filters/excerptFilter.js'));
-    Vue.filter('startCase', require('./filters/startCaseFilter.js'));
-    Vue.filter('solrDate',require('./filters/dateFormatFilter.js'));
-    Vue.transition('flash', {
-        enterClass: 'bounceInRight',
-        leaveClass: 'fadeOutUp'
-    });
-    Vue.component('alert', require('./components/alert/alert.vue'));
-    Vue.component('badge', require('./components/badge/Badge.js'));
 
     /**
      * Read Solr facets and return them as a key-value pair object
@@ -162,20 +134,6 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             }
         },
 
-        /**
-         * Vue subcomponents used withing the search interface
-         * @property {Object} components
-         * @type {Object}
-         */
-        components: {
-            // 'biosamplesList': require('./components/productsList/ProductsList.js'),
-            'biosample': require('./components/product/product.vue'),
-            'pagination': require('./components/pagination/Pagination.js'),
-            'itemsDropdown': require('./components/itemsDropdown/ItemsDropdown.vue'),
-            'facet': require('./components/facetList/FacetList.js'),
-            'shield': require('./components/shield/shield.vue'),
-            'autosuggest': require('./components/autosuggest/autosuggest.vue')
-        },
         /**
          * What happens when the Vue instance is ready
          * @method ready

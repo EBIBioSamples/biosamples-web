@@ -1,11 +1,11 @@
-if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(searchString, position){
-        position = position || 0;
-        return this.substr(position, searchString.length) === searchString;
-    };
-}
-
 (function($){
+    if (!String.prototype.startsWith) {
+        String.prototype.startsWith = function(searchString, position){
+            position = position || 0;
+            return this.substr(position, searchString.length) === searchString;
+        };
+    }
+
     var olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
 
     $(document).ready(function() {
