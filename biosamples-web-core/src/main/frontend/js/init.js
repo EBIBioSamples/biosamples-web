@@ -28,7 +28,7 @@
     Vue.component('badge', require('./components/badge/Badge.js'));
     Vue.component('biosample', require('./components/product/product.vue'));
     Vue.component('facet', require('./components/facetList/FacetList.js'));
-    Vue.component('itemsdropdown', require('./components/itemsdropdown/itemsdropdown.vue'));
+    Vue.component('itemsdropdown', require('./components/itemsDropdown/ItemsDropdown.vue'));
     Vue.component('pagination', require('./components/pagination/Pagination.js'));
     Vue.component('shield', require('./components/shield/shield.vue'));
     Vue.component('v-table', require('./components/table/v-table.vue'));
