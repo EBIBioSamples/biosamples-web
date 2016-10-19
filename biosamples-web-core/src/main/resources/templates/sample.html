@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       layout:decorator="__parent_base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="currentPage = 'samples', relationsUrl=${@environment.getProperty('relations.server')}">
+      th:with="currentPage = 'samples'">
 <head>
     <title th:text="${sample.accession}">SAMEAxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
 
@@ -13,9 +13,7 @@
     <!--/* Pass SPRING variables to Javascript */-->
     <script th:if="${hasRelations}" th:inline="javascript">
         /*<![CDATA[*/
-        window.relationsUrl = [[${relationsUrl}]];
         window.accession = [[${sample.accession}]];
-        window.baseUrl = [[@{/}]];
         /*]]>*/
     </script>
 

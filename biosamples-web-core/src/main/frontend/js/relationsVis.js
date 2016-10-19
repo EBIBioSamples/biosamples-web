@@ -1,11 +1,9 @@
 (function(window) {
     var app = require("ols-graphview");
+    var {Store, accession} = window;
+    var {relationsUrl, baseUrl: originUrl = window.location.origin } = Store;
+
     
-    var accession = window.accession;
-    var relationsUrl = window.relationsUrl;
-    var originUrl = window.baseUrl ? window.baseUrl : window.location.origin;
-
-
     function buildGraphUrl(baseUrl,accession) {
         //return `${baseUrl}${sampleOrGroup(accession)}/${accession}/graph`;
         return `../${sampleOrGroup(accession)}/${accession}/graph`;

@@ -6,6 +6,8 @@
         history.scrollRestoration = 'manual';
     }
 
+    window.Store = window.app.urls;
+
     // Vue starting configuration
     var Vue = require("vue");
     Vue.use(require("vue-resource"));
@@ -28,13 +30,11 @@
     Vue.component('badge', require('./components/badge/Badge.js'));
     Vue.component('biosample', require('./components/product/product.vue'));
     Vue.component('facet', require('./components/facetList/FacetList.js'));
-    Vue.component('itemsdropdown', require('./components/itemsDropdown/ItemsDropdown.vue'));
+    Vue.component('items-dropdown', require('./components/itemsDropdown/ItemsDropdown.vue'));
     Vue.component('pagination', require('./components/pagination/Pagination.js'));
     Vue.component('shield', require('./components/shield/shield.vue'));
     Vue.component('v-table', require('./components/table/v-table.vue'));
 
     window.Vue = Vue;
-    window.addEventListener('load',() => {
-        var baseVM = new window.Vue({el: "#app"});
-    })
+    window.baseVM = new Vue({el: "#app"});
 })(window);

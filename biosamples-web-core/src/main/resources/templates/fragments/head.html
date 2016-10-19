@@ -9,6 +9,22 @@
 
     <script th:src="@{https://code.jquery.com/jquery-1.12.3.js}" src="https://code.jquery.com/jquery-1.12.3.js"></script>
     <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js}" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.app = {
+            urls: {
+                baseUrl: [[@{/}]],
+                apiUrl: [[@{/api}]],
+                samplesInGroupUrl: [[@{/api/samples/search/findByTextAndGroup}]],
+                realtionsUrl: [[${@environment.getProperty('relations.server')}]],
+                samplesUrl: [[@{/samples}]],
+                groupsUrl: [[@{/groups}]],
+                searchUrl: [[@{/search}]]
+            }
+        }
+        /*]]>*/
+    </script>
+    <script th:src="@{/javascript/init.js}"></script>
 </head>
 <body>
 

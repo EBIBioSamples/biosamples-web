@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       layout:decorator="__parent_base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="currentPage = 'groups', relationsUrl=${@environment.getProperty('relations.server')}">
+      th:with="currentPage = 'groups'">
 <head>
     <title th:text="${group.accession}">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
 
@@ -13,11 +13,8 @@
     <!--/* Pass SPRING variables to Javascript */-->
     <script th:inline="javascript">
         /*<![CDATA[*/
-        window.relationsUrl = [[${relationsUrl}]];
         window.accession = [[${group.accession}]];
-        window.baseUrl = [[@{/}]];
         window.table_attrs = [[${table_attrs}]];
-        window.apiUrl = window.baseUrl + "api/samples/search/findByTextAndGroup";
         window.jQuery = jQuery;
         /*]]>*/
     </script>
@@ -30,19 +27,15 @@
 
     <!-- Biosamples specific content goes here -->
     <section id="group_content">
+        <h4 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h4>
         <div class="detail_table">
-            <h1 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h1>
 
             <table id="bs_results_tablesamplegroupdetail" class="listing">
                 <tbody>
                 <!-- Common group attributes -->
-                <tr th:if="${#maps.containsKey(group.characteristics, 'group_name') and #arrays.length(group.characteristics.group_name) > 0}">
+                <tr>
                     <td class="col_title"><b>Group Name : </b></td>
-                    <td>
-                        <div th:each="name: ${group.characteristicsText.group_name}">
-                            <span th:text="${name}"></span>
-                        </div>
-                    </td>
+                    <td th:text="${group.name}">
                 </tr>
                 <tr>
                     <td class="col_title"><b>Submission Title :</b></td>
@@ -65,28 +58,17 @@
                     <td th:text="${group.updateDate}"></td>
                 </tr>
 
-                <tr th:if="${!#strings.isEmpty(group.organization)}">
+                <tr th:if="${group.organization}">
                     <td class="col_title"><b>Organization:</b></td>
                     <td class="organization-field-content" th:text="${group.organization}"></td>
                 </tr>
-                <tr th:if="${!#strings.isEmpty(group.contact)}">
+                <tr th:if="${group.contact}">
                     <td class="col_title"><b>Contact:</b></td>
                     <td class="contact-field-content" th:text="${group.contact}"></td>
                 </tr>
-                <tr th:if="${!#strings.isEmpty(group.publications)}">
+                <tr th:if="${group.publications}">
                     <td class="col_title"><b>Publications:</b></td>
                     <td class="publications-field-content" th:text="${group.publications}"></td>
-                </tr>
-
-
-                <!-- Dedicated organism attribute -->
-                <tr th:if="${#maps.containsKey(group.characteristics, 'organism') and #arrays.length(group.characteristics.organism) > 0}" >
-                    <td class="col_title"><b>Organism : </b></td>
-                    <td>
-                        <div class="characteristic-mapping" th:each="organism: ${group.characteristics.get('organism')}">
-                            <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
-                        </div>
-                    </td>
                 </tr>
 
 
@@ -104,16 +86,14 @@
                 <tr th:if="${group.hasSamples()}">
                     <td class="col_title"><b>Samples in group: </b></td>
                     <td>
-                        <div th:text="${group.numberOfSamples}">#num-of-samples</div>
+                        <div th:text="${#arrays.length(group.samples)}">#num-of-samples</div>
                     </td>
                 </tr>
 
-                <tr>
+                <tr th:if="${not #strings.isEmpty(group.externalReferences)}">
                     <td class="col_title"><b>External references :</b></td>
-                    <td >
-                        <p th:if="${#strings.isEmpty(group.externalReferences)}">None</p>
+                    <td>
                         <div class="external-references-payload"
-                             th:if="${not #strings.isEmpty(group.externalReferences)}"
                              th:text="${group.externalReferences}">
                             [{"name":"bar","acc":"1234","url":"http://www.google.com"},{"name":"foo","acc":"9876","url":"http://www.google.co.uk"}]
                         </div>
@@ -153,7 +133,7 @@
     </section>
 
     <section th:if="${group.hasSamples()}" id="app" class="sample-table col-xs-12">
-        <h2>Samples in group</h2>
+        <h4>Samples in group</h4>
 
         <div :class="{loading: isQuerying}"></div>
         <form class="sample-table__controls" @submit="querySamples">
@@ -163,38 +143,34 @@
             <div class="controls__search-btn">
                 <input type="submit" class="btn btn-primary" value="Search">
             </div>
-            <pagination class="controls__pagination"
-                        :total-results="resultsNumber"
-                        :displayed-results="samplesToRetrieve">
-            </pagination>
-            <items-dropdown class="controls__size-dropdown"
-                            :items-per-page="samplesToRetrieve">
-            </items-dropdown>
+            <component is="pagination" class="controls__pagination"
+                       :total-results="resultsNumber"
+                       :displayed-results="samplesToRetrieve">
+            </component>
+            <component is="items-dropdown" class="controls__size-dropdown"
+                       :items-per-page="samplesToRetrieve">
+            </component>
         </form>
         <div class="sample-table__scroll-container">
             <div class="sample-table__scroller"></div>
         </div>
         <div class="sample-table__content" style="overflow: auto;">
-            <v-table class="listing"
-                     :columns="samplesAttributes"
-                     :data="groupSamples"
-                     :value-function="readValues"
-                     style="white-space: nowrap; border: solid 1px lightgrey;"
-                     >
-            </v-table>
+            <component is="v-table" class="listing"
+                       :columns="samplesAttributes"
+                       :data="groupSamples"
+                       :value-function="readValues">
+            </component>
         </div>
     </section>
 
     <!-- New part Vis-->
     <section class="relation-graph col-xs-12">
-        <h2>Group Relations</h2>
-        <div th:if="${groupSize < 100}" id="ontology_vis"></div>
-        <h3 th:unless="${groupSize < 100}">Too many relationships to display</h3>
+        <h4>Group Relations</h4>
+        <div th:if="${groupSize < 100 and groupSize > 0}" id="ontology_vis"></div>
+        <h3 th:if="${groupSize >= 100}">Too many relationships to display</h3>
+        <h3 th:if="${groupSize <= 0}">No relationships to display</h3>
     </section>
-
-
 </main>
-
 
 <th:block layout:fragment="custom-endpage-scripts">
     <script th:if="${groupSize < 100}" th:src="@{/javascript/relationsVis.js}"></script>

@@ -16,11 +16,8 @@
     <!--/* Pass SPRING variables to Javascript */-->
     <script th:inline="javascript">
         /*<![CDATA[*/
-        window.relationsUrl = [[${relationsUrl}]];
         window.accession = [[${group.accession}]];
-        window.baseUrl = [[@{/}]];
         window.table_attrs = [[${table_attrs}]];
-        window.apiUrl = window.baseUrl + "api/samples/search/findByTextAndGroup";
         window.jQuery = jQuery;
         /*]]>*/
     </script>
@@ -44,7 +41,7 @@
             <table id="bs_results_tablesamplegroupdetail" class="listing">
                 <tbody>
                 <!-- Common group attributes -->
-                <tr ">
+                <tr>
                     <td class="col_title"><b>Group Name : </b></td>
                     <td th:text="${group.name}">
                 </tr>

@@ -9,22 +9,14 @@
 (function(window,$){
     "use strict";
 
-    // Create a plugin and pass the apiUrl using an option
-    // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
-    const { apiUrl, baseUrl, table_attrs, accession} = window;
+    var { Vue, baseVM, Store, table_attrs, accession } = window;
+
 
     // Required
     var _           = require("lodash");
-    var Vue         = window.Vue;
-    var Store       = require('./components/Store.js');
 
     // JQuery DOM elements
     let $scroller, $scrollerContainer, $tableContainer, $table;
-
-    Store.getInstance({
-        apiUrl: apiUrl,
-        baseUrl: baseUrl
-    });
 
     // JQuery specific functions
     function $registerElements()  {
@@ -114,7 +106,10 @@
         return "";
     }
 
-    var vm = new Vue({
+    if (baseVM) {
+        baseVM.$destroy();
+    }
+    baseVM = new Vue({
         el: '#app',
         data: {
             group: accession,
@@ -192,7 +187,7 @@
 
                 this.isQuerying = true;
 
-                this.$http.get(apiUrl,requestData)
+                this.$http.get(Store.samplesInGroupUrl,requestData)
                     .then(function(responseData) {
                         const results = responseData.json();
                         if (! this.submittedQuery) {

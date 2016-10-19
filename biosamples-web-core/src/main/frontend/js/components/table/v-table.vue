@@ -18,15 +18,15 @@
 <script lang="es6">
 
     const _ = require("lodash");
-    const Store = require("../Store.js");
+    const Store =  window.Store;
     const olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
 
     function renderAccession(value) {
-        let type = "samples";
-        if (value.match(/^SAMEG\d+/)) {
-            type = "groups";
-        }
-        let link = `${Store.getInstance().baseUrl}${type}/${value}`;
+
+        var link = value.match(/^SAMEG\d+/) ?
+            `${Store.groupsUrl}/${value}` :
+            `${Store.samplesUrl}/${value}`;
+
         return `<a href='${link}'>${value}</a>`;
     }
 

@@ -19,23 +19,12 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
 
     // Create a plugin and pass the apiUrl using an option
     // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
-    if (!window.apiUrl) {
-        window.apiUrl ="http://localhost:8080/biosamples/api/search/";
-        window.siteUrl = "http://localhost:8080/biosamples";
-    }
-    var doVisualization = window.visualization ? window.visualization : false;
-    var apiUrl      = window.apiUrl;
+    // var doVisualization = window.visualization ? window.visualization : false;
+    var {Vue, baseVM, Store, visualization: doVisualization = false } = window;
 
     // Required
     var _           = require("lodash");
     var _mixins     = require("./utilities/lodash-addons");
-    var Vue         = window.Vue;
-    var Store       = require('./components/Store.js');
-
-    Store.getInstance({
-        apiUrl: window.apiUrl,
-        baseUrl: window.baseUrl
-    });
 
     /**
      * Read Solr facets and return them as a key-value pair object
@@ -78,7 +67,9 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
         }
 
         console.log(badges);
-
+        var link = obj.content_type === "group" ?
+            `${Store.groupsUrl}/${obj.accession}` :
+            `${Store.samplesUrl}/${obj.accession}`;
 
         return {
             title: obj.accession,
@@ -86,11 +77,14 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             description: obj.description ? obj.description : "No description provided",
             date: obj.updatedate,
             badges,
-            link: `${window.baseUrl}${obj.content_type}s/${obj.accession}`
+            link
         }
     }
 
-    var vm = new Vue({
+    if (baseVM) {
+        baseVM.$destroy;
+    }
+    baseVM = new Vue({
         el: '#app',
         data: {
             searchTerm: '',
@@ -197,7 +191,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
 
                 this.isQuerying = true;
 
-                this.$http.get(`${apiUrl}/search`,requestData)
+                this.$http.get(`${Store.apiUrl}/search`,requestData)
                     .then(function(responseData) {
                         // displayRevertingFilters(results,this);
                         let results = responseData.json();
