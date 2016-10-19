@@ -115,7 +115,7 @@
                 <tr>
                     <td class="col_title"><b>External references :</b></td>
                     <td>
-                        <p th:if="${#strings.isEmpty(group.externalReferences)}">None</p>
+                        <div th:if="${#strings.isEmpty(group.externalReferences)}">None</div>
                         <div class="external-references-payload"
                              th:if="${not #strings.isEmpty(group.externalReferences)}"
                              th:text="${group.externalReferences}">
