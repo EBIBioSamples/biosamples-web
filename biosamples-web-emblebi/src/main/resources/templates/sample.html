@@ -121,7 +121,7 @@
                 </tr>
 
                 <!-- groups containing this sample -->
-                <tr th:if="${not #strings.isEmpty(sample.externalReferences)}">
+                <tr th:if="${not #strings.isEmpty(sample.groups)}">
                     <td class="col_title"><b>Groups :</b></td>
                     <td>
                     	<div class="details__group" th:each="group : ${sample.groups}" th:text="${group}" th:href="${'../group/' + group}"></div>
