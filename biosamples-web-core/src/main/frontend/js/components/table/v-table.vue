@@ -19,6 +19,7 @@
 
     const _ = require("lodash");
     const Store =  window.Store;
+    const startCaseFilter = require("../../filters/startCaseFilter.js");
     const olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
 
     function renderAccession(value) {
@@ -82,7 +83,7 @@
 
         filters: {
             headFilter(value) {
-                return _.startCase(value);
+                return startCaseFilter(value);
 
             },
 
