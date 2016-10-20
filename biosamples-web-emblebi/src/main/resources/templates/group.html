@@ -97,7 +97,7 @@
                     <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
                     <td th:if="${#maps.containsKey(group.characteristics,characteristic.key)}">
                         <div class="characteristic-mapping" th:each="value: ${group.characteristics.get(characteristic.key)}">
-                            <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
+                            <div class="characteristic-mapping-payload" th:text="${value}">[{"foo":"bar"}]</div>
                         </div>
                     </td>
                 </tr>
@@ -106,7 +106,7 @@
                 <tr th:if="${group.hasSamples()}">
                     <td class="col_title"><b>Samples in group: </b></td>
                     <td>
-                        <div th:text="${#arrays.length(group.samples)}">#num-of-samples</div>
+                        <div th:text="${#arrays.length(group.samples)}">3</div>
                     </td>
                 </tr>
 
