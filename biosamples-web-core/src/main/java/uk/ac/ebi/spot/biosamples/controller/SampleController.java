@@ -63,7 +63,7 @@ public class SampleController {
 						.collect(Collectors.toList()));
 				model.addAttribute("hasRelations", true);
 			}
-			if (neoSample.getDerivedTo() != null && neoSample.getDerivedFrom().size() > 0) {
+			if (neoSample.getDerivedTo() != null && neoSample.getDerivedTo().size() > 0) {
 				model.addAttribute("derivedTo", neoSample.getDerivedTo()
 						.stream()
 						.map((s)->s.getAccession())
@@ -109,9 +109,11 @@ public class SampleController {
 				model.addAttribute("hasRelations", true);
 			}
 			
-			if (neoSample.getGroups() != null && neoSample.getDerivedFrom().size() > 0) {
+			/*
+			if (neoSample.getGroups() != null && neoSample.getGroups().size() > 0) {
 				model.addAttribute("hasRelations", true);
 			}
+			*/
 		}
 
 		
