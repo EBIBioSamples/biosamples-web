@@ -9,7 +9,11 @@
     var olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
 
     $(document).ready(function() {
-        initializeLinks();
+        try {
+            initializeLinks();
+        } catch (e) {
+            console.log(e);
+        }
         normalizeCrtNames();
     });
 
@@ -88,16 +92,22 @@
                     else {
                         jsonStr = quotedPayload;
                     }
-                    var json = jQuery.parseJSON(jsonStr);
-                    if (json instanceof Array) {
-                        var finalMapping = "";
-                        $.each(json, function(index, el) {
-                          finalMapping = renderField(el) + ", ";
-                        });
-                        finalMapping = finalMapping.substring(0, finalMapping.length - 2);
-                        mapping.html(finalMapping);
-                    } else {
-                        mapping.html(renderField(json));
+                    if (jsonStr && jsonStr.trim().length > 0) {
+                        try {
+                            var json = jQuery.parseJSON(jsonStr);
+                            if (json instanceof Array) {
+                                var finalMapping = "";
+                                $.each(json, function (index, el) {
+                                    finalMapping = renderField(el) + ", ";
+                                });
+                                finalMapping = finalMapping.substring(0, finalMapping.length - 2);
+                                mapping.html(finalMapping);
+                            } else {
+                                mapping.html(renderField(json));
+                            }
+                        } catch (e) {
+                            console.log(e);
+                        }
                     }
                 });
             } else {

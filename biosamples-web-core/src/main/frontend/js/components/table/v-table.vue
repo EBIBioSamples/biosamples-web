@@ -82,9 +82,8 @@
 
         filters: {
             headFilter(value) {
-                return value.split("_").map(function(value){
-                    return value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
-                }).join(" ");
+                return _.startCase(value);
+
             },
 
             /*
