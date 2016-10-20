@@ -35,6 +35,8 @@ import uk.ac.ebi.spot.biosamples.repository.solr.SolrSampleRepository;
 import uk.ac.ebi.spot.biosamples.service.HttpSolrDispatcher;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @CrossOrigin(methods = RequestMethod.GET)
@@ -90,13 +92,12 @@ public class GroupController {
 				
 				// Samples table attributes
 				Set<String> allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
-
-				List<String> tableAttributes = new ArrayList<>();
-
-				Arrays.stream(new String[] { "accession", "sampleName"})
-						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).forEach(tableAttributes::add);
-				allGroupSamplesCharacteristics.stream().map(this::cleanAttributeName)
-						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).forEach(tableAttributes::add);
+			
+				
+				List<String> tableAttributes = Stream.concat(Arrays.stream(new String[] { "accession", "sampleName"}), 
+						allGroupSamplesCharacteristics.stream().map(this::cleanAttributeName) )
+					.filter(attr -> !sampleCommonAttributes.containsKey(attr)).distinct().collect(Collectors.toList());
+					
 
 				model.addAttribute("table_attrs", tableAttributes);
 			}
