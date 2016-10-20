@@ -98,7 +98,7 @@
                     let mapArray = valArray.map(value => {
                         try { // check if value has ontology associated
                             let jsonValue = JSON.parse(value);
-                            if (jsonValue.hasOwnProperty('ontology_terms')) {
+                            if (jsonValue.hasOwnProperty('ontologyTerms')) {
                                 return renderOntologyTerm(jsonValue);
                             }
                             return jsonValue;
