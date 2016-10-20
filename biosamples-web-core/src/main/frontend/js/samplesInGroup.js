@@ -156,7 +156,7 @@
             $registerHandlers();
 
             this.registerEventHandlers();
-            this.querySamples();
+            this.querySamplesInGroup();
         },
 
         methods: {
@@ -168,9 +168,9 @@
              * @param  e {Event} the click event
              */
 
-            querySamples: function(e) {
-                console.log('querySamples');
-                log("Query Samples");
+            querySamplesInGroup: function(e) {
+                console.log('querySamplesInGroup');
+                log("Query samples in group");
                 if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
                     e.preventDefault();
                 }
@@ -255,14 +255,14 @@
                 this.$on('page-changed', function(newPage) {
                     console.log(" on page-changed");
                     this.pageNumber = newPage;
-                    this.querySamples();
+                    this.querySamplesInGroup();
                 });
 
                 this.$on('dd-item-chosen', function(item) {
                     var previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
                     this.pageNumber = 1;
-                    this.querySamples();
+                    this.querySamplesInGroup();
                 });
             },
 

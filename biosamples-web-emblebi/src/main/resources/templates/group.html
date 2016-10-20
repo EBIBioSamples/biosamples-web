@@ -156,7 +156,7 @@
         <h4>Samples in group</h4>
 
         <div :class="{loading: isQuerying}"></div>
-        <form class="sample-table__controls" @submit="querySamples">
+        <form class="sample-table__controls" @submit="querySamplesInGroup">
             <div class="controls__search-box">
                 <input class="form-control" type="text" style="width:100%" v-model="keyword">
             </div>

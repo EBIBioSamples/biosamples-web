@@ -9,7 +9,7 @@
 <body>
 
 <!-- Search Input Form - based on Vue.js javascript framework -->
-<form th:fragment="searchInput" method="post" v-on:submit.prevent="querySamplesOnScratch" class="biosample-search">
+<form th:fragment="searchInput" method="post" @submit.prevent="querySamplesOnScratch" class="biosample-search">
 
         <div class="col-md-10">
 
@@ -20,16 +20,6 @@
                        query-param-name="term"
                        :min-chars="0"
                        :limit="5"></component>
-                <!--<input type="text"-->
-                       <!--@keyUp="getSuggestedTerms"-->
-                       <!--th:value="${searchTerm}"-->
-                       <!--name="first"-->
-                       <!--id="local-searchbox"-->
-                       <!--placeholder="Start your search"-->
-                       <!--v-model="searchTerm"/>-->
-                <!--<ul>-->
-                    <!--<li v-for="item of suggestedTerms">{{item}}</li>-->
-                <!--</ul>-->
         </div>
 
         <div class="col-md-2">

@@ -20,17 +20,6 @@
 
     <!-- Biosamples scripts -->
     <script th:src="@{/javascript/biosamples_common_10.js}" src="../static/javascript/feedback.js"></script>
-    <script>
-        window.onload = function() {
-            document.getElementById("local_search").onsubmit = function() {
-                var searchText = document.getElementsByName("searchTerm")[0];
-                if (searchText) {
-                    window.location.href = window.searchUrl + "/?searchTerm=" + searchText.value;
-                }
-                return false;
-            }
-        }
-    </script>
 
     <!-- end scripts-->
 

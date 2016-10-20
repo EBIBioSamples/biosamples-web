@@ -7,29 +7,39 @@
 </head>
 <body>
 
-<!-- Search Input Form - based on Vue.js javascript framework -->
-<th:block th:fragment="searchInput" th:with="isSearch = false">
-        <form id="local_search" @submit.prevent="querySamples">
-            <fieldset>
-                <table class="as__layout">
-                    <td><component is="autosuggest"
-                                   name="searchTerm"
-                                   :search-term.sync="searchTerm"
-                                   th:attr="src=@{/api/suggest}"
-                                   query-param-name="term"
-                                   :min-chars="0"
-                                   :limit="5"></component>
-                    </td>
-                    <td><input type="submit" value="Search" class="submit" /></td>
-                </table>
-                <div class="examples">
-                    Examples:
-                    <a th:href="@{/search(searchTerm='leukaemia')}" href="search?searchTerm=leukaemia">leukaemia</a>,
-                    <a th:href="@{/search(searchTerm='viridiplantae')}" href="search?searchTerm=viridiplantae">viridiplantae</a>,
-                    <a th:href="@{/search(searchTerm='sheep AND liver')}" href="search?searchTerm=sheep%20AND%20liver">sheep AND liver</a>
-                </div>
-            </fieldset>
+<!--/* Search Input Form - based on Vue.js javascript framework */-->
+<th:block th:fragment="searchInput" th:with="isSearch = false" >
+
+        <form th:if="${isSearch}" id="local_search" @submit.prevent="querySamples">
+            <div th:replace="fragments/searchForm :: formContent"></div>
+        </form>
+
+        <form th:unless="${isSearch}" th:action="@{/search}" method="get" id="local_search">
+            <div th:replace="fragments/searchForm :: formContent"></div>
         </form>
 </th:block>
+
+<fieldset th:fragment="formContent">
+    <table class="as__layout">
+        <td>
+            <component is="autosuggest"
+                       name="searchTerm"
+                       :search-term.sync="searchTerm"
+                       th:attr="src=@{/api/suggest}"
+                       query-param-name="term"
+                       :min-chars="0"
+                       :limit="5">
+            </component>
+        </td>
+        <td><input type="submit" value="Search" class="submit" /></td>
+    </table>
+    <div class="examples">
+        Examples:
+        <a th:href="@{/search(searchTerm='leukaemia')}" href="search?searchTerm=leukaemia">leukaemia</a>,
+        <a th:href="@{/search(searchTerm='viridiplantae')}" href="search?searchTerm=viridiplantae">viridiplantae</a>,
+        <a th:href="@{/search(searchTerm='sheep AND liver')}" href="search?searchTerm=sheep%20AND%20liver">sheep AND liver</a>
+    </div>
+</fieldset>
+
 </body>
 </html>
