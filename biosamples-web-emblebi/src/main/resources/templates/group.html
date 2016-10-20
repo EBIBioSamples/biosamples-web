@@ -135,7 +135,7 @@
                             <tr>
                                 <td th:each="attr: ${common_attrs}" >
                                     <div class="characteristic-mapping" th:if="${not #strings.isEmpty(attr)}">
-                                        <div class="characteristic-mapping-payload" th:text="${attr}">{"foo":"bar"}</div>
+                                        <div class="characteristic-mapping-payload" th:text="${attr.value}">{"foo":"bar"}</div>
                                     </div>
                                 </td>
                             </tr>

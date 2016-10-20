@@ -62,31 +62,32 @@
                     else {
                         jsonStr = quotedPayload;
                     }
-                    var json = jQuery.parseJSON(jsonStr);
-
-                    if (isALink(json.text)) {
-                        console.log("No ontology term for '" + json.text + "'");
-                        mapping.html("<a href=\"" + json.text + "\" target=\"_blank\">" + json.text + "</a>");
-                    } else if (json.ontologyTerms) {
-                        console.log("Found ontology term for '" + json.text + "': " + json.ontologyTerms);
-                        if (json.ontologyTerms[0]) {
-                            var link = olsSearchLink + encodeURIComponent(json.ontologyTerms[0]);
-                            if (json.unit) {
-                                mapping.html(json.text + "( <a href=\"" + link + "\" target='_blank'>" + json.unit + "</a> )");
-                            } else {
-                                mapping.html("<a href=\"" + link + "\" target='_blank'>" + json.text + "</a>");
+                    var jsonContent = jQuery.parseJSON(jsonStr);
+                    jsonContent.forEach(json => {
+                        if (isALink(json.text)) {
+                            console.log("No ontology term for '" + json.text + "'");
+                            mapping.html("<a href=\"" + json.text + "\" target=\"_blank\">" + json.text + "</a>");
+                        } else if (json.ontologyTerms) {
+                            console.log("Found ontology term for '" + json.text + "': " + json.ontologyTerms);
+                            if (json.ontologyTerms[0]) {
+                                var link = olsSearchLink + encodeURIComponent(json.ontologyTerms[0]);
+                                if (json.unit) {
+                                    mapping.html(json.text + "( <a href=\"" + link + "\" target='_blank'>" + json.unit + "</a> )");
+                                } else {
+                                    mapping.html("<a href=\"" + link + "\" target='_blank'>" + json.text + "</a>");
+                                }
                             }
+                            else {
+                                console.log("Something went wrong - ontologyTerms collection present but no first element?");
+                            }
+                        } else if (json.unit) {
+                            console.log("No ontology term for '" + json.text + "'");
+                            mapping.html(json.text + " (" + json.unit + ")");
+                        } else {
+                            console.log("No ontology term for '" + json.text + "'");
+                            mapping.html(json.text);
                         }
-                        else {
-                            console.log("Something went wrong - ontologyTerms collection present but no first element?");
-                        }
-                    } else if (json.unit) {
-                        console.log("No ontology term for '" + json.text + "'");
-                        mapping.html(json.text + " (" + json.unit + ")");
-                    } else {
-                        console.log("No ontology term for '" + json.text + "'");
-                        mapping.html(json.text);
-                    }
+                    });
                 });
             } else {
                 let originalText = mapping.text();
@@ -171,19 +172,21 @@
             var deferreds = [];
             $.each( json, function(index,value) {
                 var apiUrl = getEuropePmcUrl(value.pubmed_id);
-                deferreds.push($.get(apiUrl).success(function(data) {
-                    var pub = getPublicationsWithId(value.pubmed_id, data);
-                    if (pub) {
-                        console.log(output);
-                        output +=
-                           "<a href='//www.europepmc.org/abstract/" + pub.source + "/" + pub.pmid + "' target='_blank'>"
-                            + pub.title +
-                           "</a>";
-                        if (index < json.length - 1) {
-                            output += "<br />";
+                if (apiUrl) {
+                    deferreds.push($.get(apiUrl).success(function (data) {
+                        var pub = getPublicationsWithId(value.pubmed_id, data);
+                        if (pub) {
+                            console.log(output);
+                            output +=
+                                "<a href='//www.europepmc.org/abstract/" + pub.source + "/" + pub.pmid + "' target='_blank'>"
+                                + pub.title +
+                                "</a>";
+                            if (index < json.length - 1) {
+                                output += "<br />";
+                            }
                         }
-                    }
-                }));
+                    }));
+                }
             });
             // I need to update the publication field once I retrieved all the publication informations from europepmc
             // Multiple promises delay problem
@@ -194,7 +197,11 @@
         });
 
         function getEuropePmcUrl(pubmed_id) {
-            return "//www.ebi.ac.uk/europepmc/webservices/rest/search?query=ext_id:" + pubmed_id + "&format=JSON";
+            if (pubmed_id) {
+                return "//www.ebi.ac.uk/europepmc/webservices/rest/search?query=ext_id:" + pubmed_id + "&format=JSON";
+            } else {
+                return pubmed_id;
+            }
         }
 
         function getPublicationsWithId(id, publications) {
@@ -217,19 +224,28 @@
     }
 
     function findAndUpdateLinks(value) {
-        let words = value.split(" ");
-        let expandedWords = words.map(el => {
-            if (isALink(el)) {
-                return "<a href=\"" + el + "\" target=\"_blank\">" + el + "</a>";
-            }
-            return el;
-        });
-        return expandedWords.join(" ");
+        if (value) {
+            let words = value.split(" ");
+            let expandedWords = words.map(el => {
+                if (isALink(el)) {
+                    return "<a href=\"" + el + "\" target=\"_blank\">" + el + "</a>";
+                }
+                return el;
+            });
+            return expandedWords.join(" ");
+        } else {
+            return value;
+        }
+
     }
 
     function isALink(value) {
-        const possibleLinks = ["ftp://","http://","https://"];
-        return possibleLinks.filter(el => value.startsWith(el)).length > 0;
+        if (value) {
+            const possibleLinks = ["ftp://", "http://", "https://"];
+            return possibleLinks.filter(el => value.startsWith(el)).length > 0;
+        } else {
+            return false;
+        }
     }
 
     function isJSON(value) {
