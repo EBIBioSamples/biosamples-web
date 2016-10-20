@@ -127,8 +127,9 @@
                         <table class="common-attr">
                             <thead>
                             <tr>
-                                <th th:each="attr: ${common_attrs}"
-                                    th:text="${#strings.capitalizeWords(#strings.replace(attr.key,'_',' '))}">attrname</th>
+                                <th th:class="'col_title'"
+                                    th:each="attr: ${common_attrs}"
+                                    th:text="${attr.key}">attrname</th>
                             </tr>
                             </thead>
                             <tbody>
