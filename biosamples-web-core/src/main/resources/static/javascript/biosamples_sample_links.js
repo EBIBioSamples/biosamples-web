@@ -44,7 +44,33 @@
         return newString.charAt(0).toUpperCase() + newString.substring(1);
     }
 
-
+    function renderField(fieldValue) {
+        var mappingContent;
+        if (isALink(fieldValue.text)) {
+            console.log("No ontology term for '" + fieldValue.text + "'");
+            mappingContent = "<a href=\"" + fieldValue.text + "\" target=\"_blank\">" + fieldValue.text + "</a>";
+        } else if (fieldValue.ontologyTerms) {
+            console.log("Found ontology term for '" + fieldValue.text + "': " + fieldValue.ontologyTerms);
+            if (fieldValue.ontologyTerms[0]) {
+                var link = olsSearchLink + encodeURIComponent(fieldValue.ontologyTerms[0]);
+                if (fieldValue.unit) {
+                    mappingContent = fieldValue.text + "( <a href=\"" + link + "\" target='_blank'>" + fieldValue.unit + "</a> )";
+                } else {
+                    mappingContent = "<a href=\"" + link + "\" target='_blank'>" + fieldValue.text + "</a>";
+                }
+            }
+            else {
+                console.log("Something went wrong - ontologyTerms collection present but no first element?");
+            }
+        } else if (fieldValue.unit) {
+            console.log("No ontology term for '" + fieldValue.text + "'");
+            mappingContent = fieldValue.text + " (" + fieldValue.unit + ")";
+        } else {
+            console.log("No ontology term for '" + fieldValue.text + "'");
+            mappingContent = fieldValue.text;
+        }
+        return mappingContent;
+    }
 
     function initializeLinks() {
         console.log("Checking characteristic-mappings");
@@ -62,32 +88,17 @@
                     else {
                         jsonStr = quotedPayload;
                     }
-                    var jsonContent = jQuery.parseJSON(jsonStr);
-                    jsonContent.forEach(json => {
-                        if (isALink(json.text)) {
-                            console.log("No ontology term for '" + json.text + "'");
-                            mapping.html("<a href=\"" + json.text + "\" target=\"_blank\">" + json.text + "</a>");
-                        } else if (json.ontologyTerms) {
-                            console.log("Found ontology term for '" + json.text + "': " + json.ontologyTerms);
-                            if (json.ontologyTerms[0]) {
-                                var link = olsSearchLink + encodeURIComponent(json.ontologyTerms[0]);
-                                if (json.unit) {
-                                    mapping.html(json.text + "( <a href=\"" + link + "\" target='_blank'>" + json.unit + "</a> )");
-                                } else {
-                                    mapping.html("<a href=\"" + link + "\" target='_blank'>" + json.text + "</a>");
-                                }
-                            }
-                            else {
-                                console.log("Something went wrong - ontologyTerms collection present but no first element?");
-                            }
-                        } else if (json.unit) {
-                            console.log("No ontology term for '" + json.text + "'");
-                            mapping.html(json.text + " (" + json.unit + ")");
-                        } else {
-                            console.log("No ontology term for '" + json.text + "'");
-                            mapping.html(json.text);
-                        }
-                    });
+                    var json = jQuery.parseJSON(jsonStr);
+                    if (json instanceof Array) {
+                        var finalMapping = "";
+                        $.each(json, function(index, el) {
+                          finalMapping = renderField(el) + ", ";
+                        });
+                        finalMapping = finalMapping.substring(0, finalMapping.length - 2);
+                        mapping.html(finalMapping);
+                    } else {
+                        mapping.html(renderField(json));
+                    }
                 });
             } else {
                 let originalText = mapping.text();
