@@ -213,7 +213,13 @@ public class SolrGroup {
     }
 
     public boolean hasSamples() {
-        return samples.size() > 0;
+    	if (samples == null) {
+    		return false;
+    	}else if (samples.size() == 0) {
+    		return false;
+    	} else {
+    		return true;
+    	}
     }
     
     public String getOrganization() throws IOException {
