@@ -38,57 +38,47 @@
             <table id="bs_results_tablesamplegroupdetail" class="listing">
                 <tbody>
                 <!-- Common sample attributes -->
-                <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_name') and #arrays.length(sample.characteristics.sample_name) > 0}">
-                    <td class="col_title"><b>Sample Name : </b></td>
-                    <td>
-                        <div th:each="name: ${sample.characteristicsText.sample_name}">
-                            <span th:text="${name}"></span>
-                        </div>
-                    </td>
-                </tr>
-                <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_title') and #arrays.length(sample.characteristics.sample_title) > 0}">
-                    <td class="col_title"><b>Sample Title : </b></td>
-                    <td>
-                        <div th:each="title: ${sample.characteristicsText.sample_title}">
-                            <span th:text="${title}"></span>
-                        </div>
-                    </td>
-                </tr>
-                <tr th:if="${#maps.containsKey(sample.characteristics, 'sample_description') and #arrays.length(sample.characteristics.sample_description) > 0}">
-                    <td class="col_title"><b>Sample Description : </b></td>
-                    <td>
-                        <div class="characteristic-mapping" th:each="description: ${sample.characteristicsText.sample_description}">
-                            <span th:text="${description}"></span>
-                        </div>
-                    </td>
-                </tr>
-
-                <!-- update times metadata -->
                 <tr>
-                    <td class="col_title"><b>Release Date :</b></td>
+                    <td class="col_title"><b>Name</b></td>
+                    <td th:text="${sample.name}"></td>
+                </tr>
+                <tr th:if="${#strings.isEmpty(sample.groups)}">
+                    <td class="col_title"><b>Description</b></td>
+                    <td th:text="${sample.description}" ></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Release Date</b></td>
                     <td th:text="${sample.releaseDate}"></td>
                 </tr>
                 <tr>
-                    <td class="col_title"><b>Last Updated :</b></td>
+                    <td class="col_title"><b>Last Updated</b></td>
                     <td th:text="${sample.updateDate}"></td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Title</b></td>
+                    <td th:text="${sample.submissionTitle}">Test Title</td>
+                </tr>
+                <tr>
+                    <td class="col_title"><b>Submission Identifier</b></td>
+                    <td th:text="${sample.submissionAccession}">TST-101</td>
                 </tr>
 
                 <tr th:if="${sample.organization}">
-                    <td class="col_title"><b>Organization:</b></td>
+                    <td class="col_title"><b>Organization</b></td>
                     <td class="organization-field-content" th:text="${sample.organization}"></td>
                 </tr>
                 <tr th:if="${sample.contact}">
-                    <td class="col_title"><b>Contact:</b></td>
+                    <td class="col_title"><b>Contact</b></td>
                     <td class="contact-field-content" th:text="${sample.contact}"></td>
                 </tr>
                 <tr th:if="${sample.publications}">
-                    <td class="col_title"><b>Publications:</b></td>
+                    <td class="col_title"><b>Publications</b></td>
                     <td class="publications-field-content" th:text="${sample.publications}"></td>
                 </tr>
 
                 <!-- Dedicated organism attribute -->
                 <tr th:if="${#maps.containsKey(sample.characteristics, 'organism') and #arrays.length(sample.characteristics.organism) > 0}">
-                    <td class="col_title"><b>Organism : </b></td>
+                    <td class="col_title"><b>Organism</b></td>
                     <td>
                         <div class="characteristic-mapping" th:each="organism: ${sample.characteristics.get('organism')}">
                             <div class="characteristic-mapping-payload" th:text="${organism}">{"foo":"bar"}</div>
@@ -97,8 +87,8 @@
                 </tr>
 
                 <!-- start all characteristics -->
-                <tr th:each="characteristic: ${sample.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'sample_name'  or characteristic.key == 'sample_title' or characteristic.key == 'sample_description'}">
-                    <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
+                <tr th:each="characteristic: ${sample.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'sampleName'  or characteristic.key == 'sampleTitle' or characteristic.key == 'sampleDescription'}">
+                    <td class="col_title"><b th:utext="${characteristic.key}">Characteristic</b></td>
                     <td th:if="${#maps.containsKey(sample.characteristics,characteristic.key)}">
                         <div class="characteristic-mapping" th:each="value: ${sample.characteristics.get(characteristic.key)}">
                             <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
@@ -110,7 +100,7 @@
 
                 <!-- External links -->
                 <tr th:if="${not #strings.isEmpty(sample.externalReferences)}">
-                    <td class="col_title"><b>External references :</b></td>
+                    <td class="col_title"><b>External references</b></td>
                     <td>
                         <div class="external-references-payload"
                              th:text="${sample.externalReferences}">
@@ -121,7 +111,7 @@
 
                 <!-- groups containing this sample -->
                 <tr th:if="${not #strings.isEmpty(sample.groups)}">
-                    <td class="col_title"><b>Groups :</b></td>
+                    <td class="col_title"><b>Groups</b></td>
                     <td>
                     	<a class="details__group" th:each="group : ${sample.groups}" th:text="${group}" th:href="${'../group/' + group}"></a>
                     </td>
@@ -130,7 +120,7 @@
                 <!-- relationships via neo -->
                                 
                 <tr th:if="${not #lists.isEmpty(sameAs)}">
-                    <td class="col_title"><b>Same as: </b></td>
+                    <td class="col_title"><b>Same as</b></td>
                     <td th:each="item,iterStat :${sameAs}" >
                     	<a th:if="${not iterStat.last}" th:text="${item+', '}" th:href="@{${item}}">Replaced Text</a>
                     	<a th:if="${iterStat.last}" th:text="${item}" th:href="@{${item}}">Replaced Text</a>
@@ -138,7 +128,7 @@
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(derivedFrom)}">
-                    <td class="col_title"><b>Derived From: </b></td>
+                    <td class="col_title"><b>Derived From</b></td>
                     <td>
                     	<th:span th:each="item,iterStat : ${derivedFrom}" th:remove="tag">
 	                    	<a th:text="${item}" th:href="@{${item}}">Replaced Text</a><th:span th:unless="${iterStat.last}" th:remove="tag">, </th:span>
@@ -146,7 +136,7 @@
                     </td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(derivedTo)}">
-                    <td class="col_title"><b>Derived To: </b></td>
+                    <td class="col_title"><b>Derived To</b></td>
                     <td>
                     	<th:span th:each="item,iterStat : ${derivedTo}" th:remove="tag">
 	                    	<a th:text="${item}" th:href="@{${item}}">Replaced Text</a><th:span th:unless="${iterStat.last}" th:remove="tag">, </th:span>
@@ -155,7 +145,7 @@
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(childOf)}">
-                    <td class="col_title"><b>Child Of:</b></td>
+                    <td class="col_title"><b>Child Of</b></td>
                     <td>
                     	<th:span th:each="item,iterStat : ${childOf}" th:remove="tag">
 	                    	<a th:text="${item}" th:href="@{${item}}">Replaced Text</a><th:span th:unless="${iterStat.last}" th:remove="tag">, </th:span>
@@ -163,7 +153,7 @@
                     </td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(parentOf)}">
-                    <td class="col_title"><b>Parent Of:</b></td>
+                    <td class="col_title"><b>Parent Of</b></td>
                     <td>
                     	<th:span th:each="item,iterStat : ${parentOf}" th:remove="tag">
 	                    	<a th:text="${item}" th:href="@{${item}}">Replaced Text</a><th:span th:unless="${iterStat.last}" th:remove="tag">, </th:span>
@@ -172,7 +162,7 @@
                 </tr>
 
                 <tr th:if="${not #lists.isEmpty(recuratedInto)}">
-                    <td class="col_title"><b>Recurated To: </b></td>
+                    <td class="col_title"><b>Recurated To</b></td>
                     <td>
                     	<th:span th:each="item,iterStat : ${recuratedInto}" th:remove="tag">
 	                    	<a th:text="${item}" th:href="@{${item}}">Replaced Text</a><th:span th:unless="${iterStat.last}" th:remove="tag">, </th:span>
@@ -180,7 +170,7 @@
                     </td>
                 </tr>
                 <tr th:if="${not #lists.isEmpty(recuratedFrom)}">
-                    <td class="col_title"><b>Recurated From: </b></td>
+                    <td class="col_title"><b>Recurated From</b></td>
                     <td>
                     	<th:span th:each="item,iterStat : ${recuratedFrom}" th:remove="tag">
 	                    	<a th:text="${item}" th:href="@{${item}}">Replaced Text</a><th:span th:unless="${iterStat.last}" th:remove="tag">, </th:span>
