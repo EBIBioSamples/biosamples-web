@@ -93,7 +93,7 @@ public class GroupController {
 
 				List<String> tableAttributes = new ArrayList<>();
 
-				Arrays.stream(new String[] { "accession", "name"})
+				Arrays.stream(new String[] { "accession", "sampleName"})
 						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).forEach(tableAttributes::add);
 				allGroupSamplesCharacteristics.stream().map(this::cleanAttributeName)
 						.filter(attr -> !sampleCommonAttributes.containsKey(attr)).forEach(tableAttributes::add);
