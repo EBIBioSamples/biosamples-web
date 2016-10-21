@@ -27,6 +27,7 @@ import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
 import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
+import uk.ac.ebi.spot.biosamples.model.solr.SolrIgnoredField;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.model.xml.GroupResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
@@ -84,8 +85,10 @@ public class GroupController {
 				if (sample != null) {
 					Map<String, List<String>> sampleCrts = sample.getCharacteristics();
 					for (String attribute : tempSampleCommonCharacteristics) {
-						List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
-						sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+						if (!SolrIgnoredField.SAMPLE.isIgnored(attribute.replaceFirst("_ft$", ""))) {
+							List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
+							sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
+						}
 					}
 				}
 				model.addAttribute("common_attrs", sampleCommonAttributes);
@@ -93,11 +96,14 @@ public class GroupController {
 				// Samples table attributes
 				Set<String> allGroupSamplesCharacteristics = httpSolrDispatcher.getGroupSamplesAttributes(accession);
 			
-				
+				//list of attribute types to use as table columns
+				//make sure to exclude common attribtues displayed above
+				//and relationships that aren't on the API result
 				List<String> tableAttributes = Stream.concat(Arrays.stream(new String[] { "accession", "sampleName"}), 
 						allGroupSamplesCharacteristics.stream().map(this::cleanAttributeName) )
-					.filter(attr -> !sampleCommonAttributes.containsKey(attr)).distinct().collect(Collectors.toList());
-					
+					.filter(attr -> !sampleCommonAttributes.containsKey(attr))
+					.filter(attr -> !SolrIgnoredField.SAMPLE.isIgnored(attr+"_crt"))
+					.distinct().collect(Collectors.toList());
 
 				model.addAttribute("table_attrs", tableAttributes);
 			}
