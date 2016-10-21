@@ -6,7 +6,7 @@
         };
     }
 
-    var olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
+    var olsSearchLink = "http://www.ebi.ac.uk/ols/terms?iri=";
 
     $(document).ready(function() {
         try {
