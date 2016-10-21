@@ -1,58 +1,97 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  layout:decorator="__parent_base"
-	  xmlns:layout="http://www.w3.org/1999/xhtml"
-	  th:with="navigationEntry = 'home', overrideTitle = true">
+	layout:decorator="__parent_base"
+	xmlns:layout="http://www.w3.org/1999/xhtml"
+	th:with="navigationEntry = 'home', overrideTitle = true">
 <head>
-	<title>Biosamples &lt; EMBL-EBI</title>
+<title>Biosamples &lt; EMBL-EBI</title>
 </head>
 <body>
 
-<div layout:fragment="content">
+	<div layout:fragment="content">
 
-	<div id="bs_content">
-		<section class="grid_4">&nbsp;</section>
-		<section class="grid_16">
-			<th:block th:replace="fragments/searchForm::searchInput"></th:block>
-		</section>
-		<section class="grid_4">&nbsp;</section>
+		<div id="bs_content">
+			<section class="grid_4">&nbsp;</section>
+			<section class="grid_16">
+				<th:block th:replace="fragments/searchForm::searchInput"></th:block>
+			</section>
+			<section class="grid_4">&nbsp;</section>
 
 
-		<section class="grid_24" style="margin-top: 2em;">
-			<p class="intro justify">
-				BioSamples stores and supplies descriptions and metadata about biological samples used in research and development by academia and industry. Samples are either 'reference' samples
-				(e.g. from <a href="http://www.internationalgenome.org">1000 Genomes</a>, <a href="http://www.hipsci.org">HipSci</a>,
-				<a href="http://www.faang.org">FAANG</a>) or have been used in an assay database such as the <a href="http://www.ebi.ac.uk/ena">European Nucleotide Archive (ENA)</a> or <a href="http://www.ebi.ac.uk/arrayexpress">ArrayExpress</a>.
-		</section>
+			<section class="grid_24" style="margin-top: 2em;">
+				<p class="intro justify">
+					BioSamples stores and supplies descriptions and metadata about
+					biological samples used in research and development by academia and
+					industry. Samples are either 'reference' samples (e.g. from <a
+						href="http://www.internationalgenome.org">1000 Genomes</a>, <a
+						href="http://www.hipsci.org">HipSci</a>, <a
+						href="http://www.faang.org">FAANG</a>) or have been used in an
+					assay database such as the <a href="http://www.ebi.ac.uk/ena">European
+						Nucleotide Archive (ENA)</a> or <a
+						href="http://www.ebi.ac.uk/arrayexpress">ArrayExpress</a>.
+			</section>
 
-		<div class="grid_12 alpha">
-			<h3 class="icon icon-generic" data-icon="L">Info</h3>
-			<ul>
-				<li><a href="help/index.html">Help pages</a> about how to
-					search BioSamples, how to submit data, and FAQ.</li>
-				<li><a href="help/api.html">Programmatic access</a> to query
-					and download data using web services.</li>
-				<li>Contact us by emailing <a
+			<div class="grid_12 alpha">
+				<h3 class="icon icon-generic" data-icon="L">Info</h3>
+				<ul>
+					<li><a href="help/index.html">Help pages</a> about how to
+						search BioSamples, how to submit data, and FAQ.</li>
+					<li><a href="help/api.html">Programmatic access</a> to query
+						and download data using web services.</li>
+					<li>Contact us by emailing <a
 						href="mailto:biosamples@ebi.ac.uk">biosamples@ebi.ac.uk</a></li>
-			</ul>
-		</div>
-		<div class="grid_12 omega">
-			<h3 class="icon icon-generic" data-icon="g">Data Content</h3>
-			<div class="grid_24">
-				<table class="data-content">
-					<tr>
-						<td><a href="search?searchTerm=ebisc" ><img
-								src="images/dblinks/ebisc_logo.png" alt="EBiSC" title="EBiSC" /></a></td>
-						<td><a href="search?searchTerm=faang" ><img
-								src="images/dblinks/faang_logo.png" alt="FAANG" title="FAANG" /></a></td>
-						<td><a href="search?searchTerm=hipsci" ><img
-								src="images/dblinks/hipsci_small_logo.png" alt="HipSci"
-								title="HipSci" /></a></td>
-					</tr>
-				</table>
+				</ul>
+			</div>
+			<div class="grid_12 omega">
+				<h3 class="icon icon-generic" data-icon="g">Data Content</h3>
+				<div class="grid_24 alpha omega" style="display: flex; align-items: center;">
+					<div class="grid_8 alpha">
+						<img src="images/dblinks/ebisc_logo.png" alt="EBiSC" title="EBiSC" />
+					</div>
+					<div class="grid_8">
+						<img src="images/dblinks/faang_logo.png" alt="FAANG" title="FAANG" />
+					</div>
+					<div class="grid_8 omega">
+						<img src="images/dblinks/hipsci_small_logo.png" alt="HipSci"
+							title="HipSci" />
+					</div>
+				</div>
+				<div class="grid_24 alpha omega">
+					<div class="icon icon-generic grid_8 alpha" data-icon="L">
+						<a href="//www.ebisc.org" target="_blank">www.ebisc.org</a>
+					</div>
+					<div class="icon icon-generic grid_8" data-icon="L">
+						<a href="//www.faang.org" target="_blank">www.faang.org</a>
+					</div>
+					<div class="icon icon-generic grid_8 omega" data-icon="L">
+						<a href="//www.hipsci.org" target="_blank">www.hipsci.org</a>
+					</div>
+				</div>
+				<div class="grid_24 alpha omega">
+					<div class="grid_8 alpha">
+						<a href="search?searchTerm=EBiSC">search for EBiSC samples</a>
+					</div>
+					<div class="grid_8">
+						<a href="search?searchTerm=FAANG">search for FAANG samples</a>
+					</div>
+					<div class="grid_8 omega">
+						<a href="search?searchTerm=HipSci">search for HipSci samples</a>
+					</div>
+				</div>
+				<div class="grid_24 alpha omega">
+					<div class="grid_8 alpha">EBiSC has been designed to address
+						the increasing demand for quality-controlled, disease-relevant,
+						research-grade iPSC lines, data and cell services.</div>
+					<div class="grid_8">Functional Annotation of Animal Genomes.
+						A coordinated international action to accelerate genome to phenome
+						research.</div>
+					<div class="grid_8 omega">HipSci brings together diverse
+						constituents in genomics, proteomics, cell biology and clinical
+						genetics to create a UK national iPS cell resource and use it to
+						carry out cellular genetic studies.</div>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </body>
 </html>
