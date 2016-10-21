@@ -90,6 +90,7 @@ public class HttpSolrQuery implements Cloneable {
     public HttpSolrQuery withFacetOn(String... facetFields) {
         if (!facetsEnabled) {
             queryStringBuilder.append("&facet=true");
+            queryStringBuilder.append("&facet.threads=8");
             facetsEnabled = true;
         }
 
@@ -109,7 +110,9 @@ public class HttpSolrQuery implements Cloneable {
     }
 
     public HttpSolrQuery withFacetLimit(int facetLimit) {
-        if (facetLimitEnabled) { throw new HttpSolrQueryBuildingException("Facet limit has already been set"); }
+        if (facetLimitEnabled) { 
+        	throw new HttpSolrQueryBuildingException("Facet limit has already been set"); 
+    	}
         queryStringBuilder.append("&facet.limit=").append(facetLimit);
         facetLimitEnabled = true;
         return this;
