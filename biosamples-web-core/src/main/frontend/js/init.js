@@ -7,6 +7,16 @@
     }
 
     window.Store = window.app.urls;
+    window.whenDOMReady = function(callback) {
+        if (
+            document.readyState === "complete" ||
+            (document.readyState !== "loading" && !document.documentElement.doScroll)
+        ) {
+            callback();
+        } else {
+            document.addEventListener("DOMContentLoaded", callback);
+        }
+    };
 
     // Vue starting configuration
     var Vue = require("vue");
@@ -36,5 +46,12 @@
     Vue.component('v-table', require('./components/table/v-table.vue'));
 
     window.Vue = Vue;
-    window.baseVM = new Vue({el: "#app"});
+    window.whenDOMReady(function(){
+        window.baseVM = new window.Vue({
+            el: "#app",
+        });
+    })
+
+
+
 })(window);

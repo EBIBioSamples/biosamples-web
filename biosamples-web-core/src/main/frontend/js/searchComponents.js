@@ -17,457 +17,460 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
 (function(window){
     "use strict";
 
-    // Create a plugin and pass the apiUrl using an option
-    // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
-    // var doVisualization = window.visualization ? window.visualization : false;
-    var {Vue, baseVM, Store, visualization: doVisualization = false } = window;
+    // window.whenDOMReady(function(){
 
-    // Required
-    var _           = require("lodash");
-    var _mixins     = require("./utilities/lodash-addons");
+        // Create a plugin and pass the apiUrl using an option
+        // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
+        // var doVisualization = window.visualization ? window.visualization : false;
+        var {Vue, baseVM, Store, visualization: doVisualization = false } = window;
 
-    /**
-     * Read Solr facets and return them as a key-value pair object
-     * @method readFacets
-     * @param  facets {SolR Facets} Facets returned by Solr
-     * @return {Object} A key-value object representing the facets names and the count
-     */
-    function readFacets(facets) {
-        var obj = _.create({});
-        obj.keys = [];
-        obj.vals = [];
-        for (var i=0;i<facets.length; i = i+2) {
-            if (+facets[i+1] > 0) {
-                obj[facets[i]] = +facets[i+1];
-                obj.keys.push(facets[i]);
-                obj.vals.push(+facets[i+1]);
-            }
-        }
-        return obj;
-    }
-
-    var biosampleMap = function(obj) {
-        let badges = {};
-        const facetKeys = obj.dynamicFacets;
-        let sampleName = obj["sample_name_crt"];
-        if (sampleName)
-            badges["sample_name_crt"] = sampleName;
-        for ( let i=0, n=facetKeys.length; i < n; i++ ) {
-            if (facetKeys[i]) {
-                let facetKey = facetKeys[i].replace(/_ft$/, "");
-                if (facetKey.toLowerCase() !== "content_type") {
-                    let facetValues = obj[facetKey];
-                    if (facetValues) {
-                        // This is problematic because is getting just the firt value
-                        badges[facetKey] = facetValues;
-                            // _.isArray(facetValue) ? facetValue[0] : facetValue;
-                    }
-                }
-            }
-        }
-
-        console.log(badges);
-        var link = obj.content_type === "group" ?
-            `${Store.groupsUrl}/${obj.accession}` :
-            `${Store.samplesUrl}/${obj.accession}`;
-
-        return {
-            title: obj.accession,
-            type: obj.content_type,
-            description: obj.description ? obj.description : "No description provided",
-            date: obj.updatedate,
-            badges,
-            link
-        }
-    }
-
-    if (baseVM) {
-        baseVM.$destroy;
-    }
-    baseVM = new Vue({
-        el: '#app',
-        data: {
-            searchTerm: '',
-            queryTerm:'',
-            useFuzzy: false,
-            pageNumber: 1,
-            samplesToRetrieve: 10,
-            isQuerying: false,
-            submittedQuery: false,
-            resultsNumber: 1,
-            queryResults: {},
-            biosamples: [],
-            filterQuery: {},
-            facets: {},
-            previousQueryParams: {},
-            currentQueryParams: {},
-            alerts: [],
-            facetsCollapsed: false,
-            biosampleMap: biosampleMap,
-            suggestedTerms: []
-        },
-        computed: {
-            queryTermPresent() {
-                return !_.isEmpty(this.queryTerm);
-            },
-            querySubmitted() {
-                return this.submittedQuery;
-            },
-            queryHasResults() {
-                return this.resultsNumber > 0;
-            },
-            hasAlerts() {
-                return this.alerts.length > 0;
-            },
-            filterList() {
-                return Object.keys(this.filterQuery).reduce((prev,key)=>{
-                    let tempKey = key.replace(/Filter$/,"");
-                    prev[tempKey] = this.filterQuery[key];
-                    return prev;
-                },{});
-            }
-        },
+        // Required
+        var _           = require("lodash");
+        var _mixins     = require("./utilities/lodash-addons");
 
         /**
-         * What happens when the Vue instance is ready
-         * @method ready
+         * Read Solr facets and return them as a key-value pair object
+         * @method readFacets
+         * @param  facets {SolR Facets} Facets returned by Solr
+         * @return {Object} A key-value object representing the facets names and the count
          */
-        ready: function() {
-            this.registerEventHandlers();
-            this.readLocationSearchAndQuerySamples();
-        },
-
-        methods: {
-
-            querySamplesOnScratch(e) {
-                vueConsole.debug('querySamplesOnScratch');
-                if (e !== undefined) {
-                    e.preventDefault();
+        function readFacets(facets) {
+            var obj = _.create({});
+            obj.keys = [];
+            obj.vals = [];
+            for (var i=0;i<facets.length; i = i+2) {
+                if (+facets[i+1] > 0) {
+                    obj[facets[i]] = +facets[i+1];
+                    obj.keys.push(facets[i]);
+                    obj.vals.push(+facets[i+1]);
                 }
-                this.useFuzzy = false;
-                this.pageNumber = 1;
-                this.samplesToRetrieve = 10;
-                this.querySamples(e);
-            },
+            }
+            return obj;
+        }
 
-            querySamplesUsingFuzzy: function(e) {
-                vueConsole.debug('querySamplesUsingFuzzy');
-                if (e !== undefined) {
-                    e.preventDefault();
-                }
-                this.useFuzzy = true;
-                this.querySamples(e);
-            },
-
-            setDefaultSearchTerm() {
-                if ( _.isEmpty(this.searchTerm) ) {
-                    this.$set('searchTerm','*:*');
-                }
-            },
-
-            /**
-             * Make the request for the SolR documents
-             * @method querySamples
-             * @param  e {Event} the click event
-             */
-            querySamples: function(e) {
-                vueConsole.debug("Query Samples", {foo: "foo", bar: "bar"});
-
-                if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
-                    e.preventDefault();
-                }
-
-                if (this.isQuerying) {
-                    vueConsole.debug("Still getting results from previous query, new query aborted");
-                    return;
-                }
-
-                this.setDefaultSearchTerm();
-
-                let requestData = {
-                    params: this.getQueryParameters(),
-                    // timeout: 10000
-                };
-
-                this.isQuerying = true;
-
-                this.$http.get(`${Store.apiUrl}/search`,requestData)
-                    .then(function(responseData) {
-                        // displayRevertingFilters(results,this);
-                        let results = responseData.json();
-
-                        if (! this.submittedQuery) {
-                            this.submittedQuery = true;
+        var biosampleMap = function(obj) {
+            let badges = {};
+            const facetKeys = obj.dynamicFacets;
+            let sampleName = obj["sample_name_crt"];
+            if (sampleName)
+                badges["sample_name_crt"] = sampleName;
+            for ( let i=0, n=facetKeys.length; i < n; i++ ) {
+                if (facetKeys[i]) {
+                    let facetKey = facetKeys[i].replace(/_ft$/, "");
+                    if (facetKey.toLowerCase() !== "content_type") {
+                        let facetValues = obj[facetKey];
+                        if (facetValues) {
+                            // This is problematic because is getting just the firt value
+                            badges[facetKey] = facetValues;
+                            // _.isArray(facetValue) ? facetValue[0] : facetValue;
                         }
-                        this.consumeResults(results);
-                        vueConsole.debug("Results consumed");
-                        if (doVisualization) {
-                            if (typeof loadD3 === "undefined" || loadD3) {
-                                doD3Stuff(results, apiUrl, this);
-                            }
-                        }
-                    })
-                    .catch(function(error){
-                        vueConsole.error("An error occurred while updating the interface: ");
-                        vueConsole.error(error);
-                        error = {
-                            status: error.status ? error.status : "500",
-                            statusText: error.statusText ? error.statusText : "Check console for further details"
-                        };
-                        this.alerts.push({
-                            type: 'danger',
-                            timeout: 5000,
-                            message: `Something went wrong!\nError code: ${error.status} - ${error.statusText}`
-                        });
-                    })
-                    .then(function() {
-                        this.isQuerying = false;
-                    });
-            },
-
-            consumeResults: function(results) {
-                vueConsole.groupCollapsed("Consume results");
-                vueConsole.debug("Consuming ajax results");
-
-                var resultsInfo      = results.response;
-                if (_.isNull(resultsInfo)) {
-                    alert("Request made to server was malformed, please send an email to biosamples@ebi.ac.uk");
-                    return;
-                }
-
-                var highLights       = results.highlighting;
-                var dynamicFacets    = results.facet_counts.facet_fields;
-                var dynamicFacetsKey = _.keys(dynamicFacets);
-                this.facets          = {};
-                var vm               = this;
-
-                _.forEach(dynamicFacetsKey, function(key) {
-                    let readableKey = key.replace('_crt_ft','');
-                    readableKey = vm.$options.filters.excerpt(readableKey,200);
-                    // for (var i in dynamicFacets[key]){
-                    //     dynamicFacets[key][i] = vm.$options.filters.excerpt(dynamicFacets[key][i],200);
-                    // }
-                    vm.facets[readableKey] = readFacets(dynamicFacets[key]);
-                });
-
-                let dynamicFilter = Object.keys(this.filterList).map(key=>{
-                    if (key !== "content_type") {
-                        return `${key}_crt`
-                    }
-                });
-                let totalFacets = dynamicFilter.reduce((all,value) => {
-                    all.push(value);
-                    return all;
-                }, dynamicFacetsKey);
-
-
-                vueConsole.debug("vm.facets: ", vm.facets);
-
-                var docs        = resultsInfo.docs;
-                var hlDocs      = this.associateHighlights(docs,highLights);
-
-                this.queryTerm        = this.searchTerm;
-                this.resultsNumber    = resultsInfo.numFound;
-
-                let validDocs = hlDocs.reduce((total, singleDoc) => {
-                    total.push(_.assignIn(singleDoc, { dynamicFacets: totalFacets }));
-                    return total;
-                },[]);
-
-
-                this.queryResults = validDocs;
-                this.biosamples = validDocs;
-
-                this.currentQueryParams = this.getQueryParameters();
-                this.saveHistoryState();
-                vueConsole.groupEnd();
-            },
-
-            /**
-             * Highlights the searched term within the returned SolR documents
-             * @method associateHighlights
-             * @param  docs {SolR Documents} Documents returned by solr
-             * @param  {Object} highlights [description]
-             * @return {SolR Documents} Highlighted solr documents
-             */
-            associateHighlights: function(docs,highlights) {
-                if (typeof highlights !== 'undefined' && Object.keys(highlights).length > 0) {
-                    for (var i = 0; i < docs.length; i++) {
-                        var currDoc = docs[i];
-                        var hlElem = highlights[currDoc.id];
-                        for (var el in hlElem) {
-                            if (hlElem.hasOwnProperty(el)) {
-                                currDoc[el] = hlElem[el].join("");
-                            }
-                        }
-                        docs[i] = currDoc;
-                    }
-                }
-                return docs;
-            },
-
-            /**
-             * Prepare an object containing all the params for the SolR request
-             * @method getQueryParameters
-             * @return {Object} parameters necessary for the SolR documents request
-             */
-            getQueryParameters: function() {
-                return {
-                    'searchTerm': this.searchTerm,
-                    'rows': this.samplesToRetrieve,
-                    'start': (this.pageNumber - 1) * this.samplesToRetrieve,
-                    'useFuzzySearch': this.useFuzzy,
-                    'filters': this.serializeFilterQuery()
-                };
-                /*
-                 'organFilter': this.filterQuery.organFilter,
-                 'typeFilter': this.filterQuery.typeFilter,
-                 'organismFilter': this.filterQuery.organismFilter
-                 */
-            },
-
-            serializeFilterQuery: function() {
-                let filterArray = [];
-                _.each(this.filterQuery, (value,key) => {
-                    if ( !_.isNil(value) ) {
-                        filterArray.push(`${key}|${value}`);
-                    }
-                });
-                return filterArray;
-            },
-
-            deserializeFilterQuery: function(filtersArray) {
-                let filtersObj = {};
-                // This is a little bit cumbersome, make it clearer with "Optional" object
-                if ( !_.isNil(filtersArray) && !_.isArray(filtersArray) ) {
-                    filtersArray = [filtersArray];
-                }
-                _(filtersArray).forEach(function (value) {
-                    let [filterKey,filterValue] = value.split("Filter|");
-                    if (!_.isEmpty(filterKey)) {
-                        filtersObj[`${filterKey}Filter`] = filterValue;
-                    }
-                });
-                return filtersObj;
-            },
-
-            populateDataWithUrlParameter: function(urlParams) {
-                this.searchTerm = _.getString(urlParams.searchTerm,'');
-                this.samplesToRetrieve = _.getFinite(urlParams.rows,10);
-                this.pageNumber= _.getFinite(urlParams.start/this.samplesToRetrieve + 1,1);
-                this.useFuzzy = _.getBoolean(urlParams.useFuzzySearch === "true",false);
-                this.filterQuery = _.getObject(this.deserializeFilterQuery(urlParams.filters),{});
-            },
-
-            removeAlert(item) {
-                this.alerts.$remove(item);
-            },
-
-            removeFilter(item) {
-                let filterKey = `${item}Filter`;
-                let newFilterQuery = _.clone(this.filterQuery);
-                delete newFilterQuery[filterKey];
-                this.$set("filterQuery",newFilterQuery);
-                this.querySamples(undefined);
-            },
-
-            collapseFacets() {
-                this.$broadcast('collapse', this.facetsCollapsed);
-            },
-
-            /**
-             * Register event handlers for Vue custom events
-             * @method registerEventHandlers
-             */
-            registerEventHandlers: function() {
-                this.$on('page-changed', function(newPage) {
-                    vueConsole.debug(" on page-changed");
-                    this.pageNumber = newPage;
-                    this.querySamples();
-                });
-
-                this.$on('dd-item-chosen', function(item) {
-                    var previousValue = this.samplesToRetrieve;
-                    this.samplesToRetrieve = item;
-                    this.pageNumber = 1;
-                    this.querySamples();
-                });
-
-                this.$on('bar-selected', function(d,loadD3) {
-                    vueConsole.debug(" on bar-selected");
-                    // If we desire to have an event happening without reloading d3
-                    // we need to pass false as a second argument
-                    this.querySamples(d,loadD3);
-                });
-
-                this.$on('displayChanged', function(d,loadD3) {
-                    vueConsole.debug(" on displayChanged");
-                    // If we desire to have an event happening without reloading d3
-                    // we need to pass false as a second argument
-                    this.querySamples(d,loadD3);
-                });
-
-                this.$on('facet-selected', function(key, value) {
-                    vueConsole.debug(" on facet-selected");
-                    if (value === "") {
-                        Vue.delete(this.filterQuery,key);
-                    } else {
-                        Vue.set(this.filterQuery,key,value);
-                    }
-                    this.querySamples();
-                });
-
-
-            },
-
-            /**
-             * Read the location url using history API and, if not empty, lunch a query
-             * for the parameters in the url
-             * @method readLocationSearchAndQuerySamples
-             */
-            readLocationSearchAndQuerySamples: function() {
-                var historyState = History.getState();
-                var urlParam;
-                if ( !_.isEmpty(historyState.data) ) {
-                    urlParam = historyState.data;
-                } else if ( !_.isEmpty(location.search) ) {
-                    urlParam = _.fromQueryString(location.search.substring(1));
-                    //TODO In this case the string is not properly read (filters is not read as an array)
-                } else {
-                    vueConsole.debug("No Parameters");
-                    urlParam = {
-                        "searchTearm": "*:*"
-                    }
-                }
-
-                this.populateDataWithUrlParameter(urlParam);
-                this.querySamples();
-            },
-
-            /**
-             * Save or update the history state if a query has been made
-             * @method saveHistoryState
-             */
-            saveHistoryState: function(){
-                vueConsole.debug("Saving history","History");
-                if ( !_.isEmpty( this.currentQueryParams ) ) {
-                    if ( _.isEqual( this.currentQueryParams, this.previousQueryParams ) ) {
-                        vueConsole.debug("Replacing history","History");
-                        History.replaceState(this.currentQueryParams, null, "?" + _.toQueryString(this.currentQueryParams));
-                    } else {
-                        vueConsole.debug("Push new history state","History");
-                        this.previousQueryParams = this.currentQueryParams;
-                        History.pushState(this.currentQueryParams, null, "?" + _.toQueryString(this.currentQueryParams));
                     }
                 }
             }
-        }
-    });
 
-    window.addEventListener('popstate', e => {
-        e.preventDefault();
-        vm.readLocationSearchAndQuerySamples();
-    })
+            console.log(badges);
+            var link = obj.content_type === "group" ?
+                `${Store.groupsUrl}/${obj.accession}` :
+                `${Store.samplesUrl}/${obj.accession}`;
+
+            return {
+                title: obj.accession,
+                type: obj.content_type,
+                description: obj.description ? obj.description : "No description provided",
+                date: obj.updatedate,
+                badges,
+                link
+            }
+        }
+
+        if (baseVM) {
+            baseVM.$destroy();
+        }
+        baseVM = new Vue({
+            el: '#app',
+            data: {
+                searchTerm: '',
+                queryTerm:'',
+                useFuzzy: false,
+                pageNumber: 1,
+                samplesToRetrieve: 10,
+                isQuerying: false,
+                submittedQuery: false,
+                resultsNumber: 1,
+                queryResults: {},
+                biosamples: [],
+                filterQuery: {},
+                facets: {},
+                previousQueryParams: {},
+                currentQueryParams: {},
+                alerts: [],
+                facetsCollapsed: false,
+                biosampleMap: biosampleMap,
+                suggestedTerms: []
+            },
+            computed: {
+                queryTermPresent() {
+                    return !_.isEmpty(this.queryTerm);
+                },
+                querySubmitted() {
+                    return this.submittedQuery;
+                },
+                queryHasResults() {
+                    return this.resultsNumber > 0;
+                },
+                hasAlerts() {
+                    return this.alerts.length > 0;
+                },
+                filterList() {
+                    return Object.keys(this.filterQuery).reduce((prev,key)=>{
+                        let tempKey = key.replace(/Filter$/,"");
+                        prev[tempKey] = this.filterQuery[key];
+                        return prev;
+                    },{});
+                }
+            },
+
+            /**
+             * What happens when the Vue instance is ready
+             * @method ready
+             */
+            ready: function() {
+                this.registerEventHandlers();
+                this.readLocationSearchAndQuerySamples();
+            },
+
+            methods: {
+
+                querySamplesOnScratch(e) {
+                    vueConsole.debug('querySamplesOnScratch');
+                    if (e !== undefined) {
+                        e.preventDefault();
+                    }
+                    this.useFuzzy = false;
+                    this.pageNumber = 1;
+                    this.samplesToRetrieve = 10;
+                    this.querySamples(e);
+                },
+
+                querySamplesUsingFuzzy: function(e) {
+                    vueConsole.debug('querySamplesUsingFuzzy');
+                    if (e !== undefined) {
+                        e.preventDefault();
+                    }
+                    this.useFuzzy = true;
+                    this.querySamples(e);
+                },
+
+                setDefaultSearchTerm() {
+                    if ( _.isEmpty(this.searchTerm) ) {
+                        this.$set('searchTerm','*:*');
+                    }
+                },
+
+                /**
+                 * Make the request for the SolR documents
+                 * @method querySamples
+                 * @param  e {Event} the click event
+                 */
+                querySamples: function(e) {
+                    vueConsole.debug("Query Samples", {foo: "foo", bar: "bar"});
+
+                    if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
+                        e.preventDefault();
+                    }
+
+                    if (this.isQuerying) {
+                        vueConsole.debug("Still getting results from previous query, new query aborted");
+                        return;
+                    }
+
+                    this.setDefaultSearchTerm();
+
+                    let requestData = {
+                        params: this.getQueryParameters(),
+                        // timeout: 10000
+                    };
+
+                    this.isQuerying = true;
+
+                    this.$http.get(`${Store.apiUrl}/search`,requestData)
+                        .then(function(responseData) {
+                            // displayRevertingFilters(results,this);
+                            let results = responseData.json();
+
+                            if (! this.submittedQuery) {
+                                this.submittedQuery = true;
+                            }
+                            this.consumeResults(results);
+                            vueConsole.debug("Results consumed");
+                            if (doVisualization) {
+                                if (typeof loadD3 === "undefined" || loadD3) {
+                                    doD3Stuff(results, apiUrl, this);
+                                }
+                            }
+                        })
+                        .catch(function(error){
+                            vueConsole.error("An error occurred while updating the interface: ");
+                            vueConsole.error(error);
+                            error = {
+                                status: error.status ? error.status : "500",
+                                statusText: error.statusText ? error.statusText : "Check console for further details"
+                            };
+                            this.alerts.push({
+                                type: 'danger',
+                                timeout: 5000,
+                                message: `Something went wrong!\nError code: ${error.status} - ${error.statusText}`
+                            });
+                        })
+                        .then(function() {
+                            this.isQuerying = false;
+                        });
+                },
+
+                consumeResults: function(results) {
+                    vueConsole.groupCollapsed("Consume results");
+                    vueConsole.debug("Consuming ajax results");
+
+                    var resultsInfo      = results.response;
+                    if (_.isNull(resultsInfo)) {
+                        alert("Request made to server was malformed, please send an email to biosamples@ebi.ac.uk");
+                        return;
+                    }
+
+                    var highLights       = results.highlighting;
+                    var dynamicFacets    = results.facet_counts.facet_fields;
+                    var dynamicFacetsKey = _.keys(dynamicFacets);
+                    this.facets          = {};
+                    var vm               = this;
+
+                    _.forEach(dynamicFacetsKey, function(key) {
+                        let readableKey = key.replace('_crt_ft','');
+                        readableKey = vm.$options.filters.excerpt(readableKey,200);
+                        // for (var i in dynamicFacets[key]){
+                        //     dynamicFacets[key][i] = vm.$options.filters.excerpt(dynamicFacets[key][i],200);
+                        // }
+                        vm.facets[readableKey] = readFacets(dynamicFacets[key]);
+                    });
+
+                    let dynamicFilter = Object.keys(this.filterList).map(key=>{
+                        if (key !== "content_type") {
+                            return `${key}_crt`
+                        }
+                    });
+                    let totalFacets = dynamicFilter.reduce((all,value) => {
+                        all.push(value);
+                        return all;
+                    }, dynamicFacetsKey);
+
+
+                    vueConsole.debug("vm.facets: ", vm.facets);
+
+                    var docs        = resultsInfo.docs;
+                    var hlDocs      = this.associateHighlights(docs,highLights);
+
+                    this.queryTerm        = this.searchTerm;
+                    this.resultsNumber    = resultsInfo.numFound;
+
+                    let validDocs = hlDocs.reduce((total, singleDoc) => {
+                        total.push(_.assignIn(singleDoc, { dynamicFacets: totalFacets }));
+                        return total;
+                    },[]);
+
+
+                    this.queryResults = validDocs;
+                    this.biosamples = validDocs;
+
+                    this.currentQueryParams = this.getQueryParameters();
+                    this.saveHistoryState();
+                    vueConsole.groupEnd();
+                },
+
+                /**
+                 * Highlights the searched term within the returned SolR documents
+                 * @method associateHighlights
+                 * @param  docs {SolR Documents} Documents returned by solr
+                 * @param  {Object} highlights [description]
+                 * @return {SolR Documents} Highlighted solr documents
+                 */
+                associateHighlights: function(docs,highlights) {
+                    if (typeof highlights !== 'undefined' && Object.keys(highlights).length > 0) {
+                        for (var i = 0; i < docs.length; i++) {
+                            var currDoc = docs[i];
+                            var hlElem = highlights[currDoc.id];
+                            for (var el in hlElem) {
+                                if (hlElem.hasOwnProperty(el)) {
+                                    currDoc[el] = hlElem[el].join("");
+                                }
+                            }
+                            docs[i] = currDoc;
+                        }
+                    }
+                    return docs;
+                },
+
+                /**
+                 * Prepare an object containing all the params for the SolR request
+                 * @method getQueryParameters
+                 * @return {Object} parameters necessary for the SolR documents request
+                 */
+                getQueryParameters: function() {
+                    return {
+                        'searchTerm': this.searchTerm,
+                        'rows': this.samplesToRetrieve,
+                        'start': (this.pageNumber - 1) * this.samplesToRetrieve,
+                        'useFuzzySearch': this.useFuzzy,
+                        'filters': this.serializeFilterQuery()
+                    };
+                    /*
+                     'organFilter': this.filterQuery.organFilter,
+                     'typeFilter': this.filterQuery.typeFilter,
+                     'organismFilter': this.filterQuery.organismFilter
+                     */
+                },
+
+                serializeFilterQuery: function() {
+                    let filterArray = [];
+                    _.each(this.filterQuery, (value,key) => {
+                        if ( !_.isNil(value) ) {
+                            filterArray.push(`${key}|${value}`);
+                        }
+                    });
+                    return filterArray;
+                },
+
+                deserializeFilterQuery: function(filtersArray) {
+                    let filtersObj = {};
+                    // This is a little bit cumbersome, make it clearer with "Optional" object
+                    if ( !_.isNil(filtersArray) && !_.isArray(filtersArray) ) {
+                        filtersArray = [filtersArray];
+                    }
+                    _(filtersArray).forEach(function (value) {
+                        let [filterKey,filterValue] = value.split("Filter|");
+                        if (!_.isEmpty(filterKey)) {
+                            filtersObj[`${filterKey}Filter`] = filterValue;
+                        }
+                    });
+                    return filtersObj;
+                },
+
+                populateDataWithUrlParameter: function(urlParams) {
+                    this.searchTerm = _.getString(urlParams.searchTerm,'');
+                    this.samplesToRetrieve = _.getFinite(urlParams.rows,10);
+                    this.pageNumber= _.getFinite(urlParams.start/this.samplesToRetrieve + 1,1);
+                    this.useFuzzy = _.getBoolean(urlParams.useFuzzySearch === "true",false);
+                    this.filterQuery = _.getObject(this.deserializeFilterQuery(urlParams.filters),{});
+                },
+
+                removeAlert(item) {
+                    this.alerts.$remove(item);
+                },
+
+                removeFilter(item) {
+                    let filterKey = `${item}Filter`;
+                    let newFilterQuery = _.clone(this.filterQuery);
+                    delete newFilterQuery[filterKey];
+                    this.$set("filterQuery",newFilterQuery);
+                    this.querySamples(undefined);
+                },
+
+                collapseFacets() {
+                    this.$broadcast('collapse', this.facetsCollapsed);
+                },
+
+                /**
+                 * Register event handlers for Vue custom events
+                 * @method registerEventHandlers
+                 */
+                registerEventHandlers: function() {
+                    this.$on('page-changed', function(newPage) {
+                        vueConsole.debug(" on page-changed");
+                        this.pageNumber = newPage;
+                        this.querySamples();
+                    });
+
+                    this.$on('dd-item-chosen', function(item) {
+                        var previousValue = this.samplesToRetrieve;
+                        this.samplesToRetrieve = item;
+                        this.pageNumber = 1;
+                        this.querySamples();
+                    });
+
+                    this.$on('bar-selected', function(d,loadD3) {
+                        vueConsole.debug(" on bar-selected");
+                        // If we desire to have an event happening without reloading d3
+                        // we need to pass false as a second argument
+                        this.querySamples(d,loadD3);
+                    });
+
+                    this.$on('displayChanged', function(d,loadD3) {
+                        vueConsole.debug(" on displayChanged");
+                        // If we desire to have an event happening without reloading d3
+                        // we need to pass false as a second argument
+                        this.querySamples(d,loadD3);
+                    });
+
+                    this.$on('facet-selected', function(key, value) {
+                        vueConsole.debug(" on facet-selected");
+                        if (value === "") {
+                            Vue.delete(this.filterQuery,key);
+                        } else {
+                            Vue.set(this.filterQuery,key,value);
+                        }
+                        this.querySamples();
+                    });
+
+
+                },
+
+                /**
+                 * Read the location url using history API and, if not empty, lunch a query
+                 * for the parameters in the url
+                 * @method readLocationSearchAndQuerySamples
+                 */
+                readLocationSearchAndQuerySamples: function() {
+                    var historyState = History.getState();
+                    var urlParam;
+                    if ( !_.isEmpty(historyState.data) ) {
+                        urlParam = historyState.data;
+                    } else if ( !_.isEmpty(location.search) ) {
+                        urlParam = _.fromQueryString(location.search.substring(1));
+                        //TODO In this case the string is not properly read (filters is not read as an array)
+                    } else {
+                        vueConsole.debug("No Parameters");
+                        urlParam = {
+                            "searchTearm": "*:*"
+                        }
+                    }
+
+                    this.populateDataWithUrlParameter(urlParam);
+                    this.querySamples();
+                },
+
+                /**
+                 * Save or update the history state if a query has been made
+                 * @method saveHistoryState
+                 */
+                saveHistoryState: function(){
+                    vueConsole.debug("Saving history","History");
+                    if ( !_.isEmpty( this.currentQueryParams ) ) {
+                        if ( _.isEqual( this.currentQueryParams, this.previousQueryParams ) ) {
+                            vueConsole.debug("Replacing history","History");
+                            History.replaceState(this.currentQueryParams, null, "?" + _.toQueryString(this.currentQueryParams));
+                        } else {
+                            vueConsole.debug("Push new history state","History");
+                            this.previousQueryParams = this.currentQueryParams;
+                            History.pushState(this.currentQueryParams, null, "?" + _.toQueryString(this.currentQueryParams));
+                        }
+                    }
+                }
+            }
+        });
+
+        window.addEventListener('popstate', e => {
+            e.preventDefault();
+            vm.readLocationSearchAndQuerySamples();
+        })
+    // })
 })(window);
 
 function doD3Stuff( results, apiUrl, vm=0  ){
