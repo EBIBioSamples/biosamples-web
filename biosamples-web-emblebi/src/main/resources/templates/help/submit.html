@@ -95,13 +95,13 @@
 			<h2>How to submit BioSamples Database?</h2>
 			<p>
 				Submissions to BioSamples Database should be in <a
-					th:href="@{/help/st}" href="st.html">SampleTab file format</a>.
+					th:href="@{/help/st.html}" href="st.html">SampleTab file format</a>.
 				This is a tab-separated spreadsheet-like text format compatible with
 				popular office tools.
 			</p>
 			<p>
 				Once you have a SampleTab file, you can use the <a
-					th:href="@{/sampletab/validation}"
+					th:href="@{/sampletab/validation.html}"
 					href="/biosamples/sampletab/validation.html">online validation
 					service</a> to ensure it is correct. This will also apply common
 				corrections and ontology mappings that are used to standardise the
@@ -117,16 +117,16 @@
 			<p>There are several services provided for programmatically
 				sending sample information to the BioSamples Database. These are:</p>
 			<ul>
-				<li><a th:href="@{/sampletab/submission}"
+				<li><a th:href="@{/sampletab/submission.html}"
 					href="/biosamples/sampletab/submission.html">Submission service</a>
 					for submitting SampleTab files. Please note that they will not be
 					immediately visible in the web interface, but the assigned
 					accession will be returned immediately as a SampleTab file after
 					the submission.</li>
-				<li><a th:href="@{/sampletab/validation}"
+				<li><a th:href="@{/sampletab/validation.html}"
 					href="/biosamples/sampletab/validation.html">Validation service</a>
 					for validating SampleTab files without submitting them.</li>
-				<li><a th:href="@{/sampletab/accession}"
+				<li><a th:href="@{/sampletab/accession.html}"
 					href="/biosamples/sampletab/accession.html">Accessioning
 						service</a> for assigning accessions to samples and groups. Please
 					note that this does not submit any sample information to the
