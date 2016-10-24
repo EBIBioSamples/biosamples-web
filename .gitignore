@@ -24,3 +24,5 @@ ignoredFacets.fields
 *.iml
 */target/
 tmp.sh
+
+biosolr-annotator/solr-ontology-updateprocessor/dependency-reduced-pom.xml
