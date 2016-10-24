@@ -15,7 +15,5 @@
 		<!-- utility -->
 		<module>biosolr-annotator</module>
 		<module>solr-utf8-decoder</module>
-		<module>solr-indexer</module>
-		<module>solr-reporter</module>
 	</modules>
 </project>
