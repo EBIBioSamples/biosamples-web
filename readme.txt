@@ -26,4 +26,4 @@ Maven
 =====
 
 To improve maven performance, avoid using the "clean" target and enable mult-core processing of submodules similar to 
-`mvn -T 1C pacakge`
+`mvn -T 1C package`
