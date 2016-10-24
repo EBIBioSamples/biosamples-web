@@ -4,18 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>uk.ac.ebi.spot</groupId>
-	<artifactId>biosamples</artifactId>
+	<artifactId>biosolr-annotator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
-        <!-- interface -->
-		<module>biosamples-web</module>
-		
-		<!-- utility -->
-		<module>biosolr-annotator</module>
-		<module>solr-utf8-decoder</module>
-		<module>solr-indexer</module>
-		<module>solr-reporter</module>
+		<module>core</module>
+		<module>solr-ontology-updateprocessor</module>
 	</modules>
 </project>
