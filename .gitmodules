@@ -1,9 +1,3 @@
 [submodule "solr-utf8-decoder"]
 	path = solr-utf8-decoder
 	url = https://github.com/EBIBioSamples/SolrUTF8DecoderProcessor
-[submodule "solr-indexer"]
-	path = solr-indexer
-	url = https://github.com/EBIBioSamples/solrIndexer
-[submodule "solr-reporter"]
-	path = solr-reporter
-	url = https://github.com/EBIBioSamples/solrReporter
