@@ -18,7 +18,9 @@
             if (!format) {
                 format = "en-UK"
             }
-            return new In
+            return new Intl.NumberFormat(format,{
+                style: "decimal"
+            }).format(value);
 
         }
         return value;
