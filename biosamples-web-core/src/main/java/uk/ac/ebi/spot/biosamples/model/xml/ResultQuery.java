@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class ResultQuery<T> {
 
-    private final Namespace XMLNS = Namespace.getNamespace("http://www.ebi.ac.uk/biosamples/ResultQuery1.0");
+    private final Namespace XMLNS = Namespace.getNamespace("http://www.ebi.ac.uk/biosamples/ResultQuery/1.0");
 
     private Document doc;
 
