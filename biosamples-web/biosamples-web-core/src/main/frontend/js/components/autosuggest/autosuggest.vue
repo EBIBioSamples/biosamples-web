@@ -149,6 +149,9 @@
             onHit(value) {
                 this.searchTerm = value;
                 this.reset();
+                //noinspection JSUnresolvedFunction
+                this.$dispatch('as-hit', this.searchTerm);
+
             }
 
         }

@@ -8,13 +8,13 @@
 <body>
 
 <!--/* Search Input Form - based on Vue.js javascript framework */-->
-<th:block th:fragment="searchInput" th:with="isSearch = false" >
+<th:block th:fragment="searchInput">
 
         <form th:if="${isSearch}" id="local_search" @submit.prevent="querySamples">
             <div th:replace="fragments/searchForm :: formContent"></div>
         </form>
 
-        <form th:unless="${isSearch}" th:action="@{/search}" method="get" id="local_search">
+        <form th:unless="${isSearch}" th:action="@{/search}" @submit.prevent="$emit('as-hit')" method="get" id="local_search">
             <div th:replace="fragments/searchForm :: formContent"></div>
         </form>
 </th:block>
