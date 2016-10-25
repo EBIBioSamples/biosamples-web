@@ -70,6 +70,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             // Return the object we want to display
             return {
                 title: obj.accession,
+                subtitle: obj.sampleName_crt,
                 type: obj.content_type,
                 description: obj.description ? obj.description : "",
                 date: obj.updatedate,
