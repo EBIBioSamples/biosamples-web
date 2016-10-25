@@ -11,10 +11,10 @@
                     </shield>
             </div>
         </div>
-        <div class="panel-body">{{product.description | excerpt}}</div>
-        <div class="panel-footer">
-            <span class="small">Last update date: {{product.date | solrDate}}</span>
-        </div>
+        <div class="panel-body" v-if="product.description">{{product.description | excerpt}}</div>
+        <!--<div class="panel-footer">-->
+            <!--<span class="small">Last update date: {{product.date | solrDate}}</span>-->
+        <!--</div>-->
     </div>
 </template>
 
@@ -23,16 +23,24 @@
 
     module.exports = {
 
+        data() {
+            return {
+                maxBadgeLength: 50
+            }
+        },
+
         components: {
             "shield": require("../shield/shield.vue")
         },
         computed: {
            product() { return this.displayFunction(this.content) },
            badgeArray() {
+               // Create the badge array checking for multivalued fields
                let badges = this.product.badges;
                return Object.keys(badges).reduce((all, key) => {
                   for (let val of badges[key]) {
-                     all.push({"key": key, "value": val});
+                      if (val.length + key.length < this.maxBadgeLength)
+                        all.push({"key": key, "value": val});
                   }
                   return all;
                },[])

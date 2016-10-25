@@ -17,7 +17,6 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
 (function(window){
     "use strict";
 
-    // window.whenDOMReady(function(){
 
         // Create a plugin and pass the apiUrl using an option
         // https://scotch.io/tutorials/building-your-own-javascript-modal-plugin
@@ -48,40 +47,36 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             return obj;
         }
 
+        /**
+         * Function that take the Vue instance biosamples contained and modify it to fit to the product component
+         * @param obj The VueJS instance
+         * @returns {{title: (*|Array), type: string, description: string, date: *, badges: {}, link: string}}
+         */
         var biosampleMap = function(obj) {
             let badges = {};
-            const facetKeys = obj.dynamicFacets;
-            let sampleName = obj["sample_name_crt"];
-            if (sampleName)
-                badges["sample_name_crt"] = sampleName;
-            for ( let i=0, n=facetKeys.length; i < n; i++ ) {
-                if (facetKeys[i]) {
-                    let facetKey = facetKeys[i].replace(/_ft$/, "");
-                    if (facetKey.toLowerCase() !== "content_type") {
-                        let facetValues = obj[facetKey];
-                        if (facetValues) {
-                            // This is problematic because is getting just the firt value
-                            badges[facetKey] = facetValues;
-                            // _.isArray(facetValue) ? facetValue[0] : facetValue;
-                        }
-                    }
-                }
-            }
 
-            console.log(badges);
+            // Collect badges values
+            let crtNames = Object.keys(obj)
+                .filter(el=>el.endsWith("_crt"))
+                .filter(el=> el !== "sampleName_crt");
+
+            crtNames.forEach(name => badges[name] = obj[name]);
+
+            // Create the link to the specific page
             var link = obj.content_type === "group" ?
                 `${Store.groupsUrl}/${obj.accession}` :
                 `${Store.samplesUrl}/${obj.accession}`;
 
+            // Return the object we want to display
             return {
                 title: obj.accession,
                 type: obj.content_type,
-                description: obj.description ? obj.description : "No description provided",
+                description: obj.description ? obj.description : "",
                 date: obj.updatedate,
                 badges,
                 link
             }
-        }
+        };
 
         if (baseVM) {
             baseVM.$destroy();
@@ -469,8 +464,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
         window.addEventListener('popstate', e => {
             e.preventDefault();
             vm.readLocationSearchAndQuerySamples();
-        })
-    // })
+        });
 })(window);
 
 function doD3Stuff( results, apiUrl, vm=0  ){
