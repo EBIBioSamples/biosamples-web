@@ -29,6 +29,14 @@
 <script>
     const startCaseFilter = require("../../filters/startCaseFilter.js");
 
+    function castArray() {
+        if (!arguments.length) {
+            return [];
+        }
+        var value = arguments[0];
+        return Array.isArray(value) ? value : [value];
+    }
+
     module.exports = {
 
         data() {
@@ -46,7 +54,8 @@
                // Create the badge array checking for multivalued fields
                let badges = this.object.badges;
                return Object.keys(badges).reduce((all, key) => {
-                  for (let val of badges[key]) {
+                   let badgeValues = castArray(badges[key]);
+                  for (let val of badgeValues) {
                       if (val.length + key.length < this.maxBadgeLength)
                         all.push({"key": key, "value": val});
                   }

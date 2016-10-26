@@ -24,8 +24,8 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
         var {Vue, baseVM, Store, visualization: doVisualization = false } = window;
 
         // Required
-        var _           = require("lodash");
-        var _mixins     = require("./utilities/lodash-addons");
+        var _            = require("lodash");
+        var _mixins      = require("./utilities/lodash-addons");
 
         /**
          * Read Solr facets and return them as a key-value pair object
@@ -53,14 +53,58 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
          * @returns {{title: (*|Array), type: string, description: string, date: *, badges: {}, link: string}}
          */
         var biosampleMap = function(obj) {
-            let badges = {};
 
-            // Collect badges values
-            let crtNames = Object.keys(obj)
-                .filter(el=>el.endsWith("_crt"))
-                .filter(el=> el !== "sampleName_crt");
 
-            crtNames.forEach(name => badges[name] = obj[name]);
+            function buildBadges(obj) {
+                let badges = {};
+                let objKeys = Object.keys(obj);
+
+                // Collect badges values
+                let crtNames = objKeys
+                    .filter(el=>el.endsWith("_crt_json"))
+                    .filter(el=>!el.startsWith("sampleName"))
+
+                // Process characteristics
+                crtNames.forEach(name => {
+                    let badgeKey = name.replace("_json","");
+                    let badgeValue = obj[name].map(el=> {
+                        let val = "";
+                        try {
+                            let elParsed = JSON.parse(el);
+                            val =  elParsed.text;
+                            if (elParsed.unit) {
+                                val = `${val} (${elParsed.unit})`;
+                            }
+                        } catch (err) { console.log("Error trying to parse badgeValue:", el)};
+                        return val;
+                    });
+                    badges[badgeKey] = badgeValue;
+                });
+
+                // Add also external references
+                let extRefs = obj["external_references_name"];
+                if (extRefs) {
+                    try {
+                        let refNames = Array.from(new Set(extRefs));
+                        let refObjSerial = obj["external_references_json"];
+                        let refObj = JSON.parse(refObjSerial);
+                        refNames.forEach(el => {
+                            badges[`${el.toLowerCase()}Reference_crt`] =
+                                refObj
+                                    .filter(val => val.Name == el)
+                                    .filter(val => val.Acc != obj.accession)
+                                    .map(val=>val.Acc);
+                        });
+                    } catch (err) {
+                        console.err("Unable to render badges for external reference", refObjSerial)
+                    }
+                }
+
+                return badges;
+            }
+
+            var badges = buildBadges(obj);
+
 
             // Create the link to the specific page
             var link = obj.content_type === "group" ?
