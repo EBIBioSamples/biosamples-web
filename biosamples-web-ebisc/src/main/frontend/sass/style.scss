@@ -31,7 +31,7 @@
 @import 'atomic/atoms/transitions';
 @import 'atomic/atoms/filters';
 
-
+@import 'atomic/organisms/product';
 @import 'atomic/organisms/status-overview';
 @import 'atomic/organisms/organism';
 @import 'atomic/organisms/cell-line-search';
@@ -39,6 +39,7 @@
 @import 'atomic/organisms/article';
 @import 'atomic/organisms/header';
 @import 'atomic/organisms/footer';
+
 
 @import 'atomic/templates/default';
 @import 'atomic/templates/with-sidebar';
