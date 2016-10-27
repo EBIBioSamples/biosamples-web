@@ -34,64 +34,63 @@
                 <tbody>
                 <!-- Common group attributes -->
                 <tr>
-                    <td class="col_title"><b>Group Name : </b></td>
-                    <td th:text="${group.name}">
+                    <td class="col_title"><b>Name</b></td>
+                    <td th:text="${group.name}">Test Group Name</td>
+                </tr>
+                <tr th:if="${#strings.isEmpty(group.description)}">
+                    <td class="col_title"><b>Description</b></td>
+                    <td class="characteristic-mapping" th:text="${group.description}">This is a test description</td>
                 </tr>
                 <tr>
-                    <td class="col_title"><b>Submission Title :</b></td>
-                    <td th:text="${group.submissionTitle}"></td>
+                    <td class="col_title"><b>Release Date</b></td>
+                    <td th:text="${group.releaseDate}">1901-04-01</td>
                 </tr>
                 <tr>
-                    <td class="col_title"><b>Submission Identifier :</b></td>
-                    <td th:text="${group.submissionAccession}"></td>
+                    <td class="col_title"><b>Last Updated</b></td>
+                    <td th:text="${group.updateDate}">1901-04-01</td>
                 </tr>
                 <tr>
-                    <td class="col_title"><b>Description :</b></td>
-                    <td class="characteristic-mapping" th:text="${group.description}"></td>
+                    <td class="col_title"><b>Submission Title</b></td>
+                    <td th:text="${group.submissionTitle}">Test Title</td>
                 </tr>
                 <tr>
-                    <td class="col_title"><b>Release Date :</b></td>
-                    <td th:text="${group.releaseDate}"></td>
-                </tr>
-                <tr>
-                    <td class="col_title"><b>Last Updated :</b></td>
-                    <td th:text="${group.updateDate}"></td>
+                    <td class="col_title"><b>Submission Identifier</b></td>
+                    <td th:text="${group.submissionAccession}">TST-101</td>
                 </tr>
 
                 <tr th:if="${group.organization}">
-                    <td class="col_title"><b>Organization:</b></td>
+                    <td class="col_title"><b>Organization</b></td>
                     <td class="organization-field-content" th:text="${group.organization}"></td>
                 </tr>
                 <tr th:if="${group.contact}">
-                    <td class="col_title"><b>Contact:</b></td>
+                    <td class="col_title"><b>Contact</b></td>
                     <td class="contact-field-content" th:text="${group.contact}"></td>
                 </tr>
                 <tr th:if="${group.publications}">
-                    <td class="col_title"><b>Publications:</b></td>
+                    <td class="col_title"><b>Publications</b></td>
                     <td class="publications-field-content" th:text="${group.publications}"></td>
                 </tr>
 
-
-
                 <!-- start all characteristics -->
-                <tr th:each="characteristic: ${group.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'group_name'  or characteristic.key == 'group_title' or characteristic.key == 'group_description'}">
-                    <td class="col_title"><b th:utext="${#strings.capitalizeWords(#strings.replace(characteristic.key,'_',' ')) + ' : '}">Characteristic : </b></td>
+                <tr th:each="characteristic: ${group.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'groupName'  or characteristic.key == 'groupTitle' or characteristic.key == 'groupDescription'}">
+                    <td class="col_title"><b th:utext="${characteristic.key}">Characteristic</b></td>
                     <td th:if="${#maps.containsKey(group.characteristics,characteristic.key)}">
                         <div class="characteristic-mapping" th:each="value: ${group.characteristics.get(characteristic.key)}">
-                            <div class="characteristic-mapping-payload" th:text="${value}">{"foo":"bar"}</div>
+                            <div class="characteristic-mapping-payload" th:text="${value}">[{"foo":"bar"}]</div>
                         </div>
                     </td>
                 </tr>
                 <!-- end all characteristics -->
+
                 <tr th:if="${group.hasSamples()}">
-                    <td class="col_title"><b>Samples in group: </b></td>
+                    <td class="col_title"><b>Samples in group</b></td>
                     <td>
-                        <div th:text="${#arrays.length(group.samples)}">#num-of-samples</div>
+                        <div th:text="${#arrays.length(group.samples)}">3</div>
                     </td>
                 </tr>
 
                 <tr th:if="${not #strings.isEmpty(group.externalReferences)}">
-                    <td class="col_title"><b>External references :</b></td>
+                    <td class="col_title"><b>External references</b></td>
                     <td>
                         <div class="external-references-payload"
                              th:text="${group.externalReferences}">
@@ -107,16 +106,16 @@
                         <table class="common-attr">
                             <thead>
                             <tr>
-                                <th     th:class="'col_title'"
-                                        th:each="attr: ${common_attrs}"
-                                        th:text="${#strings.capitalizeWords(#strings.replace(attr.key,'_',' '))}">attrname</th>
+                                <th th:class="'col_title'"
+                                    th:each="attr: ${common_attrs}"
+                                    th:text="${attr.key}">attrname</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
                                 <td th:each="attr: ${common_attrs}" >
-                                    <div class="characteristic-mapping">
-                                        <div class="characteristic-mapping-payload" th:text="${attr.value[0]}">{"foo":"bar"}</div>
+                                    <div class="characteristic-mapping" th:if="${not #strings.isEmpty(attr)}">
+                                        <div class="characteristic-mapping-payload" th:text="${attr.value}">{"foo":"bar"}</div>
                                     </div>
                                 </td>
                             </tr>
@@ -137,7 +136,7 @@
         <h4>Samples in group</h4>
 
         <div :class="{loading: isQuerying}"></div>
-        <form class="sample-table__controls" @submit="querySamples">
+        <form class="sample-table__controls" @submit="querySamplesInGroup">
             <div class="controls__search-box">
                 <input class="form-control" type="text" style="width:100%" v-model="keyword">
             </div>
@@ -178,6 +177,5 @@
     <script th:src="@{/javascript/biosamples_sample_links.js}"></script>
     <script th:if="${group.hasSamples()}" th:src="@{/javascript/samplesInGroup.js}"></script>
 </th:block>
-
 </body>
 </html>
