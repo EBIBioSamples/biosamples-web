@@ -4,9 +4,9 @@
     var {relationsUrl, baseUrl: originUrl = window.location.origin } = Store;
 
     
-    function buildGraphUrl(baseUrl,accession) {
-        //return `${baseUrl}${sampleOrGroup(accession)}/${accession}/graph`;
-        return `../${sampleOrGroup(accession)}/${accession}/graph`;
+    function buildGraphUrl(accession) {
+        return `${originUrl}${sampleOrGroup(accession)}/${accession}/graph`;
+        // return `../${sampleOrGroup(accession)}/${accession}/graph`;
     }
 
     function sampleOrGroup(accession) {
@@ -25,7 +25,7 @@
         return !(parameter.indexOf("__") == -1);
     }
 
-    var graphURL = buildGraphUrl(relationsUrl,accession);
+    var graphURL = buildGraphUrl(accession);
     console.log(graphURL);
 
     var tmpNetworkOptions = {
@@ -62,7 +62,7 @@
                         this.__changingPage = true;
                         return;
                     } else {
-                        instance.fetchNewGraphData(buildGraphUrl(relationsUrl, nodeAccession));
+                        instance.fetchNewGraphData(buildGraphUrl(nodeAccession));
                     }
                 }
                 else{
