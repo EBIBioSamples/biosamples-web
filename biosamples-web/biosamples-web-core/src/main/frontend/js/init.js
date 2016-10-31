@@ -29,6 +29,9 @@
     Vue.filter('excerpt',require('./filters/excerptFilter.js'));
     Vue.filter('startCase', require('./filters/startCaseFilter.js'));
     Vue.filter('solrDate',require('./filters/dateFormatFilter.js'));
+    Vue.filter('numberFormat', require('./filters/numberFormatFilter.js'));
+
+    // Transitions
     Vue.transition('flash', {
         enterClass: 'bounceInRight',
         leaveClass: 'fadeOutUp'
