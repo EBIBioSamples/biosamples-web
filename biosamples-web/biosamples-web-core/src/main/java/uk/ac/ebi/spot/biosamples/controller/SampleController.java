@@ -185,7 +185,7 @@ public class SampleController {
 
 	@RequestMapping(value = "xml/groupsamples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
 	public @ResponseBody String sampleInGroupXmlQuery(@PathVariable(value = "accession") String groupAccession,
-			@RequestParam(value = "query") String searchTerm,
+			@RequestParam(value = "query", defaultValue = "*:*") String searchTerm,
 			@RequestParam(value = "sortby", defaultValue = "score") String sortBy,
 			@RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
 			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
