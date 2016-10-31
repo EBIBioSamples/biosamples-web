@@ -15,7 +15,7 @@ import uk.ac.ebi.spot.biosamples.repository.ReadOnlyRepository;
 public interface SolrSampleRepository extends ReadOnlyRepository<SolrSample, String> {
     Page<SolrSample> findByAccession(@Param("accession") String accession, Pageable page);
 
-    @Query(value="text:?0", requestHandler = "/search")
+    @Query(value="?0", requestHandler = "/search")
     Page<SolrSample> findByText(@Param("text") String text, Pageable page);
 
     @RestResource(path = "findByAccessionAndGroup")
