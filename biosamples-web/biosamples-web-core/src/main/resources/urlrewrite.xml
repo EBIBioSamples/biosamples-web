@@ -6,64 +6,50 @@
     http://www.tuckey.org/urlrewrite/
     http://localhost:8080/rewrite-status (only works when running locally)
 -->
-<urlrewrite>
+<urlrewrite use-query-string="true">
     <rule>
         <name>Redirect to samples</name>
         <note>Redirect legacy /sample to new /samples</note>
-        <from>^/sample/(.*)$</from>
-        <to type="permanent-redirect">%{context-path}/samples/$1</to>
+        <from>^/sample([^s].*)$</from>
+        <to type="permanent-redirect">%{context-path}/samples$1</to>
     </rule>
     <rule>
         <name>Redirect to groups</name>
         <note>Redirect legacy /group to new /groups</note>
-        <from>^/group/(.*)$</from>
-        <to type="permanent-redirect">%{context-path}/groups/$1</to>
-    </rule>
-    <rule>
-        <name>Redirect to samples xml</name>
-        <note>Redirect legacy xml/sample to new xml/samples</note>
-        <from>^/xml/sample/(.*)$</from>
-        <to type="permanent-redirect">%{context-path}/xml/samples/$1</to>
-    </rule>
-    <rule>
-        <name>Redirect to groups xml</name>
-        <note>Redirect legacy xml/group to new xml/groups</note>
-        <from>^/xml/group/(.*)$</from>
-        <to type="permanent-redirect">%{context-path}/xml/groups/$1</to>
+        <from>^/group([^s].*)$</from>
+        <to type="permanent-redirect">%{context-path}/groups$1</to>
     </rule>
         
     <rule>
-        <name>Redirect bad query uri</name>
-        <note>Redirect legacy xml/sample with poorly formatted URI to new well formed one. This strips URL encoding.</note>
-        <from>^/xml/sample/query=(.*)$</from>
-        <to type="permanent-redirect">%{context-path}/xml/samples?query=$1</to>
+        <name>Redirect to xml/samples</name>
+        <from>^/xml/sample([^s].*)$</from>
+        <to type="permanent-redirect">%{context-path}/xml/samples$1</to>
     </rule>
-        
     <rule>
-        <name>Redirect bad query uri</name>
-        <note>Redirect legacy xml with poorly formatted URI to new well formed one. This strips URL encoding.</note>
-        <from>^/xml/group/query=(.*)$</from>
-        <to type="permanent-redirect">%{context-path}/xml/groups?query=$1</to>
+        <name>Redirect to xml/groups</name>
+        <from>^/xml/group([^s].*)$</from>
+        <to type="permanent-redirect">%{context-path}/xml/groups$1</to>
     </rule>
     
     <rule>
-        <note>Redirect legacy xml/v1.0/group to new xml/groups</note>
-        <from>^/xml/v1.0/group/(.*)$</from>
-        <to type="redirect">%{context-path}/xml/groups/$1</to>
+        <name>XML version redirect</name>
+        <from>^/xml/v1.0/(.*)$</from>
+        <to type="redirect">%{context-path}/xml/$1</to>
+    </rule>
+        
+    <rule>
+        <name>Redirect legacy broken URL</name>
+        <from>^(.*)/samples/query=(.*)$</from>
+        <to type="permanent-redirect">%{context-path}$1/samples?query=$2</to>
     </rule>
     <rule>
-        <note>Redirect legacy xml/v1.0/sample to new xml/samples</note>
-        <from>^/xml/v1.0/sample/(.*)$</from>
-        <to type="redirect">%{context-path}/xml/samples/$1</to>
+        <name>Redirect legacy broken URL</name>
+        <from>^(.*)/groups/query=(.*)$</from>
+        <to type="permanent-redirect">%{context-path}$1/groups?query=$2</to>
     </rule>
     <rule>
-        <note>Redirect legacy xml/v1.0/group to new xml/groups</note>
-        <from>^/xml/v1.0/groups/(.*)$</from>
-        <to type="redirect">%{context-path}/xml/groups/$1</to>
-    </rule>
-    <rule>
-        <note>Redirect legacy xml/v1.0/sample to new xml/samples</note>
-        <from>^/xml/v1.0/samples/(.*)$</from>
-        <to type="redirect">%{context-path}/xml/samples/$1</to>
+        <name>Redirect legacy broken URL</name>
+        <from>^(.*)/groupsamples/(SAMEG[0-9]*)/query=(.*)$</from>
+        <to type="permanent-redirect">%{context-path}$1/groupsamples/$2?query=$3</to>
     </rule>
 </urlrewrite>
