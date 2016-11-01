@@ -1,4 +1,4 @@
-.biosample_result {
+.biosample-result {
   .panel-title {
     display: flex;
     align-items: baseline;
@@ -15,5 +15,9 @@
 
     }
 
+  }
+
+  .shield {
+    margin: 0 0.5em 0.7em 0;
   }
 }

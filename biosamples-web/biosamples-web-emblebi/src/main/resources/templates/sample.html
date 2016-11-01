@@ -26,9 +26,13 @@
 <main layout:fragment="content">
 
     <nav id="breadcrumb">
-        <p>
+        <p style="float: left">
             <a th:href="@{/}" href="/">BioSamples</a> &gt; <span th:text="${sample.accession}"></span>
         </p>
+        <div style="float: right">
+            <div class="btn btn-default">XML</div>
+            <div class="btn btn-default">JSON</div>
+        </div>
     </nav>
 
 
