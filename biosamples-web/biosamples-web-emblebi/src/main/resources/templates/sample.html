@@ -30,8 +30,8 @@
             <a th:href="@{/}" href="/">BioSamples</a> &gt; <span th:text="${sample.accession}"></span>
         </p>
         <div style="float: right">
-            <div class="btn btn-default">XML</div>
-            <div class="btn btn-default">JSON</div>
+            <a th:href="@{'/xml/samples/' + ${sample.accession}}" class="btn btn-default">XML</a>
+            <a th:href="@{'/api/samples/' + ${sample.accession}}" class="btn btn-default">JSON</a>
         </div>
     </nav>
 
