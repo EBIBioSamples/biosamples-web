@@ -12,17 +12,17 @@
 			<p></p>
 			<ul>
 				<li>It returns all the groups that match the query (e.g. <a
-					class="ext-link" th:href="@{/xml/group/query=cancer}"
-					href="/biosamples/xml/group/query=cancer"><span class="icon">&nbsp;</span>
-					<th:span th:remove="tag" th:text="@{/xml/group/query=cancer}">/biosamples/xml/group/query=cancer</th:span></a>);
+					class="ext-link" th:href="@{/xml/group?query=cancer}"
+					href="/biosamples/xml/group?query=cancer"><span class="icon">&nbsp;</span>
+					<th:span th:remove="tag" th:text="@{/xml/group?query=cancer}">/biosamples/xml/group/query=cancer</th:span></a>);
 				</li>
 				<li>It is possible to use paging and sorting (e.g. <a
 					class="ext-link"
-					th:href="@{/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50}"
-					href="/biosamples/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50"><span
+					th:href="@{/xml/group?query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50}"
+					href="/biosamples/xml/group?query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50"><span
 						class="icon">&nbsp;</span>
 					<th:span th:remove="tag"
-							th:text="@{/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50}">/biosamples/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50</th:span></a>);
+							th:text="@{/xml/group?query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50}">/biosamples/xml/group/query=cancer&amp;sortby=relevance&amp;sortorder=descending&amp;page=2&amp;pagesize=50</th:span></a>);
 				</li>
 				<li>Always return a result summary information;</li>
 			</ul>
@@ -47,7 +47,7 @@
 				<br> <br>
 			</p>
 			<h4 id="ExampleRequest">Example Request</h4>
-			<pre class="wiki">Get /xml/group/query=cancer&amp;page=2
+			<pre class="wiki">Get /xml/group?query=cancer&amp;page=2
 </pre>
 			<p>
 				<br> <br>

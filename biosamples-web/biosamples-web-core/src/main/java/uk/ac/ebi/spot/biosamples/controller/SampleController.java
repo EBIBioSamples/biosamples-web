@@ -161,28 +161,7 @@ public class SampleController {
 	public @ResponseBody String hybridSampleXml(@PathVariable String accession) throws APIXMLNotFoundException {
 		return sampleXml(accession);
 	}
-
-//	@RequestMapping(value = "xml/sample/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-//	public @ResponseBody String legacySampleXml(@PathVariable String accession) throws APIXMLNotFoundException {
-//		return sampleXml(accession);
-//	}
-
-	@RequestMapping(value = "xml/samples/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-	public @ResponseBody String legacySampleXmlQueryRedirect(@PathVariable String query) {
-		Map<String, String> paramMap = LegacyApiQueryParser.parseLegacyQueryFormat(query);
-		return sampleXmlQuery(paramMap.get("query"), paramMap.get("sortby"), paramMap.get("sortorder"),
-				Integer.parseInt(paramMap.get("pagesize")), Integer.parseInt(paramMap.get("page")));
-	}
-
-	@RequestMapping(value = "xml/groupsamples/{accession}/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-	public @ResponseBody String legacySampleInGroupXmlQueryRedirect(@PathVariable String accession,
-			@PathVariable String query) {
-		Map<String, String> paramMap = LegacyApiQueryParser.parseLegacyQueryFormat(query);
-		return sampleInGroupXmlQuery(accession, paramMap.get("query"), paramMap.get("sortby"),
-				paramMap.get("sortorder"), Integer.parseInt(paramMap.get("pagesize")),
-				Integer.parseInt(paramMap.get("page")));
-	}
-
+	
 	@RequestMapping(value = "xml/groupsamples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
 	public @ResponseBody String sampleInGroupXmlQuery(@PathVariable(value = "accession") String groupAccession,
 			@RequestParam(value = "query", defaultValue = "*:*") String searchTerm,
@@ -203,19 +182,7 @@ public class SampleController {
 		ResultQuery<SolrSample> rq = new SampleResultQuery(results);
 		return rq.renderDocument();
 	}
-
-//	@RequestMapping(value = "groupsamples/{accession}", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
-//	public @ResponseBody Page<SolrSample> samplesInGroup(@PathVariable(value = "accession") String groupAccession,
-//			@RequestParam(value = "query", defaultValue = "*:*") String searchTerm,
-//			@RequestParam(value = "sortby", defaultValue = "score") String sortBy,
-//			@RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
-//			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
-//			@RequestParam(value = "page", defaultValue = "0") int page) {
-//
-//		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
-//		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
-//		return solrSampleRepository.findByKeywordsAndGroupsContains(searchTerm, groupAccession, querySpec);
-//	}
+	
 
 	@ExceptionHandler(APIXMLNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)

@@ -147,20 +147,6 @@ public class GroupController {
 		return groupXml(accession);
 	}
 
-//	@RequestMapping(value = "xml/group/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-//	public @ResponseBody String legacyGroupXml(@PathVariable String accession) throws APIXMLNotFoundException {
-//		return groupXml(accession);
-//	}
-
-	@RequestMapping(value = "xml/groups/query={query}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
-	public @ResponseBody String legacyGroupXmlQueryRedirect(@PathVariable String query) {
-		Map<String, String> paramMap = LegacyApiQueryParser.parseLegacyQueryFormat(query);
-		return groupXmlQuery(paramMap.get("query"), paramMap.get("sortby"), paramMap.get("sortorder"),
-				Integer.parseInt(paramMap.get("pagesize")), Integer.parseInt(paramMap.get("page")));
-
-	}
-
-
     @ExceptionHandler(APIXMLNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleAXNFE(APIXMLNotFoundException e) {
