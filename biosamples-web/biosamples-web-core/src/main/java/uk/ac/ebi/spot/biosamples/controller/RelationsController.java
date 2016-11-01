@@ -82,7 +82,7 @@ public class RelationsController {
 	@RequestMapping(path = "samples/{accession}/graph", produces = {
 			MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 	public JSONObject sample(@PathVariable("accession") String accession) {
-		NeoSample tmp = sampleRepository.findOneByAccession(accession);
+		NeoSample repoSample = sampleRepository.findOneByAccession(accession);
 		List<Map<String, String>> nodes = new ArrayList<>();
 		List<Map<String, String>> edges = new ArrayList<>();
 
@@ -90,8 +90,8 @@ public class RelationsController {
 		nodes.add(constructNode(accession, accession, "samples"));
 
 		/* Get derivedFrom data */
-		if (tmp.getDerivedFrom() != null) {
-			for (NeoSample sample : tmp.getDerivedFrom()) {
+		if (repoSample != null && repoSample.getDerivedFrom() != null) {
+			for (NeoSample sample : repoSample.getDerivedFrom()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(sample.getAccession(), accession, "DERIVATION"));
 			}
@@ -99,32 +99,32 @@ public class RelationsController {
 		}
 
 		/* Get derivedTo data */
-		if (tmp.getDerivedTo() != null) {
-			for (NeoSample sample : tmp.getDerivedTo()) {
+		if (repoSample != null && repoSample.getDerivedTo() != null) {
+			for (NeoSample sample : repoSample.getDerivedTo()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "DERIVATION"));
 			}
 		}
 
 		/* Get sameAs data */
-		if (tmp.getSameAs() != null) {
-			for (NeoSample sample : tmp.getSameAs()) {
+		if (repoSample != null && repoSample.getSameAs() != null) {
+			for (NeoSample sample : repoSample.getSameAs()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "SAMEAS"));
 			}
 		}
 
 		/* Get childOf data */
-		if (tmp.getChildOf() != null) {
-			for (NeoSample sample : tmp.getChildOf()) {
+		if (repoSample != null && repoSample.getChildOf() != null) {
+			for (NeoSample sample : repoSample.getChildOf()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "OFFSPRING"));
 			}
 		}
 
 		/* Get Parent data */
-		if (tmp.getParentOf() != null) {
-			for (NeoSample sample : tmp.getParentOf()) {
+		if (repoSample != null && repoSample.getParentOf() != null) {
+			for (NeoSample sample : repoSample.getParentOf()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(sample.getAccession(), accession, "OFFSPRING"));
 			}
@@ -132,16 +132,16 @@ public class RelationsController {
 		}
 
 		/* Get RecuratedFrom data */
-		if (tmp.getRecuratedFrom() != null) {
-			for (NeoSample sample : tmp.getRecuratedFrom()) {
+		if (repoSample != null && repoSample.getRecuratedFrom() != null) {
+			for (NeoSample sample : repoSample.getRecuratedFrom()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(sample.getAccession(), accession, "RECURATED"));
 			}
 		}
 
 		/* Get RecuratedInto data */
-		if (tmp.getRecuratedTo() != null) {
-			for (NeoSample sample : tmp.getRecuratedTo()) {
+		if (repoSample != null && repoSample.getRecuratedTo() != null) {
+			for (NeoSample sample : repoSample.getRecuratedTo()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "RECURATED"));
 			}
@@ -149,8 +149,8 @@ public class RelationsController {
 		}
 
 		/* Get the group the sample is member of */
-		if (tmp.getGroups() != null) {
-			for (NeoGroup group : tmp.getGroups()) {
+		if (repoSample != null && repoSample.getGroups() != null) {
+			for (NeoGroup group : repoSample.getGroups()) {
 				nodes.add(constructNode(group.getAccession(), group.getAccession(), "groups"));
 				edges.add(constructEdge(accession, group.getAccession(), "MEMBERSHIP"));
 			}
