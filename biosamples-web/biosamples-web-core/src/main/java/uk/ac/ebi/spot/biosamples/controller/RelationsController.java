@@ -53,7 +53,7 @@ public class RelationsController {
 		/* Add the group start node */
 		nodes.add(constructNode(accession, accession, "groups"));
 
-		if (!tmp.getSamples().isEmpty()) {
+		if (tmp != null && !tmp.getSamples().isEmpty()) {
 			for (NeoSample sample : tmp.getSamples()) {
 				nodes.add(constructNode(sample.getAccession(), sample.getAccession(), "samples"));
 				edges.add(constructEdge(accession, sample.getAccession(), "MEMBERSHIP"));
