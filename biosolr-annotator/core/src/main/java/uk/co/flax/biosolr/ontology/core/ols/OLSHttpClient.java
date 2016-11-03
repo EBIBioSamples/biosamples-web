@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 package uk.co.flax.biosolr.ontology.core.ols;
+import org.apache.http.HeaderElement;
+import org.apache.http.HeaderElementIterator;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.apache.http.message.BasicHeaderElementIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,8 +75,26 @@ public class OLSHttpClient {
 		PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
 		connManager.setMaxTotal(threadPoolSize);
 		connManager.setDefaultMaxPerRoute(threadPoolSize);
+		connManager.setValidateAfterInactivity(100);
+		ConnectionKeepAliveStrategy myStrategy = new ConnectionKeepAliveStrategy() {
+		    @Override
+		    public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+		        HeaderElementIterator it = new BasicHeaderElementIterator(response.headerIterator(HTTP.CONN_KEEP_ALIVE));
+		        while (it.hasNext()) {
+		            HeaderElement he = it.nextElement();
+		            String param = he.getName();
+		            String value = he.getValue();
+		            if (value != null && param.equalsIgnoreCase
+		               ("timeout")) {
+		                return Long.parseLong(value) * 1000;
+		            }
+		        }
+		        return 5 * 1000;
+		    }
+		};
 		httpClient = HttpClients.custom()
 		        .setConnectionManager(connManager)
+		        .setKeepAliveStrategy(myStrategy)
 		        .build();
 		
 		// Initialise the concurrent executor
@@ -146,8 +172,10 @@ public class OLSHttpClient {
 					return objectMapper.readValue(response.getEntity().getContent(), clazz);
 				} else if (status == 404){
 					//silently ignore fail
+					EntityUtils.consume(response.getEntity());
 					return null;
 				} else {
+					EntityUtils.consume(response.getEntity());
 					throw new HttpException("Status code "+status+" for "+url);
 				}
 			}

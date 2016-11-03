@@ -132,6 +132,7 @@ public class OLSOntologyHelper extends AbstractOntologyHelper {
 	 * @throws OntologyHelperException if the lookup is interrupted.
 	 */
 	private void checkTerms(final Collection<String> iris) throws OntologyHelperException {
+		updateLastCallTime();
 		final List<String> lookups = iris.stream()
 				.filter(iri -> !terms.containsKey(iri))
 				.collect(Collectors.toList());
@@ -396,6 +397,7 @@ public class OLSOntologyHelper extends AbstractOntologyHelper {
 
 	@Override
 	public Map<String, Collection<String>> getRelations(String iri) throws OntologyHelperException {
+		updateLastCallTime();
 		Map<String, Collection<String>> relations = new HashMap<>();
 
 		checkTerm(iri);
