@@ -15,6 +15,7 @@
  */
 package uk.co.flax.biosolr.ontology.core.ols;
 
+import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
@@ -55,6 +56,10 @@ public class OLSHttpClient {
 				.register(ObjectMapperResolver.class)
 				.register(JacksonFeature.class)
 				.build();
+		//set timeouts to 10 seconds
+	    this.client.property(ClientProperties.CONNECT_TIMEOUT, 10000);
+	    this.client.property(ClientProperties.READ_TIMEOUT,    10000);
+
 
 		// Initialise the concurrent executor
 		this.executor = Objects.isNull(threadFactory) ?
@@ -68,6 +73,11 @@ public class OLSHttpClient {
 	 */
 	public void shutdown() {
 		executor.shutdown();
+		try {
+			executor.awaitTermination(1, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			LOGGER.warn("Interrupted during shutdown termination");
+		}
 		client.close();
 	}
 

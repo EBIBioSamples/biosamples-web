@@ -572,7 +572,7 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 				// Check if the last call time was longer ago than the maximum
 				if (System.currentTimeMillis() - DELETE_CHECK_DELAY_MS > helper.getLastCallTime()) {
 					// Assume helper is out of use - dispose of it to allow memory to be freed
-					updateProcessor.disposeHelper();
+					//updateProcessor.disposeHelper();
 				}
 			}
 		}
