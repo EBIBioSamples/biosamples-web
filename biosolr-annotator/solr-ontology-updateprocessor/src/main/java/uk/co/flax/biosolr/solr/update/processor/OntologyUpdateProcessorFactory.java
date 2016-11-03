@@ -283,9 +283,7 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 			@Override
 			public void preClose(SolrCore core) {
 				LOGGER.info("Triggering graceful shutdown of OntologyUpdate executor");
-				if (getHelper() != null) {
-					disposeHelper();
-				}
+				disposeHelper();
 				executor.shutdown();
 			}
 
@@ -409,7 +407,7 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 	public synchronized void disposeHelper() {
 		OntologyHelper oldHelper = helper;
 		helper = null;
-		oldHelper.dispose();
+		if (oldHelper != null) oldHelper.dispose();
 	}
 
 	@Override
