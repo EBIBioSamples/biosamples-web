@@ -155,7 +155,7 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OntologyUpdateProcessorFactory.class);
 
-	public static final long DELETE_CHECK_DELAY_MS = 2 * 60 * 1000; // 2 minutes 
+	public static final long DELETE_CHECK_DELAY_MS = 20 * 60 * 1000; // 20 minutes 
 
 	private static final String ENABLED_PARAM = "enabled";
 
@@ -407,8 +407,9 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 	}
 
 	public synchronized void disposeHelper() {
-		helper.dispose();
+		OntologyHelper oldHelper = helper;
 		helper = null;
+		oldHelper.dispose();
 	}
 
 	@Override
