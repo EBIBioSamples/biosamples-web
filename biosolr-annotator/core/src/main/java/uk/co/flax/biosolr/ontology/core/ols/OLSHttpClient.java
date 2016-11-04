@@ -64,8 +64,8 @@ public class OLSHttpClient {
 	    clientConfig.property(ClientProperties.CONNECT_TIMEOUT, 500);
 	    
 	    PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-	    connectionManager.setMaxTotal(100);
-	    connectionManager.setDefaultMaxPerRoute(20);
+	    connectionManager.setMaxTotal(threadPoolSize*5);
+	    connectionManager.setDefaultMaxPerRoute(threadPoolSize*2);
 	    
 	    // tell the config about the connection manager
 	    clientConfig.property(ApacheClientProperties.CONNECTION_MANAGER, connectionManager);	    
