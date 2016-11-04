@@ -14,32 +14,22 @@
  * limitations under the License.
  */
 package uk.co.flax.biosolr.ontology.core.ols;
-import org.apache.http.HeaderElement;
-import org.apache.http.HeaderElementIterator;
-import org.apache.http.HttpException;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.conn.ConnectionKeepAliveStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.message.BasicHeaderElementIterator;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.client.spi.Connector;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.apache.connector.ApacheClientProperties;
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import uk.co.flax.biosolr.ontology.core.OntologyHelperException;
 
-import java.io.IOException;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -56,8 +46,7 @@ public class OLSHttpClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OLSHttpClient.class);
 
-	private final CloseableHttpClient httpClient;
-	private final ObjectMapper objectMapper;
+	private final Client client;
 	private final ExecutorService executor;
 
 	/**
@@ -67,36 +56,28 @@ public class OLSHttpClient {
 	 * threads.
 	 */
 	public OLSHttpClient(int threadPoolSize, ThreadFactory threadFactory) {
-		//Initialise the oBject Mapper
-		this.objectMapper = new ObjectMapper();
-		this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-				
-		// Initialise the HTTP client pool 
-		PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
-		connManager.setMaxTotal(threadPoolSize);
-		connManager.setDefaultMaxPerRoute(threadPoolSize);
-		connManager.setValidateAfterInactivity(100);
-		ConnectionKeepAliveStrategy myStrategy = new ConnectionKeepAliveStrategy() {
-		    @Override
-		    public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
-		        HeaderElementIterator it = new BasicHeaderElementIterator(response.headerIterator(HTTP.CONN_KEEP_ALIVE));
-		        while (it.hasNext()) {
-		            HeaderElement he = it.nextElement();
-		            String param = he.getName();
-		            String value = he.getValue();
-		            if (value != null && param.equalsIgnoreCase
-		               ("timeout")) {
-		                return Long.parseLong(value) * 1000;
-		            }
-		        }
-		        return 5 * 1000;
-		    }
-		};
-		httpClient = HttpClients.custom()
-		        .setConnectionManager(connManager)
-		        .setKeepAliveStrategy(myStrategy)
-		        .build();
+		// Initialise the HTTP client
+
+	    ClientConfig clientConfig = new ClientConfig();
+	    // values are in milliseconds
+	    clientConfig.property(ClientProperties.READ_TIMEOUT, 2000);
+	    clientConfig.property(ClientProperties.CONNECT_TIMEOUT, 500);
+	    
+	    PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+	    connectionManager.setMaxTotal(100);
+	    connectionManager.setDefaultMaxPerRoute(20);
+	    
+	    // tell the config about the connection manager
+	    clientConfig.property(ApacheClientProperties.CONNECTION_MANAGER, connectionManager);	    
+	    // tell the config about the connector
+	    clientConfig.connectorProvider(new ApacheConnectorProvider());
 		
+		this.client = new JerseyClientBuilder()
+				.withConfig(clientConfig)
+				.register(ObjectMapperResolver.class)
+				.register(JacksonFeature.class)
+				.build();
+
 		// Initialise the concurrent executor
 		this.executor = Objects.isNull(threadFactory) ?
 				Executors.newFixedThreadPool(threadPoolSize) :
@@ -114,11 +95,7 @@ public class OLSHttpClient {
 		} catch (InterruptedException e) {
 			LOGGER.warn("Interrupted during shutdown termination");
 		}
-		try {
-			httpClient.close();
-		} catch (IOException e) {
-			LOGGER.warn("Problem closing http client",e);
-		}
+		client.close();
 	}
 
 	/**
@@ -145,41 +122,11 @@ public class OLSHttpClient {
 	private <T> List<Callable<T>> createCalls(Collection<String> urls, Class<T> clazz) {
 		List<Callable<T>> calls = new ArrayList<>(urls.size());
 
-		for (String url : urls) {
-			calls.add(new RequestCallable<T>(url, clazz));
-		}
+		urls.forEach(url -> calls.add(() ->
+				client.target(url).request(MediaType.APPLICATION_JSON_TYPE).get(clazz)
+		));
+
 		return calls;
-	}
-	
-	private class RequestCallable<T> implements Callable<T>{
-		private final String url;
-		private final Class<T> clazz;
-		private HttpClientContext context;
-		public RequestCallable(String url, Class<T> clazz) {
-			this.url = url;
-			this.clazz = clazz;
-	        this.context = HttpClientContext.create();
-		}
-		@Override
-		public T call() throws Exception {
-			//construct the HTTP reuqest
-			HttpGet request = new HttpGet(url);
-			request.addHeader(HttpHeaders.ACCEPT, "application/json");
-			//actually send the request and handle the response
-			try (CloseableHttpResponse response = httpClient.execute(request, context);) {
-				int status = response.getStatusLine().getStatusCode();
-				if (status == 200) {
-					return objectMapper.readValue(response.getEntity().getContent(), clazz);
-				} else if (status == 404){
-					//silently ignore fail
-					EntityUtils.consume(response.getEntity());
-					return null;
-				} else {
-					EntityUtils.consume(response.getEntity());
-					throw new HttpException("Status code "+status+" for "+url);
-				}
-			}
-		}
 	}
 
 	/**
@@ -199,12 +146,14 @@ public class OLSHttpClient {
 			List<Future<T>> holders = executor.invokeAll(calls);
 			holders.forEach(h -> {
 				try {
-					T result = h.get();
-					if (result != null) {
-						ret.add(result);
-					}
+					ret.add(h.get());
 				} catch (ExecutionException e) {
-					LOGGER.error(e.getMessage(), e);
+					if (e.getCause() instanceof NotFoundException) {
+						NotFoundException nfe = (NotFoundException)e.getCause();
+						LOGGER.warn("Caught NotFoundException: {}", nfe.getResponse().toString());
+					} else {
+						LOGGER.error(e.getMessage(), e);
+					}
 				} catch (InterruptedException e) {
 					LOGGER.error(e.getMessage());
 				}

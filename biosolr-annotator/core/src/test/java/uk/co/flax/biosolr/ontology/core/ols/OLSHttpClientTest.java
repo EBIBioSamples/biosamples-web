@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import uk.co.flax.biosolr.ontology.core.ols.terms.OntologyTerm;
 import uk.co.flax.biosolr.ontology.core.owl.OWLOntologyHelperMethodsTest;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -95,7 +97,7 @@ public class OLSHttpClientTest {
 		final String testPath = buildIriPath(OWLOntologyHelperMethodsTest.TEST_IRI);
 		mockServer.when(request().withPath(testPath))
 				.respond(response()
-						.withHeader(new Header("Content-Type", "application/json"))
+						.withHeader(new Header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
 						.withBody(readBody(MOCKSERVER_DIR + "/efo_0000001.json")));
 
 		OLSHttpClient client = new OLSHttpClient(8, null);
