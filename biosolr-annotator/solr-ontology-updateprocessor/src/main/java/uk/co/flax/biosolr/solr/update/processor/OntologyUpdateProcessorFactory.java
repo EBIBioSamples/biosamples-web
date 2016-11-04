@@ -155,7 +155,7 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OntologyUpdateProcessorFactory.class);
 
-	public static final long DELETE_CHECK_DELAY_MS = 20 * 60 * 1000; // 20 minutes 
+	public static final long DELETE_CHECK_DELAY_MS = -1;//5 * 60 * 1000; 
 
 	private static final String ENABLED_PARAM = "enabled";
 
@@ -296,8 +296,10 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 			}
 		});
 
-		executor.scheduleAtFixedRate(new OntologyCheckRunnable(this), DELETE_CHECK_DELAY_MS, DELETE_CHECK_DELAY_MS,
-				TimeUnit.MILLISECONDS);
+		if (DELETE_CHECK_DELAY_MS > 0) {
+			executor.scheduleAtFixedRate(new OntologyCheckRunnable(this), DELETE_CHECK_DELAY_MS, DELETE_CHECK_DELAY_MS,
+					TimeUnit.MILLISECONDS);
+		}
 	}
 
 	public boolean isEnabled() {
@@ -407,7 +409,9 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 	public synchronized void disposeHelper() {
 		OntologyHelper oldHelper = helper;
 		helper = null;
-		if (oldHelper != null) oldHelper.dispose();
+		if (oldHelper != null) {
+			oldHelper.dispose();
+		}
 	}
 
 	@Override
@@ -566,7 +570,7 @@ public class OntologyUpdateProcessorFactory extends UpdateRequestProcessorFactor
 		@Override
 		public void run() {
 			OntologyHelper helper = updateProcessor.getHelper();
-			if (helper != null) {
+			if (helper != null && DELETE_CHECK_DELAY_MS > 0) {
 				// Check if the last call time was longer ago than the maximum
 				if (System.currentTimeMillis() - DELETE_CHECK_DELAY_MS > helper.getLastCallTime()) {
 					// Assume helper is out of use - dispose of it to allow memory to be freed

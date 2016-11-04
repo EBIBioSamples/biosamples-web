@@ -15,6 +15,8 @@
  */
 package uk.co.flax.biosolr.ontology.core.ols;
 
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
@@ -29,6 +31,7 @@ import uk.co.flax.biosolr.ontology.core.OntologyHelperException;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,8 +49,34 @@ public class OLSHttpClient {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OLSHttpClient.class);
 
-	private final Client client;
+	private static final Client client;
 	private final ExecutorService executor;
+	
+
+	static {
+	    ClientConfig clientConfig = new ClientConfig();
+	    // values are in milliseconds
+	    clientConfig.property(ClientProperties.READ_TIMEOUT, 30000);
+	    clientConfig.property(ClientProperties.CONNECT_TIMEOUT, 1000);
+	    
+	    //have to use the deprecated one for Jersey compatability
+	    PoolingClientConnectionManager connectionManager = new PoolingClientConnectionManager();
+	    connectionManager.setMaxTotal(100);
+	    connectionManager.setDefaultMaxPerRoute(100);
+	    
+	    // tell the config about the connection manager
+	    clientConfig.property(ApacheClientProperties.CONNECTION_MANAGER, connectionManager);
+	    clientConfig.property(ApacheClientProperties.REQUEST_CONFIG, RequestConfig.custom()
+	    		  .setConnectTimeout(1000)
+	    		  .setSocketTimeout(30000)
+	    		  .build());
+	    clientConfig.connectorProvider(new ApacheConnectorProvider());
+	    
+	    client = ClientBuilder.newClient(clientConfig)
+				.register(ObjectMapperResolver.class)
+				.register(JacksonFeature.class);
+		
+	}
 
 	/**
 	 * Construct an HTTP client for accessing the OLS web API.
@@ -56,46 +85,32 @@ public class OLSHttpClient {
 	 * threads.
 	 */
 	public OLSHttpClient(int threadPoolSize, ThreadFactory threadFactory) {
-		// Initialise the HTTP client
-
-	    ClientConfig clientConfig = new ClientConfig();
-	    // values are in milliseconds
-	    clientConfig.property(ClientProperties.READ_TIMEOUT, 2000);
-	    clientConfig.property(ClientProperties.CONNECT_TIMEOUT, 500);
-	    
-	    PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-	    connectionManager.setMaxTotal(threadPoolSize*5);
-	    connectionManager.setDefaultMaxPerRoute(threadPoolSize*2);
-	    
-	    // tell the config about the connection manager
-	    clientConfig.property(ApacheClientProperties.CONNECTION_MANAGER, connectionManager);	    
-	    // tell the config about the connector
-	    clientConfig.connectorProvider(new ApacheConnectorProvider());
 		
-		this.client = new JerseyClientBuilder()
-				.withConfig(clientConfig)
-				.register(ObjectMapperResolver.class)
-				.register(JacksonFeature.class)
-				.build();
+		// Initialise the HTTP client
+		//done statically
+
+		// Initialise the concurrent executor
 
 		// Initialise the concurrent executor
 		this.executor = Objects.isNull(threadFactory) ?
 				Executors.newFixedThreadPool(threadPoolSize) :
 				Executors.newFixedThreadPool(threadPoolSize, threadFactory);
-		LOGGER.trace("Initialising OLS HTTP client with threadpool size {}", threadPoolSize);
+		LOGGER.info("Initialising OLS HTTP client");
 	}
 
 	/**
 	 * Shut down the client.
 	 */
 	public void shutdown() {
+		
 		executor.shutdown();
 		try {
 			executor.awaitTermination(1, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
 			LOGGER.warn("Interrupted during shutdown termination");
 		}
-		client.close();
+		//client.close();
+		
 	}
 
 	/**
@@ -123,7 +138,7 @@ public class OLSHttpClient {
 		List<Callable<T>> calls = new ArrayList<>(urls.size());
 
 		urls.forEach(url -> calls.add(() ->
-				client.target(url).request(MediaType.APPLICATION_JSON_TYPE).get(clazz)
+			client.target(url).request(MediaType.APPLICATION_JSON_TYPE).get(clazz)
 		));
 
 		return calls;
@@ -145,12 +160,15 @@ public class OLSHttpClient {
 		try {
 			List<Future<T>> holders = executor.invokeAll(calls);
 			holders.forEach(h -> {
+				T result = null;
 				try {
-					ret.add(h.get());
+					result = h.get();
+					//should this only add if there was no error? or add null if an exception was thrown?
+					ret.add(result);
 				} catch (ExecutionException e) {
 					if (e.getCause() instanceof NotFoundException) {
 						NotFoundException nfe = (NotFoundException)e.getCause();
-						LOGGER.warn("Caught NotFoundException: {}", nfe.getResponse().toString());
+						LOGGER.trace("Caught NotFoundException: {}", nfe.getResponse().toString());
 					} else {
 						LOGGER.error(e.getMessage(), e);
 					}

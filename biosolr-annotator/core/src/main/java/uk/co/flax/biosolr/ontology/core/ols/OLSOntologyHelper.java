@@ -44,7 +44,7 @@ public class OLSOntologyHelper extends AbstractOntologyHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OLSOntologyHelper.class);
 
 	@SuppressWarnings("unused")
-	public static final int THREADPOOL_SIZE = 8;
+	public static final int THREADPOOL_SIZE = 1;
 	public static final int PAGE_SIZE = 100;
 
 	static final String ENCODING = "UTF-8";
@@ -132,6 +132,7 @@ public class OLSOntologyHelper extends AbstractOntologyHelper {
 	 * @throws OntologyHelperException if the lookup is interrupted.
 	 */
 	private void checkTerms(final Collection<String> iris) throws OntologyHelperException {
+		
 		final List<String> lookups = iris.stream()
 				.filter(iri -> !terms.containsKey(iri))
 				.collect(Collectors.toList());
@@ -154,6 +155,7 @@ public class OLSOntologyHelper extends AbstractOntologyHelper {
 	 * @throws OntologyHelperException if the lookup is interrupted.
 	 */
 	protected List<OntologyTerm> lookupTerms(final List<String> iris) throws OntologyHelperException {
+		updateLastCallTime();
 		Collection<String> callUrls = createCallUrls(iris);
 		return olsClient.callOLS(callUrls, OntologyTerm.class);
 	}
@@ -340,6 +342,7 @@ public class OLSOntologyHelper extends AbstractOntologyHelper {
 	 * web service.
 	 */
 	protected Set<String> queryWebServiceForTerms(String baseUrl) throws OntologyHelperException {
+		updateLastCallTime();
 		Set<String> retList;
 
 		// Build URL for first page
