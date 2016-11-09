@@ -74,6 +74,7 @@
     <script th:unless="${isSearch}">
         window.whenDOMReady(function() {
 
+            console.log("I'm passing here - head.html");
             baseVM.$on("as-hit", function(value){
                 this.$nextTick(function(){
                     if (!value) {

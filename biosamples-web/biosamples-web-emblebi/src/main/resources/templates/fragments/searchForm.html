@@ -17,6 +17,10 @@
         <form th:unless="${isSearch}" th:action="@{/search}" @submit.prevent="$emit('as-hit')" method="get" id="local_search">
             <div th:replace="fragments/searchForm :: formContent"></div>
         </form>
+
+        <!--<form th:unless="${isSearch}" th:action="@{/search}" method="get" id="local_search">-->
+            <!--<div th:replace="fragments/searchForm :: formContent"></div>-->
+        <!--</form>-->
 </th:block>
 
 <fieldset th:fragment="formContent">

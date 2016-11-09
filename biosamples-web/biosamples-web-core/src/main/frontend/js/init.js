@@ -50,6 +50,7 @@
 
     window.Vue = Vue;
     window.whenDOMReady(function(){
+        console.log("I'm passing here - init.js");
         window.baseVM = new window.Vue({
             el: "#app",
         });
