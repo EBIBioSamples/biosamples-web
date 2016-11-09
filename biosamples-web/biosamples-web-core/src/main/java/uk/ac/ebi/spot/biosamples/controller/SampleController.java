@@ -143,9 +143,9 @@ public class SampleController {
 			@RequestParam(value = "sortby", defaultValue = "score") String sortBy,
 			@RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
 			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
-			@RequestParam(value = "page", defaultValue = "0") int page) {
+			@RequestParam(value = "page", defaultValue = "1") int page) {
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
-		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
+		PageRequest querySpec = new PageRequest(page-1, pageSize, sortingMethod);
 		
 		//if the search term is blank, default to matching everything
 		if (searchTerm == null || searchTerm.trim().length() == 0) {
@@ -168,7 +168,7 @@ public class SampleController {
 			@RequestParam(value = "sortby", defaultValue = "score") String sortBy,
 			@RequestParam(value = "sortorder", defaultValue = "desc") String sortOrder,
 			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
-			@RequestParam(value = "page", defaultValue = "0") int page) {
+			@RequestParam(value = "page", defaultValue = "1") int page) {
 		
 		//if a blank query is used, default to match all
 		if (searchTerm.trim().length()==0) {
@@ -176,7 +176,7 @@ public class SampleController {
 		}
 		
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
-		PageRequest querySpec = new PageRequest(page, pageSize, sortingMethod);
+		PageRequest querySpec = new PageRequest(page-1, pageSize, sortingMethod);
 		Page<SolrSample> results = solrSampleRepository.findByTextAndGroups(searchTerm, groupAccession,
 				querySpec);
 		ResultQuery<SolrSample> rq = new SampleResultQuery(results);
