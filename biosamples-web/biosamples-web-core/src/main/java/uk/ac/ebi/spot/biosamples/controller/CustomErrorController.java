@@ -35,6 +35,7 @@ public class CustomErrorController{
     }
 
 
+    //currently not working, see  BSD-687 
     @ExceptionHandler(value = Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception exception) throws Exception {
 
