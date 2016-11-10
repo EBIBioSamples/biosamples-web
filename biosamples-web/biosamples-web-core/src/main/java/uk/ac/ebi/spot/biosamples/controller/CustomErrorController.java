@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFoundException;
+import uk.ac.ebi.spot.biosamples.exception.InvalidPageException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -22,7 +23,7 @@ public class CustomErrorController{
 
     @ExceptionHandler(HtmlContentNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNotFoundError(Model model, HttpServletRequest req, Exception exception)
+    public String handleHtmlContentNotFoundException(Model model, HttpServletRequest req, Exception exception)
             throws Exception {
 
         log.error("Problem with: " + req.getRequestURI(), exception);
@@ -30,6 +31,20 @@ public class CustomErrorController{
         model.addAttribute("url", req.getRequestURL());
         model.addAttribute("timestamp", new Date().toString());
         model.addAttribute("status", HttpStatus.NOT_FOUND.value());
+        return "error";
+
+    }
+
+    @ExceptionHandler(InvalidPageException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleInvalidPageException(Model model, HttpServletRequest req, Exception exception)
+            throws Exception {
+
+        log.error("Problem with: " + req.getRequestURI(), exception);
+        model.addAttribute("exception", exception);
+        model.addAttribute("url", req.getRequestURL());
+        model.addAttribute("timestamp", new Date().toString());
+        model.addAttribute("status", HttpStatus.BAD_REQUEST.value());
         return "error";
 
     }

@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFoundException;
+import uk.ac.ebi.spot.biosamples.exception.InvalidPageException;
 import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
@@ -142,8 +143,9 @@ public class SampleController {
 			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
+		
 		if (page < 1) {
-			
+			throw new InvalidPageException("Must use 1-based paging");
 		}
 		PageRequest querySpec = new PageRequest(page-1, pageSize, sortingMethod);
 		
@@ -176,6 +178,9 @@ public class SampleController {
 		}
 		
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
+		if (page < 1) {
+			throw new InvalidPageException("Must use 1-based paging");
+		}
 		PageRequest querySpec = new PageRequest(page-1, pageSize, sortingMethod);
 		Page<SolrSample> results = solrSampleRepository.findByTextAndGroups(searchTerm, groupAccession,
 				querySpec);
