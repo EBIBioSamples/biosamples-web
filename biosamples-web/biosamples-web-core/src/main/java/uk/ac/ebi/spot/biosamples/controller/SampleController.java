@@ -145,6 +145,9 @@ public class SampleController {
 			@RequestParam(value = "pagesize", defaultValue = "25") int pageSize,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
+		if (page < 1) {
+			
+		}
 		PageRequest querySpec = new PageRequest(page-1, pageSize, sortingMethod);
 		
 		//if the search term is blank, default to matching everything
@@ -192,15 +195,5 @@ public class SampleController {
 		headers.setContentType(MediaType.TEXT_PLAIN);
 		return new ResponseEntity<>("There is no XML available for this accession: " + e.getMessage(), headers,
 				HttpStatus.NOT_FOUND);
-	}
-
-	@ExceptionHandler(RequestParameterSyntaxException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<String> handleRPSE(RequestParameterSyntaxException e) {
-		log.error("Failed to parse legacy query request", e);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.TEXT_PLAIN);
-		return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(), headers,
-				HttpStatus.BAD_REQUEST);
 	}
 }

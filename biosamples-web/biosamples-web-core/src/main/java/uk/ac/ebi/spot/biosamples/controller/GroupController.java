@@ -158,16 +158,6 @@ public class GroupController {
                                     HttpStatus.NOT_FOUND);
     }
 
-	@ExceptionHandler(RequestParameterSyntaxException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ResponseEntity<String> handleRPSE(RequestParameterSyntaxException e) {
-		getLog().error("Failed to parse legacy query request", e);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.TEXT_PLAIN);
-		return new ResponseEntity<>("Could not interpret query request: " + e.getMessage(), headers,
-				HttpStatus.BAD_REQUEST);
-	}
-
 	private String cleanAttributeName(String name) {
 		name = name.substring(0, name.indexOf("_crt_ft"));
 		return name;
