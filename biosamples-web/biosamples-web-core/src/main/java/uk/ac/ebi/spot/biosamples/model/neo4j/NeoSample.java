@@ -9,8 +9,6 @@ import java.util.Set;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.Relationship;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 @NodeEntity(label="Sample")
 public class NeoSample {
 

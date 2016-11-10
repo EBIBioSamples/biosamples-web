@@ -13,7 +13,6 @@ import org.tuckey.web.filters.urlrewrite.utils.StringUtils;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.io.InputStream;
 
 
 public class ResourceAwareUrlRewriteFilter extends UrlRewriteFilter {

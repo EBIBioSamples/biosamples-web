@@ -13,10 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
-import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
-import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
+import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFoundException;
 import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
@@ -25,7 +23,6 @@ import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;
 import uk.ac.ebi.spot.biosamples.repository.solr.SolrSampleRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -46,7 +43,7 @@ public class SampleController {
 		if (solrSample != null) {
 			model.addAttribute("sample", solrSample);
 		} else {
-			throw new HtmlContentNotFound("No sample found with accession " + accession);
+			throw new HtmlContentNotFoundException("No sample found with accession " + accession);
 		}
 		
 		NeoSample neoSample = neoSampleRepository.findOneByAccession(accession);

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
+import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -20,7 +20,7 @@ public class CustomErrorController{
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @ExceptionHandler(HtmlContentNotFound.class)
+    @ExceptionHandler(HtmlContentNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFoundError(Model model, HttpServletRequest req, Exception exception)
             throws Exception {

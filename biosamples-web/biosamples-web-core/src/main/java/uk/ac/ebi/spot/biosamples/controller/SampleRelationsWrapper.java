@@ -1,9 +1,5 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 public class SampleRelationsWrapper {
 
     private String accession;

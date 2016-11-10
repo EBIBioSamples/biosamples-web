@@ -22,10 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import uk.ac.ebi.spot.biosamples.controller.utils.LegacyApiQueryParser;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
-import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFound;
-import uk.ac.ebi.spot.biosamples.exception.RequestParameterSyntaxException;
+import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFoundException;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrGroup;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrIgnoredField;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
@@ -109,7 +107,7 @@ public class GroupController {
 			}
 			return "group";
 		} else {
-			throw new HtmlContentNotFound("No group has been found with accession " + accession);
+			throw new HtmlContentNotFoundException("No group has been found with accession " + accession);
 		}
 	}
 

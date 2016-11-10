@@ -160,13 +160,6 @@ public class HttpSolrDispatcher {
         return reducedFacetList;
     }
 
-    private String cleanAttributeName(String name) {
-        name = name.substring(0, name.indexOf("_crt_ft"));
-        return Arrays.stream(name.split("_")).map(part -> {
-            return part.substring(0, 1).toUpperCase() + part.substring(1, part.length()).toLowerCase();
-        }).collect(Collectors.joining(" "));
-    }
-
     public void streamSolrResponse(OutputStream outputStream, HttpSolrQuery solrQuery) throws IOException {
     	log.info("Getting solrReponse for "+solrQuery.stringify());
     	

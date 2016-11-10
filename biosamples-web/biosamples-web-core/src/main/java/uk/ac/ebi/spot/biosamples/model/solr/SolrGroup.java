@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.solr.core.mapping.SolrDocument;
-import org.springframework.data.solr.core.query.result.PageKey;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
