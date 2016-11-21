@@ -264,6 +264,10 @@
                     this.pageNumber = 1;
                     this.querySamplesInGroup();
                 });
+                this.$on("as-hit", function(value){
+                    value = document.querySelector("input[name='searchTerm']").value;
+                    window.location = window.Store.searchUrl + "?searchTerm=" + value;
+                });
             },
 
 
