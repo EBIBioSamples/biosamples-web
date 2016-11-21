@@ -27,8 +27,15 @@
 
     <!-- Biosamples specific content goes here -->
     <section id="group_content">
-        <div class="doc_type">JSON</div>
-        <div class="doc_type">XML</div>
+        <div class="btn-list--container">
+            <div class="btn-list--left">
+                <a href="#" onclick="goBack()" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i> Back</a>
+            </div>
+            <div class="btn-list--right">
+                <a th:href="@{'/xml/groups/' + ${group.accession}}" class="btn btn-default">XML</a>
+                <a th:href="@{'/api/groups/' + ${group.accession}}" class="btn btn-default">JSON</a>
+            </div>
+        </div>
         <h4 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h4>
         <div class="detail_table">
 

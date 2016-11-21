@@ -62,7 +62,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
                 // Collect badges values
                 let crtNames = objKeys
                     .filter(el=>el.endsWith("_crt_json"))
-                    .filter(el=>!el.startsWith("sampleName"))
+                    .filter(el=>!el.startsWith("name"))
 
                 // Process characteristics
                 crtNames.forEach(name => {
@@ -114,7 +114,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             // Return the object we want to display
             return {
                 title: obj.accession,
-                subtitle: obj.sampleName_crt,
+                subtitle: obj.name,
                 type: obj.content_type,
                 description: obj.description ? obj.description : "",
                 date: obj.updatedate,

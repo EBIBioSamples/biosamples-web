@@ -17,6 +17,9 @@
             document.addEventListener("DOMContentLoaded", callback);
         }
     };
+    window.goBack = function() {
+        window.history.back();
+    };
 
     // Vue starting configuration
     var Vue = require("vue");
@@ -54,7 +57,7 @@
         window.baseVM = new window.Vue({
             el: "#app",
         });
-    })
+    });
 
 
 

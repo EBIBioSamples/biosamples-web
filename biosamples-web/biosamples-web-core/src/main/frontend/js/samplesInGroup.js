@@ -106,170 +106,168 @@
         return "";
     }
 
-    window.whenDOMReady(function() {
-        if (baseVM) {
-            baseVM.$destroy();
-        }
-        baseVM = new Vue({
-            el: '#app',
-            data: {
-                group: accession,
-                keyword: '',
-                pageNumber: 1,
-                samplesToRetrieve: 10,
-                isQuerying: false,
-                submittedQuery: false,
-                readValues: readValues,
-                resultsNumber: 1,
-                groupSamples: [],
-                samplesAttributes: table_attrs,
-                queryResults: {},
-                alerts: [],
-                facetsCollapsed: false
+    if (baseVM) {
+        baseVM.$destroy();
+    }
+    baseVM = new Vue({
+        el: '#app',
+        data: {
+            group: accession,
+            keyword: '',
+            pageNumber: 1,
+            samplesToRetrieve: 10,
+            isQuerying: false,
+            submittedQuery: false,
+            readValues: readValues,
+            resultsNumber: 1,
+            groupSamples: [],
+            samplesAttributes: table_attrs,
+            queryResults: {},
+            alerts: [],
+            facetsCollapsed: false
+        },
+        computed: {
+
+            queryTermPresent() {
+                return !_.isEmpty(this.queryTerm);
             },
-            computed: {
-
-                queryTermPresent() {
-                    return !_.isEmpty(this.queryTerm);
-                },
-                querySubmitted() {
-                    return this.submittedQuery;
-                },
-                queryHasResults() {
-                    return this.resultsNumber > 0;
-                },
-                hasAlerts() {
-                    return this.alerts.length > 0;
-                }
+            querySubmitted() {
+                return this.submittedQuery;
             },
-
-            /**
-             * Vue subcomponents used withing the search interface
-             * @property {Object} components
-             * @type {Object}
-             */
-            /**
-             * What happens when the Vue instance is ready
-             * @method ready
-             */
-            ready: function() {
-                $registerElements();
-                $registerHandlers();
-
-                this.registerEventHandlers();
-                this.querySamplesInGroup();
+            queryHasResults() {
+                return this.resultsNumber > 0;
             },
-
-            methods: {
-
-
-                /**
-                 * Make the request for the SolR documents
-                 * @method querySamples
-                 * @param  e {Event} the click event
-                 */
-
-                querySamplesInGroup: function(e) {
-                    console.log('querySamplesInGroup');
-                    log("Query samples in group");
-                    if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
-                        e.preventDefault();
-                    }
-
-                    if (this.isQuerying) {
-                        log("Still getting results from previous query, new query aborted");
-                        return;
-                    }
-
-                    let requestData = {
-                        params: this.getQueryParameters(),
-                        // timeout: 10000
-                    };
-
-                    this.isQuerying = true;
-
-                    this.$http.get(Store.samplesInGroupUrl,requestData)
-                        .then(function(responseData) {
-                            const results = responseData.json();
-                            if (! this.submittedQuery) {
-                                this.submittedQuery = true;
-                            }
-
-                            this.consumeResults(results);
-                        })
-                        .catch(function(data){
-                            console.log(data);
-                            this.alerts.push({
-                                type: 'danger',
-                                timeout: 5000,
-                                message: `Something went wrong!\nError code: ${data.status} - ${data.statusText}`
-                            });
-                        })
-                        .then(function() {
-                            this.isQuerying = false;
-                            $setTableAndTopScrollSize();
-                        });
-                },
-
-                consumeResults: function(results) {
-
-                    log("Consuming ajax results","Consume Results");
-
-                    if (_.isEmpty(results)) {
-                        throw new Error("No results is available");
-                    }
-
-                    let paginationInfo = results.page;
-                    let embeddedObjects = results._embedded;
-                    if (_.isEmpty(embeddedObjects)) {
-                        return {};
-                    }
-
-                    this.groupSamples = embeddedObjects.samples;
-                    this.resultsNumber = paginationInfo.totalElements;
-
-                },
-
-                /**
-                 * Prepare an object containing all the params for the SolR request
-                 * @method getQueryParameters
-                 * @return {Object} parameters necessary for the SolR documents request
-                 */
-                getQueryParameters: function() {
-                    return {
-                        'text': this.keyword ? this.keyword : '*',
-                        'group': this.group,
-                        'size': this.samplesToRetrieve,
-                        'page': this.pageNumber - 1
-                    };
-                },
-
-                removeAlert(item) {
-                    this.alerts.$remove(item);
-                },
-
-                /**
-                 * Register event handlers for Vue custom events
-                 * @method registerEventHandlers
-                 */
-                registerEventHandlers: function() {
-                    this.$on('page-changed', function(newPage) {
-                        console.log(" on page-changed");
-                        this.pageNumber = newPage;
-                        this.querySamplesInGroup();
-                    });
-
-                    this.$on('dd-item-chosen', function(item) {
-                        var previousValue = this.samplesToRetrieve;
-                        this.samplesToRetrieve = item;
-                        this.pageNumber = 1;
-                        this.querySamplesInGroup();
-                    });
-                },
-
-
+            hasAlerts() {
+                return this.alerts.length > 0;
             }
-        });
+        },
+
+        /**
+         * Vue subcomponents used withing the search interface
+         * @property {Object} components
+         * @type {Object}
+         */
+        /**
+         * What happens when the Vue instance is ready
+         * @method ready
+         */
+        ready: function() {
+            $registerElements();
+            $registerHandlers();
+
+            this.registerEventHandlers();
+            this.querySamplesInGroup();
+        },
+
+        methods: {
+
+
+            /**
+             * Make the request for the SolR documents
+             * @method querySamples
+             * @param  e {Event} the click event
+             */
+
+            querySamplesInGroup: function(e) {
+                console.log('querySamplesInGroup');
+                log("Query samples in group");
+                if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
+                    e.preventDefault();
+                }
+
+                if (this.isQuerying) {
+                    log("Still getting results from previous query, new query aborted");
+                    return;
+                }
+
+                let requestData = {
+                    params: this.getQueryParameters(),
+                    // timeout: 10000
+                };
+
+                this.isQuerying = true;
+
+                this.$http.get(Store.samplesInGroupUrl,requestData)
+                    .then(function(responseData) {
+                        const results = responseData.json();
+                        if (! this.submittedQuery) {
+                            this.submittedQuery = true;
+                        }
+
+                        this.consumeResults(results);
+                    })
+                    .catch(function(data){
+                        console.log(data);
+                        this.alerts.push({
+                            type: 'danger',
+                            timeout: 5000,
+                            message: `Something went wrong!\nError code: ${data.status} - ${data.statusText}`
+                        });
+                    })
+                    .then(function() {
+                        this.isQuerying = false;
+                        $setTableAndTopScrollSize();
+                    });
+            },
+
+            consumeResults: function(results) {
+
+                log("Consuming ajax results","Consume Results");
+
+                if (_.isEmpty(results)) {
+                    throw new Error("No results is available");
+                }
+
+                let paginationInfo = results.page;
+                let embeddedObjects = results._embedded;
+                if (_.isEmpty(embeddedObjects)) {
+                    return {};
+                }
+
+                this.groupSamples = embeddedObjects.samples;
+                this.resultsNumber = paginationInfo.totalElements;
+
+            },
+
+            /**
+             * Prepare an object containing all the params for the SolR request
+             * @method getQueryParameters
+             * @return {Object} parameters necessary for the SolR documents request
+             */
+            getQueryParameters: function() {
+                return {
+                    'text': this.keyword ? this.keyword : '*',
+                    'group': this.group,
+                    'size': this.samplesToRetrieve,
+                    'page': this.pageNumber - 1
+                };
+            },
+
+            removeAlert(item) {
+                this.alerts.$remove(item);
+            },
+
+            /**
+             * Register event handlers for Vue custom events
+             * @method registerEventHandlers
+             */
+            registerEventHandlers: function() {
+                this.$on('page-changed', function(newPage) {
+                    console.log(" on page-changed");
+                    this.pageNumber = newPage;
+                    this.querySamplesInGroup();
+                });
+
+                this.$on('dd-item-chosen', function(item) {
+                    var previousValue = this.samplesToRetrieve;
+                    this.samplesToRetrieve = item;
+                    this.pageNumber = 1;
+                    this.querySamplesInGroup();
+                });
+            },
+
+
+        }
     })
 })(window,jQuery);
 
