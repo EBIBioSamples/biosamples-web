@@ -22,7 +22,7 @@
     </ul>
 </template>
 
-<script lang="es6">
+<script>
 
     module.exports = {
 
