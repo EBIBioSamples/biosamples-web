@@ -1,21 +1,27 @@
 .facet-panel {
-	margin: 10px 0;
+  margin: 10px 0;
 }
 
-.facet-entry{
-	cursor: pointer;
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
+.facet-list {
 
-	&.selected {
-		background-color: $brand-primary;
-		color: white;
-		text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-	}
+  margin: 0;
 
-	.facet-name {
-		padding-right: 1em;
-		word-break: break-all;
-	}
+  .facet-entry{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-left: 0;
+    border-right: 0;
+
+    &.selected {
+      background-color: $brand-primary;
+      color: white;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .facet-name {
+      padding-right: 1em;
+      word-break: break-all;
+    }
+  }
 }
