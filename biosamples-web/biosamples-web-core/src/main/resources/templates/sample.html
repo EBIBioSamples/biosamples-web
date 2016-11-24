@@ -25,8 +25,15 @@
 <main layout:fragment="content">
 
     <section id="sample_content">
-        <div class="doc_type">JSON</div>
-        <div class="doc_type">XML</div>
+        <div class="btn-list--container">
+            <div class="btn-list--left">
+                <a href="#" onclick="goBack()" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i> Back</a>
+            </div>
+            <div class="btn-list--right">
+                <a th:href="@{'/xml/samples/' + ${sample.accession}}" class="btn btn-default">XML</a>
+                <a th:href="@{'/api/samples/' + ${sample.accession}}" class="btn btn-default">JSON</a>
+            </div>
+        </div>
         <div class="detail_table">
             <h4 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h4>
             <table id="bs_results_tablesamplegroupdetail" class="listing">

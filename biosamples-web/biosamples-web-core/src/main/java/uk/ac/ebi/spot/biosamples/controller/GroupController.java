@@ -98,7 +98,7 @@ public class GroupController {
 				//list of attribute types to use as table columns
 				//make sure to exclude common attribtues displayed above
 				//and relationships that aren't on the API result
-				List<String> tableAttributes = Stream.concat(Arrays.stream(new String[] { "accession", "sampleName"}), 
+				List<String> tableAttributes = Stream.concat(Arrays.stream(new String[] { "accession", "name"}),
 						allGroupSamplesCharacteristics.stream().map(this::cleanAttributeName) )
 					.filter(attr -> !sampleCommonAttributes.containsKey(attr))
 					.filter(attr -> !SolrIgnoredField.SAMPLE.isIgnored(attr+"_crt"))

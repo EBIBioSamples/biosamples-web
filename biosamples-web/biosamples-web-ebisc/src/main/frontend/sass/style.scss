@@ -18,7 +18,6 @@
 @import 'atomic/atoms/cards';
 @import 'atomic/atoms/dropdowns';
 @import 'atomic/atoms/forms';
-@import 'atomic/atoms/facets';
 @import 'atomic/atoms/images';
 @import 'atomic/atoms/lists';
 @import 'atomic/atoms/messages';
@@ -30,15 +29,16 @@
 @import 'atomic/atoms/typography';
 @import 'atomic/atoms/transitions';
 @import 'atomic/atoms/filters';
+@import 'atomic/atoms/facets';
 
 @import 'atomic/organisms/product';
 @import 'atomic/organisms/status-overview';
 @import 'atomic/organisms/organism';
-@import 'atomic/organisms/cell-line-search';
 @import 'atomic/organisms/body';
 @import 'atomic/organisms/article';
 @import 'atomic/organisms/header';
 @import 'atomic/organisms/footer';
+@import 'atomic/organisms/cell-line-search';
 
 
 @import 'atomic/templates/default';

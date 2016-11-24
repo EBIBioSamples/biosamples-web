@@ -15,7 +15,7 @@
     </table>
 </template>
 
-<script lang="es6">
+<script>
 
     const _ = require("lodash");
     const Store =  window.Store;

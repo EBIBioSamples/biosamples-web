@@ -1,0 +1,21 @@
+.btn-list--container {
+  width: 100%;
+  margin-bottom: 1em;
+  &:after {
+    content: ".";
+    visibility: hidden;
+    display: block;
+    height: 0;
+    clear: both;
+  }
+
+  .btn-list--right {
+    float: right;
+  }
+
+  .btn-list--left {
+    float: left;
+  }
+}
+
+
