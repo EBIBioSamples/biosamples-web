@@ -34,7 +34,7 @@
     <rule>
         <name>XML version redirect</name>
         <from>^/xml/v1.0/(.*)$</from>
-        <to type="redirect">%{context-path}/xml/$1</to>
+        <to type="temporary-redirect">%{context-path}/xml/$1</to>
     </rule>
         
     <rule>
