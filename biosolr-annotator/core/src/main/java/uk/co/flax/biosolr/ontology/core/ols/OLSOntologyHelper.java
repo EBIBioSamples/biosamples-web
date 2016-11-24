@@ -45,7 +45,7 @@ public class OLSOntologyHelper extends AbstractOntologyHelper {
 
 	@SuppressWarnings("unused")
 	public static final int THREADPOOL_SIZE = 1;
-	public static final int PAGE_SIZE = 100;
+	public static final int PAGE_SIZE = 1000;
 
 	static final String ENCODING = "UTF-8";
 	static final String ONTOLOGIES_URL_SUFFIX = "/ontologies";
