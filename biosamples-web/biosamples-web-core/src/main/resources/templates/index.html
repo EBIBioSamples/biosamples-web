@@ -31,7 +31,7 @@
     <div th:replace="fragments/searchForm :: searchInput" th:remove="tag"></div>
     <div v-bind:class="{loading: isQuerying}"></div>
     <br><br>
-    <div>
+    <div class="facet-filter-list">
         <shield v-for="(key, value) in filterList"
                 :key="key"
                 :value="value"
