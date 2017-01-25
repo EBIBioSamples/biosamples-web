@@ -163,7 +163,7 @@
         <h6 id="example-in-terminal-n.b-curl-needs-the--l-option-to-work">Example in terminal (N.B curl
             needs the -L option to work):</h6>
         <div>
-            <pre class="inline-code">curl -HL Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/sample/SAMEA2774598</pre>
+            <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/sample/SAMEA2774598</pre>
         </div>
 
         <h3 id="get-a-group-by-accession">Get a group by accession</h3>
@@ -299,7 +299,7 @@
         <h6 id="example-in-terminal-n.b-curl-needs-the--l-option-to-work-1">Example in terminal (N.B
             curl needs the -L option to work):</h6>
         <div>
-            <pre class="inline-code">curl -HL Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702</pre>
+            <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702</pre>
         </div>
 
         <h3 id="find-samples-that-match-a-keyword">Find samples that match a keyword</h3>
@@ -447,7 +447,7 @@
         </table>
         <h6 id="example-8" class="code_example">Example in terminal:</h6>
         <div>
-            <pre class="inline-code">curl -HL Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/sample/query=leukemia</pre>
+            <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/sample/query=leukemia</pre>
         </div>
 
         <h3 id="find-groups-that-match-a-keyword">Find groups that match a keyword</h3>
@@ -595,7 +595,7 @@
         </table>
         <h6 id="example-in-terminal-11">Example in terminal:</h6>
         <div>
-            <pre class="inline-code">curl -HL Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/group/query=leukemia</pre>
+            <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/group/query=leukemia</pre>
         </div>
 
         <h3 id="find-samples-that-are-part-of-a-group">Find samples that are part of a group</h3>
