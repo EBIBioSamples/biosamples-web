@@ -1,12 +1,12 @@
 package uk.ac.ebi.spot.biosamples.service;
 
+import uk.ac.ebi.spot.biosamples.exception.HttpSolrQueryBuildingException;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import uk.ac.ebi.spot.biosamples.exception.HttpSolrQueryBuildingException;
 
 /**
  * Javadocs go here!
@@ -62,7 +62,8 @@ public class HttpSolrQuery implements Cloneable {
             queryStringBuilder.append("q=")
                     .append(URLEncoder.encode(field, "UTF-8"))
                     .append(":")
-                    .append(URLEncoder.encode(String.format("\"%s\"",term), "UTF-8"));
+                    .append(URLEncoder.encode(term, "UTF-8"));
+//                    .append(URLEncoder.encode(String.format("\"%s\"",term), "UTF-8"));
             capturedTerm = true;
             return this;
         }

@@ -45,7 +45,7 @@
             <div v-if="!queryHasResults">
                 <div class="row">
                     <h3>
-                        No results have been found for <i>{{queryTerm}}</i>
+                        No results have been found <span v-if="queryTerm != ''">for <i>{{queryTerm}}</i></span>
                         <span class="small"><a href="#" @click="querySamplesUsingFuzzy()">Try for similar terms?</a></span>
                     </h3>
                 </div>
@@ -55,8 +55,8 @@
                 <div>
                     <div class="col-md-4"></div>
                     <div class="col-md-8">
-                        <h3>{{resultsNumber | numberFormat }} entries found for: <i>{{queryTerm}}
-                        <span v-if="useFuzzy" class="small"> (and related terms)</span></i>
+                        <h3>{{resultsNumber | numberFormat }} entries found <span v-if="queryTerm != '">for: <i>{{queryTerm}}
+                        <span v-if="useFuzzy" class="small"> (and related terms)</span></i></span>
                         </h3>
                     </div>
                 </div>
