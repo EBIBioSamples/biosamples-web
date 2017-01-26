@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by lucacherubin on 01/03/2016.
+ */
 @Controller
 public class SearchController {
     @Autowired

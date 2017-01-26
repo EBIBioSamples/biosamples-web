@@ -52,6 +52,9 @@ public class HttpSolrDispatcher {
     @Value("${solr.ignoredfacets.file}")
     private String ignoredFacetsFilename;
 
+    @Value("${solr.includedfacets.file}")
+    private String includedFacetsFilename;
+
     @Autowired
     private SolrQueryBuilder solrQueryBuilder;
     
@@ -59,40 +62,63 @@ public class HttpSolrDispatcher {
     private ApplicationContext ctx;
 
     private Set<String> ignoredFacets;
+    private Set<String> includedFacets;
 
     @PostConstruct
-    private void readIgnoredFacet() {
+    private void readFacetsFiles() {
         ignoredFacets = new HashSet<>();
         ignoredFacets.add("content_type"); // content_type is always returned as facet
 
+        // Ignored facets 
         log.info("Looking for ignored facets file at "+ignoredFacetsFilename);
         
         Resource ignoredFacetsResource = ctx.getResource(ignoredFacetsFilename);
-        
-        if (ignoredFacetsResource != null && ignoredFacetsResource.exists()) {
-        	
+        Set<String> resourceContent = readFacetResource(ignoredFacetsResource);
+        for(String ignoredFacet: resourceContent) {
+            ignoredFacets.add(ignoredFacet);
+//            ignoredFacets.add(ignoredFacet + "_ft");
+        }
+
+        for(String facet: ignoredFacets) {
+            log.info("Ignoring facet " + facet);
+        }
+
+        // Mandatory facets
+        log.info("Looking for mandatory facets file at " + includedFacetsFilename);
+        Resource includedFacetsResource = ctx.getResource(includedFacetsFilename);
+        includedFacets = readFacetResource(includedFacetsResource);
+        for(String facet: includedFacets) {
+           log.info("Always considering facet " + facet);
+        }
+
+    }
+
+    private Set<String> readFacetResource(Resource facetResource) {
+        Set<String> facets = new HashSet<>();
+        if (facetResource != null && facetResource.exists()) {
+
             Pattern pattern = Pattern.compile("^(\\w+)\\s*(?:#.*)?$");
             try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(ignoredFacetsResource.getInputStream()));
+                BufferedReader br = new BufferedReader(new InputStreamReader(facetResource.getInputStream()));
                 String line = br.readLine();
                 while (line != null) {
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.find()) {
                         String facetName = matcher.group(1).trim();
-                        ignoredFacets.add(facetName);
-                        ignoredFacets.add(facetName + "_ft");
-                        log.info("Ignoring facet "+facetName);
+//                        facets.add(facetName);
+                        facets.add(facetName + "_ft");
                     }
                     line = br.readLine();
                 }
                 br.close();
             }
             catch (IOException e) {
-                log.error("Unable to read facets", e);
+                log.error("Unable to read facet resource", e);
             }
         } else {
-        	log.info("did not find ignoredFacetsResource"); 
+            log.info("did not find facetResource", facetResource);
         }
+        return facets;
     }
 
     public Set<String> getGroupCommonAttributes(String groupAccession, int facetCount) {
@@ -104,7 +130,8 @@ public class HttpSolrDispatcher {
         commonFacetQuery.withFacetOn("crt_type_ft");
         commonFacetQuery.withFacetMinCount(facetCount);
 
-        String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery, Collections.emptySet());
+        String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery,
+                Collections.emptySet(), Collections.emptySet());
 
         HttpSolrQuery commonAttrQuery = solrQueryBuilder
                 .createQuery("sample_grp_accessions", groupAccession);
@@ -123,7 +150,9 @@ public class HttpSolrDispatcher {
 
         groupSamplesAttributesQuery.withPage(0,0);
 
-        String[] groupSamplesAttributes = executeAndParseFacetQuery(groupSamplesAttributesQuery, Collections.emptySet());
+        String[] groupSamplesAttributes = executeAndParseFacetQuery(groupSamplesAttributesQuery,
+                Collections.emptySet(), Collections.emptySet());
+
         return Arrays.stream(groupSamplesAttributes).collect(Collectors.toSet());
     }
 
@@ -137,14 +166,26 @@ public class HttpSolrDispatcher {
             excludedFacetsForQuery.addAll(facetQuery.getFilteredFields());
             int facetLimitForQuery = excludedFacetsForQuery.size() + facetLimit;
 
+            final Set<String> includedFacetsForQuery = new HashSet<>();
+            includedFacetsForQuery.addAll(includedFacets);
             // we don't need any results here
             facetQuery.withPage(0, 0);
 
             // and we are investigating crt_type_ft
             facetQuery.withFacetOn("crt_type_ft");
+            // TODO Probably not the most elegant solution
+            for(String facet: includedFacets) {
+                facetQuery.withCustomFacetOn(facet, 
+                        "facet.limit=2");
+            }
+
+            facetQuery.withFacetMinCount(1);
             facetQuery.withFacetLimit(facetLimitForQuery);
 
-            return reduceFacetsNumber(executeAndParseFacetQuery(facetQuery, excludedFacetsForQuery), facetLimit);
+            return reduceFacetsNumber(executeAndParseFacetQuery(facetQuery,
+                    excludedFacetsForQuery,
+                    includedFacetsForQuery),
+                    facetLimit);
         }
         catch (CloneNotSupportedException e) {
             throw new RuntimeException("Unexpected exception cloning query to determine most used attributes", e);
@@ -184,7 +225,10 @@ public class HttpSolrDispatcher {
         }
     }
 
-    private String[] executeAndParseFacetQuery(HttpSolrQuery facetQuery, Collection<String> excludedFacets) {
+    private String[] executeAndParseFacetQuery(HttpSolrQuery facetQuery,
+                                               Collection<String> excludedFacets,
+                                               Collection<String> includedFacets) {
+
         try (final PipedInputStream in = new PipedInputStream();
         		final PipedOutputStream out = new PipedOutputStream(in)) {
 
@@ -208,6 +252,18 @@ public class HttpSolrDispatcher {
                 	log.error("Unexpected Solr response - no crt_type_ft field "+facetQuery.stringify());
                     throw new RuntimeException("Unexpected Solr response - no crt_type_ft field");
                 }
+                // User requested facets
+                for(String facetName: includedFacets) {
+                    JsonNode tempNode = facetFields.get(facetName);
+                    if (tempNode == null) {
+                        log.error("No " + facetName + " is available in as facet for the given query " + facetQuery.stringify());
+                    } else if ( tempNode.isArray() && tempNode.size() > 1) {
+                        getLog().debug("User requested facet " + facetName + "found as a valid facet");
+                        dynamicFacets.add(facetName);
+                    }
+                }
+
+                // Other facets
                 Iterator<JsonNode> facetNodeIt = facetNodes.elements();
                 while (facetNodeIt.hasNext()) {
                     String facetName = String.format("%s_ft", facetNodeIt.next().asText());

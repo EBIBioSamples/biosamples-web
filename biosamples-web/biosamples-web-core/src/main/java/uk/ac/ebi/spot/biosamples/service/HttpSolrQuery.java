@@ -4,9 +4,7 @@ import uk.ac.ebi.spot.biosamples.exception.HttpSolrQueryBuildingException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Javadocs go here!
@@ -107,6 +105,29 @@ public class HttpSolrQuery implements Cloneable {
 
     public HttpSolrQuery withFacetOn(int facetLimit, String... facetFields) {
         return withFacetOn(facetFields).withFacetLimit(facetLimit);
+    }
+
+    public HttpSolrQuery withCustomFacetOn(String facetField, String...facetCustomizations) {
+        try {
+            queryStringBuilder.append("&facet.field=");
+            StringBuilder optionBuilder = new StringBuilder();
+            optionBuilder.append("{!");
+            Iterator<String> facetCustomizationIterator = Arrays.stream(facetCustomizations).iterator();
+            while(facetCustomizationIterator.hasNext()) {
+                String ffo = facetCustomizationIterator.next();
+                optionBuilder.append(ffo);
+                if(facetCustomizationIterator.hasNext()) {
+                    optionBuilder.append("+");
+                }
+            }
+            optionBuilder.append("}");
+
+            queryStringBuilder.append(URLEncoder.encode(optionBuilder.toString(),"UTF-8"))
+                    .append(URLEncoder.encode(facetField, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new HttpSolrQueryBuildingException("Failed to set facet arguments", e);
+        }
+        return this;
     }
 
     public HttpSolrQuery withFacetLimit(int facetLimit) {
