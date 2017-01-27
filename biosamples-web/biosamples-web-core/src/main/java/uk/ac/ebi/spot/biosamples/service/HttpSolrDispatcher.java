@@ -49,10 +49,10 @@ public class HttpSolrDispatcher {
         return log;
     }
 
-    @Value("${solr.ignoredfacets.file}")
+    @Value("${solr.ignoredfacets.file:''}")
     private String ignoredFacetsFilename;
 
-    @Value("${solr.includedfacets.file}")
+    @Value("${solr.includedfacets.file:''}")
     private String includedFacetsFilename;
 
     @Autowired
