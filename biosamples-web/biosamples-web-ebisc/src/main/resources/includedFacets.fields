@@ -1,0 +1,7 @@
+# Here an example with sameInsert here the facets you want to exclude form dynamic faceting
+# Be aware that 'content_type facet is returned by default
+organism_crt
+sex_crt
+
+
+

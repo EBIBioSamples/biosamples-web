@@ -150,7 +150,8 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
             },
             computed: {
                 queryTermPresent() {
-                    return !_.isEmpty(this.queryTerm);
+                    //return !_.isEmpty(this.queryTerm);
+                    return true;
                 },
                 querySubmitted() {
                     return this.submittedQuery;
@@ -224,7 +225,7 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
                         return;
                     }
 
-                    this.setDefaultSearchTerm();
+                    //this.setDefaultSearchTerm();
 
                     let requestData = {
                         params: this.getQueryParameters(),
@@ -234,9 +235,10 @@ var d3Console = Console({context:"d3", status: ["info", "debug"]});
                     this.isQuerying = true;
 
                     this.$http.get(`${Store.apiUrl}/search`,requestData)
-                        .then(function(responseData) {
+                        .then((responseData) => responseData.json())
+                        .then((results) => {
                             // displayRevertingFilters(results,this);
-                            let results = responseData.json();
+                            //let results = responseData.json();
 
                             if (! this.submittedQuery) {
                                 this.submittedQuery = true;

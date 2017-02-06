@@ -39,7 +39,7 @@ public class SearchController {
             HttpServletResponse response) throws Exception {
 
         // first, evaluate arguments to work out how to create the query
-        boolean isGenericQuery = searchTerm.matches("\\**");
+        boolean isGenericQuery = searchTerm.matches("(\\**|\\s*)");
         if (!isGenericQuery) {
             if (useFuzzySearch) {
                 searchTerm = searchTerm.replaceAll("(\\w+)", "$0~");

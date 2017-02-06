@@ -75,7 +75,7 @@
                                @shield-closed="removeFilter(key)">
                     </component>
                 </div>
-                <section id="sectionList" class="container" v-show="queryTermPresent" v-cloak>
+                <section id="sectionList" class="container" v-show="submittedQuery" v-cloak>
 
                     <div v-if="!queryHasResults">
                         <div class="row">
@@ -90,8 +90,8 @@
                         <div class="row">
                             <div class="col-md-4"></div>
                             <div class="col-md-8">
-                                <h3>{{resultsNumber | numberFormat }} entries found for: <i>{{queryTerm}}
-                                    <span v-if="useFuzzy" class="small"> (and related terms)</span></i>
+                                <h3>{{resultsNumber | numberFormat }} entries found <span v-if="queryTerm != ''">for: <i>{{queryTerm}}
+                                    <span v-if="useFuzzy" class="small"> (and related terms)</span></i></span>
                                 </h3>
                             </div>
                         </div>
