@@ -33,954 +33,652 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <p id="bsd-help" class="grid_18 alpha">
-    <h2 id="general-information">General information</h2>
-    <p>The new BioSamples is now providing even more ways to discover data and find what is relevant for you.</p>
-    <p>We built a completely new JSON rest api to support your query, and even if we still provide support for the
-        legacy XML api,
-        we encourage the developers to rely on the brand new JSON rest api.</p>
-    <h2 id="json-rest-api">JSON</h2>
-    <p>The new JSON rest api is now the recommended way to code against the BioSamples database.</p>
-    <h3>Overview</h3>
-    <h4>HTTP Verbs</h4>
-    <p>The JSON api supports <code>GET</code> requests to retrieve resources</p>
-    <h4>Hypermedia: the <b>_link</b> object</h4>
-    <p>All resources in the new BioSamples api implement the HAL specification.</p>
-    <p>HAL is a simple format that gives a consistent and easy way to hyperlink between resources in your API. From
-        the consumer point of view this mean any time you reach an API endpoint you will be able to navigate through
-        the api using the _links object. Here an example of the _links object you can see at <a
-                href="http://www.ebi.ac.uk/biosamples/api/"><em>www.ebi.ac.uk/biosamples/api/</em></a>
-    </p>
-    <p><img th:src="@{/images/help/api-hal.png}" src="../images/help/api-hal.png" alt=""></p>
-    <h4>Pagination: the <b>page</b> object</h4>
-    <p>Requests that return multiple items will be paginated to 50 items by default.
-        You can specify further pages using the <code>?page</code> parameter. For some resources you can also set a custom page size
-        up to 500 with the <code>?size</code> parameter and the order of the results with the <code>?sort</code> parameter,
-        deciding between <code>asc</code> or <code>desc</code> </p>
-    <p>Here an example from <a href="http://www.ebi.ac.uk/biosamples/api/groups/"><em>www.ebi.ac.uk/biosamples/api/groups/</em></a></p>
-    <pre><code class="language-bash" data-lang="bash">$ curl -H Content-Type:application/json http://www.ebi.ac.uk/biosamples/api/groups/</code></pre>
-    <br/>
-    <p>
-        <img th:src="@{/images/help/api-page-object.png}"
-             src="../images/help/api-page-object.png"/>
-    </p>
-
-    <h3>Resources</h3>
-    <h4>API - Root Endpoint</h4>
-    <p>The <code>api</code> endpoint provides the entry point into the service. A <code>GET</code> request returns all
-        the resources available in BioSamples</p>
-    <h6 class="code_example">Example in terminal:</h6>
-    <pre>
-        <code class="language-bash" data-lang="bash">
-            curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/
-        </code>
-    </pre>
-    <table>
-        <thead>
-            <tr>
-                <th>Resource name</th>
-                <th>Resource link</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            <tr>
-                <td>Samples</td>
-                <td>
-                    <a href="http://www.ebi.ac.uk/biosamples/api/samples/">http://www.ebi.ac.uk/biosamples/api/samples/</a>
-                </td>
-                <td>Link to the samples in BioSamples</td>
-            </tr>
-            <tr>
-                <td>Groups</td>
-                <td>
-                    <a href="http://www.ebi.ac.uk/biosamples/api/groups/">http://www.ebi.ac.uk/biosamples/api/groups/</a>
-                </td>
-                <td>Link to the groups in BioSamples</td>
-            </tr>
-            <tr>
-                <td>External link relations</td>
-                <td>
-                    <a href="http://www.ebi.ac.uk/biosamples/api/externallinkrelations/">http://www.ebi.ac.uk/biosamples/api/externallinkrelations/</a>
-                </td>
-                <td>Link to the external links in BioSamples</td>
-            </tr>
-            <tr>
-                <td>Samples relations</td>
-                <td>
-                    <a href="http://www.ebi.ac.uk/biosamples/api/samplessrelations/">http://www.ebi.ac.uk/biosamples/api/samplerelations/</a>
-                </td>
-                <td>Link to the samples relations in BioSamples</td>
-            </tr>
-            <tr>
-                <td>Groups relations</td>
-                <td>
-                    <a href="http://www.ebi.ac.uk/biosamples/api/groupsrelations/">http://www.ebi.ac.uk/biosamples/api/grouprelations/</a>
-                </td>
-                <td>Link to the group relations in BioSamples</td>
-            </tr>
-        </tbody>
-    </table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h2 id="xml-api">XML - Legacy api</h2>
-
-
-    <h2 id="most-relevant-end-points">Most relevant end-points</h2>
-    <p>The most relevant end-points, previously available only in the XML format, are:</p>
-    <h3 id="get-a-sample-by-accession">Get a sample by accession</h3>
-    <h4 id="recommended">Recommended</h4>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/api/samples/<span class="param param--accession"><span class="param param--accession">{accession}</span></span>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Variables</td>
-            <td><span class="param param--accession"><span class="param param--accession">{accession}</span></span> the
-                accession of the sample
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return all the informations about a sample identified by its accession</td>
-        </tr>
-        <tr class="odd">
-            <td>What to expect</td>
-            <td>A JSON object representing the sample</td>
-        </tr>
-        <tr class="even">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/api/samples/SAMEA2774598" target="_blank">https://www.ebi.ac.uk/biosamples/api/samples/SAMEA2774598</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/samples/SAMEA2774598</pre>
-    </div>
-    <h4 id="more-possibilities">More possibilities</h4>
-    <h5 id="xml-request">XML request<br/>
-    </h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/xml/samples/<span class="param param--accession"><span class="param param--accession">{accession}</span></span>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Variables</td>
-            <td><span class="param param--accession"><span class="param param--accession">{accession}</span></span> the
-                accession of the sample
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return all the informations about a sample identified by its accession</td>
-        </tr>
-        <tr class="odd">
-            <td>What to expect</td>
-            <td>An XML document representing the sample</td>
-        </tr>
-        <tr class="even">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/xml/samples/SAMEA2774598" target="_blank">https://www.ebi.ac.uk/biosamples/xml/samples/SAMEA2774598</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-1" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/samples/SAMEA2774598</pre>
-    </div>
-
-    <h5 id="content-negotiation">Content Negotiation</h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/samples/<span class="param param--accession"><span class="param param--accession">{accession}</span></span>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Variables</td>
-            <td><span class="param param--accession"><span class="param param--accession">{accession}</span></span> the
-                accession of the sample
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return all the informations about a sample identified by its accession</td>
-        </tr>
-        <tr class="odd">
-            <td>What to expect</td>
-            <td>Based on the content-type you choose (text/xml or application/json) you will get and XML or a JSON
-                documents representing the sample
-            </td>
-        </tr>
-        <tr class="even">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/samples/SAMEA2774598" target="_blank">https://www.ebi.ac.uk/biosamples/samples/SAMEA2774598</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-2" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/samples/SAMEA2774598</pre>
-    </div>
-    <h5 id="legacy-xml-api">Legacy XML Api</h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/xml/sample/<span class="param param--accession"><span class="param param--accession">{accession}</span></span>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Variables</td>
-            <td><span class="param param--accession"><span class="param param--accession">{accession}</span></span> the
-                accession of the sample
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return all the informations about a sample identified by its accession</td>
-        </tr>
-        <tr class="odd">
-            <td>What to expect</td>
-            <td>An XML document representing the sample</td>
-        </tr>
-        <tr class="even">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/xml/sample/SAMEA2774598" target="_blank">https://www.ebi.ac.uk/biosamples/xml/sample/SAMEA2774598</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-in-terminal-n.b-curl-needs-the--l-option-to-work">Example in terminal (N.B curl
-        needs the -L option to work):</h6>
-    <div>
-        <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/sample/SAMEA2774598</pre>
-    </div>
-
-    <h3 id="get-a-group-by-accession">Get a group by accession</h3>
-    <h4 id="recommended-1">Recommended</h4>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/api/groups/<span class="param param--accession"><span class="param param--accession">{accession}</span></span>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Variables</td>
-            <td><span class="param param--accession"><span class="param param--accession">{accession}</span></span> the
-                accession of the group
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return all the informations about a group identified by its accession</td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/api/groups/SAMEG120702" target="_blank">https://www.ebi.ac.uk/biosamples/api/groups/SAMEG120702</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-3" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/groups/SAMEG120702</pre>
-    </div>
-
-    <h4 id="more-possibilities-1">More possibilities</h4>
-    <h5 id="xml-request-1">XML request</h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/xml/groups/<span class="param param--accession"><span class="param param--accession">{accession}</span></span>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Variables</td>
-            <td><span class="param param--accession"><span class="param param--accession">{accession}</span></span> the
-                accession of the group
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return all the informations about a group identified by its accession</td>
-        </tr>
-        <tr class="odd">
-            <td>What to expect</td>
-            <td>An XML document representing the group</td>
-        </tr>
-        <tr class="even">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702" target="_blank">https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-4" class="code_example">Example in terminal:</h6>
-    <table>
-        <tbody>
-        <tr class="odd">
-            <td>
-                <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/groups/SAMEG120702</pre>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-
-    <h4 id="content-negotiation-1">Content Negotiation</h4>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/groups/<span class="param param--accession"><span
-                    class="param param--accession">{accession}</span></span></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Variables</td>
-            <td><span class="param param--accession"><span class="param param--accession">{accession}</span></span> the
-                accession of the group
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return all the informations about a group identified by its accession</td>
-        </tr>
-        <tr class="odd">
-            <td>What to expect</td>
-            <td>Based on the content-type you choose (text/xml or application/json) you will get and XML or a JSON
-                documents representing the group
-            </td>
-        </tr>
-        <tr class="even">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/groups/SAMEG120702" target="_blank">https://www.ebi.ac.uk/biosamples/groups/SAMEG120702</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-5" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/groups/SAMEG120702</pre>
-    </div>
-
-    <h4 id="legacy-xml">Legacy XML</h4>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/xml/group/<span class="param param--accession"><span class="param param--accession">{accession}</span></span>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Variables</td>
-            <td><span class="param param--accession"><span class="param param--accession">{accession}</span></span> the
-                accession of the group
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return all the informations about a group identified by its accession</td>
-        </tr>
-        <tr class="odd">
-            <td>What to expect</td>
-            <td>An XML document representing the group</td>
-        </tr>
-        <tr class="even">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702" target="_blank">https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-in-terminal-n.b-curl-needs-the--l-option-to-work-1">Example in terminal (N.B
-        curl needs the -L option to work):</h6>
-    <div>
-        <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702</pre>
-    </div>
-
-    <h3 id="find-samples-that-match-a-keyword">Find samples that match a keyword</h3>
-    <h4 id="recommended-2">Recommended</h4>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>
-                /biosamples/api/samples/search/findByText?text=<span
-                    class="param param--text">{text}</span>[&amp;page=<span class="param param--page">{page}</span>][&amp;size=<span
-                    class="param param--size">{size}</span>][&amp;sort=<span class="param param--sort">{sort}</span>]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Params</td>
-            <td>
+    <section id="bsd-help" class="grid_18 alpha">
+        <h2 id="general-information">General information</h2>
+        <p>The new BioSamples is now providing even more ways to discover data and find what is relevant for you.</p>
+        <p>We built a completely new JSON rest api to support your query. We still provide support for the
+            legacy XML api but we encourage developers to switch to the brand new JSON rest api.</p>
+        <section id="json-rest-api">
+            <h2>JSON</h2>
+            <p>The new JSON rest api is now the recommended way to code against the BioSamples database.</p>
+            <section>
+                <h3>Overview</h3>
+                <h4>HTTP Verbs</h4>
+                <p>The JSON api supports <code>GET</code> requests to retrieve resources</p>
+                <h4>Hypermedia: the <b>_link</b> object</h4>
+                <p>All resources in the new BioSamples api implement the HAL specification.</p>
+                <p>HAL is a simple format that gives a consistent and easy way to hyperlink between resources in your
+                    API.
+                    From
+                    the consumer point of view this mean any time you reach an API endpoint you will be able to navigate
+                    through
+                    the api using the _links object. Here an example of the _links object you can see at <a
+                            href="http://www.ebi.ac.uk/biosamples/api/"><em>www.ebi.ac.uk/biosamples/api/</em></a>
+                </p>
+                <p><img th:src="@{/images/help/api-hal.png}" src="../images/help/api-hal.png" alt=""></p>
+                <h4>Pagination: the <b>page</b> object</h4>
+                <p>Requests that return multiple items will be paginated to 50 items by default.
+                    You can specify further pages using the <code>?page</code> parameter. For some resources you can
+                    also
+                    set a
+                    custom page size
+                    up to 500 with the <code>?size</code> parameter and the order of the results with the
+                    <code>?sort</code>
+                    parameter,
+                    deciding between <code>asc</code> or <code>desc</code></p>
+                <p>Here an example from <a href="http://www.ebi.ac.uk/biosamples/api/groups/"><em>www.ebi.ac.uk/biosamples/api/groups/</em></a>
+                </p>
+                <pre><code class="language-bash" data-lang="bash">$ curl -H Content-Type:application/json http://www.ebi.ac.uk/biosamples/api/groups/</code></pre>
+                <br/>
+                <p><img th:src="@{/images/help/api-page-object.png}" src="../images/help/api-page-object.png"/></p>
+            </section>
+            <h3>Resources</h3>
+            <br><section id="api-root">
+                <h4>API - Root Endpoint</h4>
+                <p>The <code>api</code> endpoint provides the entry point into the service. A <code>GET</code> request
+                    returns
+                    all
+                    the resources available in BioSamples</p>
+                <h6 class="code_example">Example in terminal:</h6>
+                <pre><code class="language-bash" data-lang="bash">$ curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/</code></pre>
+                <p><img th:src="@{/images/help/resources.png}" src="../images/help/resources.png"/></p>
+                <p>Here the description of the main resources in the BioSamples database</p>
                 <table>
+                    <thead>
                     <tr>
-                        <td><span class="param param--text">{text}</span>:</td>
-                        <td> the search term to look for</td>
+                        <th>Resource name</th>
+                        <th>Resource link</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr>
+                        <td>Samples</td>
+                        <td>
+                            <a href="http://www.ebi.ac.uk/biosamples/api/samples/">http://www.ebi.ac.uk/biosamples/api/samples/</a>
+                        </td>
+                        <td>Link to the samples in BioSamples</td>
                     </tr>
                     <tr>
-                        <td><span class="param param--page">{page}</span>:</td>
-                        <td> the page number (optional)</td>
+                        <td>Groups</td>
+                        <td>
+                            <a href="http://www.ebi.ac.uk/biosamples/api/groups/">http://www.ebi.ac.uk/biosamples/api/groups/</a>
+                        </td>
+                        <td>Link to the groups in BioSamples</td>
                     </tr>
                     <tr>
-                        <td><span class="param param--size">{size}</span>:</td>
-                        <td> the number of results per page (optional)</td>
+                        <td>External link relations</td>
+                        <td>
+                            <a href="http://www.ebi.ac.uk/biosamples/api/externallinksrelations/">http://www.ebi.ac.uk/biosamples/api/externallinksrelations/</a>
+                        </td>
+                        <td>Link to the external links in BioSamples</td>
                     </tr>
                     <tr>
-                        <td><span class="param param--sort">{sort}</span>:</td>
-                        <td> asc | desc (optional)</td>
+                        <td>Samples relations</td>
+                        <td>
+                            <a href="http://www.ebi.ac.uk/biosamples/api/samplesrelations/">http://www.ebi.ac.uk/biosamples/api/samplesrelations/</a>
+                        </td>
+                        <td>Link to the samples relations in BioSamples</td>
                     </tr>
+                    <tr>
+                        <td>Groups relations</td>
+                        <td>
+                            <a href="http://www.ebi.ac.uk/biosamples/api/groupsrelations/">http://www.ebi.ac.uk/biosamples/api/grouprelations/</a>
+                        </td>
+                        <td>Link to the group relations in BioSamples</td>
+                    </tr>
+                    </tbody>
                 </table>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return a list of samples that match the keyword you were looking for</td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/api/samples/search/findByText?text=leukemia" target="_blank">https://www.ebi.ac.uk/biosamples/api/samples/search/findByText?text=leukemia</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-6" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/samples/search/findByText?text=leukemia</pre>
-    </div>
-    <h4 id="more-possibilities-2">More possibilities</h4>
-    <h5 id="xml-request-2">XML request</h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>
-                /biosamples/xml/samples?query=<span class="param param--text">{text}</span>[&amp;page=<span
-                    class="param param--page">{page}</span>][&amp;size=<span class="param param--size">{size}</span>][&amp;sort=<span
-                    class="param param--sort">{sort}</span>]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Params</td>
-            <td>
+            </section>
+            <br><section id="api-search">
+                <h4>Search functionality</h4>
+                <p>Both samples and groups resources provide a search functionality reachable from the _link resources.
+                    The search endpoint exposes links you can use for specific search needs</p>
+                <h6 class="code_example">Example in terminal:</h6>
+                <pre><code class="language-bash" data-lang="bash">$ curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/samples/search</code></pre>
+                <p><img th:src="@{/images/help/search_endpoint.png}" src="../images/help/search_endpoint.png"/></p>
+                <p>Here a description of the search end points for the sample resource:</p>
                 <table>
+                    <thead>
                     <tr>
-                        <td><span class="param param--text">{text}</span>:</td>
-                        <td> the search term to look for</td>
+                        <th>Link</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>findByAccessionAndGroup</td>
+                        <td>Search for a specific sample accession in a group</td>
                     </tr>
                     <tr>
-                        <td><span class="param param--page">{page}</span>:</td>
-                        <td> the page number (optional)</td>
+                        <td>findByTextAndGroup</td>
+                        <td>Search for a sample with specific text in a group</td>
                     </tr>
                     <tr>
-                        <td><span class="param param--size">{size}</span>:</td>
-                        <td> the number of results per page (optional)</td>
+                        <td>findByGroup</td>
+                        <td>Search samples in a group</td>
                     </tr>
                     <tr>
-                        <td><span class="param param--sort">{sort}</span>:</td>
-                        <td> asc | desc (optional)</td>
+                        <td>findByAccession</td>
+                        <td>Search sample with specific accession</td>
                     </tr>
+                    <tr>
+                        <td>findFirstByGroupContains</td>
+                        <td>Search for one sample in a group</td>
+                    </tr>
+                    <tr>
+                        <td>findByText</td>
+                        <td>Search all samples having specific text</td>
+                    </tr>
+                    </tbody>
                 </table>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return a list of accessions of samples matching the keyword you were looking for</td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/xml/samples?query=leukemia" target="_blank">https://www.ebi.ac.uk/biosamples/xml/samples?query=leukemia</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-7" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/samples?query=leukemia</pre>
-    </div>
-
-    <h5 id="legacy-xml-api-1">Legacy XML api</h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>
-                /biosamples/xml/sample/query=<span class="param param--text">{text}</span>[&amp;page=<span
-                    class="param param--page">{page}</span>][&amp;size=<span class="param param--size">{size}</span>][&amp;sort=<span
-                    class="param param--sort">{sort}</span>]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Params</td>
-            <td>
+            </section>
+            <br><section id="json-relevant-endpoint">
+                <h3 id="most-relevant-end-points">Most relevant end-points</h3>
+                <section id="json-sample-by-accession">
+                    <h4>Get a sample by accession</h4>
+                    <table>
+                        <thead>
+                        <tr class="header">
+                            <th>How to compose</th>
+                            <th>/biosamples/api/samples/<span class="param param--accession"><span
+                                    class="param param--accession">{accession}</span></span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="odd">
+                            <td>Variables</td>
+                            <td><span class="param param--accession"><span
+                                    class="param param--accession">{accession}</span></span>
+                                the
+                                accession of the sample
+                            </td>
+                        </tr>
+                        <tr class="even">
+                            <td>What it does</td>
+                            <td>Return all the informations about a sample identified by its accession</td>
+                        </tr>
+                        <tr class="odd">
+                            <td>What to expect</td>
+                            <td>A JSON object representing the sample</td>
+                        </tr>
+                        <tr class="even">
+                            <td>Example</td>
+                            <td><a href="https://www.ebi.ac.uk/biosamples/api/samples/SAMEA2774598" target="_blank">https://www.ebi.ac.uk/biosamples/api/samples/SAMEA2774598</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <h6 id="example" class="code_example">Example in terminal:</h6>
+                    <div>
+                        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/samples/SAMEA2774598</pre>
+                    </div>
+                </section>
+                <section id="json-group-by-accession">
+                    <h4>Get a group by accession</h4>
+                    <table>
+                        <thead>
+                        <tr class="header">
+                            <th>How to compose</th>
+                            <th>/biosamples/api/groups/<span class="param param--accession"><span
+                                    class="param param--accession">{accession}</span></span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="odd">
+                            <td>Variables</td>
+                            <td><span class="param param--accession"><span
+                                    class="param param--accession">{accession}</span></span>
+                                the
+                                accession of the group
+                            </td>
+                        </tr>
+                        <tr class="even">
+                            <td>What it does</td>
+                            <td>Return all the informations about a group identified by its accession</td>
+                        </tr>
+                        <tr class="odd">
+                            <td>Example</td>
+                            <td><a href="https://www.ebi.ac.uk/biosamples/api/groups/SAMEG120702" target="_blank">https://www.ebi.ac.uk/biosamples/api/groups/SAMEG120702</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <h6 id="example-3" class="code_example">Example in terminal:</h6>
+                    <div>
+                        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/groups/SAMEG120702</pre>
+                    </div>
+                </section>
+                <section id="json-samples-by-keyword">
+                    <h3>Find samples that match a keyword</h3>
+                    <table>
+                        <thead>
+                        <tr class="header">
+                            <th>How to compose</th>
+                            <th>
+                                /biosamples/api/samples/search/findByText?text=<span
+                                    class="param param--text">{text}</span>[&amp;page=<span
+                                    class="param param--page">{page}</span>][&amp;size=<span
+                                    class="param param--size">{size}</span>][&amp;sort=<span
+                                    class="param param--sort">{sort}</span>]
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="odd">
+                            <td>Params</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><span class="param param--text">{text}</span>:</td>
+                                        <td> the search term to look for</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--page">{page}</span>:</td>
+                                        <td> the page number (optional)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--size">{size}</span>:</td>
+                                        <td> the number of results per page (optional)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--sort">{sort}</span>:</td>
+                                        <td> asc | desc (optional)</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="even">
+                            <td>What it does</td>
+                            <td>Return a list of samples that match the keyword you were looking for</td>
+                        </tr>
+                        <tr class="odd">
+                            <td>Example</td>
+                            <td><a href="https://www.ebi.ac.uk/biosamples/api/samples/search/findByText?text=leukemia"
+                                   target="_blank">https://www.ebi.ac.uk/biosamples/api/samples/search/findByText?text=leukemia</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <h6 id="example-6" class="code_example">Example in terminal:</h6>
+                    <div>
+                        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/samples/search/findByText?text=leukemia</pre>
+                    </div>
+                </section>
+                <section id="json-groups-by-keywords">
+                    <h3>Find groups that match a keyword</h3>
+                    <table>
+                        <thead>
+                        <tr class="header">
+                            <th>How to compose</th>
+                            <th>/biosamples/api/groups/search/findByKeywords?keyword=<span
+                                    class="param param--keyword">{keyword}</span>[&amp;page=<span
+                                    class="param param--page">{page}</span>][&amp;size=<span
+                                    class="param param--size">{size}</span>][&amp;sort=<span
+                                    class="param param--sort">{sort}</span>]
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="odd">
+                            <td>Params</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><span class="param param--keyword">{keyword}</span>:</td>
+                                        <td> the search term to look for</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--page">{page}</span>:</td>
+                                        <td> the page number (optional)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--size">{size}</span>:</td>
+                                        <td> the number of results per page (optional)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--sort">{sort}</span>:</td>
+                                        <td> asc | desc (optional)</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="even">
+                            <td>What it does</td>
+                            <td>Return a list of groups that match the keyword you were looking for</td>
+                        </tr>
+                        <tr class="odd">
+                            <td>Example</td>
+                            <td>
+                                <a href="https://www.ebi.ac.uk/biosamples/api/groups/search/findByKeywords?keyword=leukemia"
+                                   target="_blank">https://www.ebi.ac.uk/biosamples/api/groups/search/findByKeywords?keyword=leukemia</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <h6 id="example-9" class="code_example">Example in terminal:</h6>
+                    <div>
+                        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/groups/search/findByKeywords?keyword=leukemia</pre>
+                    </div>
+                </section>
+                <section id="json-samples-in-group">
+                    <h3>Find samples that are part of a group</h3>
+                    <table>
+                        <thead>
+                        <tr class="header">
+                            <th>How to compose</th>
+                            <th>/biosamples/api/samples/search/findByGroup?group=<span
+                                    class="param param--group_acc">{group_acc}</span>[&amp;page=<span
+                                    class="param param--page">{page}</span>][&amp;size=<span
+                                    class="param param--size">{size}</span>][&amp;sort=<span
+                                    class="param param--sort">{sort}</span>]
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="odd">
+                            <td>Params</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><span class="param param--group_acc">{group_acc}</span>:</td>
+                                        <td> the group accession</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--page">{page}</span>:</td>
+                                        <td> the page number (optional)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--size">{size}</span>:</td>
+                                        <td> the number of results per page (optional)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="param param--sort">{sort}</span>:</td>
+                                        <td> asc | desc (optional)</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="even">
+                            <td>What it does</td>
+                            <td>Return the list of samples that are part of the group that match group_acc accession
+                            </td>
+                        </tr>
+                        <tr class="odd">
+                            <td>Example</td>
+                            <td>
+                                <a href="https://www.ebi.ac.uk/biosamples/api/samples/search/findByGroup?group=SAMEG316130"
+                                   target="_blank">https://www.ebi.ac.uk/biosamples/api/samples/search/findByGroup?group=SAMEG316130</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <h6 id="example-in-terminal-12">Example in terminal:</h6>
+                    <div>
+                        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/samples/search/findByGroup?group=SAMEG316130</pre>
+                    </div>
+                </section>
+            </section>
+        </section>
+        <br />
+        <section id="xml-api">
+            <h2>XML - Legacy api</h2>
+            <p>BioSamples will still support the legacy XML api, but no further development will be done to improve it.
+                New features and functionalities
+                will be developed solely on the new JSON rest api.</p>
+            <br><section id="xml-sample-by-accession">
+                <h4>Get a sample by accession</h4>
                 <table>
-                    <tr>
-                        <td><span class="param param--text">{text}</span>:</td>
-                        <td> the search term to look for</td>
+                    <thead>
+                    <tr class="header">
+                        <th>How to compose</th>
+                        <th>/biosamples/xml/samples/<span class="param param--accession"><span
+                                class="param param--accession">{accession}</span></span>
+                        </th>
                     </tr>
-                    <tr>
-                        <td><span class="param param--page">{page}</span>:</td>
-                        <td> the page number (optional)</td>
+                    </thead>
+                    <tbody>
+                    <tr class="odd">
+                        <td>Variables</td>
+                        <td><span class="param param--accession"><span
+                                class="param param--accession">{accession}</span></span>
+                            the
+                            accession of the sample
+                        </td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--size">{size}</span>:</td>
-                        <td> the number of results per page (optional)</td>
+                    <tr class="even">
+                        <td>What it does</td>
+                        <td>Return all the informations about a sample identified by its accession</td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--sort">{sort}</span>:</td>
-                        <td> asc | desc (optional)</td>
+                    <tr class="odd">
+                        <td>What to expect</td>
+                        <td>An XML document representing the sample</td>
                     </tr>
+                    <tr class="even">
+                        <td>Example</td>
+                        <td><a href="https://www.ebi.ac.uk/biosamples/xml/samples/SAMEA2774598" target="_blank">https://www.ebi.ac.uk/biosamples/xml/samples/SAMEA2774598</a>
+                        </td>
+                    </tr>
+                    </tbody>
                 </table>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return a list of accessions of samples matching the text you were looking for</td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/xml/sample/query=leukemia" target="_blank">https://www.ebi.ac.uk/biosamples/xml/sample/query=leukemia</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-8" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/sample/query=leukemia</pre>
-    </div>
-
-    <h3 id="find-groups-that-match-a-keyword">Find groups that match a keyword</h3>
-    <h4 id="recommended-3">Recommended</h4>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/api/groups/search/findByKeywords?keyword=<span class="param param--keyword">{keyword}</span>[&amp;page=<span
-                    class="param param--page">{page}</span>][&amp;size=<span class="param param--size">{size}</span>][&amp;sort=<span
-                    class="param param--sort">{sort}</span>]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Params</td>
-            <td>
+                <h6 id="example-1" class="code_example">Example in terminal:</h6>
+                <div>
+                    <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/samples/SAMEA2774598</pre>
+                </div>
+            </section>
+            <br><section id="xml-group-by-accession">
+                <h4>Get group by accession</h4>
                 <table>
-                    <tr>
-                        <td><span class="param param--keyword">{keyword}</span>:</td>
-                        <td> the search term to look for</td>
+                    <thead>
+                    <tr class="header">
+                        <th>How to compose</th>
+                        <th>/biosamples/xml/groups/<span class="param param--accession"><span
+                                class="param param--accession">{accession}</span></span>
+                        </th>
                     </tr>
-                    <tr>
-                        <td><span class="param param--page">{page}</span>:</td>
-                        <td> the page number (optional)</td>
+                    </thead>
+                    <tbody>
+                    <tr class="odd">
+                        <td>Variables</td>
+                        <td><span class="param param--accession"><span
+                                class="param param--accession">{accession}</span></span>
+                            the
+                            accession of the group
+                        </td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--size">{size}</span>:</td>
-                        <td> the number of results per page (optional)</td>
+                    <tr class="even">
+                        <td>What it does</td>
+                        <td>Return all the informations about a group identified by its accession</td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--sort">{sort}</span>:</td>
-                        <td> asc | desc (optional)</td>
+                    <tr class="odd">
+                        <td>What to expect</td>
+                        <td>An XML document representing the group</td>
                     </tr>
+                    <tr class="even">
+                        <td>Example</td>
+                        <td><a href="https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702" target="_blank">https://www.ebi.ac.uk/biosamples/xml/group/SAMEG120702</a>
+                        </td>
+                    </tr>
+                    </tbody>
                 </table>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return a list of groups that match the keyword you were looking for</td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/api/groups/search/findByKeywords?keyword=leukemia"
-                   target="_blank">https://www.ebi.ac.uk/biosamples/api/groups/search/findByKeywords?keyword=leukemia</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-9" class="code_example">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/groups/search/findByKeywords?keyword=leukemia</pre>
-    </div>
-
-    <h4 id="more-possibilities-3">More possibilities</h4>
-    <h5 id="xml-request-3">XML request</h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>
-                /biosamples/xml/groups?query=<span class="param param--text">{text}</span>[&amp;page=<span
-                    class="param param--page">{page}</span>][&amp;size=<span class="param param--size">{size}</span>][&amp;sort=<span
-                    class="param param--sort">{sort}</span>]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Params</td>
-            <td>
+                <h6 id="example-4" class="code_example">Example in terminal:</h6>
+                <div>
+                    <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/groups/SAMEG120702</pre>
+                </div>
+            </section>
+            <br><section id="xml-samples-by-keyword">
+                <h4>Find samples that match a keyword</h4>
                 <table>
-                    <tr>
-                        <td><span class="param param--text">{text}</span>:</td>
-                        <td> the search term to look for</td>
+                    <thead>
+                    <tr class="header">
+                        <th>How to compose</th>
+                        <th>
+                            /biosamples/xml/sample/query=<span class="param param--text">{text}</span>[&amp;page=<span
+                                class="param param--page">{page}</span>][&amp;size=<span
+                                class="param param--size">{size}</span>][&amp;sort=<span
+                                class="param param--sort">{sort}</span>]
+                        </th>
                     </tr>
-                    <tr>
-                        <td><span class="param param--page">{page}</span>:</td>
-                        <td> the page number (optional)</td>
+                    </thead>
+                    <tbody>
+                    <tr class="odd">
+                        <td>Params</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td><span class="param param--text">{text}</span>:</td>
+                                    <td> the search term to look for</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--page">{page}</span>:</td>
+                                    <td> the page number (optional)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--size">{size}</span>:</td>
+                                    <td> the number of results per page (optional)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--sort">{sort}</span>:</td>
+                                    <td> asc | desc (optional)</td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--size">{size}</span>:</td>
-                        <td> the number of results per page (optional)</td>
+                    <tr class="even">
+                        <td>What it does</td>
+                        <td>Return a list of accessions of samples matching the text you were looking for</td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--sort">{sort}</span>:</td>
-                        <td> asc | desc (optional)</td>
+                    <tr class="odd">
+                        <td>Example</td>
+                        <td><a href="https://www.ebi.ac.uk/biosamples/xml/sample/query=leukemia" target="_blank">https://www.ebi.ac.uk/biosamples/xml/sample/query=leukemia</a>
+                        </td>
                     </tr>
+                    </tbody>
                 </table>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return a list of accessions of groups matching the text you were looking for</td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/xml/groups?query=leukemia" target="_blank">https://www.ebi.ac.uk/biosamples/xml/groups?query=leukemia</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-in-terminal-10">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/groups?query=leukemia</pre>
-    </div>
-
-    <h5 id="legacy-xml-api-2">Legacy XML api</h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>
-                /biosamples/xml/sample/query=<span class="param param--text">{text}</span>[&amp;page=<span
-                    class="param param--page">{page}</span>][&amp;size=<span class="param param--size">{size}</span>][&amp;sort=<span
-                    class="param param--sort">{sort}</span>]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Params</td>
-            <td>
+                <h6 id="example-8" class="code_example">Example in terminal:</h6>
+                <div>
+                    <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/sample/query=leukemia</pre>
+                </div>
+            </section>
+            <br><section id="xml-groups-by-keywords">
+                <h4>Find groups that match a keyword</h4>
                 <table>
-                    <tr>
-                        <td><span class="param param--text">{text}</span>:</td>
-                        <td> the search term to look for</td>
+                    <thead>
+                    <tr class="header">
+                        <th>How to compose</th>
+                        <th>
+                            /biosamples/xml/groups?query=<span class="param param--text">{text}</span>[&amp;page=<span
+                                class="param param--page">{page}</span>][&amp;size=<span
+                                class="param param--size">{size}</span>][&amp;sort=<span
+                                class="param param--sort">{sort}</span>]
+                        </th>
                     </tr>
-                    <tr>
-                        <td><span class="param param--page">{page}</span>:</td>
-                        <td> the page number (optional)</td>
+                    </thead>
+                    <tbody>
+                    <tr class="odd">
+                        <td>Params</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td><span class="param param--text">{text}</span>:</td>
+                                    <td> the search term to look for</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--page">{page}</span>:</td>
+                                    <td> the page number (optional)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--size">{size}</span>:</td>
+                                    <td> the number of results per page (optional)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--sort">{sort}</span>:</td>
+                                    <td> asc | desc (optional)</td>
+                                </tr>
+                            </table>
+                        </td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--size">{size}</span>:</td>
-                        <td> the number of results per page (optional)</td>
+                    <tr class="even">
+                        <td>What it does</td>
+                        <td>Return a list of accessions of groups matching the text you were looking for</td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--sort">{sort}</span>:</td>
-                        <td> asc | desc (optional)</td>
+                    <tr class="odd">
+                        <td>Example</td>
+                        <td><a href="https://www.ebi.ac.uk/biosamples/xml/groups?query=leukemia" target="_blank">https://www.ebi.ac.uk/biosamples/xml/groups?query=leukemia</a>
+                        </td>
                     </tr>
+                    </tbody>
                 </table>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return a list of accessions of groups matching the text you were looking for</td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/xml/group/query=leukemia" target="_blank">https://www.ebi.ac.uk/biosamples/xml/group/query=leukemia</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-in-terminal-11">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -L -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/group/query=leukemia</pre>
-    </div>
-
-    <h3 id="find-samples-that-are-part-of-a-group">Find samples that are part of a group</h3>
-    <h4 id="recommended-4">Recommended</h4>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/api/samples/search/findByGroup?group=<span class="param param--group_acc">{group_acc}</span>[&amp;page=<span
-                    class="param param--page">{page}</span>][&amp;size=<span class="param param--size">{size}</span>][&amp;sort=<span
-                    class="param param--sort">{sort}</span>]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Params</td>
-            <td>
+                <h6 id="example-in-terminal-10">Example in terminal:</h6>
+                <div>
+                    <pre class="inline-code">curl -H Content-Type:text/xml https://www.ebi.ac.uk/biosamples/xml/groups?query=leukemia</pre>
+                </div>
+            </section>
+            <br><section id="xml-samples-in-group">
+                <h4>Find samples that are part of a group</h4>
                 <table>
-                    <tr>
-                        <td><span class="param param--group_acc">{group_acc}</span>:</td>
-                        <td> the group accession</td>
+                    <thead>
+                    <tr class="header">
+                        <th>How to compose</th>
+                        <th>/biosamples/xml/groupsamples/<span
+                                class="param param--group_acc">{group_acc}</span>/query=[<span
+                                class="param param--text">{text}</span>][&amp;page=<span
+                                class="param param--page">{page}</span>][&amp;size=<span
+                                class="param param--size">{size}</span>][&amp;sort=<span
+                                class="param param--sort">{sort}</span>]
+                        </th>
                     </tr>
-                    <tr>
-                        <td><span class="param param--page">{page}</span>:</td>
-                        <td> the page number (optional)</td>
+                    </thead>
+                    <tbody>
+                    <tr class="odd">
+                        <td>Params</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td><span class="param param--group_acc">{group_acc}</span>:</td>
+                                    <td> the group accession</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--text">{text}</span>:</td>
+                                    <td> the search term to look for</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--page">{page}</span>:</td>
+                                    <td> the page number (optional)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--size">{size}</span>:</td>
+                                    <td> the number of results per page (optional)</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="param param--sort">{sort}</span>:</td>
+                                    <td> asc | desc (optional)</td>
+                                    </td></tr>
+                            </table>
                     </tr>
-                    <tr>
-                        <td><span class="param param--size">{size}</span>:</td>
-                        <td> the number of results per page (optional)</td>
+                    <tr class="even">
+                        <td>What it does</td>
+                        <td>Return a list of accessions of samples parts of group with accession group_acc and matching
+                            the
+                            text
+                            you were looking for
+                        </td>
                     </tr>
-                    <tr>
-                        <td><span class="param param--sort">{sort}</span>:</td>
-                        <td> asc | desc (optional)</td>
+                    <tr class="odd">
+                        <td>Example</td>
+                        <td>http://www.ebi.ac.uk/biosamples/xml/groupsamples/SAMEG316130/query=</td>
                     </tr>
+                    </tbody>
                 </table>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return the list of samples that are part of the group that match group_acc accession</td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td><a href="https://www.ebi.ac.uk/biosamples/api/samples/search/findByGroup?group=SAMEG316130"
-                   target="_blank">https://www.ebi.ac.uk/biosamples/api/samples/search/findByGroup?group=SAMEG316130</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-in-terminal-12">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:application/json https://www.ebi.ac.uk/biosamples/api/samples/search/findByGroup?group=SAMEG316130</pre>
-    </div>
-
-    <h4 id="more-possibilities-4">More possibilities</h4>
-    <h5 id="legacy-xml-api-3">Legacy XML api</h5>
-    <table>
-        <thead>
-        <tr class="header">
-            <th>How to compose</th>
-            <th>/biosamples/xml/groupsamples/<span class="param param--group_acc">{group_acc}</span>/query=[<span
-                    class="param param--text">{text}</span>][&amp;page=<span class="param param--page">{page}</span>][&amp;size=<span
-                    class="param param--size">{size}</span>][&amp;sort=<span class="param param--sort">{sort}</span>]
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="odd">
-            <td>Params</td>
-            <td>
-                <table>
-                    <tr>
-                        <td><span class="param param--group_acc">{group_acc}</span>:</td>
-                        <td> the group accession</td>
-                    </tr>
-                    <tr>
-                        <td><span class="param param--text">{text}</span>:</td>
-                        <td> the search term to look for</td>
-                    </tr>
-                    <tr>
-                        <td><span class="param param--page">{page}</span>:</td>
-                        <td> the page number (optional)</td>
-                    </tr>
-                    <tr>
-                        <td><span class="param param--size">{size}</span>:</td>
-                        <td> the number of results per page (optional)</td>
-                    </tr>
-                    <tr>
-                        <td><span class="param param--sort">{sort}</span>:</td>
-                        <td> asc | desc (optional)</td>
-                        </td></tr>
-                </table>
-        </tr>
-        <tr class="even">
-            <td>What it does</td>
-            <td>Return a list of accessions of samples parts of group with accession group_acc and matching the text
-                you were looking for
-            </td>
-        </tr>
-        <tr class="odd">
-            <td>Example</td>
-            <td>http://www.ebi.ac.uk/biosamples/xml/groupsamples/SAMEG316130/query=</td>
-        </tr>
-        </tbody>
-    </table>
-    <h6 id="example-in-terminal-13">Example in terminal:</h6>
-    <div>
-        <pre class="inline-code">curl -H Content-Type:text/xml http://www.ebi.ac.uk/biosamples/xml/groupsamples/SAMEG316130/query=</pre>
-    </div>
-
-    <h2 id="response-format-details">Response Format Details</h2>
-    <h3 id="content-the-_embedded-object">Content: the _embedded object</h3>
-    <p>Every time the result is not “unique” (i.e. single sample/group page), the content is stored inside an
-        _embedded object. Here an example</p>
-    <p><img th:src="@{/images/help/api-embedded-object.png}" src="../images/help/api-embedded-object.png"/></p>
-    <p>As already said, this is not true just in the case of specific sample page or specific group page retrieved
-        using accession. In that case, the content of the sample/group is actually what returned from the API.</p>
-    <h3 id="links-hal---hypertext-application-language-the-_link-object">Links (HAL - Hypertext Application
-        Language): the _link object</h3>
-    <p>The new Biosamples API implements the HAL specification.</p>
-    <p>HAL is a simple format that gives a consistent and easy way to hyperlink between resources in your API. From
-        the consumer point of view this mean any time you reach an API endpoint you will be able to navigate through
-        the api using the _links object. Here an example of the _links object you can see at <a
-                href="http://www.ebi.ac.uk/biosamples/api/"><em>www.ebi.ac.uk/biosamples/api/</em></a>
-    </p>
-    <p><img th:src="@{/images/help/api-hal.png}"
-            src="../images/help/api-hal.png" alt="">
-    </p>
-
-    <h3>Pagination: the <b>page</b> object</h3>
-    <p>Results that contains more than one entry usually are returned as a page. Each page has a number and a size
-        and return the entries sorted in a descend or ascend way. Every result contains the page
-        object which contains the information on the current result. Here an example from <a
-                href="http://www.ebi.ac.uk/biosamples/api/groups/"><em>www.ebi.ac.uk/biosamples/api/groups/</em></a>
-    </p>
-    <p>
-        <img th:src="@{/images/help/api-page-object.png}"
-             src="../images/help/api-page-object.png"/>
-    </p>
+                <h6 id="example-in-terminal-13">Example in terminal:</h6>
+                <div>
+                    <pre class="inline-code">curl -H Content-Type:text/xml http://www.ebi.ac.uk/biosamples/xml/groupsamples/SAMEG316130/query=</pre>
+                </div>
+            </section>
+        </section>
     </section>
 </div>
 </body>
