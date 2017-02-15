@@ -67,7 +67,7 @@
                         mappingContent = "<a href=\"" + link + "\" target='_blank'>" + fieldValue.text + "</a>";
                     }
                 } else {
-                    mappingContent = "<a href=\"" + encodeURIComponent(iri) + "\" target='_blank'>" + fieldValue.text + "</a>";
+                    mappingContent = "<a href=\"" + iri + "\" target='_blank'>" + fieldValue.text + "</a>";
                 }
             }
             else {
