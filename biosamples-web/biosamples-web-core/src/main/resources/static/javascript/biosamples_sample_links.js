@@ -291,17 +291,8 @@
     }
 
     function checkInOls(iri) {
-        jQuery.ajax({
-            url: olsApiSearchLink + iri,
-            statusCode: {
-                404: function() {
-                    return false;
-                },
-                200: function(data) {
-                    return data.hasOwnProperty("_embedded");
-                }
-            },
-            async: false
-        });
+        var checkUrl = olsApiSearchLink + iri;
+        var response = jQuery.ajax(checkUrl, { async: false });
+        return response.status == 200 && response.responseJSON.hasOwnProperty("_embedded");
     }
 })(jQuery);
