@@ -298,10 +298,7 @@
                     return false;
                 },
                 200: function(data) {
-                    if (!data.hasOwnProperty("_embedded")){
-                        return false;
-                    }
-                    return false;
+                    return data.hasOwnProperty("_embedded");
                 }
             },
             async: false
