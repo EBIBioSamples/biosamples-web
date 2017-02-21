@@ -7,6 +7,7 @@
     }
 
     var olsSearchLink = "//www.ebi.ac.uk/ols/terms?iri=";
+    var olsApiSearchLink = "//www.ebi.ac.uk/ols/api/terms?iri=";
 
     $(document).ready(function() {
         try {
@@ -56,11 +57,17 @@
         } else if (fieldValue.ontologyTerms) {
             console.log("Found ontology term for '" + fieldValue.text + "': " + fieldValue.ontologyTerms);
             if (fieldValue.ontologyTerms[0]) {
-                var link = olsSearchLink + encodeURIComponent(fieldValue.ontologyTerms[0]);
-                if (fieldValue.unit) {
-                    mappingContent = fieldValue.text + "( <a href=\"" + link + "\" target='_blank'>" + fieldValue.unit + "</a> )";
+                var iri = fieldValue.ontologyTerms[0];
+                if (checkInOls(iri)) {
+                    console.log(status);
+                    var link = olsSearchLink + encodeURIComponent(iri);
+                    if (fieldValue.unit) {
+                        mappingContent = fieldValue.text + "( <a href=\"" + link + "\" target='_blank'>" + fieldValue.unit + "</a> )";
+                    } else {
+                        mappingContent = "<a href=\"" + link + "\" target='_blank'>" + fieldValue.text + "</a>";
+                    }
                 } else {
-                    mappingContent = "<a href=\"" + link + "\" target='_blank'>" + fieldValue.text + "</a>";
+                    mappingContent = "<a href=\"" + iri + "\" target='_blank'>" + fieldValue.text + "</a>";
                 }
             }
             else {
@@ -281,5 +288,11 @@
             console.debug("Passed value is not a JSON string");
         }
         return false;
+    }
+
+    function checkInOls(iri) {
+        var checkUrl = olsApiSearchLink + iri;
+        var response = jQuery.ajax(checkUrl, { async: false });
+        return response.status == 200 && response.responseJSON.hasOwnProperty("_embedded");
     }
 })(jQuery);

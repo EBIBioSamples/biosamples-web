@@ -49,12 +49,13 @@
     function renderOntologyTerm(jsonValue) {
         let textValue = jsonValue.text;
         let ontologyTerms = jsonValue['ontologyTerms'];
-        if (ontologyTerms[0]) { // build the OLS link for the ontology mapped value
-            let link = olsSearchLink + encodeURIComponent(ontologyTerms[0]);
-            return `<a href=${link} target='_blank'>${textValue}</a>`
-        } else { //something wrong happened
-            console.log("Something went wrong - ontologyTerms collection present but no first element?");
-        }
+        return textValue;
+//        if (ontologyTerms[0]) { // build the OLS link for the ontology mapped value
+//            let link = olsSearchLink + encodeURIComponent(ontologyTerms[0]);
+//            return `<a href=${link} target='_blank'>${textValue}</a>`
+//        } else { //something wrong happened
+//            console.log("Something went wrong - ontologyTerms collection present but no first element?");
+//        }
     }
 
     module.exports = {
