@@ -246,6 +246,24 @@
     }
 
     /**
+     * Throw an Error if image doesn't exists
+     *
+     * @static
+     * @memberOf _
+     * @param {mixed} imageSrc Image source path
+     * @param {function} good Function to run on image load
+     * @param {function} bad Function to run on image error
+     * @return {void}
+     */
+    function checkImage(imageSrc, good, bad) {
+        let img = new Image();
+        img.onload = good;
+        img.onerror = bad;
+        img.src = imageSrc;
+    }
+
+
+    /**
      * Iterate array skipping given indices.
      *
      * @static
@@ -988,6 +1006,7 @@
         checkObject: checkObject,
         checkPlainObject: checkPlainObject,
         checkString: checkString,
+        checkImage: checkImage,
         exceptKeys: exceptKeys,
         fromQueryString: fromQueryString,
         generateKey: generateKey,

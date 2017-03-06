@@ -141,7 +141,7 @@
             var output = "";
             $.each( json, function( index, value ) {
                 if (value.URL.indexOf("/ena/") > -1) {
-                    output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"<img src=\"../images/ena_logo.gif\"></img></a>";
+                    output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"<img style=\"height: 1em; padding-left: 5px;\" src=\"../images/ena_logo.png\"/></a>";
                 } else {
                     output += "<a href=\""+value.URL+"\" target='_blank'>"+value.Acc+"</a>";
 

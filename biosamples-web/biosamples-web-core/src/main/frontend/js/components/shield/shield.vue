@@ -3,7 +3,8 @@
 */
 <template>
     <div class="shield shield--{{variation}}">
-        <span class="shield__key">{{key | startCase}}</span><span class="shield__value" :style="{backgroundColor: valueColor}">{{value}}</span><span
+        <span class="shield__key">{{key | startCase}}</span><span class="shield__value" :style="{backgroundColor: valueColor}">{{{value}}}</span><span
+
             class="shield__close" v-if=closable @click="close">&times;</span>
     </div>
 </template>
@@ -21,8 +22,20 @@
 
     module.exports = {
         props: {
-            key: String,
-            value: String,
+            key: {
+                type: String,
+                validator(value) {
+                    console.log(value);
+                    return true;
+                }
+            },
+            value: {
+                type: String,
+                validator(value) {
+                    console.log(value);
+                    return true;
+                }
+            },
             closable: {
                 type: Boolean,
                 default: false

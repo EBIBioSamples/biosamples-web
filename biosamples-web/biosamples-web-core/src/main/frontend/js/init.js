@@ -22,7 +22,7 @@
     };
 
     // Vue starting configuration
-    var Vue = require("vue");
+    let Vue = require("vue");
     Vue.use(require("vue-resource"));
     Vue.config.debug = false;
     Vue.config.silent = true;

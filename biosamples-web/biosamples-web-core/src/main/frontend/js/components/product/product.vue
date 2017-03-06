@@ -41,7 +41,7 @@
 
         data() {
             return {
-                maxBadgeLength: 50
+                maxBadgeLength: -1
             }
         },
 
@@ -53,14 +53,16 @@
            badgeArray() {
                // Create the badge array checking for multivalued fields
                let badges = this.object.badges;
-               return Object.keys(badges).reduce((all, key) => {
-                   let badgeValues = castArray(badges[key]);
-                  for (let val of badgeValues) {
-                      if (val.length + key.length < this.maxBadgeLength)
-                        all.push({"key": key, "value": val});
-                  }
-                  return all;
-               },[])
+               let all = [];
+               for(let key of Object.keys(badges)) {
+                    let badgeValues = castArray(badges[key]);
+                    for (let val of badgeValues ) {
+                        if (this.maxBadgeLength < 0 || val.length + key.length < this.maxBadgeLength) {
+                            all.push({"key": key, "value": val});
+                        }
+                    }
+               }
+               return all;
            },
             isSample() {
                 return this.object.type === 'sample'
