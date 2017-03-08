@@ -59,7 +59,7 @@ public class SearchController {
         // and configure our query
         solrQuery
                 .withContentType(HttpSolrQuery.CONTENT_TYPE.JSON)
-                .withFacetOn("content_type")
+                .withFacetOn("content_type_facet")
                 .withFacetOn(httpSolrDispatcher.getMostUsedFacets(solrQuery, 5))
                 .withFacetLimit(5)
                 .withPage(start, rows);
@@ -90,12 +90,7 @@ public class SearchController {
             if (baseFilter.length == 2) {
                 String filterKey = baseFilter[0];
                 String filterValue = baseFilter[1];
-
-                if (!filterKey.equals("content_type")) {
-                    filterKey = String.format("%s_crt_ft", filterKey);
-                }
-
-                results.put(String.format("%s", filterKey), String.format("%s", filterValue));
+                results.put(String.format("%s_facet", filterKey), String.format("%s", filterValue));
             }
         }
         return results;

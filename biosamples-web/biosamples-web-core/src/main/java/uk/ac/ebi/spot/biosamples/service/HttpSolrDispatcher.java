@@ -17,26 +17,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -106,7 +89,8 @@ public class HttpSolrDispatcher {
                     if (matcher.find()) {
                         String facetName = matcher.group(1).trim();
 //                        facets.add(facetName);
-                        facets.add(facetName + "_ft");
+//                        facets.add(facetName + "_ft");
+                        facets.add(facetName + "_facet");
                     }
                     line = br.readLine();
                 }
@@ -161,18 +145,18 @@ public class HttpSolrDispatcher {
             HttpSolrQuery facetQuery = solrQuery.clone();
 
             // build the set of facets to exclude
-            final Set<String> excludedFacetsForQuery = new HashSet<>();
+            final Set<String> excludedFacetsForQuery = new LinkedHashSet<>();
             excludedFacetsForQuery.addAll(ignoredFacets);
             excludedFacetsForQuery.addAll(facetQuery.getFilteredFields());
             int facetLimitForQuery = excludedFacetsForQuery.size() + facetLimit;
 
-            final Set<String> includedFacetsForQuery = new HashSet<>();
+            final Set<String> includedFacetsForQuery = new LinkedHashSet<>();
             includedFacetsForQuery.addAll(includedFacets);
             // we don't need any results here
             facetQuery.withPage(0, 0);
 
             // and we are investigating crt_type_ft
-            facetQuery.withFacetOn("crt_type_ft");
+            facetQuery.withFacetOn("crt_type_facet");
             // TODO Probably not the most elegant solution
             for(String facet: includedFacets) {
                 facetQuery.withCustomFacetOn(facet, 
@@ -247,10 +231,10 @@ public class HttpSolrDispatcher {
                 	log.error("Unexpected Solr response - no facet_fields field "+facetQuery.stringify());
                     throw new RuntimeException("Unexpected Solr response - no facet_fields field");
                 }
-                JsonNode facetNodes = facetFields.get("crt_type_ft");
+                JsonNode facetNodes = facetFields.get("crt_type_facet");
                 if (facetNodes == null) {
-                	log.error("Unexpected Solr response - no crt_type_ft field "+facetQuery.stringify());
-                    throw new RuntimeException("Unexpected Solr response - no crt_type_ft field");
+                	log.error("Unexpected Solr response - no crt_type_facet field "+facetQuery.stringify());
+                    throw new RuntimeException("Unexpected Solr response - no crt_type_facet field");
                 }
                 // User requested facets
                 for(String facetName: includedFacets) {
@@ -266,7 +250,8 @@ public class HttpSolrDispatcher {
                 // Other facets
                 Iterator<JsonNode> facetNodeIt = facetNodes.elements();
                 while (facetNodeIt.hasNext()) {
-                    String facetName = String.format("%s_ft", facetNodeIt.next().asText());
+//                    String facetName = String.format("%s_ft", facetNodeIt.next().asText());
+                    String facetName = facetNodeIt.next().asText();
                     int facetCount = facetNodeIt.next().asInt();
                     if (!excludedFacets.contains(facetName)) {
                         getLog().debug("Dynamic facet '" + facetName + "' -> " + facetCount);

@@ -246,11 +246,6 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
                             }
                             this.consumeResults(results);
                             vueConsole.debug("Results consumed");
-                            // if (doVisualization) {
-                            //     if (typeof loadD3 === "undefined" || loadD3) {
-                            //         doD3Stuff(results, apiUrl, this);
-                            //     }
-                            // }
                         })
                         .catch(function(error){
                             vueConsole.error("An error occurred while updating the interface: ");
@@ -282,17 +277,16 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
 
                     let highLights       = results.highlighting;
                     let dynamicFacets    = results.facet_counts.facet_fields;
+                    // let facetOrder       = JSON.parse(results.responseHeader.params["facet.order"]);
+                    // let dynamicFacetsKey = facetOrder ? facetOrder : Object.keys(dynamicFacets);
                     let dynamicFacetsKey = _.keys(dynamicFacets);
                     this.facets          = {};
                     let vm               = this;
 
                     _.forEach(dynamicFacetsKey, function(key) {
-                        let readableKey = key.replace('_crt_ft','');
+                        let readableKey = key.replace('_facet','');
                         //noinspection JSUnresolvedFunction
                         readableKey = vm.$options.filters.excerpt(readableKey,200);
-                        // for (var i in dynamicFacets[key]){
-                        //     dynamicFacets[key][i] = vm.$options.filters.excerpt(dynamicFacets[key][i],200);
-                        // }
                         vm.facets[readableKey] = readFacets(dynamicFacets[key]);
                     });
 

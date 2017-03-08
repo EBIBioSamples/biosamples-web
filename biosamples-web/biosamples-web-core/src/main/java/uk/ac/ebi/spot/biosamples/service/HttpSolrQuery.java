@@ -197,6 +197,7 @@ public class HttpSolrQuery implements Cloneable {
         return queryStringBuilder.toString();
     }
 
+
     public static enum CONTENT_TYPE {
         JSON,
         XML
