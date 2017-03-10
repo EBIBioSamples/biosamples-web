@@ -111,7 +111,7 @@ public class HttpSolrDispatcher {
                 .createQuery("sample_grp_accessions", groupAccession);
 
         commonFacetQuery.withPage(0, 0);
-        commonFacetQuery.withFacetOn("crt_type_ft");
+        commonFacetQuery.withFacetOn("crt_type_facet");
         commonFacetQuery.withFacetMinCount(facetCount);
 
         String[] possibleAttributes = executeAndParseFacetQuery(commonFacetQuery,
@@ -233,7 +233,7 @@ public class HttpSolrDispatcher {
                 }
                 JsonNode facetNodes = facetFields.get("crt_type_facet");
                 if (facetNodes == null) {
-                	log.error("Unexpected Solr response - no crt_type_facet field "+facetQuery.stringify());
+                    log.error("Unexpected Solr response - no crt_type_facet field " + facetQuery.stringify());
                     throw new RuntimeException("Unexpected Solr response - no crt_type_facet field");
                 }
                 // User requested facets

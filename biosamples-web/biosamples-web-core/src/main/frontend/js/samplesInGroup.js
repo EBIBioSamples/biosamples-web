@@ -87,23 +87,24 @@
             }
         }
 
-        let value = "";
+        let value = [];
         if (sample.hasOwnProperty(field)) {
-            return value = sample[field];
+            value.push(sample[field]);
+            // return value = sample[field];
         } else {
             //noinspection JSUnresolvedVariable
             if (sample.characteristics.hasOwnProperty(field)) {
                 //noinspection JSUnresolvedVariable
-                let multiValueField = sample.characteristics[field];
+               value = sample.characteristics[field];
 
                 // Concatenate the multivalue fields into a single string separated by comas where
                 // annotated terms are returned in their JSON format
-                return multiValueField.slice(1).reduce(function(finalString,valueField) {
-                    return `${finalString}, ${readAnnotatedValue(valueField)}`;
-                }, readAnnotatedValue(multiValueField[0]));
+                // return multiValueField.slice(1).reduce(function(finalString,valueField) {
+                //     return `${finalString}, ${readAnnotatedValue(valueField)}`;
+                // }, readAnnotatedValue(multiValueField[0]));
             }
         }
-        return "";
+        return value;
     }
 
     if (baseVM) {

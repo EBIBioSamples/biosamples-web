@@ -7,9 +7,7 @@
         </thead>
         <tbody>
             <tr v-for="row in data">
-                <td v-for="column in columns">
-                    {{{valueFunction(row,column) | dataFilter}}}
-                </td>
+                <td v-for="column in columns" v-html="valueFunction(row, column) | dataFilter"></td>
             </tr>
         </tbody>
     </table>
@@ -21,6 +19,14 @@
     const Store =  window.Store;
     const startCaseFilter = require("../../filters/startCaseFilter.js");
     const olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
+
+    function isAccession(value) {
+       return value.match(/(?:SAM(N|E|)A?\d+|SAMEG\d+)/);
+    }
+
+    function isLink(value) {
+        return value.match(/https?:\/\//);
+    }
 
     function renderAccession(value) {
 
@@ -91,32 +97,26 @@
             /*
             this function render the values inside the table.
              */
-            dataFilter(value, separator = ", ") {
+            dataFilter(value) {
                 try { // necessary to handle null values
 
                     //Check if multiple value is present
-                    let valArray = value.split(separator);
-                    let mapArray = valArray.map(value => {
-                        try { // check if value has ontology associated
-                            let jsonValue = JSON.parse(value);
-                            if (jsonValue.hasOwnProperty('ontologyTerms')) {
-                                return renderOntologyTerm(jsonValue);
+                    let mapArray = value.map(value => {
+                        if (value.hasOwnProperty('ontologyTerms')) {
+                            return renderOntologyTerm(value);
+                        } else {
+                            let textValue = value.hasOwnProperty('text') ? value.text : value;
+                            if (isAccession(textValue)) {
+                                return renderAccession(textValue);
+                            } else if (isLink(textValue)) {
+                                return renderLink(textValue);
+                            } else {
+                                return textValue;
                             }
-                            return jsonValue;
-                        } catch (e) {
-                            if (value) { // value is not a json object
-                                // Other value rendering functions
-                                if (value.match(/(?:SAM(N|E|)A?\d+|SAMEG\d+)/)) {
-                                    return renderAccession(value);
-                                }
-                                if (value.match(/https?:\/\//)) {
-                                    return renderLink(value);
-                                }
-                            }
-                            return value;
+
                         }
                     });
-                    return mapArray.slice(1).reduce((complete, part) => `${complete}${separator}${part}`, mapArray[0]);
+                    return mapArray.slice(1).reduce((complete, part) => `${complete}, $}`, mapArray[0]);
                 } catch (e) {
                     return value;
                 }

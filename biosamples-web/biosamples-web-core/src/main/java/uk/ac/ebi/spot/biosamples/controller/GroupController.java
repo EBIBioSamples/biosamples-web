@@ -84,8 +84,8 @@ public class GroupController {
 				if (sample != null) {
 					Map<String, List<String>> sampleCrts = sample.getCharacteristics();
 					for (String attribute : tempSampleCommonCharacteristics) {
-						if (!SolrIgnoredField.SAMPLE.isIgnored(attribute.replaceFirst("_ft$", ""))) {
-							List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_crt_ft$", ""));
+						if (!SolrIgnoredField.SAMPLE.isIgnored(attribute.replaceFirst("_facet$", "_crt"))) {
+							List<String> crtValues = sampleCrts.get(attribute.replaceFirst("_facet$", ""));
 							sampleCommonAttributes.put(cleanAttributeName(attribute), crtValues);
 						}
 					}
@@ -161,7 +161,7 @@ public class GroupController {
     }
 
 	private String cleanAttributeName(String name) {
-		name = name.substring(0, name.indexOf("_crt_ft"));
+		name = name.substring(0, name.indexOf("_facet"));
 		return name;
 		/*
 		 * return Arrays.stream(name.split("_")).map(part -> { return
