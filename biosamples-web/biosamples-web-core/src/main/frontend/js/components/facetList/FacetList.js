@@ -86,7 +86,14 @@
 			 */
 			isSelected: function(facet) {
 				return this.selected === facet;	
+			},
+
+			facetName: function(facet) {
+				return facet === "External references name" ?
+					"External reference" :
+					facet;
 			}
+
 		},
 		
 		events: {
