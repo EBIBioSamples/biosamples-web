@@ -44,12 +44,12 @@ public class HttpSolrDispatcher {
     @Autowired
     private ApplicationContext ctx;
 
-    private Set<String> ignoredFacets;
-    private Set<String> includedFacets;
+    private LinkedHashSet<String> ignoredFacets;
+    private LinkedHashSet<String> includedFacets;
 
     @PostConstruct
     private void readFacetsFiles() {
-        ignoredFacets = new HashSet<>();
+        ignoredFacets = new LinkedHashSet<>();
         ignoredFacets.add("content_type"); // content_type is always returned as facet
 
         // Ignored facets 
@@ -59,7 +59,6 @@ public class HttpSolrDispatcher {
         Set<String> resourceContent = readFacetResource(ignoredFacetsResource);
         for(String ignoredFacet: resourceContent) {
             ignoredFacets.add(ignoredFacet);
-//            ignoredFacets.add(ignoredFacet + "_ft");
         }
 
         for(String facet: ignoredFacets) {
@@ -76,8 +75,8 @@ public class HttpSolrDispatcher {
 
     }
 
-    private Set<String> readFacetResource(Resource facetResource) {
-        Set<String> facets = new HashSet<>();
+    private LinkedHashSet<String> readFacetResource(Resource facetResource) {
+        LinkedHashSet<String> facets = new LinkedHashSet<>();
         if (facetResource != null && facetResource.exists()) {
 
             Pattern pattern = Pattern.compile("^(\\w+)\\s*(?:#.*)?$");
@@ -88,8 +87,6 @@ public class HttpSolrDispatcher {
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.find()) {
                         String facetName = matcher.group(1).trim();
-//                        facets.add(facetName);
-//                        facets.add(facetName + "_ft");
                         facets.add(facetName + "_facet");
                     }
                     line = br.readLine();
