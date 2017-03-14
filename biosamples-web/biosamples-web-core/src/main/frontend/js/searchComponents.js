@@ -87,7 +87,7 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
                 if (extRefs) {
                     try {
                         let refNames = Array.from(new Set(extRefs));
-                        badges['externalReference_crt'] =
+                        badges['externalReferencesName_crt'] =
                             // This is a useful way to hide an image if doesn't exists
                             refNames.map(name => `${name} <img style="height: 1em" onerror='this.style.display = "none"' src ='../images/${name.toLowerCase()}_logo.png' />&nbsp;`);
 

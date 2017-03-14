@@ -12,8 +12,10 @@
 	 * @return {String}           The capitalized String
 	 */
 	let _ = require("lodash");
-	function filter(value) {
-		return _.chain(value).lowerCase().capitalize().value();
+    const regex = /([Ee]xternal)([ _-])(?:([Rr]eference)s)([ _-])([Nn]ame)/g;
+    const subst = `$1$2$3`;
+	function filter(string) {
+	    return string.replace(regex, subst);
 	}
 
 	module.exports = function(strings) {

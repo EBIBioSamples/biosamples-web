@@ -3,7 +3,7 @@
 */
 <template>
     <div class="shield shield--{{variation}}">
-        <span class="shield__key">{{key | startCase}}</span><span class="shield__value" :style="{backgroundColor: valueColor}">{{{value}}}</span><span
+        <span class="shield__key">{{key | externalReference | startCase}}</span><span class="shield__value" :style="{backgroundColor: valueColor}">{{{value}}}</span><span
 
             class="shield__close" v-if=closable @click="close">&times;</span>
     </div>
