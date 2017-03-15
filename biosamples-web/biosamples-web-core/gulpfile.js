@@ -18,4 +18,5 @@ elixir(function(mix) {
         .browserify('relationsVis.js')
         .browserify('samplesInGroup.js')
 	 	.browserify('toolsFunctions.js')
+        .browserify('biosamplesSampleLinks.js')
 });
