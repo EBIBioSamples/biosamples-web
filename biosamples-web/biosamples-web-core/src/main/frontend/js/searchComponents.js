@@ -89,18 +89,7 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
                         let refNames = Array.from(new Set(extRefs));
                         badges['externalReferencesName_crt'] =
                             // This is a useful way to hide an image if doesn't exists
-                            refNames.map(name => `${name} <img style="height: 1em" onerror='this.style.display = "none"' src ='../images/${name.toLowerCase()}_logo.png' />&nbsp;`);
-
-
-                        // let refObjSerial = obj["external_references_json"];
-                        // let refObj = JSON.parse(refObjSerial);
-                        // refNames.forEach(el => {
-                        //     badges[`${el.toLowerCase()}Reference_crt`] =
-                        //         refObj
-                        //             .filter(val => val.Name == el)
-                        //             .filter(val => val.Acc != obj.accession)
-                        //             .map(val=>val.Acc);
-                        // });
+                            refNames.map(name => `${name} <img style="height: 1em" onerror='this.style.display = "none"' src="images/${name.toLowerCase()}_logo.png" />&nbsp;`);
                     } catch (err) {
                         console.err("Unable to render badges for external reference", refObjSerial)
                     }
