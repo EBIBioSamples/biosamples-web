@@ -44,38 +44,39 @@ public class HttpSolrDispatcher {
     @Autowired
     private ApplicationContext ctx;
 
-    private LinkedHashSet<String> ignoredFacets;
-    private LinkedHashSet<String> includedFacets;
+    private LinkedHashSet<String> ignoredFacets = new LinkedHashSet<>();
+    private LinkedHashSet<String> includedFacets = new LinkedHashSet<>();
 
     @PostConstruct
     private void readFacetsFiles() {
-        ignoredFacets = new LinkedHashSet<>();
         ignoredFacets.add("content_type"); // content_type is always returned as facet
 
-        // Ignored facets 
-        log.info("Looking for ignored facets file at "+ignoredFacetsFilename);
-        
-        Resource ignoredFacetsResource = ctx.getResource(ignoredFacetsFilename);
-        Set<String> resourceContent = readFacetResource(ignoredFacetsResource);
-        for(String ignoredFacet: resourceContent) {
-            ignoredFacets.add(ignoredFacet);
-        }
+        // Ignored facets
+        if ( !ignoredFacetsFilename.isEmpty() ) {
+            log.info("Looking for ignored facets file at " + ignoredFacetsFilename);
+            Set<String> resourceContent = readFacetsFromFile(ignoredFacetsFilename);
+            for (String ignoredFacet : resourceContent) {
+                ignoredFacets.add(ignoredFacet);
+            }
 
-        for(String facet: ignoredFacets) {
-            log.info("Ignoring facet " + facet);
+            for (String facet : ignoredFacets) {
+                log.info("Ignoring facet " + facet);
+            }
         }
 
         // Mandatory facets
-        log.info("Looking for mandatory facets file at " + includedFacetsFilename);
-        Resource includedFacetsResource = ctx.getResource(includedFacetsFilename);
-        includedFacets = readFacetResource(includedFacetsResource);
-        for(String facet: includedFacets) {
-           log.info("Always considering facet " + facet);
+        if ( !includedFacetsFilename.isEmpty() ) {
+            log.info("Looking for mandatory facets file at " + includedFacetsFilename);
+            includedFacets = readFacetsFromFile(includedFacetsFilename);
+            for (String facet : includedFacets) {
+                log.info("Always considering facet " + facet);
+            }
         }
 
     }
 
-    private LinkedHashSet<String> readFacetResource(Resource facetResource) {
+    private LinkedHashSet<String> readFacetsFromFile(String filename) {
+        Resource facetResource = ctx.getResource(filename);
         LinkedHashSet<String> facets = new LinkedHashSet<>();
         if (facetResource != null && facetResource.exists()) {
 
@@ -95,9 +96,11 @@ public class HttpSolrDispatcher {
             }
             catch (IOException e) {
                 log.error("Unable to read facet resource", e);
+                throw new RuntimeException(e);
             }
         } else {
             log.info("did not find facetResource", facetResource);
+            throw new RuntimeException("The provided file has not been found " + filename);
         }
         return facets;
     }
