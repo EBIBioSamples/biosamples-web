@@ -32,10 +32,10 @@ public class HttpSolrDispatcher {
         return log;
     }
 
-    @Value("${solr.ignoredfacets.file:''}")
+    @Value("${solr.ignoredfacets.file}")
     private String ignoredFacetsFilename;
 
-    @Value("${solr.includedfacets.file:''}")
+    @Value("${solr.includedfacets.file}")
     private String includedFacetsFilename;
 
     @Autowired
@@ -52,7 +52,7 @@ public class HttpSolrDispatcher {
         ignoredFacets.add("content_type"); // content_type is always returned as facet
 
         // Ignored facets
-        if ( !ignoredFacetsFilename.isEmpty() ) {
+        if ( ignoredFacetsFilename != null ) {
             log.info("Looking for ignored facets file at " + ignoredFacetsFilename);
             Set<String> resourceContent = readFacetsFromFile(ignoredFacetsFilename);
             for (String ignoredFacet : resourceContent) {
@@ -65,7 +65,7 @@ public class HttpSolrDispatcher {
         }
 
         // Mandatory facets
-        if ( !includedFacetsFilename.isEmpty() ) {
+        if ( includedFacetsFilename != null ) {
             log.info("Looking for mandatory facets file at " + includedFacetsFilename);
             includedFacets = readFacetsFromFile(includedFacetsFilename);
             for (String facet : includedFacets) {
