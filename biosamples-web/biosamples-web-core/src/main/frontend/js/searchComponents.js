@@ -94,6 +94,15 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
                         console.err("Unable to render badges for external reference", refObjSerial)
                     }
                 }
+
+                // If group add also group size
+                if (obj["content_type"] === "group") {
+                    let grpSamples = obj["grp_sample_accessions"];
+                    if (grpSamples) {
+                        badges["sampleCount_crt"] = grpSamples.length;
+                    }
+                }
+
                 return badges;
             }
 

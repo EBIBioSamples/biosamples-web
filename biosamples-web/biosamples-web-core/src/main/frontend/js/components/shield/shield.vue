@@ -30,7 +30,7 @@
                 }
             },
             value: {
-                type: String,
+                type: [String, Number],
                 validator(value) {
                     console.log(value);
                     return true;
