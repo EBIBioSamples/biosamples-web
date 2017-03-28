@@ -63,7 +63,7 @@
 
 		$form.submit(function() {
 			$submit.attr("disabled", "true");
-			$.post(contextPath + "feedback", {
+			$.post(window.app.urls.baseUrl + "feedback", {
 				m : $message.val(),
 				e : $email.val(),
 				p : $page.val(),
