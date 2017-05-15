@@ -174,9 +174,14 @@
                     </tbody>
                 </table>
             </section>
-            <br><section id="json-relevant-endpoint">
-                <h3 id="most-relevant-end-points">Most relevant end-points</h3>
-                <section id="json-sample-by-accession">
+            <br />
+            <section id="xml-api">
+                <h2>XML - Legacy api</h2>
+                <p>BioSamples will still support the legacy XML api, but no further development will be done to improve it.
+                    New features and functionalities will be developed solely on the JSON REST api.</p>
+                <p>For the specifications of the XML API please refer to the old documentation avilable <a th:href="@{/help/legacy_xml_api}">here</a></p>
+                <!--/*
+                <section id="xml-sample-by-accession">
                     <h4>Get a sample by accession</h4>
                     <table>
                         <thead>
@@ -677,6 +682,7 @@
                 <div>
                     <pre class="inline-code">curl -H Content-Type:text/xml http://www.ebi.ac.uk/biosamples/xml/groupsamples/SAMEG316130/query=</pre>
                 </div>
+            /*-->
             </section>
         </section>
     </section>

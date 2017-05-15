@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/"
 	xmlns:layout="http://www.w3.org/1999/xhtml"
-	layout:decorator="__parent_help" th:with="helpNavigationEntry = 'api'">
+	layout:decorator="__parent_help" th:with="helpNavigationEntry = 'legacy_xml_api'">
 <head>
 <title>API &lt; Help</title>
 </head>
@@ -29,8 +29,8 @@
 					interest.</li>
 				<li>e.g. <a th:href="@{/xml/samples/SAME315173}"
 					href="/biosamples/xml/samples/SAME315173">/biosamples/xml/samples/SAME315173</a></li>
-				<li><a class="wiki" th:href="@{/help/api_sample_accession}"
-					href="api_sample_accession.html">more information</a></li>
+				<li><a class="wiki" th:href="@{/help/legacy_xml_api_sample_accession}"
+					href="legacy_api_sample_accession.html">more information</a></li>
 			</ul>
 
 			<h3>Group Accession</h3>
@@ -42,8 +42,8 @@
 				<li>e.g. <a th:href="@{/xml/groups/SAMEG82620}"
 					href="/biosamples/xml/group/SAMEG82620"
 					th:text="@{/xml/groups/SAMEG82620}">/biosamples/xml/groups/SAMEG82620</a></li>
-				<li><a class="wiki" th:href="@{/help/api_group_accession}"
-					href="api_group_accession.html">more information</a></li>
+				<li><a class="wiki" th:href="@{/help/legacy_xml_api_group_accession}"
+					href="legacy_api_group_accession.html">more information</a></li>
 			</ul>
 
 			<h3>Find Samples</h3>
@@ -62,8 +62,8 @@
 				</li>
 				<li>If query is blank, all samples within that group are
 					matched.</li>
-				<li><a class="wiki" th:href="@{/help/api_sample_search.html}"
-					href="api_sample_search.html">more information</a></li>
+				<li><a class="wiki" th:href="@{/help/legacy_xml_api_sample_search.html}"
+					href="legacy_api_sample_search.html">more information</a></li>
 			</ul>
 
 			<h3>Find Groups</h3>
@@ -80,8 +80,8 @@
 				<li>Can use <a th:href="@{/help/search#advanced}"
 					href="search.html#advanced">advanced query features</a>.
 				</li>
-				<li><a class="wiki" th:href="@{/help/api_group_accession}"
-					href="api_group_search.html">more information</a></li>
+				<li><a class="wiki" th:href="@{/help/legacy_xml_api_group_accession}"
+					href="legacy_api_group_search.html">more information</a></li>
 			</ul>
 
 			<h3>Find Samples Within a Group</h3>
@@ -102,8 +102,8 @@
 				<li>If query is blank, all samples within that group are
 					matched.</li>
 				<li><a class="wiki"
-					th:href="@{/help/api_sample_search_insidegroup}"
-					href="api_sample_search_insidegroup.html">more information</a></li>
+					th:href="@{/help/legacy_xml_api_sample_search_insidegroup}"
+					href="legacy_api_sample_search_insidegroup.html">more information</a></li>
 			</ul>
 		</section>
 	</div>
