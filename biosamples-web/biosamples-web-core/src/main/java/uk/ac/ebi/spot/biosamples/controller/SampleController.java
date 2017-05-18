@@ -119,12 +119,16 @@ public class SampleController {
 		return "sample";
 	}
 
-	@RequestMapping(value = "samples/{accession}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET)
-	public @ResponseBody SolrSample sampleJson(@PathVariable String accession) {
-		return solrSampleRepository.findOne(accession);
-	}
+//	@RequestMapping(value = "samples/{accession}", produces = { MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE }, method = RequestMethod.GET)
+//	public @ResponseBody SolrSample sampleJson(@PathVariable String accession) {
+//		SolrSample sample = solrSampleRepository.findOne(accession);
+//		if (sample == null) {
+//			throw new APIContentNotFoundException();
+//		}
+//        return sample;
+//	}
 
-	@RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+//	@RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
 	public @ResponseBody String sampleXml(@PathVariable String accession) throws APIXMLNotFoundException {
 		SolrSample sample = solrSampleRepository.findOne(accession);
 		if (sample == null) {
@@ -180,6 +184,8 @@ public class SampleController {
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
 		if (page < 1) {
 			throw new InvalidPageException("Must use 1-based paging");
+		} else if ( pageSize < 1) {
+			throw new InvalidPageException("Page size must be greater than 1");
 		}
 		PageRequest querySpec = new PageRequest(page-1, pageSize, sortingMethod);
 		Page<SolrSample> results = solrSampleRepository.findByTextAndGroups(searchTerm, groupAccession,

@@ -13,15 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
+import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.InvalidPageException;
@@ -112,12 +104,16 @@ public class GroupController {
 		}
 	}
 
-	@RequestMapping(value = "groups/{accession}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET)
-	public @ResponseBody SolrGroup groupJson(@PathVariable String accession) {
-		return solrGroupRepository.findOne(accession);
-	}
+//	@RequestMapping(value = "groups/{accession}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET)
+//	public @ResponseBody SolrGroup groupJson(@PathVariable String accession) {
+//		SolrGroup group = solrGroupRepository.findOne(accession);
+//		if (group != null) {
+//			return group;
+//		}
+//		throw new APIContentNotFoundException("No group has been found with accession " + accession);
+//	}
 
-	@RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
+//	@RequestMapping(value = "groups/{accession}", produces = MediaType.TEXT_XML_VALUE, method = RequestMethod.GET)
 	public @ResponseBody String groupXml(@PathVariable String accession) throws APIXMLNotFoundException {
 		SolrGroup group = solrGroupRepository.findOne(accession);
 
@@ -137,6 +133,8 @@ public class GroupController {
 		Sort sortingMethod = new Sort(Sort.Direction.fromString(sortOrder), sortBy);
 		if (page < 1) {
 			throw new InvalidPageException("Must use 1-based paging");
+		} else if (pageSize < 1) {
+			throw new InvalidPageException("Page size must be greater than 1");
 		}
 		PageRequest querySpec = new PageRequest(page-1, pageSize, sortingMethod);
 		Page<SolrGroup> results = solrGroupRepository.findByKeywords(searchTerm, querySpec);

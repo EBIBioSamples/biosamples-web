@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.InvalidPageException;
 
@@ -21,6 +23,7 @@ public class CustomErrorController{
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+
     @ExceptionHandler(HtmlContentNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleHtmlContentNotFoundException(Model model, HttpServletRequest req, Exception exception)
@@ -32,7 +35,6 @@ public class CustomErrorController{
         model.addAttribute("timestamp", new Date().toString());
         model.addAttribute("status", HttpStatus.NOT_FOUND.value());
         return "error";
-
     }
 
     @ExceptionHandler(InvalidPageException.class)
@@ -51,24 +53,24 @@ public class CustomErrorController{
 
 
     //currently not working, see  BSD-687 
-    @ExceptionHandler(value = Exception.class)
-    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception exception) throws Exception {
-
-        log.error("Problem with: " + req.getRequestURI(), exception);
-        // If the exception is annotated with @ResponseStatus rethrow it and let
-        // the framework handle it - like the OrderNotFoundException example
-        // at the start of this post.
-        // AnnotationUtils is a Spring Framework utility class.
-        if (AnnotationUtils.findAnnotation
-                (exception.getClass(), ResponseStatus.class) != null)
-        throw exception;
-
-        // Otherwise setup and send the user to a default error-view.
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("exception", exception);
-        mav.addObject("url", req.getRequestURL());
-        mav.setViewName("error");
-        return mav;
-    }
+//    @ExceptionHandler(value = Exception.class)
+//    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception exception) throws Exception {
+//
+//        log.error("Problem with: " + req.getRequestURI(), exception);
+//        // If the exception is annotated with @ResponseStatus rethrow it and let
+//        // the framework handle it - like the OrderNotFoundException example
+//        // at the start of this post.
+//        // AnnotationUtils is a Spring Framework utility class.
+//        if (AnnotationUtils.findAnnotation
+//                (exception.getClass(), ResponseStatus.class) != null)
+//        throw exception;
+//
+//        // Otherwise setup and send the user to a default error-view.
+//        ModelAndView mav = new ModelAndView();
+//        mav.addObject("exception", exception);
+//        mav.addObject("url", req.getRequestURL());
+//        mav.setViewName("error");
+//        return mav;
+//    }
 
 }
