@@ -489,7 +489,7 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
 
         window.addEventListener('popstate', e => {
             e.preventDefault();
-            vm.readLocationSearchAndQuerySamples();
+            baseVM.readLocationSearchAndQuerySamples();
         });
 })(window);
 
