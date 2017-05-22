@@ -1,5 +1,7 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import uk.ac.ebi.spot.biosamples.exception.APIXMLNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.HtmlContentNotFoundException;
 import uk.ac.ebi.spot.biosamples.exception.InvalidPageException;
+import uk.ac.ebi.spot.biosamples.model.jsonld.JsonLDSample;
 import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
 import uk.ac.ebi.spot.biosamples.model.xml.ResultQuery;
 import uk.ac.ebi.spot.biosamples.model.xml.SampleResultQuery;
 import uk.ac.ebi.spot.biosamples.repository.neo4j.NeoSampleRepository;
 import uk.ac.ebi.spot.biosamples.repository.solr.SolrSampleRepository;
+import uk.ac.ebi.spot.biosamples.service.SolrSampleJsonLDConverter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
@@ -46,7 +50,16 @@ public class SampleController {
 		} else {
 			throw new HtmlContentNotFoundException("No sample found with accession " + accession);
 		}
-		
+
+		JsonLDSample jsonLD = new SolrSampleJsonLDConverter().convert(solrSample);
+//		model.addAttribute("jsonLD", jsonLD);
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			model.addAttribute("jsonLD", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonLD));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
 		NeoSample neoSample = neoSampleRepository.findOneByAccession(accession);
 		log.trace("neoSample = "+neoSample);
 		model.addAttribute("hasRelations", false);	

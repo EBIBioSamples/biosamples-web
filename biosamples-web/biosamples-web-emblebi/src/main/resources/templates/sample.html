@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org"
       layout:decorator="__parent_base"
       xmlns:layout="http://www.w3.org/1999/xhtml"
-      th:with="navigationEntry = 'search'">
+      th:with="navigationEntry = 'search'"
+      vocab="http://schema.org/">
 <head>
     <title th:text="${sample.accession}">SAMEAxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
 
@@ -36,7 +37,7 @@
     </nav>
 
 
-    <section id="sample_content">
+    <section id="sample_content" typeof="Sample">
         <div class="detail_table">
             <h4 th:text="${'Sample ' + sample.accession}">Sample SAMEAxxxxx</h4>
             <table id="bs_results_tablesamplegroupdetail" class="listing">
@@ -44,11 +45,11 @@
                 <!-- Common sample attributes -->
                 <tr>
                     <td class="col_title"><b>Name</b></td>
-                    <td th:text="${sample.name}"></td>
+                    <td th:text="${sample.name}" property="name"></td>
                 </tr>
                 <tr th:if="${#strings.isEmpty(sample.groups)}">
                     <td class="col_title"><b>Description</b></td>
-                    <td th:text="${sample.description}" ></td>
+                    <td th:text="${sample.description}" property="description"></td>
                 </tr>
                 <tr>
                     <td class="col_title"><b>Release Date</b></td>
@@ -107,7 +108,8 @@
                     <td class="col_title"><b>External references</b></td>
                     <td>
                         <div class="external-references-payload"
-                             th:text="${sample.externalReferences}">
+                             th:text="${sample.externalReferences}"
+                             property="datasetUrl">
                             [{"name":"bar","acc":"1234","url":"http://www.google.com"},{"name":"foo","acc":"9876","url":"http://www.google.co.uk"}]
                         </div>
                     </td>
