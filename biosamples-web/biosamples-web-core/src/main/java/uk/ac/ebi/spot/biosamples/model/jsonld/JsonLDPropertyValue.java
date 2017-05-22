@@ -8,7 +8,7 @@ public class JsonLDPropertyValue {
     private final String context = "http://schema.org";
 
     @JsonProperty("@type")
-    private final String type = "http://schema.org";
+    private final String type = "PropertyValue";
 
     private String propertyId;
     private String value;

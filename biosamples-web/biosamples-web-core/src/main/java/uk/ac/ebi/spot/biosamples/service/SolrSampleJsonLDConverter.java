@@ -124,16 +124,30 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
     }
 
     /**
-     * Get Sample BioSchema.org name as the synonym, if available, or the name of the sample
+     * Get Sample BioSchema.org name as the name of the sample
      * @param sample
      * @return
      */
     private String getSampleName(SolrSample sample) {
-        Map<String, List<String>> charcts = sample.getCharacteristics();
-        List<String> synonyms = charcts.getOrDefault("synonym", Arrays.asList(sample.getName()));
-        return synonyms.get(0);
-
-    }
+//        Map<String, List<String>> additionalProperties = sample.getCharacteristics();
+//        for(Map.Entry<String, List<String>> property: additionalProperties.entrySet()) {
+//            if (property.getKey().matches("synonym")) {
+//                String firstSynonym = property.getValue().get(0);
+//                try {
+//                    SolrMultivalueField synonymSolrField = mapper.readValue(firstSynonym, SolrMultivalueField.class);
+//                    return synonymSolrField.getText();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+        String sampleName = sample.getName();
+        if ( sampleName == null || sampleName.isEmpty()) {
+            return "";
+        } else {
+            return sampleName;
+        }
+   }
 
     private static class SolrMultivalueField {
         String text;
