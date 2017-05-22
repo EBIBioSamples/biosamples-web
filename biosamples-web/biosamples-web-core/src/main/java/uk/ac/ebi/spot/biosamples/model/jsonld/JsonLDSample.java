@@ -21,6 +21,8 @@ public class JsonLDSample {
     private String url;
 
     private List<String> datasetUrl;
+
+    @JsonProperty("additionProperty")
     private List<JsonLDPropertyValue> additionalProperties;
 
     public String getType() { return type; }
