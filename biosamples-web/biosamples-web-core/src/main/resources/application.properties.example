@@ -18,3 +18,5 @@ spring.mail.port                    YOUR_HOSTPORT
 biosamples.feedback.mail.to         name@service.com
 biosamples.feedback.mail.from       name@service.com
 biosamples.feedback.mail.subject    Your Subject
+
+sitemap.page.size                   10000

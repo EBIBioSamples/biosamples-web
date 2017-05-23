@@ -133,6 +133,15 @@
 			<artifactId>json-simple</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.github.dfabulich/sitemapgen4j -->
+		<!-- https://mvnrepository.com/artifact/com.google.code/sitemapgen4j -->
+		<dependency>
+			<groupId>com.google.code</groupId>
+			<artifactId>sitemapgen4j</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
