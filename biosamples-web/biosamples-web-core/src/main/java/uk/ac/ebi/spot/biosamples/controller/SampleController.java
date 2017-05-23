@@ -39,7 +39,13 @@ public class SampleController {
 	@Autowired
 	private NeoSampleRepository neoSampleRepository;
 
+	private SolrSampleJsonLDConverter jsonLDConverter;
+
 	private final Logger log = LoggerFactory.getLogger(getClass());
+
+	SampleController(SolrSampleJsonLDConverter converter) {
+		jsonLDConverter = converter;
+	}
 
 	@RequestMapping(value = "samples/{accession}", produces = MediaType.TEXT_HTML_VALUE, method = RequestMethod.GET)
 	public String sample(Model model, @PathVariable String accession, HttpServletRequest request) {
@@ -51,7 +57,7 @@ public class SampleController {
 			throw new HtmlContentNotFoundException("No sample found with accession " + accession);
 		}
 
-		JsonLDSample jsonLD = new SolrSampleJsonLDConverter().convert(solrSample);
+		JsonLDSample jsonLD = jsonLDConverter.convertWithUrl(solrSample, request.getRequestURL().toString());
 //		model.addAttribute("jsonLD", jsonLD);
 		try {
 			ObjectMapper mapper = new ObjectMapper();

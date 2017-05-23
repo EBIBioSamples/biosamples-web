@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.databind.util.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import uk.ac.ebi.spot.biosamples.model.jsonld.JsonLDMedicalCode;
 import uk.ac.ebi.spot.biosamples.model.jsonld.JsonLDPropertyValue;
 import uk.ac.ebi.spot.biosamples.model.jsonld.JsonLDSample;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Component
 public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSample> {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
@@ -25,6 +27,12 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
 
     public SolrSampleJsonLDConverter() {
        this.mapper = new ObjectMapper();
+    }
+
+    public JsonLDSample convertWithUrl(SolrSample solrSample, String url) {
+        JsonLDSample jsonLD = this.convert(solrSample);
+        jsonLD.setUrl(url);
+        return jsonLD;
     }
 
     @Override

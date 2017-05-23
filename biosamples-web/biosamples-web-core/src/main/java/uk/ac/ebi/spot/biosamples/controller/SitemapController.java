@@ -50,6 +50,7 @@ public class SitemapController {
         long sampleCount = solrSampleRepository.count();
         long pageNumber = Math.floorDiv(sampleCount, sitemapPageSize);
         XmlSitemapIndex xmlSitemapIndex = new XmlSitemapIndex();
+        String requestUrl = request.getRequestURL().toString().replaceFirst(request.getRequestURI(), "");
         for (int i=0; i< pageNumber; i++) {
             String location = generateBaseUrl(request) + String.format("/sitemap/%d", i+1);
             XmlSitemap xmlSitemap = new XmlSitemap(location);
@@ -101,21 +102,24 @@ public class SitemapController {
     }
 
     private String generateBaseUrl(HttpServletRequest request) {
-        String mappedHostname = (String) request.getAttribute("mappedHostName");
-        String baseUrl = (String) request.getAttribute("baseUrl");
-        String baseUrlString = mappedHostname + baseUrl;
-        if (baseUrlString.matches("(^null.*|.*null$)")) {
-            baseUrlString = String.format("http://%s:%d", request.getLocalName(), request.getLocalPort());
-        }
+//        String mappedHostname = (String) request.getAttribute("mappedHostName");
+//        String baseUrl = (String) request.getAttribute("baseUrl");
+//        String baseUrlString = mappedHostname + baseUrl;
+//        if (baseUrlString.matches("(^null.*|.*null$)")) {
+//            baseUrlString = String.format("http://%s:%d", request.getLocalName(), request.getLocalPort());
+//        }
+//
+//        // Ensure the protocol is included on the URL
+//        if (! baseUrlString.startsWith("http")) {
+//            baseUrlString = "http:" + baseUrlString;
+//        }
+//        if (!request.getContextPath().isEmpty()) {
+//            baseUrlString = baseUrlString + request.getContextPath();
+//        }
+        String requestURI = request.getRequestURI();
+        String requestURL = request.getRequestURL().toString();
+        return requestURL.replaceFirst(requestURI, "") +
+                request.getContextPath();
 
-        // Ensure the protocol is included on the URL
-        if (! baseUrlString.startsWith("http")) {
-            baseUrlString = "http:" + baseUrlString;
-        }
-        if (!request.getContextPath().isEmpty()) {
-            baseUrlString = baseUrlString + request.getContextPath();
-        }
-
-        return baseUrlString;
     }
 }

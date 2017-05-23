@@ -1,6 +1,5 @@
 package uk.ac.ebi.spot.biosamples.model.jsonld;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -17,7 +16,6 @@ public class JsonLDSample {
     private String name;
     private String description;
 
-    @JsonIgnore
     private String url;
 
     private List<String> datasetUrl;
