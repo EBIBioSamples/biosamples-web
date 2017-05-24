@@ -19,4 +19,7 @@ biosamples.feedback.mail.to         name@service.com
 biosamples.feedback.mail.from       name@service.com
 biosamples.feedback.mail.subject    Your Subject
 
+# Webmaster informations
 sitemap.page.size                   10000
+google.verification.code            GOOGLE_SITE_VERIFICATION_CODE
+
