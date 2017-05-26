@@ -27,7 +27,7 @@ import java.util.List;
  * @author mrelac
  */
 @XmlAccessorType(value = XmlAccessType.NONE)
-@XmlRootElement(name = "urlset")
+@XmlRootElement(name = "urlset", namespace = "http://www.sitemaps.org/schemas/sitemap/0.9")
 public class XmlUrlSet {
 
     private final static int MAX_SITEMAP_ENTRIES = 50000;
