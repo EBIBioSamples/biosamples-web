@@ -26,6 +26,7 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
         // Required
         let _            = require("lodash");
         let _mixins      = require("./utilities/lodash-addons");
+        let utilities    = require("./utilities/utilities");
 
         /**
          * Read Solr facets and return them as a key-value pair object
@@ -166,11 +167,12 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
                     return this.alerts.length > 0;
                 },
                 filterList() {
-                    return Object.keys(this.filterQuery).reduce((prev,key)=>{
-                        let tempKey = key.replace(/Filter$/,"");
-                        prev[tempKey] = this.filterQuery[key];
-                        return prev;
-                    },{});
+                    // return Object.keys(this.filterQuery).reduce((prev,key)=>{
+                    //     let tempKey = key.replace(/Filter$/,"");
+                    //     prev[tempKey] = this.filterQuery[key];
+                    //     return prev;
+                    // },{});
+                    return this.filterQuery;
                 }
             },
 
@@ -355,7 +357,7 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
                         'rows': this.samplesToRetrieve,
                         'start': (this.pageNumber - 1) * this.samplesToRetrieve,
                         'useFuzzySearch': this.useFuzzy,
-                        'filters': this.serializeFilterQuery()
+                        'filters': this.serializeFilterQuery(this.filterQuery)
                     };
                     /*
                      'organFilter': this.filterQuery.organFilter,
@@ -364,30 +366,38 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
                      */
                 },
 
-                serializeFilterQuery: function() {
-                    let filterArray = [];
-                    _.each(this.filterQuery, (value,key) => {
-                        if ( !_.isNil(value) ) {
-                            filterArray.push(`${key}|${value}`);
-                        }
-                    });
-                    return filterArray;
-                },
+                // serializeFilterQuery: function() {
+                //     let filterArray = [];
+                //     _.each(this.filterQuery, (value,key) => {
+                //         if ( !_.isNil(value) ) {
+                //             filterArray.push(`${key}|${value}`);
+                //         }
+                //     });
+                //     return filterArray;
+                // },
+                serializeFilterQuery: utilities.serializeFilterQuery,
 
-                deserializeFilterQuery: function(filtersArray) {
-                    let filtersObj = {};
-                    // This is a little bit cumbersome, make it clearer with "Optional" object
-                    if ( !_.isNil(filtersArray) && !_.isArray(filtersArray) ) {
-                        filtersArray = [filtersArray];
-                    }
-                    _(filtersArray).forEach(function (value) {
-                        let [filterKey,filterValue] = value.split("Filter|");
-                        if (!_.isEmpty(filterKey)) {
-                            filtersObj[`${filterKey}Filter`] = filterValue;
-                        }
-                    });
-                    return filtersObj;
-                },
+                // deserializeFilterQuery: function(filter) {
+                //     let filtersObj = {};
+                //     let filtersArray = [];
+                //
+                //     if (_.isString(filter)) {
+                //         filtersArray = filter.split(",");
+                //     } else if (!_.isNil(filter) && !_.isArray(filter)) {
+                //         // This is a little bit cumbersome, make it clearer with "Optional" object
+                //         filtersArray = [filter];
+                //     }
+                //     if(!_.isEmpty(filtersArray)) {
+                //         filtersArray.forEach(function (value) {
+                //             let [filterKey, filterValue] = value.split("Filter|");
+                //             if (!_.isEmpty(filterKey)) {
+                //                 filtersObj[`${filterKey}Filter`] = filterValue;
+                //             }
+                //         });
+                //     }
+                //     return filtersObj;
+                // },
+                deserializeFilterQuery: utilities.deserializeFilterQuery,
 
                 populateDataWithUrlParameter: function(urlParams) {
                     this.searchTerm = _.getString(urlParams.searchTerm,'');
@@ -402,7 +412,8 @@ let vueConsole = Console({context:"VUE", status: ["info","warning","debug","erro
                 },
 
                 removeFilter(item) {
-                    let filterKey = `${item}Filter`;
+                    // let filterKey = `${item}Filter`;
+                    let filterKey = `${item}`;
                     let newFilterQuery = _.clone(this.filterQuery);
                     delete newFilterQuery[filterKey];
                     this.$set("filterQuery",newFilterQuery);

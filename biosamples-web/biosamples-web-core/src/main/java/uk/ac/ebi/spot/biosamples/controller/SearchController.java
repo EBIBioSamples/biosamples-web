@@ -1,16 +1,19 @@
 package uk.ac.ebi.spot.biosamples.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import uk.ac.ebi.spot.biosamples.service.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +22,8 @@ import java.util.Map;
  */
 @Controller
 public class SearchController {
+    Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private HttpSolrDispatcher httpSolrDispatcher;
 
@@ -35,7 +40,7 @@ public class SearchController {
             @RequestParam(value = "useFuzzySearch", defaultValue = "false") boolean useFuzzySearch,
             @RequestParam(value = "start", defaultValue = "0") int start,
             @RequestParam(value = "rows", defaultValue = "10") int rows,
-            @RequestParam(value = "filters[]", required = false, defaultValue = "") String[] filters,
+            @RequestParam(value = "filters[]", required = false, defaultValue = "") String[] encodedFilters,
             HttpServletResponse response) throws Exception {
 
         // first, evaluate arguments to work out how to create the query
@@ -45,7 +50,7 @@ public class SearchController {
                 searchTerm = searchTerm.replaceAll("(\\w+)", "$0~");
             }
         }
-        Map<String, String> solrFilters = parseFilters(filters);
+        Map<String, String> solrFilters = parseFilters(encodedFilters);
 
         // now create the query
         HttpSolrQuery solrQuery = isGenericQuery
@@ -86,11 +91,16 @@ public class SearchController {
         // Setup filters
         Map<String, String> results = new HashMap<>();
         for (String filter : filters) {
-            String[] baseFilter = filter.split("(Filter\\|)");
-            if (baseFilter.length == 2) {
-                String filterKey = baseFilter[0];
-                String filterValue = baseFilter[1];
-                results.put(String.format("%s_facet", filterKey), String.format("%s", filterValue));
+            try {
+                String decodedFilter = URLDecoder.decode(filter, "UTF-8");
+                String[] baseFilter = decodedFilter.split("(Filter\\|)");
+                if (baseFilter.length == 2) {
+                    String filterKey = baseFilter[0];
+                    String filterValue = baseFilter[1];
+                    results.put(String.format("%s_facet", filterKey), String.format("%s", filterValue));
+                }
+            } catch (UnsupportedEncodingException e) {
+                log.error(String.format("Unable to decode filter %s", filter), e);
             }
         }
         return results;
