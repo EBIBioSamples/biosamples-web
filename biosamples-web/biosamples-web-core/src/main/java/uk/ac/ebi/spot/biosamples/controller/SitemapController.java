@@ -48,7 +48,7 @@ public class SitemapController {
     public String createSampleSitemapIndex(HttpServletRequest request) throws MalformedURLException {
 
         long sampleCount = solrSampleRepository.count();
-        long pageNumber = Math.floorDiv(sampleCount, sitemapPageSize);
+        long pageNumber = Math.floorDiv(sampleCount, sitemapPageSize) + 1; // At least one page
         XmlSitemapIndex xmlSitemapIndex = new XmlSitemapIndex();
         String requestUrl = request.getRequestURL().toString().replaceFirst(request.getRequestURI(), "");
         for (int i=0; i< pageNumber; i++) {
