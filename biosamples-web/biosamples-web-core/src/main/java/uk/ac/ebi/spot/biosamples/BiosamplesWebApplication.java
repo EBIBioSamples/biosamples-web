@@ -17,7 +17,6 @@ import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
 import uk.ac.ebi.spot.biosamples.filter.ResourceAwareUrlRewriteFilter;
 import uk.ac.ebi.spot.biosamples.model.neo4j.NeoGroup;
 import uk.ac.ebi.spot.biosamples.model.neo4j.NeoSample;
@@ -129,5 +128,7 @@ public class BiosamplesWebApplication extends SpringBootServletInitializer {
             }
         };
     }
+
+
 
 }
