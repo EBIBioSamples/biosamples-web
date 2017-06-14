@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const path = require('path');
+const inProduction = process.env.NODE_ENV === 'production';
 
 const srcRoot = './src/main/frontend';
 const distRoot = './target/classes/static';
@@ -30,7 +31,10 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: "babel-loader"
+                loader: "babel-loader",
+                query: {
+                    presets: ['es2015'] // Solve problem with Uglify https://github.com/joeeames/WebpackFundamentalsCourse/issues/3
+                }
             },
             {
                 test: /\.html$/,
@@ -40,12 +44,31 @@ module.exports = {
                 test: /\.s[ca]ss$/,
                 use: extractSCSS.extract({
                     fallback: 'style-loader',
-                    use: ['raw-loader', 'sass-loader']
+                    use: [
+                        {
+                            loader:'css-loader',
+                            options: {
+                                url: false,
+                                minimize: inProduction
+                            }
+                        },
+                        {
+                            loader: 'sass-loader'
+                        }
+                    ]
                 })
             }
         ]
     },
     plugins: [
-        extractSCSS
+        extractSCSS,
     ]
 };
+
+if (inProduction) {
+    module.exports.plugins.push(
+        new webpack.optimize.UglifyJsPlugin({
+            mangle: false
+        })
+    )
+}
