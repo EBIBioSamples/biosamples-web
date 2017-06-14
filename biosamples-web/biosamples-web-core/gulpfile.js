@@ -12,11 +12,11 @@ elixir(function(mix) {
                 srcStaticPath + "/**/*.css"
             ]
         })
-	 	.sass('base.scss')
+	.sass('base.scss')
         .browserify('init.js')
-	 	.browserify('searchComponents.js')
+	.browserify('searchComponents.js')
         .browserify('relationsVis.js')
         .browserify('samplesInGroup.js')
-	 	.browserify('toolsFunctions.js')
+	.browserify('toolsFunctions.js')
         .browserify('biosamplesSampleLinks.js')
 });
