@@ -72,10 +72,13 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>gulp build</id>
+						<id>bundle webpack</id>
 						<goals>
-							<goal>gulp</goal>
+							<goal>npm</goal>
 						</goals>
+						<configuration>
+							<arguments>run webpack</arguments>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
