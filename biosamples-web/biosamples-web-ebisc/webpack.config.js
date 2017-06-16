@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const path = require('path');
+const inProduction = process.env.Node_ENV === 'production';
 
 const srcRoot = './src/main/frontend';
 const distRoot = './target/classes/static';
@@ -21,12 +22,24 @@ module.exports = {
                 test: /\.s[ca]ss$/,
                 use: extractSCSS.extract({
                     fallback: 'style-loader',
-                    use: ['raw-loader', 'sass-loader']
+                    use: [
+                    {
+                        loader:'css-loader',
+                        options: {
+                            url: false,
+                            minimize: inProduction
+                        }
+                    },
+                    {
+                        loader: 'sass-loader'
+                    }
+                    ]
                 })
             }
         ]
     },
     plugins: [
-        extractSCSS
+        extractSCSS,
+
     ]
 };
