@@ -116,7 +116,7 @@
 
                         }
                     });
-                    return mapArray.slice(1).reduce((complete, part) => `${complete}, $}`, mapArray[0]);
+                    return mapArray.slice(1).reduce((complete, part) => `${complete}, ${part}`, mapArray[0]);
                 } catch (e) {
                     return value;
                 }
