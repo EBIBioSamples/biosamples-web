@@ -77,7 +77,7 @@
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>run webpack</arguments>
+							<arguments>run production</arguments>
 						</configuration>
 					</execution>
 				</executions>
