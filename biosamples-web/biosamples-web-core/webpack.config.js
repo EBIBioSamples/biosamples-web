@@ -1,12 +1,17 @@
-const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const path = require('path');
-const inProduction = process.env.NODE_ENV === 'production';
+let webpack = require('webpack');
+let ExtractTextPlugin = require("extract-text-webpack-plugin");
+let CompressionPlugin = require("compression-webpack-plugin");
+let path = require('path');
+let prodPlugins = require('./webpack.plugins.js');
 
-const srcRoot = './src/main/frontend';
-const distRoot = './target/classes/static';
+let srcRoot = './src/main/frontend';
+let distRoot = './target/classes/static';
+let inProduction = process.env.NODE_ENV === 'production';
 
-const extractSCSS = new ExtractTextPlugin("[name]");
+// Plugin setups
+let extractSCSS = new ExtractTextPlugin("[name]");
+
+let inProductionPlugin = [prodPlugins.gzip, prodPlugins.uglify];
 
 module.exports = {
     entry: {
@@ -66,9 +71,6 @@ module.exports = {
 };
 
 if (inProduction) {
-    module.exports.plugins.push(
-        new webpack.optimize.UglifyJsPlugin({
-            mangle: false
-        })
-    )
+    // Add all the production plugin to the plugins object if in production
+    module.exports.plugins.push(...inProductionPlugin);
 }
