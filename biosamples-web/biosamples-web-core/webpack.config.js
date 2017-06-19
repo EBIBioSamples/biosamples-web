@@ -31,19 +31,41 @@ module.exports = {
         rules: [
             {
                 test: /\.vue$/,
-                loader: 'vue-loader'
+                enforce: 'pre',
+                use: [
+                    {
+                        loader: 'eslint-loader',
+                        options: {
+                            emitWarning: true
+                        }
+                    },
+                    {
+                        loader: 'vue-loader'
+                    }
+                ]
             },
             {
                 test: /\.js$/,
+                enforce: 'pre',
                 exclude: /node_modules/,
-                loader: "babel-loader",
-                query: {
-                    presets: ['es2015'] // Solve problem with Uglify https://github.com/joeeames/WebpackFundamentalsCourse/issues/3
-                }
+                use: [
+                    {
+                        loader: 'eslint-loader',
+                        options: {
+                            emitWarning: true
+                        }
+                    },
+                    {
+                        loader: 'babel-loader',
+                        query: {
+                            presets: ['es2015'] // Solve problem with Uglify https://github.com/joeeames/WebpackFundamentalsCourse/issues/3
+                        }
+                    }
+                ]
             },
             {
                 test: /\.html$/,
-                loader: 'vue-html-loader'
+                use: 'vue-html-loader'
             },
             {
                 test: /\.s[ca]ss$/,

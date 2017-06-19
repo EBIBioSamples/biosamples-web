@@ -13,27 +13,27 @@
             </div>
             <!--<span class="label label-info">{{object.subtitle}}</span>-->
             <div class="badge-container">
-                    <shield v-for="badge in badgeArray"
-                            :key="badge.key | characteristic"
-                            :value="badge.value">
-                    </shield>
+                <shield v-for="badge in badgeArray"
+                        :key="badge.key | characteristic"
+                        :value="badge.value">
+                </shield>
             </div>
         </div>
         <div class="panel-body" v-if="object.description">{{object.description | excerpt}}</div>
         <!--<div class="panel-footer">-->
-            <!--<span class="small">Last update date: {{product.date | solrDate}}</span>-->
+        <!--<span class="small">Last update date: {{product.date | solrDate}}</span>-->
         <!--</div>-->
     </div>
 </template>
 
 <script>
-    const startCaseFilter = require("../../filters/startCaseFilter.js");
+    const startCaseFilter = require('../../filters/startCaseFilter.js');
 
     function castArray() {
         if (!arguments.length) {
             return [];
         }
-        var value = arguments[0];
+        let value = arguments[0];
         return Array.isArray(value) ? value : [value];
     }
 
@@ -42,33 +42,33 @@
         data() {
             return {
                 maxBadgeLength: -1
-            }
+            };
         },
 
         components: {
-            "shield": require("../shield/shield.vue")
+            'shield': require('../shield/shield.vue')
         },
         computed: {
-           object() { return this.displayFunction(this.content) },
-           badgeArray() {
-               // Create the badge array checking for multivalued fields
-               let badges = this.object.badges;
-               let all = [];
-               for(let key of Object.keys(badges)) {
+            object() { return this.displayFunction(this.content); },
+            badgeArray() {
+                // Create the badge array checking for multivalued fields
+                let badges = this.object.badges;
+                let all = [];
+                for(let key of Object.keys(badges)) {
                     let badgeValues = castArray(badges[key]);
                     for (let val of badgeValues ) {
                         if (this.maxBadgeLength < 0 || val.length + key.length < this.maxBadgeLength) {
-                            all.push({"key": key, "value": val});
+                            all.push({'key': key, 'value': val});
                         }
                     }
-               }
-               return all;
-           },
+                }
+                return all;
+            },
             isSample() {
-                return this.object.type === 'sample'
+                return this.object.type === 'sample';
             },
             labelClass() {
-                return this.isSample ? 'label-success' : 'label-warning'
+                return this.isSample ? 'label-success' : 'label-warning';
             }
 
         },
@@ -85,14 +85,14 @@
                         badges: obj.badges,
                         description: obj.description,
                         date: obj.date
-                    }
+                    };
                 }
             }
         },
 
         filters: {
             characteristic(value) {
-                return startCaseFilter(value.replace(/_crt$/,""))
+                return startCaseFilter(value.replace(/_crt$/,''));
             }
         }
 

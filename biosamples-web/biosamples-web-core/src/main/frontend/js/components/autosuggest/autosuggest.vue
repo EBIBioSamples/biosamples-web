@@ -27,13 +27,13 @@
     module.exports = {
 
         props: [
-            "searchTerm",
-            "name",
-            "queryParamName",
-            "limit",
-            "minChars",
-            "src",
-            "debug"
+            'searchTerm',
+            'name',
+            'queryParamName',
+            'limit',
+            'minChars',
+            'src',
+            'debug'
         ],
 
         data() {
@@ -42,7 +42,7 @@
                 current: -1,
                 loading: false,
                 selectFirst: false
-            }
+            };
         },
 
         computed: {
@@ -56,7 +56,7 @@
                 return this.debug && !this.hasItems;
             },
             inputName() {
-                return this.name ? this.name : "search";
+                return this.name ? this.name : 'search';
             }
         },
         methods: {
@@ -84,7 +84,7 @@
                             this.down();
                         }
                     }
-                })
+                });
             },
 
             fetch () {
@@ -93,8 +93,7 @@
                 }
 
                 const params = this.queryParamName ?
-                {[this.queryParamName]: this.searchTerm} : {"term": this.searchTerm};
-
+                    {[this.queryParamName]: this.searchTerm} : {'term': this.searchTerm};
                 return this.$http.get(this.src, {params});
             },
 
@@ -110,7 +109,7 @@
             activeClass (index) {
                 return {
                     active: this.current === index
-                }
+                };
             },
 
             hit () {
@@ -136,8 +135,8 @@
             },
 
             down () {
-                if (this.items.length ==0) {
-                    update();
+                if (this.items.length === 0) {
+                    this.update();
                 }
                 if (this.current < this.items.length - 1) {
                     this.current++;
@@ -155,6 +154,6 @@
             }
 
         }
-    }
+    };
 
 </script>

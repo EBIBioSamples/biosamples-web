@@ -1,10 +1,11 @@
+/* eslint-disable */
 /**
  * @license
  * lodash-addons
  * Copyright 2015 Helion3 <http://helion3.com>
  * Available under MIT license
  */
-;(function(root, factory) {
+(function(root, factory) {
     /* istanbul ignore next */
     if (typeof define === 'function' && define.amd) {
         define(['lodash'], factory);

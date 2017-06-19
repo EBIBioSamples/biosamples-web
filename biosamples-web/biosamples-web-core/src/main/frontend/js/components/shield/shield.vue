@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    const startCaseFilter = require("../../filters/startCaseFilter.js");
+    const startCaseFilter = require('../../filters/startCaseFilter.js');
 
     function randomColor() {
         const hue = Math.floor(Math.random() * 360);
@@ -42,35 +42,35 @@
             },
             valueColor: {
                 type: String,
-                default: "#f27e3f",
+                default: '#f27e3f',
                 validator(value) {
                     //Alter the following conditions according to your need.
-                    let stringToTest = value + "";
-                    if (stringToTest === "") {
+                    let stringToTest = value + '';
+                    if (stringToTest === '') {
                         return false;
                     }
-                    if (stringToTest === "inherit") {
+                    if (stringToTest === 'inherit') {
                         return false;
                     }
-                    if (stringToTest === "transparent") {
+                    if (stringToTest === 'transparent') {
                         return false;
                     }
-                    if (stringToTest === "random") {
+                    if (stringToTest === 'random') {
                         return true;
                     }
 
-                    var image = document.createElement("img");
-                    image.style.color = "rgb(0, 0, 0)";
+                    let image = document.createElement('img');
+                    image.style.color = 'rgb(0, 0, 0)';
                     image.style.color = stringToTest;
-                    if (image.style.color !== "rgb(0, 0, 0)") {
+                    if (image.style.color !== 'rgb(0, 0, 0)') {
                         return true;
                     }
-                    image.style.color = "rgb(255, 255, 255)";
+                    image.style.color = 'rgb(255, 255, 255)';
                     image.style.color = stringToTest;
-                    return image.style.color !== "rgb(255, 255, 255)";
+                    return image.style.color !== 'rgb(255, 255, 255)';
                 },
                 coerce(value) {
-                    if (value === "random") {
+                    if (value === 'random') {
                         return randomColor();
                     }
                     return value;
@@ -78,19 +78,19 @@
             },
             variation: {
                 type: String,
-                default: "flat",
+                default: 'flat',
                 validator(value) {
                     console.log(value);
-                    const stringToTest = (value + "").trim();
-                    return ["plastic", "flat", "flat-squared"].indexOf(stringToTest) >= 0;
+                    const stringToTest = (value + '').trim();
+                    return ['plastic', 'flat', 'flat-squared'].indexOf(stringToTest) >= 0;
                 }
             }
         },
         filters: startCaseFilter,
         methods: {
             close() {
-                this.$emit("shield-closed");
+                this.$emit('shield-closed');
             }
         }
-    }
+    };
 </script>

@@ -1,11 +1,11 @@
 (function(){
-    var _ = require( 'lodash'); 
+    let _ = require( 'lodash');
     _.mixin( {
         'toQueryString': function ( parameters ) {
-            var queryString = _.reduce(parameters, function ( components, value, key ) {
-                        components.push( key + '=' + encodeURIComponent( value ) );
-                        return components;
-                    },[]).join( '&' );
+            let queryString = _.reduce(parameters, function ( components, value, key ) {
+                components.push( key + '=' + encodeURIComponent( value ) );
+                return components;
+            },[]).join( '&' );
             if ( queryString.length > 0 ) {
                 queryString = '?' + queryString;
             }
@@ -14,11 +14,11 @@
 
         'fromQueryString': function ( queryString ) {
             return _.reduce(queryString.replace( '?', '' ).split( '&' ), function ( parameters, parameter ) {
-                        if ( parameter.length > 0 ) {
-                            _.extend( parameters, _.object( [ _.map( parameter.split( '=' ), decodeURIComponent ) ] ) );
-                        }
-                        return parameters;
-                    }, {});
+                if ( parameter.length > 0 ) {
+                    _.extend( parameters, _.object( [ _.map( parameter.split( '=' ), decodeURIComponent ) ] ) );
+                }
+                return parameters;
+            }, {});
         }
     });
 })();

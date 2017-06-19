@@ -1,5 +1,5 @@
 (function(window){
-    "use strict";
+    'use strict';
 
     // Init
     if ('scrollRestoration' in history) {
@@ -9,12 +9,12 @@
     window.Store = window.app.urls;
     window.whenDOMReady = function(callback) {
         if (
-            document.readyState === "complete" ||
-            (document.readyState !== "loading" && !document.documentElement.doScroll)
+            document.readyState === 'complete' ||
+            (document.readyState !== 'loading' && !document.documentElement.doScroll)
         ) {
             callback();
         } else {
-            document.addEventListener("DOMContentLoaded", callback);
+            document.addEventListener('DOMContentLoaded', callback);
         }
     };
     window.goBack = function() {
@@ -22,8 +22,8 @@
     };
 
     // Vue starting configuration
-    let Vue = require("vue");
-    Vue.use(require("vue-resource"));
+    let Vue = require('vue');
+    Vue.use(require('vue-resource'));
     Vue.config.debug = false;
     Vue.config.silent = true;
 
@@ -54,9 +54,9 @@
 
     window.Vue = Vue;
     window.whenDOMReady(function(){
-        console.log("I'm passing here - init.js");
+        console.log('I\'m passing here - init.js');
         window.baseVM = new window.Vue({
-            el: "#app",
+            el: '#app',
         });
     });
 

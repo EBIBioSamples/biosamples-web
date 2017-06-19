@@ -4,7 +4,7 @@
  * @extends {Vue filter}
  */
 (function(){
-    "use strict";
+    'use strict';
 
     /**
      * @method numberFormat
@@ -13,13 +13,13 @@
      * @return {Number}           The formatted Number
      */
     module.exports = function(value,format) {
-        if (typeof value !== "undefined" && value !== null) {
+        if (typeof value !== 'undefined' && value !== null) {
 
             if (!format) {
-                format = "en-UK"
+                format = 'en-UK';
             }
             return new Intl.NumberFormat(format,{
-                style: "decimal"
+                style: 'decimal'
             }).format(value);
 
         }

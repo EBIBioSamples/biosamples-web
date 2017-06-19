@@ -20,18 +20,18 @@ module.exports = function(
     status = status.map(s => s.toLowerCase()).filter( s => __isValidStatus(s));
 
 
-    var getStatus = function() {
+    let getStatus = function() {
         return [...status];
     };
 
-    var setStatus = function(newStatus) {
+    let setStatus = function(newStatus) {
         let tempStatus = newStatus.filter(s => __isValidStatus(s));
         if (tempStatus.length > 0) {
             status = [...tempStatus];
         }
     };
 
-    var log = function({msg, type} = {}) {
+    let log = function({msg, type} = {}) {
 
         if( enabled && __showStatus(type)) {
 
@@ -40,57 +40,57 @@ module.exports = function(
             }
 
             switch (type) {
-                case "debug":
-                    console.debug(...msg);
-                    break;
-                case "warning":
-                    console.warn(...msg);
-                    break;
-                case "error":
-                    console.error(...msg);
-                    break;
-                case "info":
-                    console.info(...msg);
-                    break;
-                default:
-                    console.log(...msg);
+            case 'debug':
+                console.debug(...msg);
+                break;
+            case 'warning':
+                console.warn(...msg);
+                break;
+            case 'error':
+                console.error(...msg);
+                break;
+            case 'info':
+                console.info(...msg);
+                break;
+            default:
+                console.log(...msg);
             }
 
         }
     };
 
-    var debug = function(...args) {
-        log({msg: args, type: "debug"});
+    let debug = function(...args) {
+        log({msg: args, type: 'debug'});
     };
 
-    var warning = function(...args) {
-        log({msg: args, type: "warning"});
+    let warning = function(...args) {
+        log({msg: args, type: 'warning'});
     };
-    var info = function(...args) {
-        log({msg: args, type: "info"});
-    };
-
-    var error = function(...args) {
-        log({msg: args, type: "error"});
+    let info = function(...args) {
+        log({msg: args, type: 'info'});
     };
 
-    var group = function(name) {
+    let error = function(...args) {
+        log({msg: args, type: 'error'});
+    };
+
+    let group = function(name) {
         console.group(`${consoleContext ? `[${consoleContext}] - ` : ''}${name}`);
     };
 
-    var groupCollapsed = function(name) {
+    let groupCollapsed = function(name) {
         console.groupCollapsed(`${consoleContext ? `[${consoleContext}] - ` : ''}${name}`);
     };
 
-    var groupEnd = function() {
+    let groupEnd = function() {
         console.groupEnd();
     };
 
-    var disable = function() {
+    let disable = function() {
         enabled = false;
     };
 
-    var enable = function() {
+    let enable = function() {
         enabled = true;
     };
 
@@ -98,7 +98,7 @@ module.exports = function(
         log, info, debug, warning, error,
         group,groupCollapsed,groupEnd,
         enable, disable, getStatus, setStatus
-    }
+    };
 
 };
 

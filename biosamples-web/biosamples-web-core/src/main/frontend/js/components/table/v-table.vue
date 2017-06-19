@@ -15,13 +15,13 @@
 
 <script>
 
-    const _ = require("lodash");
+    const _ = require('lodash');
     const Store =  window.Store;
-    const startCaseFilter = require("../../filters/startCaseFilter.js");
-    const olsSearchLink = "http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=";
+    const startCaseFilter = require('../../filters/startCaseFilter.js');
+    const olsSearchLink = 'http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=';
 
     function isAccession(value) {
-       return value.match(/(?:SAM(N|E|)A?\d+|SAMEG\d+)/);
+        return value.match(/(?:SAM(N|E|)A?\d+|SAMEG\d+)/);
     }
 
     function isLink(value) {
@@ -30,7 +30,7 @@
 
     function renderAccession(value) {
 
-        var link = value.match(/^SAMEG\d+/) ?
+        let link = value.match(/^SAMEG\d+/) ?
             `${Store.groupsUrl}/${value}` :
             `${Store.samplesUrl}/${value}`;
 
@@ -44,7 +44,7 @@
         let finalValue = '';
         for (let sub of strAnchors) {
             if (!sub.match(anchorRegexp)) {
-                sub = sub.replace(linkRegexp,"<a href='$1'>$1</a>");
+                sub = sub.replace(linkRegexp,'<a href="$1">$1</a>');
             }
             finalValue = finalValue + sub;
         }
@@ -122,5 +122,5 @@
                 }
             }
         }
-    }
+    };
 </script>

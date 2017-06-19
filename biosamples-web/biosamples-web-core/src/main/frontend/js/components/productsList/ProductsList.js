@@ -1,21 +1,21 @@
 (function(){
 
-	"use strict";
+    'use strict';
 
-	module.exports = {
+    module.exports = {
 
-		template: require('./products.list.template.html'),
+        template: require('./products.list.template.html'),
 
-		components: {
-			'biosample': require('../product/product.vue')
-		},
+        components: {
+            'biosample': require('../product/product.vue')
+        },
 
         /**
          * elements to be presented into the lsit
          * @property elements
          * @type {Array}
          */
-		props: ['elements','element_class']
-	};
+        props: ['elements','element_class']
+    };
 })();
 

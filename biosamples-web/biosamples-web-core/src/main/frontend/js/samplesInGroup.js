@@ -7,27 +7,27 @@
  * @uses Window
  */
 (function(window,$){
-    "use strict";
+    'use strict';
 
-    var { Vue, baseVM, Store, table_attrs, accession } = window;
+    let { Vue, baseVM, Store, table_attrs, accession } = window;
 
 
     // Required
-    var _           = require("lodash");
+    const _           = require('lodash');
 
     // JQuery DOM elements
     let $scroller, $scrollerContainer, $tableContainer, $table;
 
     // JQuery specific functions
     function $registerElements()  {
-        $scroller = $(".sample-table__scroller");
-        $scrollerContainer = $(".sample-table__scroll-container");
-        $tableContainer = $(".sample-table__content");
+        $scroller = $('.sample-table__scroller');
+        $scrollerContainer = $('.sample-table__scroll-container');
+        $tableContainer = $('.sample-table__content');
         $table = $tableContainer.find('table');
     }
     function $registerHandlers() {
 
-        $table =  $tableContainer.find("table");
+        $table =  $tableContainer.find('table');
         $table.on('resize', function() {
             $scroller.width($table.width());
         });
@@ -40,10 +40,10 @@
     }
     function $setTableAndTopScrollSize() {
         if ( $tableContainer.width() < $table.width() ) {
-            $table.css("width",'');
+            $table.css('width','');
             $scroller.width($table.width());
         } else {
-            $table.css("width","100%");
+            $table.css('width','100%');
         }
 
     }
@@ -55,10 +55,10 @@
      * @return {Object} A key-value object representing the facets names and the count
      */
     function readFacets(facets) {
-        var obj = _.create({});
+        let obj = _.create({});
         obj.keys = [];
         obj.vals = [];
-        for (var i=0;i<facets.length; i = i+2) {
+        for (let i=0;i<facets.length; i = i+2) {
             if (+facets[i+1] > 0) {
                 obj[facets[i]] = +facets[i+1];
                 obj.keys.push(facets[i]);
@@ -69,18 +69,18 @@
     }
 
     function getErrorBadge(statusCode,responseMessage) {
-        debugger;
-        let alert = document.createElement("component");
-        alert.setAttribute("is","alert");
-        alert.setAttribute("type","danger");
-        alert.textContent = "An error occured while querying biosamples";
+
+        let alert = document.createElement('component');
+        alert.setAttribute('is','alert');
+        alert.setAttribute('type','danger');
+        alert.textContent = 'An error occured while querying biosamples';
         return alert;
     }
 
     function readValues(sample,field) {
 
         function readAnnotatedValue(value) {
-            if (value.hasOwnProperty("ontologyTerms")) {
+            if (value.hasOwnProperty('ontologyTerms')) {
                 return JSON.stringify(value);
             } else {
                 return value.text;
@@ -95,7 +95,7 @@
             //noinspection JSUnresolvedVariable
             if (sample.characteristics.hasOwnProperty(field)) {
                 //noinspection JSUnresolvedVariable
-               value = sample.characteristics[field];
+                value = sample.characteristics[field];
 
                 // Concatenate the multivalue fields into a single string separated by comas where
                 // annotated terms are returned in their JSON format
@@ -170,14 +170,14 @@
              */
 
             querySamplesInGroup: function(e) {
-                console.log('querySamplesInGroup');
-                log("Query samples in group");
-                if (e !== undefined && typeof e.preventDefault !== "undefined" ) {
+                // console.log('querySamplesInGroup');
+                log('Query samples in group');
+                if (e !== undefined && typeof e.preventDefault !== 'undefined' ) {
                     e.preventDefault();
                 }
 
                 if (this.isQuerying) {
-                    log("Still getting results from previous query, new query aborted");
+                    log('Still getting results from previous query, new query aborted');
                     return;
                 }
 
@@ -198,7 +198,7 @@
                         this.consumeResults(results);
                     })
                     .catch(function(data){
-                        console.log(data);
+                        // console.log(data);
                         this.alerts.push({
                             type: 'danger',
                             timeout: 5000,
@@ -213,10 +213,10 @@
 
             consumeResults: function(results) {
 
-                log("Consuming ajax results","Consume Results");
+                log('Consuming ajax results','Consume Results');
 
                 if (_.isEmpty(results)) {
-                    throw new Error("No results is available");
+                    throw new Error('No results is available');
                 }
 
                 let paginationInfo = results.page;
@@ -254,26 +254,26 @@
              */
             registerEventHandlers: function() {
                 this.$on('page-changed', function(newPage) {
-                    console.log(" on page-changed");
+                    // console.log(' on page-changed');
                     this.pageNumber = newPage;
-                    this.querySamplesInGroup();
+                    this.querySamplesInGroup(null);
                 });
 
                 this.$on('dd-item-chosen', function(item) {
-                    var previousValue = this.samplesToRetrieve;
+                    let previousValue = this.samplesToRetrieve;
                     this.samplesToRetrieve = item;
                     this.pageNumber = 1;
-                    this.querySamplesInGroup();
+                    this.querySamplesInGroup(null);
                 });
-                this.$on("as-hit", function(value){
-                    value = document.querySelector("input[name='searchTerm']").value;
-                    window.location = window.Store.searchUrl + "?searchTerm=" + value;
+                this.$on('as-hit', function(value){
+                    value = document.querySelector('input[name=\'searchTerm\']').value;
+                    window.location = window.Store.searchUrl + '?searchTerm=' + value;
                 });
             },
 
 
         }
-    })
+    });
 })(window,jQuery);
 
 

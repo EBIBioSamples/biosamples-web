@@ -1,47 +1,47 @@
 (function(window) {
-    var app = require("ols-graphview");
-    var {Store, accession} = window;
-    var {relationsUrl, baseUrl: originUrl = window.location.origin } = Store;
+    let app = require('ols-graphview');
+    let { Store, accession } = window;
+    let { relationsUrl, baseUrl: originUrl = window.location.origin } = Store;
 
-    
+
     function buildGraphUrl(accession) {
         return `${originUrl}${sampleOrGroup(accession)}/${accession}/graph`;
         // return `../${sampleOrGroup(accession)}/${accession}/graph`;
     }
 
     function sampleOrGroup(accession) {
-        var isGroup = accession.substring(0, 5).indexOf("G");
+        let isGroup = accession.substring(0, 5).indexOf('G');
         if (isGroup === -1) {
-            return "samples"
+            return 'samples';
         }
         else {
-            return "groups"
+            return 'groups';
         }
     }
 
     function isCluster(parameter){
         console.log(parameter);
-        console.log(parameter.indexOf("__"));
-        return !(parameter.indexOf("__") == -1);
+        console.log(parameter.indexOf('__'));
+        return !(parameter.indexOf('__') == -1);
     }
 
-    var graphURL = buildGraphUrl(accession);
+    let graphURL = buildGraphUrl(accession);
     console.log(graphURL);
 
-    var tmpNetworkOptions = {
+    let tmpNetworkOptions = {
         webservice: {
-            URL: graphURL, 
+            URL: graphURL,
             OLSschema: false
         },
         displayOptions: {
-            showButtonBox: true, 
-            showInfoWindow: false, 
+            showButtonBox: true,
+            showInfoWindow: false,
             showLegend: true
         },
         appearance: {
             nodeShowShortId: false
         },
-        
+
         callbacks: {
             __changingPage: false,
             onClick: function (params) {
@@ -51,9 +51,9 @@
                 }
                 let nodeAccession = params.nodes[0];
                 let singleClick = params.event.tapCount == 1;
-                console.log("Parameters:", params);
+                console.log('Parameters:', params);
                 console.log(params.nodes[0]);
-                console.log("Selected");
+                console.log('Selected');
 
                 if (!isCluster(nodeAccession)) {
                     if (!singleClick) {
@@ -66,27 +66,27 @@
                     }
                 }
                 else{
-                    instance.unclusterANode(nodeAccession)
+                    instance.unclusterANode(nodeAccession);
                 }
             },
             onSelectNode: function() {
-                console.log("onSelectedNode");
+                console.log('onSelectedNode');
             }
         },
         loadingBar: {
-            pictureURL: "../images/loading.gif",
+            pictureURL: '../images/loading.gif',
             initialLoadingPicture: true
         },
         dataOptions: {showAllRelationships: true}
     };
 
-    var visOptions = {
+    let visOptions = {
         interaction: {hover: true, navigationButtons: false, keyboard: false},
-        nodes: {shape: "dot"}
+        nodes: {shape: 'dot'}
     };
 
 
-    var instance = new app();
-    instance.visstart("ontology_vis", accession, tmpNetworkOptions, visOptions);
-    
+    let instance = new app();
+    instance.visstart('ontology_vis', accession, tmpNetworkOptions, visOptions);
+
 })(window);
