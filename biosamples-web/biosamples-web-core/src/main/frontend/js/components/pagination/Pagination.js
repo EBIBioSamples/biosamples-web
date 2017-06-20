@@ -70,7 +70,7 @@
 
         ready: function() {
             console.log(this._getStatus());
-            stretchy.Stretchy.init();
+            Stretchy.init(); // eslint-disable-line
         },
 
         methods: {

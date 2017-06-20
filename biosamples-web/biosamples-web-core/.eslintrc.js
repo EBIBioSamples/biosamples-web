@@ -20,6 +20,7 @@ module.exports = {
         'semi-style': ['error', 'last'],
         'no-mixed-spaces-and-tabs': 'error',
         'indent': 'error',
-        'no-var': 'error'
+        'no-var': 'error',
+        'no-debugger': 0
     }
 };

@@ -15,10 +15,10 @@
 
 <script>
 
-    const _ = require('lodash');
     const Store =  window.Store;
     const startCaseFilter = require('../../filters/startCaseFilter.js');
-    const olsSearchLink = 'http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=';
+//    const _ = require('lodash');
+//    const olsSearchLink = 'http://www.ebi.ac.uk/ols/beta/search?start=0&groupField=iri&exact=on&q=';
 
     function isAccession(value) {
         return value.match(/(?:SAM(N|E|)A?\d+|SAMEG\d+)/);
@@ -54,8 +54,8 @@
 
     function renderOntologyTerm(jsonValue) {
         let textValue = jsonValue.text;
-        let ontologyTerms = jsonValue['ontologyTerms'];
         return textValue;
+//        let ontologyTerms = jsonValue['ontologyTerms'];
 //        if (ontologyTerms[0]) { // build the OLS link for the ontology mapped value
 //            let link = olsSearchLink + encodeURIComponent(ontologyTerms[0]);
 //            return `<a href=${link} target='_blank'>${textValue}</a>`

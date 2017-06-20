@@ -34,13 +34,13 @@ module.exports = {
                 enforce: 'pre',
                 use: [
                     {
+                        loader: 'vue-loader'
+                    },
+                    {
                         loader: 'eslint-loader',
                         options: {
                             emitWarning: true
                         }
-                    },
-                    {
-                        loader: 'vue-loader'
                     }
                 ]
             },
@@ -50,15 +50,15 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: 'eslint-loader',
-                        options: {
-                            emitWarning: true
-                        }
-                    },
-                    {
                         loader: 'babel-loader',
                         query: {
                             presets: ['es2015'] // Solve problem with Uglify https://github.com/joeeames/WebpackFundamentalsCourse/issues/3
+                        }
+                    },
+                    {
+                        loader: 'eslint-loader',
+                        options: {
+                            emitWarning: true
                         }
                     }
                 ]

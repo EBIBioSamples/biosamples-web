@@ -40,7 +40,7 @@ public class SearchController {
             @RequestParam(value = "useFuzzySearch", defaultValue = "false") boolean useFuzzySearch,
             @RequestParam(value = "start", defaultValue = "0") int start,
             @RequestParam(value = "rows", defaultValue = "10") int rows,
-            @RequestParam(value = "filters[]", required = false, defaultValue = "") String[] encodedFilters,
+            @RequestParam(value = "filter[]", required = false, defaultValue = "") String[] encodedFilters,
             HttpServletResponse response) throws Exception {
 
         // first, evaluate arguments to work out how to create the query

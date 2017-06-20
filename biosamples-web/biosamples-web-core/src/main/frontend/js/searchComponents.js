@@ -358,7 +358,7 @@ let vueConsole = Console({context:'VUE', status: ['info','warning','debug','erro
                     'rows': this.samplesToRetrieve,
                     'start': (this.pageNumber - 1) * this.samplesToRetrieve,
                     'useFuzzySearch': this.useFuzzy,
-                    'filters': this.serializeFilterQuery(this.filterQuery)
+                    'filter': this.serializeFilterQuery(this.filterQuery)
                 };
                 /*
                      'organFilter': this.filterQuery.organFilter,
@@ -405,7 +405,7 @@ let vueConsole = Console({context:'VUE', status: ['info','warning','debug','erro
                 this.samplesToRetrieve = _.getFinite(urlParams.rows,10);
                 this.pageNumber= _.getFinite(urlParams.start/this.samplesToRetrieve + 1,1);
                 this.useFuzzy = _.getBoolean(urlParams.useFuzzySearch === 'true',false);
-                this.filterQuery = _.getObject(this.deserializeFilterQuery(urlParams.filters),{});
+                this.filterQuery = _.getObject(this.deserializeFilterQuery(urlParams.filter),{});
             },
 
             removeAlert(item) {
@@ -466,7 +466,7 @@ let vueConsole = Console({context:'VUE', status: ['info','warning','debug','erro
                 if ( !_.isEmpty(historyState.data) ) {
                     urlParam = historyState.data;
                 } else if ( !_.isEmpty(location.search) ) {
-                    urlParam = _.fromQueryString(location.search.substring(1));
+                    urlParam = utilities.fromQueryString(location.search.substring(1));
                     //TODO In this case the string is not properly read (filters is not read as an array)
                 } else {
                     vueConsole.debug('No Parameters');
