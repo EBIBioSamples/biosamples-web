@@ -1,12 +1,10 @@
-const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const path = require('path');
+const plugins = require('../biosamples-web-core/webpack.plugins');
 const inProduction = process.env.Node_ENV === 'production';
 
 const srcRoot = './src/main/frontend';
 const distRoot = './target/classes/static';
 
-const extractSCSS = new ExtractTextPlugin("[name]");
 
 module.exports = {
     entry: {
@@ -20,15 +18,19 @@ module.exports = {
         rules: [
             {
                 test: /\.s[ca]ss$/,
-                use: extractSCSS.extract({
+                use: plugins.extractSCSS.extract({
                     fallback: 'style-loader',
                     use: [
                     {
-                        loader:'css-loader',
+                        loader: 'css-loader',
                         options: {
                             url: false,
                             minimize: inProduction
                         }
+                    },
+                        {
+                        loader: 'postcss-loader',
+                        options: {plugins: [plugins.autoprefixer]}
                     },
                     {
                         loader: 'sass-loader'
@@ -39,7 +41,6 @@ module.exports = {
         ]
     },
     plugins: [
-        extractSCSS,
-
+        plugins.extractSCSS,
     ]
 };

@@ -1,17 +1,15 @@
-let webpack = require('webpack');
-let ExtractTextPlugin = require("extract-text-webpack-plugin");
-let CompressionPlugin = require("compression-webpack-plugin");
 let path = require('path');
-let prodPlugins = require('./webpack.plugins.js');
+let plugins = require('./webpack.plugins.js');
 
 let srcRoot = './src/main/frontend';
 let distRoot = './target/classes/static';
 let inProduction = process.env.NODE_ENV === 'production';
 
 // Plugin setups
-let extractSCSS = new ExtractTextPlugin("[name]");
 
-let inProductionPlugin = [prodPlugins.gzip, prodPlugins.uglify];
+let inProductionPlugin = [plugins.gzip, plugins.uglify];
+
+
 
 module.exports = {
     entry: {
@@ -69,7 +67,7 @@ module.exports = {
             },
             {
                 test: /\.s[ca]ss$/,
-                use: extractSCSS.extract({
+                use: plugins.extractSCSS.extract({
                     fallback: 'style-loader',
                     use: [
                         {
@@ -80,6 +78,10 @@ module.exports = {
                             }
                         },
                         {
+                            loader: 'postcss-loader',
+                            options: { plugins: [ plugins.autoprefixer ] }
+                        },
+                        {
                             loader: 'sass-loader'
                         }
                     ]
@@ -88,7 +90,7 @@ module.exports = {
         ]
     },
     plugins: [
-        extractSCSS,
+        plugins.extractSCSS,
     ]
 };
 
