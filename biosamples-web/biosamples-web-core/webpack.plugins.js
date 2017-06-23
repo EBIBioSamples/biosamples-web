@@ -20,3 +20,5 @@ module.exports.uglify = new webpack.optimize.UglifyJsPlugin({
 module.exports.extractSCSS = new ExtractTextPlugin('[name]');
 
 module.exports.autoprefixer = new Autoprefixer();
+
+module.exports.hoisting = new webpack.optimize.ModuleConcatenationPlugin();

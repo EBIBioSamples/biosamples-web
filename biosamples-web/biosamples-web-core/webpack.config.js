@@ -1,18 +1,15 @@
 let path = require('path');
-let plugins = require('./webpack.plugins.js');
+let merge = require('webpack-merge');
+let parts = require('./webpack.parts.js');
 
 let srcRoot = './src/main/frontend';
 let distRoot = './target/classes/static';
 let inProduction = process.env.NODE_ENV === 'production';
-
+let useLint = process.env.LINT;
 // Plugin setups
 
-let inProductionPlugin = [plugins.gzip, plugins.uglify];
-
-
-
-module.exports = {
-    entry: {
+let PATHS = {
+    input: {
         'javascript/init.js': path.resolve(__dirname, srcRoot, 'js', 'init.js'),
         'javascript/searchComponents.js': path.resolve(__dirname, srcRoot, 'js', 'searchComponents.js'),
         'javascript/samplesInGroup.js': path.resolve(__dirname, srcRoot, 'js', 'samplesInGroup.js'),
@@ -24,77 +21,34 @@ module.exports = {
     output: {
         filename: '[name]',
         path: path.resolve(__dirname, distRoot)
-    },
-    module: {
-        rules: [
-            {
-                test: /\.vue$/,
-                enforce: 'pre',
-                use: [
-                    {
-                        loader: 'vue-loader'
-                    },
-                    {
-                        loader: 'eslint-loader',
-                        options: {
-                            emitWarning: true
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.js$/,
-                enforce: 'pre',
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        query: {
-                            presets: ['es2015'] // Solve problem with Uglify https://github.com/joeeames/WebpackFundamentalsCourse/issues/3
-                        }
-                    },
-                    {
-                        loader: 'eslint-loader',
-                        options: {
-                            emitWarning: true
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.html$/,
-                use: 'vue-html-loader'
-            },
-            {
-                test: /\.s[ca]ss$/,
-                use: plugins.extractSCSS.extract({
-                    fallback: 'style-loader',
-                    use: [
-                        {
-                            loader:'css-loader',
-                            options: {
-                                url: false,
-                                minimize: inProduction
-                            }
-                        },
-                        {
-                            loader: 'postcss-loader',
-                            options: { plugins: [ plugins.autoprefixer ] }
-                        },
-                        {
-                            loader: 'sass-loader'
-                        }
-                    ]
-                })
-            }
-        ]
-    },
-    plugins: [
-        plugins.extractSCSS,
-    ]
+    }
 };
 
-if (inProduction) {
-    // Add all the production plugin to the plugins object if in production
-    module.exports.plugins.push(...inProductionPlugin);
-}
+const commonConfig = {
+    entry: PATHS.input,
+    output: PATHS.output,
+    module: {
+        rules: [
+            parts.vue(),
+            parts.vuehtml(),
+            parts.babel(),
+            parts.scss({useMinifaction:inProduction}),
+        ]
+    },
+    plugins: parts.plugins.default
+};
+
+
+
+module.exports = () => {
+    let configuration = commonConfig;
+
+    if (useLint) {
+        configuration = merge([configuration, parts.eslint]);
+    }
+    if (inProduction) {
+        configuration = merge([configuration, parts.plugins.production]);
+    }
+    // console.log(JSON.stringify(configuration));
+    return configuration;
+};

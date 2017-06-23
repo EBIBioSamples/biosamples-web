@@ -5,6 +5,7 @@
     "dev": "NODE_ENV=development webpack --watch --progress --hide-modules",
     "hmr": "NODE_ENV=development webpack-dev-server --inline --hot",
     "production": "NODE_ENV=production webpack --progress --hide-modules",
+    "lint": "NODE_ENV=development LINTING=true webpack --progress --hide-modules",
     "test": "mocha ./src/test/frontend",
     "test-debug": "mocha --debug-brk ./src/test/frontend"
   },
@@ -37,7 +38,7 @@
     "vue-loader": "^8.7.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.3.4",
-    "webpack": "^2.6.1"
+    "webpack": "^3.0.0"
   },
   "dependencies": {
     "axios": "^0.15.3",
@@ -50,6 +51,7 @@
     "stretchy": "^1.0.0",
     "underscore": "^1.8.3",
     "vue": "~1.0.0",
-    "vue-resource": "0.9.0"
+    "vue-resource": "0.9.0",
+    "webpack-merge": "^4.1.0"
   }
 }
