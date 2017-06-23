@@ -43,7 +43,7 @@ module.exports.babel = ({exclude, include} = {}) => {
                         {
                             loader: 'babel-loader',
                             query: {
-                                presets: ['es2015'] // Solve problem with Uglify https://github.com/joeeames/WebpackFundamentalsCourse/issues/3
+                                presets: ['es2015'], // Solve problem with Uglify https://github.com/joeeames/WebpackFundamentalsCourse/issues/3
                             }
                         }
                     ]
@@ -77,12 +77,13 @@ module.exports.vuehtml = ({exclude, include} = {}) => {
 };
 
 /**
+ /**
  * Provide loader configuration for compiling sass files
  * apply autoprefix for browser compatibility
  * and extract css to separte file
  * @param exclude
  * @param include
- * @param use_minification
+ * @param useMinification
  * @returns {{module: {rules: [*]}}}
  */
 module.exports.scss = ({exclude, include, useMinification} = {}) => {
@@ -112,7 +113,8 @@ module.exports.scss = ({exclude, include, useMinification} = {}) => {
                     ]
                 })
             }]
-        }
+        },
+        plugins: [plugins.extractSCSS],
     };
 };
 
@@ -167,7 +169,7 @@ module.exports.plugins.production = () => {
 
 module.exports.plugins.default = () => {
     return {
-        plugins: [plugins.extractSCSS, plugins.hoisting]
+        plugins: [plugins.hoisting]
     };
 };
 

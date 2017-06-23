@@ -5,7 +5,7 @@ let parts = require('./webpack.parts.js');
 let srcRoot = './src/main/frontend';
 let distRoot = './target/classes/static';
 let inProduction = process.env.NODE_ENV === 'production';
-let useLint = process.env.LINT;
+let useLint = process.env.LINTING;
 // Plugin setups
 
 let PATHS = {
@@ -23,32 +23,33 @@ let PATHS = {
         path: path.resolve(__dirname, distRoot)
     }
 };
-
-const commonConfig = {
+let commonInputOutput = {
     entry: PATHS.input,
     output: PATHS.output,
-    module: {
-        rules: [
-            parts.vue(),
-            parts.vuehtml(),
-            parts.babel(),
-            parts.scss({useMinifaction:inProduction}),
-        ]
-    },
-    plugins: parts.plugins.default
 };
 
+let commonLoaders = merge([
+    parts.vue(),
+    parts.vuehtml(),
+    parts.babel({exclude: path.resolve(__dirname, 'node_modules')}),
+    parts.scss({useMinifaction:inProduction})
+]);
 
+let commonPlugins = parts.plugins.default();
 
-module.exports = () => {
-    let configuration = commonConfig;
+let commonConfiguration = merge(
+    commonInputOutput,
+    commonLoaders,
+    commonPlugins
+);
 
-    if (useLint) {
-        configuration = merge([configuration, parts.eslint]);
-    }
-    if (inProduction) {
-        configuration = merge([configuration, parts.plugins.production]);
-    }
-    // console.log(JSON.stringify(configuration));
-    return configuration;
-};
+let configuration = commonConfiguration;
+if (useLint) {
+    configuration = merge([configuration, parts.eslint()]);
+}
+if (inProduction) {
+    configuration = merge([configuration, parts.plugins.production()]);
+}
+
+module.exports = configuration;
+
