@@ -163,13 +163,13 @@ module.exports.plugins = plugins;
 
 module.exports.plugins.production = () => {
     return {
-        plugins: [ plugins.gzip, plugins.uglify ]
+        plugins: [ plugins.gzip(), plugins.uglify() ]
     };
 };
 
-module.exports.plugins.default = () => {
+module.exports.plugins.default = (options = {}) => {
     return {
-        plugins: [plugins.hoisting]
+        plugins: [plugins.hoisting(options)]
     };
 };
 

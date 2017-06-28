@@ -1,3 +1,4 @@
+'use strict';
 let path = require('path');
 let merge = require('webpack-merge');
 let parts = require('./webpack.parts.js');
@@ -23,33 +24,34 @@ let PATHS = {
         path: path.resolve(__dirname, distRoot)
     }
 };
-let commonInputOutput = {
+let ENTRIES = {
     entry: PATHS.input,
     output: PATHS.output,
 };
 
-let commonLoaders = merge([
+let LOADERS = merge([
     parts.vue(),
     parts.vuehtml(),
     parts.babel({exclude: path.resolve(__dirname, 'node_modules')}),
     parts.scss({useMinifaction:inProduction})
 ]);
 
-let commonPlugins = parts.plugins.default();
+let PLUGINS = merge([
+    parts.plugins.default()
+]);
 
-let commonConfiguration = merge(
-    commonInputOutput,
-    commonLoaders,
-    commonPlugins
+let CONFIGURATION = merge(
+    ENTRIES,
+    LOADERS,
+    PLUGINS
 );
 
-let configuration = commonConfiguration;
 if (useLint) {
-    configuration = merge([configuration, parts.eslint()]);
+    CONFIGURATION = merge([CONFIGURATION, parts.eslint()]);
 }
 if (inProduction) {
-    configuration = merge([configuration, parts.plugins.production()]);
+    CONFIGURATION = merge([CONFIGURATION, parts.plugins.production()]);
 }
 
-module.exports = configuration;
+module.exports = CONFIGURATION;
 
