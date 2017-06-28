@@ -26,6 +26,19 @@ table.common-attr {
   width: 100%;
 }
 
+div.detail_table {
+  overflow: scroll;
+
+  &>table {
+    width: 100%;
+    border: 0 none;
+    border-spacing: 0;
+    td {
+      border: 0;
+    }
+  }
+
+}
 
 .sample-table__content {
   background: radial-gradient(farthest-side at 0% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)), radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)) 100% 0;

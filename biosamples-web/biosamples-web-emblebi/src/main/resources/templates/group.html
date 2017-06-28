@@ -6,10 +6,13 @@
 <head>
     <title th:text="${group.accession}">SAMEGxxxxx &lt; BioSamples &lt; EMBL-EBI</title>
 
-    <link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"  rel="stylesheet" type="text/css"  />
-    <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"  rel="stylesheet" type="text/css"  />
-    <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"  rel="stylesheet" type="text/css"  />
-    <link th:href="@{/stylesheets/style.css}" href="/stylesheets/style.css"  rel="stylesheet" type="text/css"  />
+    <link th:href="@{/stylesheets/relationsVis/vis.min.css}" href="/stylesheets/relationsVis/vis.min.css"
+          rel="stylesheet" type="text/css"/>
+    <link th:href="@{/stylesheets/relationsVis/relationsVis.css}" href="/stylesheets/relationsVis/relationsVis.css"
+          rel="stylesheet" type="text/css"/>
+    <link th:href="@{/stylesheets/relationsVis/awesomplete.css}" href="/stylesheets/relationsVis/awesomplete.css"
+          rel="stylesheet" type="text/css"/>
+    <link th:href="@{/stylesheets/style.css}" href="/stylesheets/style.css" rel="stylesheet" type="text/css"/>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -41,7 +44,6 @@
     <section id="group_content">
         <h4 th:text="${'Group ' + group.accession}">Group SAMEGxxxxx</h4>
         <div class="detail_table">
-
             <table id="bs_results_tablesamplegroupdetail" class="listing">
                 <tbody>
                 <!-- Common group attributes -->
@@ -84,16 +86,18 @@
                 </tr>
 
                 <!-- start all characteristics -->
-                <tr th:each="characteristic: ${group.characteristics}" th:unless="${characteristic.key == 'organism' or characteristic.key == 'groupName'  or characteristic.key == 'groupTitle' or characteristic.key == 'groupDescription'}">
+                <tr th:each="characteristic: ${group.characteristics}"
+                    th:unless="${characteristic.key == 'organism' or characteristic.key == 'groupName'  or characteristic.key == 'groupTitle' or characteristic.key == 'groupDescription'}">
                     <td class="col_title"><b th:utext="${characteristic.key}">Characteristic</b></td>
                     <td th:if="${#maps.containsKey(group.characteristics,characteristic.key)}">
-                        <div class="characteristic-mapping" th:each="value: ${group.characteristics.get(characteristic.key)}">
+                        <div class="characteristic-mapping"
+                             th:each="value: ${group.characteristics.get(characteristic.key)}">
                             <div class="characteristic-mapping-payload" th:text="${value}">[{"foo":"bar"}]</div>
                         </div>
                     </td>
                 </tr>
                 <!-- end all characteristics -->
-                
+
                 <tr th:if="${group.hasSamples()}">
                     <td class="col_title"><b>Samples in group</b></td>
                     <td>
@@ -110,9 +114,12 @@
                         </div>
                     </td>
                 </tr>
-
-
-                <tr th:if="${common_attrs}">
+                </tbody>
+            </table>
+        </div>
+        <div class="detail_table" th:if="${common_attrs}">
+            <table class="detail">
+                <tr>
                     <td class="col_title"><b>Common Attributes</b></td>
                     <td>
                         <table class="common-attr">
@@ -120,14 +127,16 @@
                             <tr>
                                 <th th:class="'col_title'"
                                     th:each="attr: ${common_attrs}"
-                                    th:text="${attr.key}">attrname</th>
+                                    th:text="${attr.key}">attrname
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td th:each="attr: ${common_attrs}" >
+                                <td th:each="attr: ${common_attrs}">
                                     <div class="characteristic-mapping" th:if="${not #strings.isEmpty(attr)}">
-                                        <div class="characteristic-mapping-payload" th:text="${attr.value}">{"foo":"bar"}</div>
+                                        <div class="characteristic-mapping-payload" th:text="${attr.value}">{"foo":"bar"}
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -136,10 +145,6 @@
                         </table>
                     </td>
                 </tr>
-
-                </tbody>
-
-                <!-- Samples summary table goes here -->
             </table>
         </div>
     </section>
@@ -156,11 +161,11 @@
                 <input type="submit" class="btn btn-primary" value="Search">
             </div>
             <component is="pagination" class="controls__pagination"
-                        :total-results="resultsNumber"
-                        :displayed-results="samplesToRetrieve">
+                       :total-results="resultsNumber"
+                       :displayed-results="samplesToRetrieve">
             </component>
             <component is="items-dropdown" class="controls__size-dropdown"
-                            :items-per-page="samplesToRetrieve">
+                       :items-per-page="samplesToRetrieve">
             </component>
         </form>
         <div class="sample-table__scroll-container">
@@ -168,9 +173,9 @@
         </div>
         <div class="sample-table__content" style="overflow: auto;">
             <component is="v-table" class="listing"
-                     :columns="samplesAttributes"
-                     :data="groupSamples"
-                     :value-function="readValues">
+                       :columns="samplesAttributes"
+                       :data="groupSamples"
+                       :value-function="readValues">
             </component>
         </div>
     </section>
