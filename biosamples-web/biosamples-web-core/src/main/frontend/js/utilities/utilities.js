@@ -51,7 +51,7 @@ function serializeFilterQuery(filterQuery) {
     let filterArray = [];
     _.each(filterQuery, (value,key) => {
         if ( !_.isNil(value) ) {
-            let encodedFilter = encodeURI(`${key}Filter|${value}`);
+            let encodedFilter = encodeURI(`${key}|${value}`);
             filterArray.push(encodedFilter);
         }
     });
