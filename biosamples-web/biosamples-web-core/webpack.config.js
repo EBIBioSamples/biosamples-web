@@ -3,10 +3,11 @@ let path = require('path');
 let merge = require('webpack-merge');
 let parts = require('./webpack.parts.js');
 
-let srcRoot = './src/main/frontend';
-let distRoot = './target/classes/static';
 let inProduction = process.env.NODE_ENV === 'production';
 let useLint = process.env.LINTING;
+
+let srcRoot = './src/main/frontend';
+let distRoot = './target/classes/static';
 // Plugin setups
 
 let PATHS = {
