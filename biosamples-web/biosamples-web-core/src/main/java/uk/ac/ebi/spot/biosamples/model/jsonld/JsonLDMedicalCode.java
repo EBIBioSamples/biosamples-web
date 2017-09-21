@@ -11,7 +11,7 @@ public class JsonLDMedicalCode {
     private final String type = "MedicalCode";
 
     private String codeValue;
-    private String codeSystem;
+    private String codingSystem;
 
     public String getContext() { return context; }
     public String getType() { return type; }
@@ -24,11 +24,11 @@ public class JsonLDMedicalCode {
         this.codeValue = codeValue;
     }
 
-    public String getCodeSystem() {
-        return codeSystem;
+    public String getCodingSystem() {
+        return codingSystem;
     }
 
-    public void setCodeSystem(String codeSystem) {
-        this.codeSystem = codeSystem;
+    public void setCodingSystem(String codingSystem) {
+        this.codingSystem = codingSystem;
     }
 }

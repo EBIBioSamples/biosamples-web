@@ -10,7 +10,7 @@ public class JsonLDPropertyValue {
     @JsonProperty("@type")
     private final String type = "PropertyValue";
 
-    private String propertyId;
+    private String name;
     private String value;
     private JsonLDMedicalCode code;
 
@@ -22,12 +22,12 @@ public class JsonLDPropertyValue {
         return context;
     }
 
-    public String getPropertyId() {
-        return propertyId;
+    public String getName() {
+        return name;
     }
 
-    public void setPropertyId(String propertyId) {
-        this.propertyId = propertyId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getValue() {

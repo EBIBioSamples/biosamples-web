@@ -10,17 +10,18 @@ public class JsonLDSample {
     private final String context = "http://schema.org";
 
     @JsonProperty("@type")
-    private final String type = "Sample";
+    private final String type = "BiologicalEntity";
+
+    private final String biologicalTyoe = "sample";
 
     private String identifier;
     private String name;
     private String description;
-
     private String url;
 
     private List<String> datasetUrl;
 
-    @JsonProperty("additionProperty")
+    @JsonProperty("additionalProperty")
     private List<JsonLDPropertyValue> additionalProperties;
 
     public String getType() { return type; }

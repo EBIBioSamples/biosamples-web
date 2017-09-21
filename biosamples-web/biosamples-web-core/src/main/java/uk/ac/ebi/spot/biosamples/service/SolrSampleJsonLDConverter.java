@@ -58,7 +58,7 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
                 try {
                     SolrMultivalueField multiValueField = mapper.readValue(field, SolrMultivalueField.class);
                     JsonLDPropertyValue jsonLdProperty = new JsonLDPropertyValue();
-                    jsonLdProperty.setPropertyId(property.getKey());
+                    jsonLdProperty.setName(property.getKey());
                     jsonLdProperty.setValue(multiValueField.getText());
                     JsonLDMedicalCode jsonLdMedicalCode = getMedicalCode(multiValueField);
                     if (jsonLdMedicalCode != null) {
@@ -85,7 +85,7 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
             List<String> ontologyTerms = singleField.getOntologyTerms();
             JsonLDMedicalCode medicalCode = new JsonLDMedicalCode();
             medicalCode.setCodeValue(ontologyTerms.get(0));
-            //TODO medicalCode.setCodeSystem();
+            //TODO medicalCode.setCodingSystem();
             return medicalCode;
         }
         return null;
