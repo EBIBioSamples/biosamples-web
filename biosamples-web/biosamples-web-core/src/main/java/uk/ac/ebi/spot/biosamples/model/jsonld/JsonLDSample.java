@@ -12,7 +12,8 @@ public class JsonLDSample {
     @JsonProperty("@type")
     private final String type = "BiologicalEntity";
 
-    private final String biologicalTyoe = "sample";
+    @JsonProperty("biologicalType")
+    private final String biologicalType = "sample";
 
     private String identifier;
     private String name;
