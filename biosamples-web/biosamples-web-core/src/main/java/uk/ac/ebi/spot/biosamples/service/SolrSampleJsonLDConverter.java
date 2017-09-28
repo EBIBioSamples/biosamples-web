@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.util.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import uk.ac.ebi.spot.biosamples.model.jsonld.JsonLDMedicalCode;
+import uk.ac.ebi.spot.biosamples.model.jsonld.JsonLDOntologyCode;
 import uk.ac.ebi.spot.biosamples.model.jsonld.JsonLDPropertyValue;
 import uk.ac.ebi.spot.biosamples.model.jsonld.JsonLDSample;
 import uk.ac.ebi.spot.biosamples.model.solr.SolrSample;
@@ -60,11 +60,10 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
                     JsonLDPropertyValue jsonLdProperty = new JsonLDPropertyValue();
                     jsonLdProperty.setName(property.getKey());
                     jsonLdProperty.setValue(multiValueField.getText());
-                    jsonLdProperty.setIdentifier(getOntologyIRI(multiValueField));
-//                    JsonLDMedicalCode jsonLdMedicalCode = getMedicalCode(multiValueField);
-//                    if (jsonLdMedicalCode != null) {
-//                        jsonLdProperty.setCode(jsonLdMedicalCode);
-//                    }
+                    JsonLDOntologyCode jsonLdMedicalCode = getOntologyCode(multiValueField);
+                    if (jsonLdMedicalCode != null) {
+                        jsonLdProperty.setCode(jsonLdMedicalCode);
+                    }
                     additionalFields.add(jsonLdProperty);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -81,13 +80,13 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
      * @param singleField
      * @return
      */
-    private JsonLDMedicalCode getMedicalCode(SolrMultivalueField singleField) {
+    private JsonLDOntologyCode getOntologyCode(SolrMultivalueField singleField) {
         if(singleField.hasOntologyTerms()) {
             List<String> ontologyTerms = singleField.getOntologyTerms();
-            JsonLDMedicalCode medicalCode = new JsonLDMedicalCode();
-            medicalCode.setCodeValue(ontologyTerms.get(0));
+            JsonLDOntologyCode ontologyCode = new JsonLDOntologyCode();
+            ontologyCode.setUrl(ontologyTerms.get(0));
             //TODO medicalCode.setCodingSystem();
-            return medicalCode;
+            return ontologyCode;
         }
         return null;
     }

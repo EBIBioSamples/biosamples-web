@@ -1,9 +1,13 @@
 package uk.ac.ebi.spot.biosamples.model.jsonld;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.List;
 
+@JsonPropertyOrder({"@context", "@type", "biologicalType",
+        "identifier", "name", "description", "url", "datasetUrl", "additionalProperty"})
 public class JsonLDSample {
 
     @JsonProperty("@context")
@@ -16,7 +20,10 @@ public class JsonLDSample {
     private final String biologicalType = "sample";
 
     private String identifier;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
     private String url;
 
@@ -63,6 +70,7 @@ public class JsonLDSample {
         this.url = url;
     }
 
+    @JsonInclude(value=JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_EMPTY)
     public List<String> getDatasetUrl() {
         return datasetUrl;
     }

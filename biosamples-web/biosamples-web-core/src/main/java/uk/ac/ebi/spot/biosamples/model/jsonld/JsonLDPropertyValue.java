@@ -3,7 +3,9 @@ package uk.ac.ebi.spot.biosamples.model.jsonld;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder({"@type", "name", "value", "identifier"})
 public class JsonLDPropertyValue {
 
     @JsonIgnore
@@ -15,10 +17,11 @@ public class JsonLDPropertyValue {
     private String name;
     private String value;
 
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    private String identifier;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String identifier;
-    
-//    private JsonLDMedicalCode code;
+    private JsonLDOntologyCode code;
 
     public String getType() {
         return type;
@@ -44,19 +47,12 @@ public class JsonLDPropertyValue {
         this.value = value;
     }
 
-//    public JsonLDMedicalCode getCode() {
-//        return code;
-//    }
-//
-//    public void setCode(JsonLDMedicalCode code) {
-//        this.code = code;
-//    }
-
-    public String getIdentifier() {
-        return identifier;
+    public JsonLDOntologyCode getCode() {
+        return code;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setCode(JsonLDOntologyCode code) {
+        this.code = code;
     }
+
 }
