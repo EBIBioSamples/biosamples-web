@@ -25,8 +25,8 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
     private Logger log = LoggerFactory.getLogger(this.getClass());
     private ObjectMapper mapper;
 
-    public SolrSampleJsonLDConverter() {
-       this.mapper = new ObjectMapper();
+    public SolrSampleJsonLDConverter(ObjectMapper mapper) {
+       this.mapper = mapper;
     }
 
     public JsonLDSample convertWithUrl(SolrSample solrSample, String url) {
@@ -60,10 +60,11 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
                     JsonLDPropertyValue jsonLdProperty = new JsonLDPropertyValue();
                     jsonLdProperty.setName(property.getKey());
                     jsonLdProperty.setValue(multiValueField.getText());
-                    JsonLDMedicalCode jsonLdMedicalCode = getMedicalCode(multiValueField);
-                    if (jsonLdMedicalCode != null) {
-                        jsonLdProperty.setCode(jsonLdMedicalCode);
-                    }
+                    jsonLdProperty.setIdentifier(getOntologyIRI(multiValueField));
+//                    JsonLDMedicalCode jsonLdMedicalCode = getMedicalCode(multiValueField);
+//                    if (jsonLdMedicalCode != null) {
+//                        jsonLdProperty.setCode(jsonLdMedicalCode);
+//                    }
                     additionalFields.add(jsonLdProperty);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -87,6 +88,19 @@ public class SolrSampleJsonLDConverter implements Converter<SolrSample, JsonLDSa
             medicalCode.setCodeValue(ontologyTerms.get(0));
             //TODO medicalCode.setCodingSystem();
             return medicalCode;
+        }
+        return null;
+    }
+
+    /**
+     * Get the ontology IRI to use as identifier for the property value
+     * @param singleField
+     * @return
+     */
+    private String getOntologyIRI(SolrMultivalueField singleField) {
+        if(singleField.hasOntologyTerms()) {
+            List<String> ontologyTerms = singleField.getOntologyTerms();
+            return ontologyTerms.get(0);
         }
         return null;
     }
