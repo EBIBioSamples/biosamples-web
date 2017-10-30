@@ -58,6 +58,11 @@ public class SolrDerivedOrganismResourceProcessor implements ResourceProcessor<R
 			Map<String, List<String>> targatCharJson = target.getCharacteristics();
 			NeoSample neoTarget = neoSampleRepository.findOneByAccession(target.getAccession());
 			
+			
+			for (String key : targetCharText.keySet()) {
+				log.info("target has characteristic "+key);
+			}
+			
 			//if this sample has an organism attribute, then apply it to the resource sample
 			if (targetCharText.containsKey(ORGANISM)) {				
 
@@ -92,7 +97,9 @@ public class SolrDerivedOrganismResourceProcessor implements ResourceProcessor<R
 				//if the sample doesn't have an organism, but is derived from something
 				//then put the something onto the queue to look at later
 				for (NeoSample derivedFrom : neoTarget.getDerivedFrom()) {
-					targets.add(solrSampleRepository.findOne(derivedFrom.getAccession()));
+					String derivedFromAccession = derivedFrom.getAccession();
+					log.info("adding derived from "+derivedFromAccession);
+					targets.add(solrSampleRepository.findOne(derivedFromAccession));
 				}
 			} 
 		}
