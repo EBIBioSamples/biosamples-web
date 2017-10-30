@@ -80,7 +80,7 @@ public class SolrDerivedOrganismResourceProcessor implements ResourceProcessor<R
 				}
 			} 
 		}
-		return null;
+		return resource;
 	}
 
 }
