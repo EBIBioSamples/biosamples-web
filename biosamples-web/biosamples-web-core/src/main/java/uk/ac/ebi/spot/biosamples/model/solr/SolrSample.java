@@ -149,8 +149,8 @@ public class SolrSample {
         // create a sorted, unmodifiable clone of this map (sorted by natural key order)
         TreeMap<String, List<String>> result = new TreeMap<>();
         //catch rare cases where there are no characteristics
-        if (characteristics==null) return Collections.unmodifiableMap(result);
-        Set<String> filteredCharacterstics = characteristics.keySet().stream()
+        if (characteristicsText==null) return Collections.unmodifiableMap(result);
+        Set<String> filteredCharacterstics = characteristicsText.keySet().stream()
                 .filter(el -> !SolrIgnoredField.SAMPLE.isIgnored(el)).collect(Collectors.toSet());
         for (String key : filteredCharacterstics ) {
             result.put(key.replace("_crt", ""), characteristicsText.get(key));
