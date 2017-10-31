@@ -63,6 +63,8 @@ public class SolrDerivedOrganismResourceProcessor implements ResourceProcessor<R
 				log.info("target has characteristic "+key);
 			}
 			
+			log.info("neoTarget is "+neoTarget);
+			
 			//if this sample has an organism attribute, then apply it to the resource sample
 			if (targetCharText.containsKey(ORGANISM)) {				
 
@@ -93,15 +95,17 @@ public class SolrDerivedOrganismResourceProcessor implements ResourceProcessor<R
 		        resource.getContent().setCharacteristics(newCharJson);
 		        resourceCharJson = newCharJson;
 		        
-			} else if (neoTarget.getDerivedFrom().size() > 1) {
+			} else {
 				//if the sample doesn't have an organism, but is derived from something
 				//then put the something onto the queue to look at later
-				for (NeoSample derivedFrom : neoTarget.getDerivedFrom()) {
-					String derivedFromAccession = derivedFrom.getAccession();
-					log.info("adding derived from "+derivedFromAccession);
-					targets.add(solrSampleRepository.findOne(derivedFromAccession));
-				}
-			} 
+				if (neoTarget != null && neoTarget.getDerivedFrom() != null) {
+					for (NeoSample derivedFrom : neoTarget.getDerivedFrom()) {
+						String derivedFromAccession = derivedFrom.getAccession();
+						log.info("adding derived from "+derivedFromAccession);
+						targets.add(solrSampleRepository.findOne(derivedFromAccession));
+					}
+				} 
+			}
 		}
 		return resource;
 	}
