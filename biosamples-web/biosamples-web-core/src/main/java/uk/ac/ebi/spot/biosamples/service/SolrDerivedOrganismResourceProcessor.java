@@ -52,23 +52,17 @@ public class SolrDerivedOrganismResourceProcessor implements ResourceProcessor<R
 		while (!targets.isEmpty()) {
 			SolrSample target = targets.pop();
 
-			log.info("looking at target "+target.getAccession()+" for resource "+resource.getContent().getAccession());
+			log.trace("looking at target "+target.getAccession()+" for resource "+resource.getContent().getAccession());
 			
 			Map<String, List<String>> targetCharText = target.getCharacteristicsText();
 			Map<String, List<String>> targatCharJson = target.getCharacteristics();
 			NeoSample neoTarget = neoSampleRepository.findOneByAccession(target.getAccession());
 			
 			
-			for (String key : targetCharText.keySet()) {
-				log.info("target has characteristic "+key);
-			}
-			
-			log.info("neoTarget is "+neoTarget);
-			
 			//if this sample has an organism attribute, then apply it to the resource sample
 			if (targetCharText.containsKey(ORGANISM)) {				
 
-				log.info("target has organism "+targetCharText.get(ORGANISM));
+				log.trace("target has organism "+targetCharText.get(ORGANISM));
 				
 				//create a new map, copy over old, add new, persist
 		        TreeMap<String, List<String>> newCharText = new TreeMap<>();
@@ -101,7 +95,7 @@ public class SolrDerivedOrganismResourceProcessor implements ResourceProcessor<R
 				if (neoTarget != null && neoTarget.getDerivedFrom() != null) {
 					for (NeoSample derivedFrom : neoTarget.getDerivedFrom()) {
 						String derivedFromAccession = derivedFrom.getAccession();
-						log.info("adding derived from "+derivedFromAccession);
+						log.trace("adding derived from "+derivedFromAccession);
 						targets.add(solrSampleRepository.findOne(derivedFromAccession));
 					}
 				} 
