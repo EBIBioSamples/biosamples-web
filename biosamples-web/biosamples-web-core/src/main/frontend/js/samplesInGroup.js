@@ -172,7 +172,7 @@
             querySamplesInGroup: function(e) {
                 // console.log('querySamplesInGroup');
                 log('Query samples in group');
-                if (e !== undefined && typeof e.preventDefault !== 'undefined' ) {
+                if (e !== null && e !== undefined && typeof e.preventDefault !== 'undefined' ) {
                     e.preventDefault();
                 }
 
