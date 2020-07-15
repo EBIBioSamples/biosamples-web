@@ -47,7 +47,7 @@
     "color-js": "^1.0.3",
     "flexboxgrid": "^6.3.0",
     "historyjs": "1.8.0-b2",
-    "lodash": "^4.16.4",
+    "lodash": "^4.17.19",
     "lodash-addons": "latest",
     "ols-graphview": "^0.1.5",
     "stretchy": "^1.0.0",
