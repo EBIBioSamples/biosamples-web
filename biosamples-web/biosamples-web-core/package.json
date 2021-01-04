@@ -42,7 +42,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "axios": "^0.15.3",
+    "axios": "^0.21.1",
     "color-js": "^1.0.3",
     "flexboxgrid": "^6.3.0",
     "historyjs": "1.8.0-b2",
