@@ -50,7 +50,7 @@
     "lodash-addons": "latest",
     "ols-graphview": "^0.1.5",
     "stretchy": "^1.0.0",
-    "underscore": "^1.8.3",
+    "underscore": "^1.12.1",
     "vue": "~1.0.0",
     "vue-resource": "0.9.0"
   }
