@@ -11,7 +11,7 @@
 		<jersey.version>2.24</jersey.version>
 		<owlapi.version>3.5.2</owlapi.version>
 		<randomizedtesting-runner.version>2.1.16</randomizedtesting-runner.version>
-		<jackson.version>2.7.1</jackson.version>
+		<jackson.version>2.13.4.1</jackson.version>
 
 		<!-- Compile for Java 8 -->
 		<maven.compiler.source>1.8</maven.compiler.source>
